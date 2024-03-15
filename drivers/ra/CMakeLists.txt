@@ -30,4 +30,6 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_DTC
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_FLASH_HP
 	fsp/src/r_flash_hp/r_flash_hp.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SPI_B
-	fsp/ra/fsp/src/r_spi_b/r_spi_b.c)
+	fsp/src/r_spi_b/r_spi_b.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_TIMER_ULPT
+	fsp/src/r_ulpt/r_ulpt.c)
