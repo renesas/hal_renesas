@@ -27,3 +27,5 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SCI_B_UART
 	fsp/src/r_sci_b_uart/r_sci_b_uart.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_DTC
 	fsp/src/r_dtc/r_dtc.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_FLASH_HP
+	fsp/src/r_flash_hp/r_flash_hp.c)
