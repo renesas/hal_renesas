@@ -37,6 +37,17 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_LPM
 	fsp/src/r_lpm/r_lpm.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_I2C_IIC
 	fsp/src/r_iic_master/r_iic_master.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ETHER
+	fsp/src/r_ether/r_ether.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_ETHER
+	fsp/src/r_ether/r_ether.c)
+
+if (CONFIG_USE_RA_FSP_ETHER)
+	file(GLOB ether_phy_srcs
+		"fsp/src/r_ether_phy/r_ether_phy.c"
+		"fsp/src/r_ether_phy/targets/*/*.c")
+	zephyr_sources(${ether_phy_srcs})
+endif()
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
