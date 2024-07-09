@@ -47,6 +47,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_AGT
 	fsp/src/r_agt/r_agt.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CANFD
 	fsp/src/r_canfd/r_canfd.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_SDHI
+	fsp/src/r_sdhi/r_sdhi.c)
 
 if(CONFIG_USE_RA_FSP_SCE)
 	zephyr_include_directories(
