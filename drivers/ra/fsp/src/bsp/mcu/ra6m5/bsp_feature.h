@@ -444,5 +444,6 @@
 
 #define BSP_FEATURE_USB_NUM_IP                               (2U)
 #define BSP_FEATURE_USB_HAS_USBHS                            (1U)
+#define BSP_FEATURE_USB_MAX_DEVICE                           (5)
 
 #endif
