@@ -1,4 +1,3 @@
-/* Generated configuration header file - do not edit */
 /***********************************************************************************************************************
 * DISCLAIMER
 * This software is supplied by Renesas Electronics Corporation and is only intended for use with Renesas products. No
@@ -18,15 +17,15 @@
 * Copyright (C) 2013-2024 Renesas Electronics Corporation. All rights reserved.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
-* File Name    : r_gpio_rx_config.h
-* Description  : Configures the GPIO module.
+* File Name    : r_mpc_rx_config.h
+* Description  : Configuration options for the r_mpc_rx module.
 ***********************************************************************************************************************/
 /***********************************************************************************************************************
 * History : DD.MM.YYYY Version Description
 *         : 17.07.2013 1.00    First Release
 ***********************************************************************************************************************/
-#ifndef GPIO_RX_CONFIG_HEADER_FILE
-#define GPIO_RX_CONFIG_HEADER_FILE
+#ifndef MPC_RX_CONFIG_HEADER_FILE
+#define MPC_RX_CONFIG_HEADER_FILE
 
 /***********************************************************************************************************************
 Configuration Options
@@ -40,8 +39,8 @@ Configuration Options
    0:
        Compiles out parameter checking
 */
-#define GPIO_CFG_PARAM_CHECKING_ENABLE      (BSP_CFG_PARAM_CHECKING_ENABLE)
+#define MPC_CFG_PARAM_CHECKING_ENABLE      (BSP_CFG_PARAM_CHECKING_ENABLE)
 
-#endif /* GPIO_RX_CONFIG_HEADER_FILE */
+#endif /* MPC_RX_CONFIG_HEADER_FILE */
 
 
