@@ -68,13 +68,16 @@ INCLUDE APPROPRIATE MCU AND BOARD FILES
 #elif defined(__ICCRX__)
 #include    "register_access/iccrx/iodefine.h"
 #endif /* defined(__CCRX__), defined(__GNUC__), defined(__ICCRX__) */
+#include    "r_bsp_cpu.h"
 #include    "mcu_clocks.h"
 #include    "mcu_info.h"
 #include    "mcu_init.h"
 #include    "mcu_interrupts.h"
+#include    "mcu_locks.h"
 #include    "vecttbl.h"
 
 #include    "r_bsp_interrupts.h"
+#include    "r_bsp_software_interrupt.h"
 #include    "r_rx_intrinsic_functions.h"
 
 
