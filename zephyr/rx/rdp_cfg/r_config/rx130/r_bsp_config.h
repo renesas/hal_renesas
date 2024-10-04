@@ -357,8 +357,7 @@ Configuration Options
    Available multipliers = x4, x4.5, x5, x5.5, x6, x6.5, x7, x7.5, x8
 */
 
-#define BSP_CFG_PLL_MUL     ((DT_PROP_BY_IDX(DT_NODELABEL(pll), mul, 0)) +                    \
-                              ((DT_PROP_BY_IDX(DT_NODELABEL(pll), mul, 1)) / (10.0)))
+#define BSP_CFG_PLL_MUL     (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll), mul, 15) + 1) / (2.0)
 
 /* System Clock Divider (ICK).
    Available divisors = /1 (no division), /2, /4, /8, /16, /32, /64
