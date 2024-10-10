@@ -296,7 +296,7 @@ Configuration Options
    1 = IWDT
    2 = LPT non use
 */
-#define BSP_CFG_LPT_CLOCK_SOURCE        RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lptclk), mosel, 2)
+#define BSP_CFG_LPT_CLOCK_SOURCE        RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(lptclk), lpt_clk, 2)
 
 /* Main clock Oscillator Switching (MOSEL).
    0 = Resonator
@@ -433,7 +433,7 @@ Configuration Options
 /* Sub-Clock Oscillator Wait Time (Use R_BSP_SoftwareDelay).
    Setting delay unit is in milliseconds.
 */
-#define BSP_CFG_SOSC_WAIT_TIME          (1482)
+#define BSP_CFG_SOSC_WAIT_TIME          RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(subclk), sub_clk_osc, 500)
 
 /* Configure IWDT settings.
    OFS0 - Option Function Select Register 0
