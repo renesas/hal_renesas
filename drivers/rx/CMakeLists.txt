@@ -1,9 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 set(include_dirs
-	rdp_cfg
 	rdp/src/r_bsp
-	rdp_cfg/r_config
 	rdp/src/r_bsp/mcu
 	rdp/src/r_bsp/mcu/all
 	rdp/src/r_bsp/board
