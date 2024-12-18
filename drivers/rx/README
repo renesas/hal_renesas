@@ -38,3 +38,9 @@ License:
 
 License Link:
    https://github.com/renesas/rx-driver-package/blob/master/LICENSE
+
+Patch List:
+
+   * Remove the static definition in RIIC
+   Impacted files:
+      drivers/rx/rdp/src/r_riic_rx/src/r_riic_rx.c
