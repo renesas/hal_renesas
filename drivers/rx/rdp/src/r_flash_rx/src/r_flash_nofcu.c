@@ -54,7 +54,7 @@ static void flash_df_pe_mode_enter(void);
 static void flash_df_read_mode_enter(void);
 static void flash_df_erase(const uint32_t start_addr, const uint32_t num_blocks);
 static void flash_df_blankcheck(const uint32_t start_addr, const uint32_t end_addr);
-static void flash_df_write(const uint32_t src_addr, const uint32_t dest_addr);
+void flash_df_write(const uint32_t src_addr, const uint32_t dest_addr);
 #endif
 
 #if (FLASH_CFG_CODE_FLASH_ENABLE == 1)
@@ -62,11 +62,11 @@ static void flash_cf_pe_mode_enter(void);
 static void flash_cf_read_mode_enter(void);
 static void flash_cf_erase(const uint32_t start_addr, const uint32_t num_blocks);
 static void flash_cf_blankcheck(const uint32_t start_addr, const uint32_t end_addr);
-static void flash_cf_write(const uint32_t src_addr,  const uint32_t dest_addr);
+void flash_cf_write(const uint32_t src_addr,  const uint32_t dest_addr);
 #endif
 
 static void flash_write_fpmcr (uint8_t value);
-static flash_err_t flash_wait_frdy(void);
+flash_err_t flash_wait_frdy(void);
 
 #ifndef FLASH_NO_DATA_FLASH
 /**********************************************************************************************************************
@@ -244,7 +244,7 @@ static void flash_df_blankcheck(const uint32_t start_addr, const uint32_t end_ad
  *              : block_end_addr     : End address (read form) for erasing
  * Return Value : None
  *********************************************************************************************************************/
-static void flash_df_write(const uint32_t src_addr,  const uint32_t dest_addr)
+void flash_df_write(const uint32_t src_addr,  const uint32_t dest_addr)
 {
     uint32_t dest_addr_idx;
     uint8_t  *write_data = (uint8_t *)src_addr;
@@ -871,7 +871,7 @@ static void flash_cf_blankcheck(const uint32_t start_addr, const uint32_t end_ad
  * Return Value : None
  *********************************************************************************************************************/
 FLASH_PE_MODE_SECTION
-static void flash_cf_write(const uint32_t src_addr, const uint32_t dest_addr)
+void flash_cf_write(const uint32_t src_addr, const uint32_t dest_addr)
 {
     uint32_t dest_addr_idx;
     uint32_t *psrc_addr = (uint32_t *)src_addr;
@@ -939,7 +939,7 @@ static void flash_write_fpmcr (uint8_t value)
  *                FLASH_ERR_FAILURE - Command failed for some reason. (for blankcheck, the area is not blank.)
  *********************************************************************************************************************/
 FLASH_PE_MODE_SECTION
-static flash_err_t flash_wait_frdy(void)
+flash_err_t flash_wait_frdy(void)
 {
     /* Check FREADY Flag bit*/
     while (1 != FLASH.FSTATR1.BIT.FRDY)
@@ -982,9 +982,8 @@ static flash_err_t flash_wait_frdy(void)
  * Arguments    : None
  * Return Value : None
  *********************************************************************************************************************/
-R_BSP_PRAGMA_STATIC_INTERRUPT(Excep_FCU_FRDYI,VECT(FCU,FRDYI))
 FLASH_PE_MODE_SECTION
-R_BSP_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FRDYI(void)
+void Excep_FCU_FRDYI(void)
 {
     flash_err_t err = FLASH_SUCCESS;
 

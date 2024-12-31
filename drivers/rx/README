@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Firmware Integration Technology (FIT)
 #####################################
 
@@ -47,3 +48,7 @@ Patch List:
    * Fix the build warnings
    Impacted files:
       drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
+
+   * Remove the static definition in Flash
+   Impacted files:
+      drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.c

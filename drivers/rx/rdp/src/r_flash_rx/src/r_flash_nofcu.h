@@ -132,6 +132,7 @@ flash_err_t flash_get_status (void);
 void flash_stop(void);
 void flash_reset();
 void flash_delay_us (unsigned long us, unsigned long khz);
+void Excep_FCU_FRDYI(void);
 flash_err_t flash_pe_mode_enter(flash_type_t flash_type);
 flash_err_t flash_pe_mode_exit();
 flash_err_t flash_erase(const uint32_t block_address, const uint32_t num_blocks);
