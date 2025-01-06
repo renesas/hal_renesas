@@ -146,3 +146,15 @@ if(CONFIG_USE_RX_RDP_FLASH)
 		)
 	endif()
 endif()
+
+if(CONFIG_USE_RX_RDP_LPC)
+	zephyr_library_sources(
+		rdp/src/r_lpc_rx/src/r_lpc_rx.c
+		rdp/src/r_lpc_rx/src/targets/${CONFIG_SOC_SERIES}/r_lpc_${CONFIG_SOC_SERIES}.c
+	)
+	zephyr_include_directories(
+		rdp/src/r_lpc_rx
+		rdp/src/r_lpc_rx/src
+		rdp/src/r_lpc_rx/src/targets/${CONFIG_SOC_SERIES}
+	)
+endif()
