@@ -52,3 +52,7 @@ Patch List:
    * Remove the static definition in Flash
    Impacted files:
       drivers/rx/rdp/src/r_flash_rx/src/r_flash_nofcu.c
+
+   * Add include stdint header in BSP of RX130
+   Impacted files:
+      drivers/rx/rdp/src/r_bsp/mcu/rx130/mcu_clocks.h
