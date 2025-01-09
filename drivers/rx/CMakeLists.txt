@@ -92,3 +92,14 @@ if(CONFIG_USE_RX_RDP_ADC)
 		rdp/src/r_s12ad_rx/src/targets/${CONFIG_SOC_SERIES}/r_s12ad_${CONFIG_SOC_SERIES}.c
 	)
 endif()
+
+if(CONFIG_USE_RX_RDP_CTSU)
+	zephyr_library_sources(
+		rdp/src/r_ctsu_qe/src/r_ctsu_qe.c
+		rdp/src/r_ctsu_qe/src/r_ctsu_qe_pinset.c
+	)
+	zephyr_include_directories(
+		rdp/src/r_ctsu_qe
+		rdp/src/r_ctsu_qe/inc
+	)
+endif()
