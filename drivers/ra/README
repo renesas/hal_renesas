@@ -97,3 +97,7 @@ Patch List:
    * Add new define for USB module in bsp_feature.h
    Impacted files:
       drivers/ra/fsp/src/bsp/mcu/**/bsp_feature.h
+
+   * Add Trigger NO_EDGE enum for comparator module
+   Impacted files:
+      drivers/ra/fsp/inc/api/r_comparator_api.h
