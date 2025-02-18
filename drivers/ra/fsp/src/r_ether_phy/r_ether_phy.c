@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2024 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -669,7 +669,7 @@ static void ether_phy_reg_set (ether_phy_instance_ctrl_t * p_instance_ctrl, uint
         data |= (ETHER_PHY_MII_WRITE << 12);                                     /* OP code(WT)  */
     }
 
-    data |= (uint32_t) (p_instance_ctrl->phy_lsi_address << 7); /* PHY Address  */
+    data |= (uint32_t) (p_instance_ctrl->phy_lsi_address << 7);                  /* PHY Address  */
 
     data |= (reg_addr << 2);                                                     /* Reg Address  */
 

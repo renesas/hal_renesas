@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
-*
-* SPDX-License-Identifier: BSD-3-Clause
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
  *
  * @file     ./out/R7FA4L1BD.h
  * @brief    CMSIS HeaderFile
