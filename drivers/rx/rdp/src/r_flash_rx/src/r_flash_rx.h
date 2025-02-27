@@ -145,7 +145,7 @@ typedef enum
 } flash_states_t;
 
 
-typedef enum _current
+typedef enum current
 {
     FLASH_CUR_INVALID,
     FLASH_CUR_IDLE,

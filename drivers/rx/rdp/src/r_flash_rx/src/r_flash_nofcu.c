@@ -130,7 +130,7 @@ static void flash_df_pe_mode_enter(void)
         flash_write_fpmcr(DATAFLASH_PE_MODE | LVPE_MODE);
     }
 
-    FLASH.FISR.BIT.PCKA = FCLK_MHZ - 1;
+    FLASH.FISR.BIT.PCKA = (FCLK_MHZ > 32 ? 31 : (uint8_t)(FCLK_MHZ - 1));
 #endif
 }
 
@@ -746,7 +746,7 @@ static void flash_cf_pe_mode_enter(void)
         flash_delay_us(WAIT_TMS_MID, ICLK_KHZ);
     }
 
-    FLASH.FISR.BIT.PCKA = FCLK_MHZ - 1;
+    FLASH.FISR.BIT.PCKA = (FCLK_MHZ > 32 ? 31 : (uint8_t)(FCLK_MHZ - 1));
 #endif
 }
 
