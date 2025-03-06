@@ -68,6 +68,8 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_DAC
 	fsp/src/r_dac/r_dac.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_USB_HOST
 	fsp/src/r_usb_host/r_usb_host.c)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_IIC_B
+	fsp/src/r_iic_b_master/r_iic_b_master.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_I3C
 	fsp/src/r_i3c/r_i3c.c)
 
