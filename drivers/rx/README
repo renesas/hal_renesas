@@ -38,3 +38,12 @@ Patch List:
    * Remove the static definition in RIIC
    Impacted files:
       drivers/rx/rdp/src/r_riic_rx/src/r_riic_rx.c
+
+   * Remove the static definition in LVD isr function
+   Impacted files:
+      drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
+      drivers/rx/rdp/src/r_lvd_rx/r_lvd_rx_if.h
+
+   * Fix the build warnings
+   Impacted files:
+      drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
