@@ -71,3 +71,12 @@ if(CONFIG_USE_RX_RDP_I2C)
 		rdp/src/r_riic_rx/src/targets/${CONFIG_SOC_SERIES}/r_riic_${CONFIG_SOC_SERIES}.c
 	)
 endif()
+
+if(CONFIG_USE_RX_RDP_RSPI)
+	zephyr_library_sources(
+		rdp/src/r_rspi_rx/src/r_rspi_rx.c
+	)
+	zephyr_include_directories(
+		rdp/src/r_rspi_rx/src
+		rdp/src/r_rspi_rx)
+endif()
