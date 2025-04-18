@@ -56,3 +56,7 @@ Patch List:
    * Add include stdint header in BSP of RX130
    Impacted files:
       drivers/rx/rdp/src/r_bsp/mcu/rx130/mcu_clocks.h
+
+   * Add include "#include "r_bsp_locking.h" in r_iwdt_rx.c to resolve build warning
+   Impacted files:
+      drivers/rx/rdp/src/r_iwdt_rx/src/r_iwdt_rx.c
