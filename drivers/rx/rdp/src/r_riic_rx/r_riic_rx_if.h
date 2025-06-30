@@ -79,6 +79,7 @@
     #include "platform.h"
 /* Used for configuring the RIIC code */
     #include "r_riic_rx_config.h"
+    #include "r_bsp_locking.h"
 
 R_BSP_PRAGMA_UNPACK
 /***********************************************************************************************************************
