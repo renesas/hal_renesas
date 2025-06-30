@@ -72,3 +72,8 @@ Patch List:
    * Fix the build warnings in IWDT driver
    Impacted files:
       drivers/rx/rdp/src/r_iwdt_rx/src/r_iwdt_rx.c
+
+   * Fix the build warnings in ADC driver
+   Impacted files:
+      drivers/rx/rdp/src/r_s12ad_rx/r_s12ad_rx_if.h
+      drivers/rx/rdp/src/r_s12ad_rx/src/targets/rx261/r_s12ad_rx261.c

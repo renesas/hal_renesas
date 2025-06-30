@@ -55,6 +55,7 @@
 Includes   <System Includes> , "Project Includes"
 *******************************************************************************/
 #include "platform.h"
+#include "r_bsp_locking.h"
 
 /* MCU SPECIFIC USER INTERFACE FILES */
 
