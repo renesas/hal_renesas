@@ -78,3 +78,8 @@ Patch List:
    Impacted files:
       drivers/rx/rdp/src/r_s12ad_rx/r_s12ad_rx_if.h
       drivers/rx/rdp/src/r_s12ad_rx/src/targets/rx261/r_s12ad_rx261.c
+
+   * Remove the static definition in LVD isr function
+   Impacted files:
+      drivers/rx/rdp/src/r_lvd_rx/src/r_lvd_rx_hw.c
+      drivers/rx/rdp/src/r_lvd_rx/r_lvd_rx_if.h
