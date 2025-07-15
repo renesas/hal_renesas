@@ -1,249 +1,145 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
-
-#ifndef BSP_CLOCK_CFG_H
-#define BSP_CLOCK_CFG_H
-
-/***********************************************************************************************************************
- * Choose pin configuration file for current build
- **********************************************************************************************************************/
-#if defined(RX26T_MCB_BUILD)
- #include "bsp_clock_cfg_rx26t.h"
-#elif defined(RX72N_RSK_BUILD) || defined(RX72N_EK_BUILD)
- #include "bsp_clock_cfg_rx72n.h"
-#elif defined(RX74M_EK_BUILD)
- #include "bsp_clock_cfg_rx74m.h"
-#endif
-
-/** The HOCO can operate at several different frequencies. Choose which one using the macro below. The frequency
- * used out of reset depends upon the OFS1.HOCOFRQ0 bits.
+/*
+ * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its
+ * affiliates
  *
- * <PRE>
- * Available frequency settings:
- * 0 = 16MHz
- * 1 = 18MHz
- * 2 = 20MHz
- * </PRE>
- *
- * @note Setting a value of 3 is prohibited
+ * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef BSP_CFG_HOCO_FREQUENCY
- #define BSP_CFG_HOCO_FREQUENCY       (2)
+
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/clock_control/renesas_rx_cgc.h>
+
+#ifndef BSP_CLOCK_CFG_H_
+#define BSP_CLOCK_CFG_H_
+
+#define BSP_CFG_CLOCKS_SECURE (0)
+#define BSP_CFG_CLOCKS_OVERRIDE (0)
+
+#define BSP_CFG_XTAL_HZ                                                        \
+  (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(xtal), clock_frequency, 0))
+
+#if DT_PROP(DT_NODELABEL(hoco), clock_frequency) == 16000000
+#define BSP_CFG_HOCO_FREQUENCY 0 /* HOCO 16MHz */
+#elif DT_PROP(DT_NODELABEL(hoco), clock_frequency) == 18000000
+#define BSP_CFG_HOCO_FREQUENCY 1 /* HOCO 18MHz */
+#elif DT_PROP(DT_NODELABEL(hoco), clock_frequency) == 20000000
+#define BSP_CFG_HOCO_FREQUENCY 2 /* HOCO 20MHz */
+#elif DT_PROP(DT_NODELABEL(hoco), clock_frequency) == 32000000
+#define BSP_CFG_HOCO_FREQUENCY 4 /* HOCO 32MHz */
+#elif DT_PROP(DT_NODELABEL(hoco), clock_frequency) == 48000000
+#define BSP_CFG_HOCO_FREQUENCY 7 /* HOCO 48MHz */
+#else
+#error                                                                         \
+    "Invalid HOCO frequency, only can be set to 16MHz, 18MHz, 20MHz, 32MHz, 48MHz"
 #endif
 
-/** PLL clock source (PLLSRCSEL). Choose which clock source to input to the PLL circuit.
- *
- * <PRE>
- * Available clock sources:     -   Enumeration to use for macro
- * 0 = Main clock (default)     -   BSP_CLOCKS_SOURCE_CLOCK_MAIN_OSC
- * 1 = HOCO                     -   BSP_CLOCKS_SOURCE_CLOCK_HOCO
- * </PRE>
- */
-#ifndef BSP_CFG_PLL_SOURCE
- #define BSP_CFG_PLL_SOURCE           (BSP_CLOCKS_SOURCE_CLOCK_HOCO)
+#define BSP_CFG_PLL_SOURCE RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(pll)))
+#define BSP_CFG_PLL_DIV RX_CGC_CLK_DIV(DT_NODELABEL(pll), div, 1)
+
+#if DT_NODE_HAS_STATUS(DT_NODELABEL(pll), okay)
+#define BSP_CFG_PLL_MUL                                                        \
+  BSP_CLOCKS_PLL_MUL(DT_PROP_BY_IDX(DT_NODELABEL(pll), mul, 0),                \
+                     DT_PROP_BY_IDX(DT_NODELABEL(pll), mul, 1))
+#else
+#define BSP_CFG_PLL_MUL BSP_CLOCKS_PLL_MUL(0, 0)
 #endif
 
-/** PLL Input Frequency Division Ratio Select (PLIDIV).
- *
- * Available divisors = - /1 (no division), - /2, - /3
- *
- * @note Set macro definition to 'BSP_CLOCKS_PLL_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_PLL_DIV
- #define BSP_CFG_PLL_DIV              (BSP_CLOCKS_PLL_DIV_1)
+#define BSP_CFG_PLL_FREQUENCY_HZ                                               \
+  (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll), freq, 0))
+#define BSP_CFG_PLODIVP RX_CGC_CLK_DIV(DT_NODELABEL(pllp), div, 2)
+#define BSP_CFG_PLL1P_FREQUENCY_HZ                                             \
+  (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pllp), freq, 0))
+#define BSP_CFG_PLODIVQ RX_CGC_CLK_DIV(DT_NODELABEL(pllq), div, 2)
+#define BSP_CFG_PLL1Q_FREQUENCY_HZ                                             \
+  (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pllq), freq, 0))
+#define BSP_CFG_PLODIVR RX_CGC_CLK_DIV(DT_NODELABEL(pllr), div, 2)
+#define BSP_CFG_PLL1R_FREQUENCY_HZ                                             \
+  (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pllr), freq, 0))
+
+#define BSP_CFG_PLL2_SOURCE RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(pll2)))
+#define BSP_CFG_PLL2_DIV RX_CGC_CLK_DIV(DT_NODELABEL(pll2), div, 1)
+#if DT_NODE_HAS_STATUS(DT_NODELABEL(pll2), okay)
+#define BSP_CFG_PLL2_MUL                                                       \
+  BSP_CLOCKS_PLL_MUL(DT_PROP_BY_IDX(DT_NODELABEL(pll2), mul, 0),               \
+                     DT_PROP_BY_IDX(DT_NODELABEL(pll2), mul, 1))
+#else
+#define BSP_CFG_PLL2_MUL BSP_CLOCKS_PLL_MUL(0, 0)
 #endif
 
-/** PLL Frequency Multiplication Factor Select (PLLSTC).
- *
- * Available multipliers = x10.0 to x30.0 in 0.5 increments (e.g. 10.0, 10.5, 11.0, 11.5, ..., 29.0, 29.5, 30.0)
- */
-#ifndef BSP_CFG_PLL_STC
- #define BSP_CFG_PLL_STC              (BSP_CLOCKS_PLL_STC_12_0)
-#endif
+#define BSP_CFG_PLL2_FREQUENCY_HZ (0) /* PLL2 0Hz */
+#define BSP_CFG_PL2ODIVP RX_CGC_CLK_DIV(DT_NODELABEL(pll2p), div, 1)
+#define BSP_CFG_PLL2P_FREQUENCY_HZ                                             \
+  (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2p), freq, 0))
+#define BSP_CFG_PL2ODIVQ RX_CGC_CLK_DIV(DT_NODELABEL(pll2q), div, 2)
+#define BSP_CFG_PLL2Q_FREQUENCY_HZ                                             \
+  (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2q), freq, 0))
+#define BSP_CFG_PL2ODIVR RX_CGC_CLK_DIV(DT_NODELABEL(pll2r), div, 2)
+#define BSP_CFG_PLL2R_FREQUENCY_HZ                                             \
+  (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2r), freq, 0))
 
-/** PPLL Input Pulse Frequency Division Ratio Select (PPLIDIV).
- *
- * Available divisors = - /1 (no division), - /2, - /3
- *
- * @note Set macro definition to 'BSP_CLOCKS_INPUT_PPLL_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_PPLL_INPUT_DIV
- #define BSP_CFG_PPLL_INPUT_DIV       (BSP_CLOCKS_PPLL_INPUT_DIV_1)
-#endif
+#define BSP_CFG_CLOCK_SOURCE                                                   \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(pclkblock)))
+#define BSP_CFG_BCLKA_SOURCE RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(bclka)))
+#define BSP_CFG_CLKOUT_SOURCE                                                  \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(clkout)))
+#define BSP_CFG_SCICLK_SOURCE                                                  \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(sciclk)))
+#define BSP_CFG_SPICLK_SOURCE                                                  \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(spiclk)))
+#define BSP_CFG_CANFDCLK_SOURCE                                                \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(canfdclk)))
+#define BSP_CFG_GPTCLK_SOURCE                                                  \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(gptclk)))
+#define BSP_CFG_I3CCLK_SOURCE                                                  \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(i3cclk)))
+#define BSP_CFG_UCK_SOURCE RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(uclk)))
+#define BSP_CFG_USB60CLK_SOURCE                                                \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(usb60clk)))
+#define BSP_CFG_OCTA_SOURCE                                                    \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(octaspiclk)))
+#define BSP_CFG_ADCCLK_SOURCE                                                  \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(adcclk)))
+#define BSP_CFG_ESWCLK_SOURCE                                                  \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(eswclk)))
+#define BSP_CFG_ESWPHYCLK_SOURCE                                               \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(eswphyclk)))
+#define BSP_CFG_ETHPHYCLK_SOURCE                                               \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(ethphyclk)))
+#define BSP_CFG_ESCCLK_SOURCE                                                  \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(esccclk)))
+#define BSP_CFG_DSMIFCLK_SOURCE                                                \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(dsmifclk)))
 
-/** PPLL Frequency Multiplication Factor Select (PPLLSTC).
- *
- * Available multipliers = x10.0 to x30.0 in 0.5 increments (e.g. 10.0, 10.5, 11.0, 11.5, ..., 29.0, 29.5, 30.0)
- */
-#ifndef BSP_CFG_PPLL_STC
- #define BSP_CFG_PPLL_STC             (BSP_CLOCKS_PPLL_STC_10_0)
-#endif
-
-/** PPLL Frequency-Divided Clock Select (PPLCK).
- *
- * Available divisors = - /2 , - /3 , - /4 , - /5 ,
- *
- * @note Set macro definition to 'BSP_CLOCKS_PPLL_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_PPLL_DIV
- #define BSP_CFG_PPLL_DIV             (BSP_CLOCKS_PPLL_DIV_4)
-#endif
-
-/** Clock source select (CKSEL). The chosen clock will be the base clock provided for the system clock and all
- * peripheral clocks. It is also used for the flash clock and the external bus clocks.
- *
- * Set the macro to one of the enumerations shown.
- *
- * <PRE>
- * Clock                                        -   Enumeration to use for macro
- * High Speed On-Chip Oscillator   (HOCO)       -   BSP_CLOCKS_SOURCE_CLOCK_HOCO
- * Low Speed On-Chip Oscillator    (LOCO)       -   BSP_CLOCKS_SOURCE_CLOCK_LOCO
- * Main Clock Oscillator                        -   BSP_CLOCKS_SOURCE_CLOCK_MAIN_OSC
- * Sub-Clock Oscillator                         -   BSP_CLOCKS_SOURCE_CLOCK_SUBCLOCK
- * PLL Clock Oscillator                         -   BSP_CLOCKS_SOURCE_CLOCK_PLL
- * </PRE>
- */
-#ifndef BSP_CFG_CLOCK_SOURCE
- #define BSP_CFG_CLOCK_SOURCE         (BSP_CLOCKS_SOURCE_CLOCK_PLL)
-#endif
-
-/** CLKOUT Output Source Select (CKOSEL).
- *
- * Set the macro to one of the enumerations shown.
- *
- * <PRE>
- * Clock                                        -   Enumeration to use for macro
- * High Speed On-Chip Oscillator   (HOCO)       -   BSP_CLOCKS_SOURCE_CLOCK_HOCO
- * Low Speed On-Chip Oscillator    (LOCO)       -   BSP_CLOCKS_SOURCE_CLOCK_LOCO
- * Main Clock Oscillator                        -   BSP_CLOCKS_SOURCE_CLOCK_MAIN_OSC
- * Sub-Clock Oscillator                         -   BSP_CLOCKS_SOURCE_CLOCK_SUBCLOCK
- * PLL Clock Oscillator                         -   BSP_CLOCKS_SOURCE_CLOCK_PLL
- * PPLL Clock Oscillator                        -   BSP_CLOCKS_SOURCE_CLOCK_PPLL
- * </PRE>
- */
-#ifndef BSP_CFG_CLKOUT_SOURCE
- #define BSP_CFG_CLKOUT_SOURCE        (BSP_CLOCKS_SOURCE_CLOCK_MAIN_OSC)
-#endif
-
-/** CLKOUT Output Divisor Select (CKODIV).
- *
- * Available divisors = /1 (no division), /2, /4, /8, /16
- *
- * @note Set macro definition to 'BSP_CLOCKS_SYS_CLOCK_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_CLKOUT_DIV
- #define BSP_CFG_CLKOUT_DIV           (BSP_CLOCKS_SYS_CLOCK_DIV_1)
-#endif
-
-/** Flash IF Clock Divider (FCK).
- *
- * Available divisors = /1 (no division), /2, /4, /8, /16, /32, /64
- *
- * @note Set macro definition to 'BSP_CLOCKS_SYS_CLOCK_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_FCLK_DIV
- #define BSP_CFG_FCLK_DIV             (BSP_CLOCKS_SYS_CLOCK_DIV_4)
-#endif
-
-/** System Clock Divider (ICK).
- *
- * Available divisors = /1 (no division), /2, /4, /8, /16, /32, /64
- *
- * @note Set macro definition to 'BSP_CLOCKS_SYS_CLOCK_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_ICLK_DIV
- #define BSP_CFG_ICLK_DIV             (BSP_CLOCKS_SYS_CLOCK_DIV_1)
-#endif
-
-/** Peripheral Module Clock A Divider (PCKA).
- *
- * Available divisors = /1 (no division), /2, /4, /8, /16, /32, /64
- *
- * @note Set macro definition to 'BSP_CLOCKS_SYS_CLOCK_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_PCLKA_DIV
- #define BSP_CFG_PCLKA_DIV            (BSP_CLOCKS_SYS_CLOCK_DIV_2)
-#endif
-
-/** Peripheral Module Clock B Divider (PCKB).
- *
- * Available divisors = /1 (no division), /2, /4, /8, /16, /32, /64
- *
- * @note Set macro definition to 'BSP_CLOCKS_SYS_CLOCK_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_PCLKB_DIV
- #define BSP_CFG_PCLKB_DIV            (BSP_CLOCKS_SYS_CLOCK_DIV_4)
-#endif
-
-/** Peripheral Module Clock C Divider (PCKC).
- *
- * Available divisors = /1 (no division), /2, /4, /8, /16, /32, /64
- *
- * @note Set macro definition to 'BSP_CLOCKS_SYS_CLOCK_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_PCLKC_DIV
- #define BSP_CFG_PCLKC_DIV            (BSP_CLOCKS_SYS_CLOCK_DIV_4)
-#endif
-
-/** Peripheral Module Clock D Divider (PCKD).
- *
- * Available divisors = /1 (no division), /2, /4, /8, /16, /32, /64
- *
- * @note Set macro definition to 'BSP_CLOCKS_SYS_CLOCK_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_PCLKD_DIV
- #define BSP_CFG_PCLKD_DIV            (BSP_CLOCKS_SYS_CLOCK_DIV_4)
-#endif
-
-/** External Bus Clock Divider (BCLK).
- *
- * Available divisors = /1 (no division), /2, /3, /4, /8, /16, /32, /64
- *
- * @note Set macro definition to 'BSP_CLOCKS_SYS_CLOCK_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_BCLK_DIV
- #define BSP_CFG_BCLK_DIV             (BSP_CLOCKS_SYS_CLOCK_DIV_8)
-#endif
-
-/** External Bus Clock Divider (BCLKDIV).
- *
- * Available options:
- * - 0 = BCK/1 frequency
- * - 1 = BCK/2 frequency
- *
- * @note Set macro definition to 'BSP_CLOCKS_SYS_CLOCK_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_BCLKDIV_DIV
- #define BSP_CFG_BCLKDIV_DIV          (BSP_CLOCKS_BCLK_DIV_1)
-#endif
-
-/**
- * The USB Clock source that is configured during startup.
- * Available clock sources:
- *   - BSP_USBCLK_SOURCE_CLOCK_USB
- *   - BSP_USBCLK_SOURCE_CLOCK_PPLL
- */
-#ifndef BSP_CFG_UCK_SOURCE
- #define BSP_CFG_UCK_SOURCE           (BSP_USBCLK_SOURCE_CLOCK_PPLL)
-#endif
-
-/** USB Clock Divider Select.
- *
- * Available divisors = /2, /3, /4, /5
- *
- * @note Set macro definition to 'BSP_CLOCKS_USB_CLOCK_DIV_' + your divider selection.
- */
-#ifndef BSP_CFG_UCK_DIV
- #define BSP_CFG_UCK_DIV              (BSP_CLOCKS_USB_CLOCK_DIV_4)
-#endif
-
-/**
- * The Ethernet-PHY External Clock (CLKOUT25M) Source that is configured during startup.
- * Available clock sources:
- *   - BSP_CLOCKOUT25_SOURCE_CLOCK_PLL
- *   - BSP_CLOCKOUT25_SOURCE_CLOCK_PPLL
- */
-#ifndef BSP_CFG_CLOCKOUT25_SOURCE
- #define BSP_CFG_CLOCKOUT25_SOURCE    (BSP_CLOCKOUT25_SOURCE_CLOCK_PPLL)
-#endif
-
-#endif
+#define BSP_CFG_CPUCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(cpuclk), div, 1)
+#define BSP_CFG_MRICLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(mriclk), div, 2)
+#define BSP_CFG_ICLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(iclk), div, 2)
+#define BSP_CFG_PCLKA_DIV RX_CGC_CLK_DIV(DT_NODELABEL(pclka), div, 4)
+#define BSP_CFG_PCLKB_DIV RX_CGC_CLK_DIV(DT_NODELABEL(pclkb), div, 8)
+#define BSP_CFG_PCLKC_DIV RX_CGC_CLK_DIV(DT_NODELABEL(pclkc), div, 8)
+#define BSP_CFG_PCLKD_DIV RX_CGC_CLK_DIV(DT_NODELABEL(pclkd), div, 4)
+#define BSP_CFG_PCLKE_DIV RX_CGC_CLK_DIV(DT_NODELABEL(pclke), div, 2)
+#define BSP_CFG_SDCLK_OUTPUT                                                   \
+  (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(bclkout), sdclk, 1))
+#define BSP_CFG_BCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(bclk), div, 8)
+#define BSP_CFG_BCLK_OUTPUT                                                    \
+  (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(bclkout), clk_out_div, 2))
+#define BSP_CFG_BCLKA_DIV RX_CGC_CLK_DIV(DT_NODELABEL(bclka), div, 6)
+#define BSP_CFG_MRPCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(mrpclk), div, 32)
+#define BSP_CFG_CLKOUT_DIV RX_CGC_CLK_DIV(DT_NODELABEL(clkout), div, 1)
+#define BSP_CFG_SCICLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(sciclk), div, 4)
+#define BSP_CFG_SPICLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(spiclk), div, 8)
+#define BSP_CFG_CANFDCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(canfdclk), div, 10)
+#define BSP_CFG_GPTCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(gptclk), div, 4)
+#define BSP_CFG_I3CCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(i3cclk), div, 5)
+#define BSP_CFG_UCK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(uclk), div, 5)
+#define BSP_CFG_USB60CLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(usb60clk), div, 5)
+#define BSP_CFG_OCTA_DIV RX_CGC_CLK_DIV(DT_NODELABEL(octaspiclk), div, 4)
+#define BSP_CFG_ADCCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(adcclk), div, 4)
+#define BSP_CFG_ESWCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(eswclk), div, 4)
+#define BSP_CFG_ESWPHYCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(eswphyclk), div, 4)
+#define BSP_CFG_ETHPHYCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(ethphyclk), div, 4)
+#define BSP_CFG_ESCCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(esccclk), div, 4)
+#define BSP_CFG_DSMIFCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(dsmifclk), div, 4)
+#define BSP_CFG_GPT_COUNT_CLOCK_SOURCE (1) /* GPT Src: PCLKD */
+#define BSP_CFG_PINOUT_SOURCE                                                  \
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(pinout)))
+#endif /* BSP_CLOCK_CFG_H_ */
