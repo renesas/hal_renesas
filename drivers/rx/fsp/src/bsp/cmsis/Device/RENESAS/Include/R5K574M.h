@@ -37,6 +37,7 @@ extern "C" {
  #include "R5K574M/r_rtc_reg.h"
  #include "R5K574M/r_sram_reg.h"
  #include "R5K574M/r_system_reg.h"
+ #include "R5K574M/r_sci_b_reg.h"
  #include "R5K574M/r_usb_basic_reg.h"
 
 /** @} */ /* End of group Device_Peripheral_clusters */
@@ -68,6 +69,19 @@ extern "C" {
  #define R_PORT16_BASE     0x87C00200UL
  #define R_PFS_BASE        0x87C00800UL
  #define R_PMISC_BASE      0x87C00D00UL
+ #define R_SCI_B0_BASE     0x87458000UL
+ #define R_SCI_B1_BASE     0x87458100UL
+ #define R_SCI_B2_BASE     0x87458200UL
+ #define R_SCI_B3_BASE     0x87458300UL
+ #define R_SCI_B4_BASE     0x87458400UL
+ #define R_SCI_B5_BASE     0x87458500UL
+ #define R_SCI_B6_BASE     0x87458600UL
+ #define R_SCI_B7_BASE     0x87458700UL
+ #define R_SCI_B8_BASE     0x87458800UL
+ #define R_SCI_B9_BASE     0x87458900UL
+ #define R_SCI_B10_BASE    0x87458A00UL
+ #define R_SCI_B11_BASE    0x87458B00UL
+ #define R_SCI_B12_BASE    0x87458C00UL
  #define R_SRAM_BASE       0x8701C000UL
  #define R_SRAM_NS_BASE    0x0701C000UL
  #define R_SYSTEM_BASE     0x87019000UL
@@ -107,6 +121,19 @@ extern "C" {
  #define R_PFS        ((R_PFS_Type *) R_PFS_BASE)
  #define R_PMISC      ((R_PMISC_Type *) R_PMISC_BASE)
  #define R_RTC        ((R_RTC_Type *) R_RTC_BASE)
+ #define R_SCI_B0     ((R_SCI_B0_Type *) R_SCI_B0_BASE)
+ #define R_SCI_B1     ((R_SCI_B0_Type *) R_SCI_B1_BASE)
+ #define R_SCI_B2     ((R_SCI_B0_Type *) R_SCI_B2_BASE)
+ #define R_SCI_B3     ((R_SCI_B0_Type *) R_SCI_B3_BASE)
+ #define R_SCI_B4     ((R_SCI_B0_Type *) R_SCI_B4_BASE)
+ #define R_SCI_B5     ((R_SCI_B0_Type *) R_SCI_B5_BASE)
+ #define R_SCI_B6     ((R_SCI_B0_Type *) R_SCI_B6_BASE)
+ #define R_SCI_B7     ((R_SCI_B0_Type *) R_SCI_B7_BASE)
+ #define R_SCI_B8     ((R_SCI_B0_Type *) R_SCI_B8_BASE)
+ #define R_SCI_B9     ((R_SCI_B0_Type *) R_SCI_B9_BASE)
+ #define R_SCI_B10    ((R_SCI_B0_Type *) R_SCI_B10_BASE)
+ #define R_SCI_B11    ((R_SCI_B0_Type *) R_SCI_B11_BASE)
+ #define R_SCI_B12    ((R_SCI_B0_Type *) R_SCI_B12_BASE)
  #define R_SRAM       ((R_SRAM_Type *) R_SRAM_BASE)
  #define R_SRAM_NS    ((R_SRAM_NS_Type *) R_SRAM_NS_BASE)
  #define R_SYSTEM     ((R_SYSTEM_Type *) R_SYSTEM_BASE)
@@ -128,6 +155,7 @@ extern "C" {
  #include "R5K574M/r_rtc_posmsk.h"
  #include "R5K574M/r_sram_posmsk.h"
  #include "R5K574M/r_system_posmsk.h"
+ #include "R5K574M/r_sci_b_posmsk.h"
  #include "R5K574M/r_usb_basic_posmsk.h"
 
 /** @} */ /* End of group PosMask_peripherals */
