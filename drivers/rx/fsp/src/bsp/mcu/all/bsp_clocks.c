@@ -1307,7 +1307,7 @@ void bsp_clock_init (void)
     bsp_peripheral_clock_set(&R_SYSTEM->ESWPCKCR,
                              &R_SYSTEM->ESWPCKDIVCR,
                              BSP_CFG_ESWPHYCLK_DIV,
-                             BSP_CFG_ESWPHYCLKCLK_SOURCE);
+                             BSP_CFG_ESWPHYCLK_SOURCE);
 #endif
 
     /* Set the ESCCLK clock if it exists on the MCU */

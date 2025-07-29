@@ -173,4 +173,18 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_RMAC)
+		zephyr_library_sources(
+			fsp/src/r_layer3_switch/r_layer3_switch.c
+			fsp/src/r_rmac/r_rmac.c
+		)
+	endif()
+
+	if(CONFIG_USE_RX_FSP_RMAC_PHY)
+		zephyr_library_sources(
+			fsp/src/r_rmac_phy/r_rmac_phy.c
+			fsp/src/r_rmac_phy/targets/VSC8541/r_rmac_phy_target_vsc8541.c
+		)
+	endif()
+
 endif()
