@@ -20,7 +20,7 @@
 /***********************************************************************************************************************
  * Private global variables and functions
  **********************************************************************************************************************/
-static uint32_t bsp_group_irq_get_table_index(icu_event_t irq);
+uint32_t bsp_group_irq_get_table_index(icu_event_t irq);
 
 static void * gp_renesas_group_irq_context[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS][BSP_FEATURE_GROUP_IRQ_NUM_FACTORS];
 
@@ -829,7 +829,7 @@ void bsp_nmi_handler (void)
     FSP_HARDWARE_REGISTER_WAIT((R_ICU->NMISR & nmisr), 0);
 }
 
-static uint32_t bsp_group_irq_get_table_index (icu_event_t irq) {
+uint32_t bsp_group_irq_get_table_index (icu_event_t irq) {
     uint32_t index = 0;
 
     /* Check group irq table and return group index. */
