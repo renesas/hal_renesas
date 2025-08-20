@@ -187,4 +187,13 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_USB_DEVICE)
+		zephyr_include_directories(
+			fsp/src/r_usb_device
+		)
+		zephyr_library_sources(
+			fsp/src/r_usb_device/r_usb_device.c
+		)
+	endif()
+
 endif()
