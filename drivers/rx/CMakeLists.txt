@@ -196,4 +196,10 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_CANFD)
+		zephyr_library_sources(
+			fsp/src/r_canfd/r_canfd.c
+		)
+	endif()
+
 endif()
