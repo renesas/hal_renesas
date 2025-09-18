@@ -1,4 +1,22 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/***********************************************************************************************************************
+ * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ *
+ * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
+ * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
+ * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
+ * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
+ * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
+ * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
+ * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
+ * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
+ * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
+ * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
+ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
+ * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
+ * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
+ * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
+ **********************************************************************************************************************/
 
 /*******************************************************************************************************************//**
  * @addtogroup BSP_MCU_RX74M
@@ -22,14 +40,65 @@
 #define IOPORT_PRV_PFS_PSEL_OFFSET    (24)
 
 /* Define overrides required for this MCU. */
+#define BSP_OVERRIDE_EXTERNAL_IRQ_PCLK_DIV_T
+#define BSP_OVERRIDE_EXTERNAL_IRQ_TRIGGER_T
 #define BSP_OVERRIDE_IOPORT_CFG_OPTIONS_T
 #define BSP_OVERRIDE_IOPORT_PERIPHERAL_T
+#define BSP_OVERRIDE_CGC_DIVIDER_CFG_T
+#define BSP_OVERRIDE_CGC_SYS_CLOCK_DIV_T
+#define BSP_OVERRIDE_DAC_B_OUTPUT_T
+#define BSP_OVERRIDE_LVD_PERIPHERAL_T
 
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
+/*==============================================
+ * EXTERNAL_IRQ Overrides
+ *==============================================*/
+
+/** Condition that will trigger an interrupt when detected. */
+typedef enum e_external_irq_trigger
+{
+    EXTERNAL_IRQ_TRIG_FALLING   = 0,   ///< Falling edge trigger
+    EXTERNAL_IRQ_TRIG_RISING    = 1,   ///< Rising edge trigger
+    EXTERNAL_IRQ_TRIG_BOTH_EDGE = 2,   ///< Both edges trigger
+    EXTERNAL_IRQ_TRIG_LEVEL_LOW = 3,   ///< Low level trigger
+} external_irq_trigger_t;
+
+/** External IRQ input pin digital filtering sample clock divisor settings. The digital filter rejects trigger
+ * conditions that are shorter than 3 periods of the filter clock.
+ */
+typedef enum e_external_irq_clock_source_div
+{
+    EXTERNAL_IRQ_CLOCK_SOURCE_DIV_1   = 0, ///< Filter using clock source divided by 1
+    EXTERNAL_IRQ_CLOCK_SOURCE_DIV_8   = 1, ///< Filter using clock source divided by 8
+    EXTERNAL_IRQ_CLOCK_SOURCE_DIV_32  = 2, ///< Filter using clock source divided by 32
+    EXTERNAL_IRQ_CLOCK_SOURCE_DIV_64  = 3, ///< Filter using clock source divided by 64
+    EXTERNAL_IRQ_CLOCK_SOURCE_DIV_128 = 4, ///< Filter using clock source divided by 128
+    EXTERNAL_IRQ_CLOCK_SOURCE_DIV_4   = 5, ///< Filter using clock source divided by 4
+    EXTERNAL_IRQ_CLOCK_SOURCE_DIV_16  = 6, ///< Filter using clock source divided by 16
+} external_irq_clock_source_div_t;
+
 /** Superset of all peripheral functions.  */
+
+/** System clock divider values - The individually selectable divider of each of the system clocks, ICLK, BCLK, FCLK,
+ * PCLKS A-D.  */
+typedef enum e_cgc_sys_clock_div
+{
+    CGC_SYS_CLOCK_DIV_1  = 0,          ///< System clock divided by 1
+    CGC_SYS_CLOCK_DIV_2  = 1,          ///< System clock divided by 2
+    CGC_SYS_CLOCK_DIV_4  = 2,          ///< System clock divided by 4
+    CGC_SYS_CLOCK_DIV_8  = 3,          ///< System clock divided by 8
+    CGC_SYS_CLOCK_DIV_16 = 4,          ///< System clock divided by 16
+    CGC_SYS_CLOCK_DIV_32 = 5,          ///< System clock divided by 32
+    CGC_SYS_CLOCK_DIV_64 = 6,          ///< System clock divided by 64
+    CGC_SYS_CLOCK_DIV_3  = 8,          ///< System clock divided by 3
+    CGC_SYS_CLOCK_DIV_6  = 9,          ///< System clock divided by 6
+    CGC_SYS_CLOCK_DIV_12 = 10,         ///< System clock divided by 12
+    CGC_SYS_CLOCK_DIV_24 = 11,         ///< System clock divided by 24
+} cgc_sys_clock_div_t;
+
 typedef enum e_ioport_peripheral
 {
     /** Pin will functions as an IO pin */
@@ -189,6 +258,67 @@ typedef enum e_ioport_cfg_options
     IOPORT_CFG_ANALOG_ENABLE         = 0x00008000, ///< Enables pin to operate as an analog pin
     IOPORT_CFG_PERIPHERAL_PIN        = 0x00010000  ///< Enables pin to operate as a peripheral pin
 } ioport_cfg_options_t;
+
+/* Clock configuration structure - Used as an input parameter to the @ref cgc_api_t::systemClockSet and @ref cgc_api_t::systemClockGet
+ * functions. */
+typedef struct st_cgc_divider_cfg
+{
+    union
+    {
+        uint32_t sckdivcr_w;                   ///< System clock Division control register
+
+        struct
+        {
+            cgc_sys_clock_div_t pclkd_div : 4; ///< Divider value for PCLKD
+            cgc_sys_clock_div_t pclkc_div : 4; ///< Divider value for PCLKC
+            cgc_sys_clock_div_t pclkb_div : 4; ///< Divider value for PCLKB
+            cgc_sys_clock_div_t pclka_div : 4; ///< Divider value for PCLKA
+            cgc_sys_clock_div_t bclk_div  : 4; ///< Divider value for BCLK
+            cgc_sys_clock_div_t pclke_div : 4; ///< Divider value for PCLKE
+            cgc_sys_clock_div_t iclk_div  : 4; ///< Divider value for ICLK
+            cgc_sys_clock_div_t fclk_div  : 4; ///< Divider value for FCLK
+        } sckdivcr_b;
+    };
+
+    union
+    {
+        uint16_t sckdivcr2;                     ///< System clock Division control register 2
+
+        __PACKED_STRUCT
+        {
+            cgc_sys_clock_div_t cpuclk_div : 4; ///< Divider value for CPUCLK0
+            cgc_sys_clock_div_t reserved   : 8;
+            cgc_sys_clock_div_t mriclk_div : 4; ///< Divider value for MRICLK
+        } sckdivcr2_b;
+    };
+} cgc_divider_cfg_t;
+
+typedef enum e_dac_b_output
+{
+    DAC_B_OUTPUT_EXTERNAL = 0,         ///< DAOUTDIS[1:0] = 00
+    DAC_B_OUTPUT_INTERNAL = 2,         ///< DAOUTDIS[1:0] = 10
+    DAC_B_OUTPUT_BOTH     = 3,         ///< DAOUTDIS[1:0] = 11
+} dac_b_output_t;
+
+/** The thresholds supported by each MCU are in the MCU User's Manual as well as
+ *  in the r_lvd module description on the stack tab of the RX project. */
+typedef enum
+{
+    LVD_THRESHOLD_MONITOR_LEVEL_3_86V = 0x03UL, ///< 3.86V
+    LVD_THRESHOLD_MONITOR_LEVEL_3_14V = 0x04UL, ///< 3.14V
+    LVD_THRESHOLD_MONITOR_LEVEL_3_10V = 0x05UL, ///< 3.10V
+    LVD_THRESHOLD_MONITOR_LEVEL_3_08V = 0x06UL, ///< 3.08V
+    LVD_THRESHOLD_MONITOR_LEVEL_2_85V = 0x07UL, ///< 2.85V
+    LVD_THRESHOLD_MONITOR_LEVEL_2_83V = 0x08UL, ///< 2.83V
+    LVD_THRESHOLD_MONITOR_LEVEL_2_80V = 0x09UL, ///< 2.80V
+    LVD_THRESHOLD_MONITOR_LEVEL_2_62V = 0x0AUL, ///< 2.62V
+    LVD_THRESHOLD_MONITOR_LEVEL_2_33V = 0x0BUL, ///< 2.33V
+    LVD_THRESHOLD_MONITOR_LEVEL_1_90V = 0x0CUL, ///< 1.90V
+    LVD_THRESHOLD_MONITOR_LEVEL_1_86V = 0x0DUL, ///< 1.86V
+    LVD_THRESHOLD_MONITOR_LEVEL_1_74V = 0x0EUL, ///< 1.74V
+    LVD_THRESHOLD_MONITOR_LEVEL_1_71V = 0x0FUL, ///< 1.71V
+    LVD_THRESHOLD_NOT_AVAILABLE       = 0xFFUL, ///< Not Used
+} lvd_threshold_t;
 
 /***********************************************************************************************************************
  * Exported global variables

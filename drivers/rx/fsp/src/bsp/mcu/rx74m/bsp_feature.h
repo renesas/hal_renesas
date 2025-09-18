@@ -1,4 +1,22 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/***********************************************************************************************************************
+ * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ *
+ * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
+ * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
+ * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
+ * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
+ * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
+ * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
+ * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
+ * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
+ * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
+ * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
+ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
+ * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
+ * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
+ * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
+ **********************************************************************************************************************/
 
 #ifndef BSP_FEATURE_H
 #define BSP_FEATURE_H
@@ -31,37 +49,39 @@
 #define BSP_FEATURE_ACMPLP_HAS_COMPSEL_REGISTERS             (0UL)            // Feature not available on this device.
 #define BSP_FEATURE_ACMPLP_MIN_WAIT_TIME_US                  (0UL)            // Feature not available on this device.
 
-#define BSP_FEATURE_ADC_IS_AVAILABLE                         (0UL)
-#define BSP_FEATURE_ADC_ADDITION_SUPPORTED                   (0UL)            // Check to see if the ADADC register is available on any ADC peripheral.
-#define BSP_FEATURE_ADC_CALIBRATION_REG_AVAILABLE            (0UL)            // Check to see if the ADCALEXE register is available on any ADC peripheral.
-#define BSP_FEATURE_ADC_CLOCK_SOURCE                         (0UL)            // Clock source used for the ADC peripheral.
-#define BSP_FEATURE_ADC_GROUP_B_SENSORS_ALLOWED              (0UL)            // The Extended Input Control Register (ADEXICR) controls if sensors are enabled per group.
-#define BSP_FEATURE_ADC_HAS_ADBUF                            (0UL)            // Determine if the ADBUFn registers are present.
-#define BSP_FEATURE_ADC_HAS_ADCER_ADPRC                      (0UL)            // Determine if the ADPRC field exists on the ADCER register.
-#define BSP_FEATURE_ADC_HAS_ADCER_ADRFMT                     (0UL)            // Determine if the ADRFMT field exists on the ADCER register.
-#define BSP_FEATURE_ADC_HAS_ADHVREFCNT                       (0UL)            // Determine if the ADHVREFCNT register is available.
-#define BSP_FEATURE_ADC_HAS_PGA                              (0UL)            // Determine if ADPGACR is present.
-#define BSP_FEATURE_ADC_HAS_SAMPLE_HOLD_REG                  (0UL)            // Specifies configuration for the sample and hold circuit is available (specifically ADSHCR register).
-#define BSP_FEATURE_ADC_HAS_VREFAMPCNT                       (0UL)            // Determine if VREFAMPCNT is present.
-#define BSP_FEATURE_ADC_MAX_RESOLUTION_BITS                  (0UL)            // Maximum ADC resolution supported.
-#define BSP_FEATURE_ADC_SENSOR_MIN_SAMPLING_TIME             (0UL)            // Minimum time, in nanoseconds, required for ADC sampling of the sensors.
-#define BSP_FEATURE_ADC_SENSORS_EXCLUSIVE                    (0UL)            // Specifies that the temperature and VREF sensors are exclusive to other ADC channel operations and cannot be executed concurrently.
-#define BSP_FEATURE_ADC_TSN_CALIBRATION_AVAILABLE            (0UL)            // Determine if the temperature sensor supports calibration, either factory or runtime.
-#define BSP_FEATURE_ADC_TSN_CALIBRATION32_AVAILABLE          (0UL)            // Determine if TSCDR is available.
-#define BSP_FEATURE_ADC_TSN_CALIBRATION32_MASK               (0x00UL)         // Create the mask for the valid calibration data provided by TSCDR.
-#define BSP_FEATURE_ADC_TSN_CONTROL_AVAILABLE                (0UL)            // Determine if the TSCR register is present.
-#define BSP_FEATURE_ADC_TSN_SLOPE                            (0UL)            // Typical slope for the temperature sensor, in uV/degC.
-#define BSP_FEATURE_ADC_UNIT_0_CHANNELS                      (0x00UL)         // Mask of available channels in ADC unit 0.
-#define BSP_FEATURE_ADC_UNIT_1_CHANNELS                      (0x00UL)         // Mask of available channels in ADC unit 1.
-#define BSP_FEATURE_ADC_VALID_UNIT_MASK                      (0x00UL)         // Mask of whole, physical ADC units present in the MCU.
+#define BSP_FEATURE_ADC_IS_AVAILABLE                           (0UL)
+#define BSP_FEATURE_ADC_ADDITION_SUPPORTED                     (0UL)                   // Check to see if the ADADC register is available on any ADC peripheral.
+#define BSP_FEATURE_ADC_CALIBRATION_REG_AVAILABLE              (0UL)                   // Check to see if the ADCALEXE register is available on any ADC peripheral.
+#define BSP_FEATURE_ADC_CLOCK_SOURCE                           (0UL)                   // Clock source used for the ADC peripheral.
+#define BSP_FEATURE_ADC_GROUP_B_SENSORS_ALLOWED                (0UL)                   // The Extended Input Control Register (ADEXICR) controls if sensors are enabled per group.
+#define BSP_FEATURE_ADC_HAS_ADBUF                              (0UL)                   // Determine if the ADBUFn registers are present.
+#define BSP_FEATURE_ADC_HAS_ADCER_ADPRC                        (0UL)                   // Determine if the ADPRC field exists on the ADCER register.
+#define BSP_FEATURE_ADC_HAS_ADCER_ADRFMT                       (0UL)                   // Determine if the ADRFMT field exists on the ADCER register.
+#define BSP_FEATURE_ADC_HAS_ADHVREFCNT                         (0UL)                   // Determine if the ADHVREFCNT register is available.
+#define BSP_FEATURE_ADC_HAS_PGA                                (0UL)                   // Determine if ADPGACR is present.
+#define BSP_FEATURE_ADC_HAS_SAMPLE_HOLD_REG                    (0UL)                   // Specifies configuration for the sample and hold circuit is available (specifically ADSHCR register).
+#define BSP_FEATURE_ADC_HAS_VREFAMPCNT                         (0UL)                   // Determine if VREFAMPCNT is present.
+#define BSP_FEATURE_ADC_MAX_RESOLUTION_BITS                    (0UL)                   // Maximum ADC resolution supported.
+#define BSP_FEATURE_ADC_SENSOR_MIN_SAMPLING_TIME               (0UL)                   // Minimum time, in nanoseconds, required for ADC sampling of the sensors.
+#define BSP_FEATURE_ADC_SENSORS_EXCLUSIVE                      (0UL)                   // Specifies that the temperature and VREF sensors are exclusive to other ADC channel operations and cannot be executed concurrently.
+#define BSP_FEATURE_ADC_TSN_CALIBRATION_AVAILABLE              (0UL)                   // Determine if the temperature sensor supports calibration, either factory or runtime.
+#define BSP_FEATURE_ADC_TSN_CALIBRATION32_AVAILABLE            (0UL)                   // Determine if TSCDR is available.
+#define BSP_FEATURE_ADC_TSN_CALIBRATION32_MASK                 (0x00UL)                // Create the mask for the valid calibration data provided by TSCDR.
+#define BSP_FEATURE_ADC_TSN_CONTROL_AVAILABLE                  (0UL)                   // Determine if the TSCR register is present.
+#define BSP_FEATURE_ADC_TSN_SLOPE                              (4000UL)                // DEPRECATED; use BSP_FEATURE_TSN_SLOPE.
+#define BSP_FEATURE_ADC_UNIT_0_CHANNELS                        (0x00UL)                // Mask of available channels in ADC unit 0.
+#define BSP_FEATURE_ADC_UNIT_1_CHANNELS                        (0x00UL)                // Mask of available channels in ADC unit 1.
+#define BSP_FEATURE_ADC_VALID_UNIT_MASK                        (0x00UL)                // Mask of whole, physical ADC units present in the MCU.
 
-#define BSP_FEATURE_ADC_B_IS_AVAILABLE                       (1UL)
-#define BSP_FEATURE_ADC_B_PGA_CHANNEL_MASK                   (0x00UL)         // Mask of ADC_B peripherals that support PGA.
-#define BSP_FEATURE_ADC_B_PGA_SUPPORTED                      (0UL)            // Programmable Gain Amplifier is supported.
-#define BSP_FEATURE_ADC_B_TSN_CALIBRATION32_MASK             (0x0FFFUL)       // Mask of valid bits for TSN calibration.
-#define BSP_FEATURE_ADC_B_TSN_SLOPE                          (4000UL)         // Typical slope of the temperature sensor in uV/degC.
-#define BSP_FEATURE_ADC_B_UNIT_0_CHANNELS                    (0x0000000FFULL) // Mask of channels available to ADC_B Unit 0.
-#define BSP_FEATURE_ADC_B_UNIT_1_CHANNELS                    (0xFFFFFFF00ULL) // Mask of channels available to ADC_B Unit 1.
+#define BSP_FEATURE_ADC_B_IS_AVAILABLE                         (1UL)
+#define BSP_FEATURE_ADC_B_PGA_CHANNEL_MASK                     (0x00UL)                // Mask of ADC_B peripherals that support PGA.
+#define BSP_FEATURE_ADC_B_PGA_SUPPORTED                        (0UL)                   // Feature not available on this MCU
+#define BSP_FEATURE_ADC_B_TSN_CALIBRATION32_MASK               (0xFFFFUL)              // Mask of valid bits for TSN calibration.
+#define BSP_FEATURE_ADC_B_TSN_SLOPE                            (4000UL)                // DEPRECATED; use BSP_FEATURE_TSN_SLOPE.
+#define BSP_FEATURE_ADC_B_SAMPLE_AND_HOLD_UNIT456_SUPPORTED    (0U)                    // Feature not available on this MCU
+#define BSP_FEATURE_ADC_B_UNIT_0_CHANNELS                      (0x00703710000000FFULL) // Mask of channels available to ADC_B Unit 0.
+#define BSP_FEATURE_ADC_B_UNIT_1_CHANNELS                      (0x0000372FFFFFFF00ULL) // Mask of channels available to ADC_B Unit 1.
+#define BSP_FEATURE_ADC_B_UNIT_2_CHANNELS                      (0x0000374FFFFFFF00ULL) // Mask of channels available to ADC_B Unit 2.
 
 #define BSP_FEATURE_ADC_D_IS_AVAILABLE                       (0UL)
 #define BSP_FEATURE_ADC_D_CHANNELS                           (0x00UL)         // Feature not available on this device.
@@ -73,65 +93,65 @@
 #define BSP_FEATURE_AGT_USE_AGTIOSEL_ALT                     (0UL)            // Indicates use of AGTIOSEL_ALT instead of AGTIOSEL for AGTW instances.
 #define BSP_FEATURE_AGT_VALID_CHANNEL_MASK                   (0x00UL)         // A mask of all valid AGTx channels.
 
-#define BSP_FEATURE_BSP_CODE_CACHE_VERSION                   (0UL)            // Version of C-Cache implemented in a CM33 core.
-#define BSP_FEATURE_BSP_FLASH_CACHE                          (0UL)            // Flash cache is present.
-#define BSP_FEATURE_BSP_FLASH_CACHE_DISABLE_OPM              (0UL)            // Constraints exist for flash cache operation either during power mode sequencing or flash programming access.
-#define BSP_FEATURE_BSP_FLASH_PREFETCH_BUFFER                (0UL)            // Indicates the prefetch buffer is available on the flash.
-#define BSP_FEATURE_BSP_HAS_ADC_CLOCK                        (1UL)            // Indicates there is a separate clock for the ADC.
-#define BSP_FEATURE_BSP_HAS_CANFD_CLOCK                      (1UL)            // Indicates there is a separate clock for the CANFD.
-#define BSP_FEATURE_BSP_HAS_CEC_CLOCK                        (0UL)            // Indicates there is a separate clock for the CEC.
-#define BSP_FEATURE_BSP_HAS_CLOCK_SUPPLY_TYPEB               (0UL)            // Check for the ICSTATS bit field that specifies clock power architecture type.
-#define BSP_FEATURE_BSP_HAS_DCDC_REGULATOR                   (0UL)            // DCDCCTL register is present in SYSC.
-#define BSP_FEATURE_BSP_HAS_DTCM                             (0UL)            // Indicates DTCM is available.
-#define BSP_FEATURE_BSP_HAS_EXTRA_PERIPHERAL0_CLOCK          (0UL)            // Flag indicating an extra peripheral clock is present.
-#define BSP_FEATURE_BSP_HAS_FSXP_CLOCK                       (0UL)            // Indicates FSXP (subsystem clock) is available.
-#define BSP_FEATURE_BSP_HAS_GRAPHICS_DOMAIN                  (0UL)            // Indicates that the MCU has a power domain specifically for graphics peripherals.
-#define BSP_FEATURE_BSP_HAS_I3C_CLOCK                        (1UL)            // Indicates there is a separate clock for the I3C.
-#define BSP_FEATURE_BSP_HAS_IIC_CLOCK                        (0UL)            // Indicates there is a separate IIC clock.
-#define BSP_FEATURE_BSP_HAS_ITCM                             (0UL)            // Indicates ITCM is available.
-#define BSP_FEATURE_BSP_HAS_LCD_CLOCK                        (0UL)            // Indicates there is a separate clock for the LCD.
-#define BSP_FEATURE_BSP_HAS_OCTASPI_CLOCK                    (1UL)            // Indicates there is a separate clock for the OSPI.
-#define BSP_FEATURE_BSP_HAS_OFS2                             (1UL)            // Indicates the OFS2 register is available.
-#define BSP_FEATURE_BSP_HAS_OFS3                             (1UL)            // OSF3 register is available; currently only available for RA8.
-#define BSP_FEATURE_BSP_HAS_SCE_ON_RA2                       (0UL)            // Indicates the AES peripheral is available for an RA2 device.
-#define BSP_FEATURE_BSP_HAS_SCE5                             (0UL)            // Indicates the SCE5 crypto engine is available.
-#define BSP_FEATURE_BSP_HAS_SCI_CLOCK                        (1UL)            // Indicates there is a separate SCI clock.
-#define BSP_FEATURE_BSP_HAS_SCISPI_CLOCK                     (0UL)            // Indicates there is a separate SCI SPI clock.
-#define BSP_FEATURE_BSP_HAS_SDADC_CLOCK                      (0UL)            // Indicates there is a separate clock for the SDADC.
-#define BSP_FEATURE_BSP_HAS_SECURITY_MPU                     (1UL)            // Indicates the MCU has security MPU systems available.
-#define BSP_FEATURE_BSP_HAS_SP_MON                           (0UL)            // Indicates the Stack Pointer monitor is available.
-#define BSP_FEATURE_BSP_HAS_SPI_CLOCK                        (1UL)            // Indicates there is a separate clock for the SPI.
-#define BSP_FEATURE_BSP_HAS_SYRACCR                          (1UL)            // SYRACCR register is available.
-#define BSP_FEATURE_BSP_HAS_TZFSAR                           (0UL)            // Specifies the TrustZone filter can be secured.
-#define BSP_FEATURE_BSP_HAS_USB_CLOCK_DIV                    (1UL)            // Indicates there is a USB clock divider setting as part of the SCKDIVCR registers.
-#define BSP_FEATURE_BSP_HAS_USB_CLOCK_REQ                    (1UL)            // Indicates that a request bit must be set before changing USB clock settings.
-#define BSP_FEATURE_BSP_HAS_USB_CLOCK_SEL                    (1UL)            // Indicates the USB clock has a selectable source.
-#define BSP_FEATURE_BSP_HAS_USB_CLOCK_SEL_ALT                (0UL)            // Indicates the USBCKCR_ALT register should be used instead of USBCKCR.
-#define BSP_FEATURE_BSP_HAS_USB60_CLOCK                      (1UL)            // Indicates the USB60 clock is available.
-#define BSP_FEATURE_BSP_HAS_USBCKDIVCR                       (1UL)            // USBCKDIVCR register is available.
-#define BSP_FEATURE_BSP_MCU_INFO_POINTER_LOCATION            (0x00U)          // Location of the FMIFRT register.
-#define BSP_FEATURE_BSP_MMF_SUPPORTED                        (0UL)            // Memory-mirror function is available.
-#define BSP_FEATURE_BSP_MPU_REGION0_MASK                     (0x00UL)         // Mask for allowed address range of the MPU.
-#define BSP_FEATURE_BSP_MSTP_GPT_MSTPD5                      (0UL)            // GPT stop bits use MSTPCRD.MSTPD5.
-#define BSP_FEATURE_BSP_MSTP_GPT_MSTPD5_MAX_CH               (0UL)            // Largest channel number associated with GPT on the MSTPCRD.MSTPD5 field on this MCU.
-#define BSP_FEATURE_BSP_MSTP_HAS_MSTPCRE                     (1UL)            // Indicates the MSTP peripheral has an MSTPCRE register.
-#define BSP_FEATURE_BSP_MSTP_POEG_MSTPD13                    (1UL)            // Indicates the MSTP uses bit 13 of MSTPCRD to control the POEG.
-#define BSP_FEATURE_BSP_NUM_PMSAR                            (17UL)           // Number of available Port Security Attribution Registers.
-#define BSP_FEATURE_BSP_OFS_HAS_SECURITY_ATTRIBUTION         (1UL)            // Indicates security attribution settings for banks are present in the OFS registers.
-#define BSP_FEATURE_BSP_OFS1_HOCOFRQ_MASK                    (0xFFFFF1FFUL)   // Inverted mask of the HOCOFRQx bit field of the OFS1 register.
-#define BSP_FEATURE_BSP_OFS1_HOCOFRQ_OFFSET                  (9UL)            // Offset to the OFS1.HOCOFRQx bitfield.
-#define BSP_FEATURE_BSP_OSIS_PADDING                         (0UL)            // Indicates there is 32-bits of padding between each 32-bit word of the OSIS ID registers.
-#define BSP_FEATURE_BSP_POWER_CHANGE_MSTP_REQUIRED           (0UL)            // Indicates extra modules must be manually stopped before switching the system clock from the PLL.
-#define BSP_FEATURE_BSP_RESET_TRNG                           (0UL)            // Specifies the TRNG must be reset after clock initialization to prevent excess current draw.
-#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_FIVE_ROM_WAITS        (0UL)            // Maximum frequency allowed before requiring five wait cycles.
-#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_FOUR_ROM_WAITS        (0UL)            // The maximum frequency allowed without having four ROM wait cycles.
-#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_NO_RAM_WAITS          (0UL)            // The maximum frequency that can be used before wait cycles are necessary.
-#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_ONE_ROM_WAITS         (0UL)            // Maximum frequency allowed before requiring one wait cycle.
-#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_THREE_ROM_WAITS       (0UL)            // Maximum frequency allowed before requiring three wait cycles.
-#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_TWO_ROM_WAITS         (0UL)            // Maximum frequency allowed before requiring two wait cycles.
-#define BSP_FEATURE_BSP_UNIQUE_ID_OFFSET                     (0x00UL)         // Bit offset of the Unique ID in the mcu info block.
-#define BSP_FEATURE_BSP_UNIQUE_ID_POINTER                    (0x86F01000UL)   // Address of the MCU Unique ID register (UIDR).
-#define BSP_FEATURE_BSP_VBATT_HAS_VBTCR1_BPWSWSTP            (0UL)            // VCC can switch to VBAT if the voltage drops too low.
+#define BSP_FEATURE_BSP_CODE_CACHE_VERSION                     (0UL)                   // Version of C-Cache implemented in a CM33 core.
+#define BSP_FEATURE_BSP_FLASH_CACHE                            (0UL)                   // Flash cache is present.
+#define BSP_FEATURE_BSP_FLASH_CACHE_DISABLE_OPM                (0UL)                   // Constraints exist for flash cache operation either during power mode sequencing or flash programming access.
+#define BSP_FEATURE_BSP_FLASH_PREFETCH_BUFFER                  (0UL)                   // Indicates the prefetch buffer is available on the flash.
+#define BSP_FEATURE_BSP_HAS_ADC_CLOCK                          (1UL)                   // Indicates there is a separate clock for the ADC.
+#define BSP_FEATURE_BSP_HAS_CANFD_CLOCK                        (1UL)                   // Indicates there is a separate clock for the CANFD.
+#define BSP_FEATURE_BSP_HAS_CEC_CLOCK                          (0UL)                   // Indicates there is a separate clock for the CEC.
+#define BSP_FEATURE_BSP_HAS_CLOCK_SUPPLY_TYPEB                 (0UL)                   // Check for the ICSTATS bit field that specifies clock power architecture type.
+#define BSP_FEATURE_BSP_HAS_DCDC_REGULATOR                     (0UL)                   // DCDCCTL register is present in SYSC.
+#define BSP_FEATURE_BSP_HAS_DTCM                               (0UL)                   // Indicates DTCM is available.
+#define BSP_FEATURE_BSP_HAS_EXTRA_PERIPHERAL0_CLOCK            (0UL)                   // Flag indicating an extra peripheral clock is present.
+#define BSP_FEATURE_BSP_HAS_FSXP_CLOCK                         (0UL)                   // Indicates FSXP (subsystem clock) is available.
+#define BSP_FEATURE_BSP_HAS_GRAPHICS_DOMAIN                    (0UL)                   // Indicates that the MCU has a power domain specifically for graphics peripherals.
+#define BSP_FEATURE_BSP_HAS_I3C_CLOCK                          (1UL)                   // Indicates there is a separate clock for the I3C.
+#define BSP_FEATURE_BSP_HAS_IIC_CLOCK                          (0UL)                   // Indicates there is a separate IIC clock.
+#define BSP_FEATURE_BSP_HAS_ITCM                               (0UL)                   // Indicates ITCM is available.
+#define BSP_FEATURE_BSP_HAS_LCD_CLOCK                          (0UL)                   // Indicates there is a separate clock for the LCD.
+#define BSP_FEATURE_BSP_HAS_OCTASPI_CLOCK                      (1UL)                   // Indicates there is a separate clock for the OSPI.
+#define BSP_FEATURE_BSP_HAS_OFS2                               (1UL)                   // Indicates the OFS2 register is available.
+#define BSP_FEATURE_BSP_HAS_OFS3                               (1UL)                   // OSF3 register is available; currently only available for RA8.
+#define BSP_FEATURE_BSP_HAS_SCE_ON_RA2                         (0UL)                   // Indicates the AES peripheral is available for an RA2 device.
+#define BSP_FEATURE_BSP_HAS_SCE5                               (0UL)                   // Indicates the SCE5 crypto engine is available.
+#define BSP_FEATURE_BSP_HAS_SCI_CLOCK                          (1UL)                   // Indicates there is a separate SCI clock.
+#define BSP_FEATURE_BSP_HAS_SCISPI_CLOCK                       (0UL)                   // Indicates there is a separate SCI SPI clock.
+#define BSP_FEATURE_BSP_HAS_SDADC_CLOCK                        (0UL)                   // Indicates there is a separate clock for the SDADC.
+#define BSP_FEATURE_BSP_HAS_SECURITY_MPU                       (1UL)                   // Indicates the MCU has security MPU systems available.
+#define BSP_FEATURE_BSP_HAS_SP_MON                             (0UL)                   // Indicates the Stack Pointer monitor is available.
+#define BSP_FEATURE_BSP_HAS_SPI_CLOCK                          (1UL)                   // Indicates there is a separate clock for the SPI.
+#define BSP_FEATURE_BSP_HAS_SYRACCR                            (1UL)                   // SYRACCR register is available.
+#define BSP_FEATURE_BSP_HAS_TZFSAR                             (0UL)                   // Specifies the TrustZone filter can be secured.
+#define BSP_FEATURE_BSP_HAS_USB_CLOCK_DIV                      (1UL)                   // Indicates there is a USB clock divider setting as part of the SCKDIVCR registers.
+#define BSP_FEATURE_BSP_HAS_USB_CLOCK_REQ                      (1UL)                   // Indicates that a request bit must be set before changing USB clock settings.
+#define BSP_FEATURE_BSP_HAS_USB_CLOCK_SEL                      (1UL)                   // Indicates the USB clock has a selectable source.
+#define BSP_FEATURE_BSP_HAS_USB_CLOCK_SEL_ALT                  (0UL)                   // Indicates the USBCKCR_ALT register should be used instead of USBCKCR.
+#define BSP_FEATURE_BSP_HAS_USB60_CLOCK                        (1UL)                   // Indicates the USB60 clock is available.
+#define BSP_FEATURE_BSP_HAS_USBCKDIVCR                         (1UL)                   // USBCKDIVCR register is available.
+#define BSP_FEATURE_BSP_MCU_INFO_POINTER_LOCATION              (0x00U)                 // Location of the FMIFRT register.
+#define BSP_FEATURE_BSP_MMF_SUPPORTED                          (0UL)                   // Memory-mirror function is available.
+#define BSP_FEATURE_BSP_MPU_REGION0_MASK                       (0x00UL)                // Mask for allowed address range of the MPU.
+#define BSP_FEATURE_BSP_MSTP_GPT_MSTPD5                        (0UL)                   // GPT stop bits use MSTPCRD.MSTPD5.
+#define BSP_FEATURE_BSP_MSTP_GPT_MSTPD5_MAX_CH                 (0UL)                   // Largest channel number associated with GPT on the MSTPCRD.MSTPD5 field on this MCU.
+#define BSP_FEATURE_BSP_MSTP_HAS_MSTPCRE                       (1UL)                   // Indicates the MSTP peripheral has an MSTPCRE register.
+#define BSP_FEATURE_BSP_MSTP_POEG_MSTPD13                      (1UL)                   // Indicates the MSTP uses bit 13 of MSTPCRD to control the POEG.
+#define BSP_FEATURE_BSP_NUM_PMSAR                              (17UL)                  // Number of available Port Security Attribution Registers.
+#define BSP_FEATURE_BSP_OFS_HAS_SECURITY_ATTRIBUTION           (1UL)                   // Indicates security attribution settings for banks are present in the OFS registers.
+#define BSP_FEATURE_BSP_OFS1_HOCOFRQ_MASK                      (0xFFFFF1FFUL)          // Inverted mask of the HOCOFRQx bit field of the OFS1 register.
+#define BSP_FEATURE_BSP_OFS1_HOCOFRQ_OFFSET                    (9UL)                   // Offset to the OFS1.HOCOFRQx bitfield.
+#define BSP_FEATURE_BSP_OSIS_PADDING                           (0UL)                   // Indicates there is 32-bits of padding between each 32-bit word of the OSIS ID registers.
+#define BSP_FEATURE_BSP_POWER_CHANGE_MSTP_REQUIRED             (0UL)                   // Indicates extra modules must be manually stopped before switching the system clock from the PLL.
+#define BSP_FEATURE_BSP_RESET_TRNG                             (0UL)                   // Specifies the TRNG must be reset after clock initialization to prevent excess current draw.
+#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_FIVE_ROM_WAITS          (0UL)                   // Maximum frequency allowed before requiring five wait cycles.
+#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_FOUR_ROM_WAITS          (0UL)                   // The maximum frequency allowed without having four ROM wait cycles.
+#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_NO_RAM_WAITS            (150000000UL)           // The maximum frequency that can be used before wait cycles are necessary.
+#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_ONE_ROM_WAITS           (0UL)                   // Maximum frequency allowed before requiring one wait cycle.
+#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_THREE_ROM_WAITS         (0UL)                   // Maximum frequency allowed before requiring three wait cycles.
+#define BSP_FEATURE_BSP_SYS_CLOCK_FREQ_TWO_ROM_WAITS           (0UL)                   // Maximum frequency allowed before requiring two wait cycles.
+#define BSP_FEATURE_BSP_UNIQUE_ID_OFFSET                       (0x00UL)                // Bit offset of the Unique ID in the mcu info block.
+#define BSP_FEATURE_BSP_UNIQUE_ID_POINTER                      (0x86F01000UL)          // Address of the MCU Unique ID register (UIDR).
+#define BSP_FEATURE_BSP_VBATT_HAS_VBTCR1_BPWSWSTP              (0UL)                   // VCC can switch to VBAT if the voltage drops too low.
 
 #define BSP_FEATURE_CAN_IS_AVAILABLE                         (0UL)
 #define BSP_FEATURE_CAN_CHECK_PCLKB_RATIO                    (0UL)            // Feature not available on this device.
@@ -147,70 +167,75 @@
 #define BSP_FEATURE_CANFD_NUM_CHANNELS                       (2UL)                               // Number of CANFD channels per CANFD peripheral instance.
 #define BSP_FEATURE_CANFD_NUM_INSTANCES                      (1UL)                               // Number of hardware instances of the CANFD peripheral.
 
-#define BSP_FEATURE_CGC_EXECUTE_FROM_LOCO                    (0UL)                               // Indicates the system clock can be sourced by the LOCO.
-#define BSP_FEATURE_CGC_HAS_BCLK                             (1UL)                               // External Bus Clock is available.
-#define BSP_FEATURE_CGC_HAS_CPUCLK                           (1UL)                               // CPU Clock is available.
-#define BSP_FEATURE_CGC_HAS_EXTRACLK2                        (0UL)                               // System contains an extra clock domain.
-#define BSP_FEATURE_CGC_HAS_FCLK                             (1UL)                               // FlashIF clock is available.
-#define BSP_FEATURE_CGC_HAS_FLDWAITR                         (0UL)                               // FLDWAITR register is available.
-#define BSP_FEATURE_CGC_HAS_FLL                              (1UL)                               // FLL is available.
-#define BSP_FEATURE_CGC_HAS_FLWT                             (0UL)                               // FLWT register is available.
-#define BSP_FEATURE_CGC_HAS_HOCOWTCR                         (0UL)                               // HOCOWTCR register is available.
-#define BSP_FEATURE_CGC_HAS_MEMWAIT                          (0UL)                               // MEMWAIT register is available.
-#define BSP_FEATURE_CGC_HAS_OSTDCSE                          (0UL)                               // OSTDCSE register is available.
-#define BSP_FEATURE_CGC_HAS_PCLKA                            (1UL)                               // Peripheral module clock A is available.
-#define BSP_FEATURE_CGC_HAS_PCLKB                            (1UL)                               // Peripheral module clock B is available.
-#define BSP_FEATURE_CGC_HAS_PCLKC                            (1UL)                               // Peripheral module clock C is available.
-#define BSP_FEATURE_CGC_HAS_PCLKD                            (1UL)                               // Peripheral module clock D is available.
-#define BSP_FEATURE_CGC_HAS_PCLKE                            (1UL)                               // Peripheral module clock E is available.
-#define BSP_FEATURE_CGC_HAS_PLL                              (1UL)                               // PLL is available.
-#define BSP_FEATURE_CGC_HAS_PLL2                             (1UL)                               // PLL2 is available.
-#define BSP_FEATURE_CGC_HAS_PLLRTC                           (0UL)                               // PLLRTC is available.
-#define BSP_FEATURE_CGC_HAS_SOPCCR                           (0UL)                               // SOPCCR register is available.
-#define BSP_FEATURE_CGC_HAS_SOSC                             (1UL)                               // Sub-clock oscillator is available.
-#define BSP_FEATURE_CGC_HAS_SRAMPRCR2                        (0UL)                               // SRAMPRCR2 register is available.
-#define BSP_FEATURE_CGC_HAS_SRAMWTSC                         (1UL)                               // SRAM Wait State Control Register is available.
-#define BSP_FEATURE_CGC_HOCOSF_BEFORE_OPCCR                  (0UL)                               // Changes to OPCCR must only occur with HOCO is stopped or stable.
-#define BSP_FEATURE_CGC_HOCOWTCR_64MHZ_ONLY                  (0UL)                               // HOCO wait control register changes value for 64 MHz speed.
-#define BSP_FEATURE_CGC_HOCOWTCR_SCI_SNOOZE_VALUE            (0UL)                               // HOCO stabilization wait time when using SCI0.
-#define BSP_FEATURE_CGC_HOCOWTCR_VALUE                       (0UL)                               // HOCO stabilization wait time register value for 64 MHz.
-#define BSP_FEATURE_CGC_ICLK_DIV_RESET                       (BSP_CLOCKS_SYS_CLOCK_DIV_1)        // Reset value of the ICLK divider.
-#define BSP_FEATURE_CGC_LOCO_STABILIZATION_MAX_US            (61UL)                              // LOCO stabilization time in microseconds.
-#define BSP_FEATURE_CGC_LOW_SPEED_MAX_FREQ_HZ                (1000000UL)                         // Maximum frequency during low-speed operation.
-#define BSP_FEATURE_CGC_LOW_SPEED_SUPPORT_MAIN_OSC           (1UL)                               // The main clock oscillator is available in low-speed mode.
-#define BSP_FEATURE_CGC_LOW_VOLTAGE_MAX_FREQ_HZ              (0UL)                               // Maximum frequency during low-voltage mode.
-#define BSP_FEATURE_CGC_MIDDLE_SPEED_MAX_FREQ_HZ             (0UL)                               // Middle speed clock maximum frequency.
-#define BSP_FEATURE_CGC_MOCO_STABILIZATION_MAX_US            (15UL)                              // MOCO stabilization time in microseconds.
-#define BSP_FEATURE_CGC_MODRV_MASK                           (R_SYSTEM_MOMCR_MODRV0_Msk | \
-                                                              CGC_MAINCLOCK_DRIVE_RESERVED_MASK) // Mask used on MODRV register.
-#define BSP_FEATURE_CGC_MODRV_SHIFT                          (R_SYSTEM_MOMCR_MODRV0_Pos)         // Shift used for MODRV register.
-#define BSP_FEATURE_CGC_OSCILLATON_STOP_DETECT               (1UL)                               // Oscillation stop detection is available.
-#define BSP_FEATURE_CGC_PLL_HOCO_MAX_CPUCLK_HZ               (600000000UL)                       // Maximum allowed clock speed when HOCO is the PLL source clock for the CPUCLK.
-#define BSP_FEATURE_CGC_PLL_OUT_MAX_HZ                       (600000000UL)                       // Maximum output frequency for PLL unit 1.
-#define BSP_FEATURE_CGC_PLL_OUT_MIN_HZ                       (60000000UL)                        // Minimum output frequency for PLL unit 1.
-#define BSP_FEATURE_CGC_PLL_REFERENCE_CLK_MAX_HZ             (24000000UL)                        // Maximum frequency of the PLL reference clock.
-#define BSP_FEATURE_CGC_PLL_REFERENCE_CLK_MIN_HZ             (8000000UL)                         // Minimum frequency of the PLL reference clock.
-#define BSP_FEATURE_CGC_PLL_SRC_MAX_HZ                       (48000000UL)                        // Maximum input frequency for PLL unit 1.
-#define BSP_FEATURE_CGC_PLL_SRC_MIN_HZ                       (8000000UL)                         // Minimum output frequency for PLL unit 1.
-#define BSP_FEATURE_CGC_PLL1_NUM_OUTPUT_CLOCKS               (3UL)                               // Number of output clocks for PLL1.
-#define BSP_FEATURE_CGC_PLL2_NUM_OUTPUT_CLOCKS               (3UL)                               // Number of output clocks for PLL2.
-#define BSP_FEATURE_CGC_PLL2_OUT_MAX_HZ                      (600000000UL)                       // Maximum output frequency for PLL unit 2.
-#define BSP_FEATURE_CGC_PLL2_OUT_MIN_HZ                      (60000000UL)                        // Minimum output frequency for PLL unit 2.
-#define BSP_FEATURE_CGC_PLLCCR_TYPE                          (6UL)                               // Indicates the type of PLLCCR register and PLL.
-#define BSP_FEATURE_CGC_PLLCCR_VCO_MAX_HZ                    (2400000000UL)                      // PLL VCO maximum frequency.
-#define BSP_FEATURE_CGC_PLLCCR_VCO_MIN_HZ                    (960000000UL)                       // PLL VCO minimum frequency.
-#define BSP_FEATURE_CGC_PLLCCR_WAIT_US                       (0UL)                               // Time required, in microseconds, between changing PLLCCR.PLLMUL to clearing PLLCR.PLLSTP.
-#define BSP_FEATURE_CGC_REGISTER_SET_B                       (0UL)                               // Clock generation uses an alternative register set.
-#define BSP_FEATURE_CGC_SCKDIVCR_BCLK_MATCHES_PCLKB          (0UL)                               // Requires the SCKDIVCR.BCLK bits [18:16] to match SCKDIBCR.PCLKB.
-#define BSP_FEATURE_CGC_SCKDIVCR2_HAS_EXTRA_CLOCKS           (1UL)                               // Indicates the SCKDIVCR2 register has additional clocks.
-#define BSP_FEATURE_CGC_SODRV_MASK                           (0x03UL)                            // Sub-clock drive field mask.
-#define BSP_FEATURE_CGC_SODRV_SHIFT                          (0UL)                               // Sub-clock drive field shift.
-#define BSP_FEATURE_CGC_SRAMPRCR_KW_OFFSET                   (8UL)                               // Bit offset for SRAMPRCR.KW field.
-#define BSP_FEATURE_CGC_SRAMPRCR_KW_VALUE                    (0xA5U)                             // Write enable key code for SRAMPRCR bit.
-#define BSP_FEATURE_CGC_STARTUP_OPCCR_MODE                   (0x00UL)                            // Reset value for the OPCCR regsiter.
-#define BSP_FEATURE_CGC_STARTUP_SCKDIVCR                     (0x00UL)                            // Reset value for the SCKDIVCR register.
-#define BSP_FEATURE_CGC_STARTUP_SCKDIVCR2                    (0x00UL)                            // Reset value for the SCKDIVCR2 register.
-#define BSP_FEATURE_CGC_STARTUP_SCKSCR                       (0x01UL)                            // Reset value for the SCKSCR register.
+#define BSP_FEATURE_CGC_EXECUTE_FROM_LOCO                      (0UL)                               // Indicates the system clock can be sourced by the LOCO.
+#define BSP_FEATURE_CGC_HAS_BCLK                               (1UL)                               // External Bus Clock is available.
+#define BSP_FEATURE_CGC_HAS_CPUCLK                             (1UL)                               // CPU Clock is available.
+#define BSP_FEATURE_CGC_HAS_EXTRACLK2                          (0UL)                               // System contains an extra clock domain.
+#define BSP_FEATURE_CGC_HAS_FCLK                               (1UL)                               // FlashIF clock is available.
+#define BSP_FEATURE_CGC_HAS_FLDWAITR                           (0UL)                               // FLDWAITR register is available.
+#define BSP_FEATURE_CGC_HAS_FLL                                (1UL)                               // FLL is available.
+#define BSP_FEATURE_CGC_HAS_FLWT                               (0UL)                               // FLWT register is available.
+#define BSP_FEATURE_CGC_HAS_HOCOWTCR                           (0UL)                               // HOCOWTCR register is available.
+#define BSP_FEATURE_CGC_HAS_MEMWAIT                            (0UL)                               // MEMWAIT register is available.
+#define BSP_FEATURE_CGC_HAS_MRICLK                             (1UL)                               // MRAM bus clock is available.
+#define BSP_FEATURE_CGC_HAS_OSTDCSE                            (0UL)                               // OSTDCSE register is available.
+#define BSP_FEATURE_CGC_HAS_PCLKA                              (1UL)                               // Peripheral module clock A is available.
+#define BSP_FEATURE_CGC_HAS_PCLKB                              (1UL)                               // Peripheral module clock B is available.
+#define BSP_FEATURE_CGC_HAS_PCLKC                              (1UL)                               // Peripheral module clock C is available.
+#define BSP_FEATURE_CGC_HAS_PCLKD                              (1UL)                               // Peripheral module clock D is available.
+#define BSP_FEATURE_CGC_HAS_PCLKE                              (1UL)                               // Peripheral module clock E is available.
+#define BSP_FEATURE_CGC_HAS_PLL                                (1UL)                               // PLL is available.
+#define BSP_FEATURE_CGC_HAS_PLL2                               (1UL)                               // PLL2 is available.
+#define BSP_FEATURE_CGC_HAS_PLLRTC                             (0UL)                               // PLLRTC is available.
+#define BSP_FEATURE_CGC_HAS_SOPCCR                             (0UL)                               // SOPCCR register is available.
+#define BSP_FEATURE_CGC_HAS_SOSC                               (1UL)                               // Sub-clock oscillator is available.
+#define BSP_FEATURE_CGC_HAS_SRAMPRCR2                          (0UL)                               // SRAMPRCR2 register is available.
+#define BSP_FEATURE_CGC_HAS_SRAMWTSC                           (1UL)                               // SRAM Wait State Control Register is available.
+#define BSP_FEATURE_CGC_HOCOSF_BEFORE_OPCCR                    (0UL)                               // Changes to OPCCR must only occur with HOCO is stopped or stable.
+#define BSP_FEATURE_CGC_HOCOWTCR_64MHZ_ONLY                    (0UL)                               // HOCO wait control register changes value for 64 MHz speed.
+#define BSP_FEATURE_CGC_HOCOWTCR_SCI_SNOOZE_VALUE              (0UL)                               // HOCO stabilization wait time when using SCI0.
+#define BSP_FEATURE_CGC_HOCOWTCR_VALUE                         (0UL)                               // HOCO stabilization wait time register value for 64 MHz.
+#define BSP_FEATURE_CGC_ICLK_DIV_RESET                         (BSP_CLOCKS_SYS_CLOCK_DIV_1)        // Reset value of the ICLK divider.
+#define BSP_FEATURE_CGC_LOCO_STABILIZATION_MAX_US              (61UL)                              // LOCO stabilization time in microseconds.
+#define BSP_FEATURE_CGC_LOW_SPEED_MAX_FREQ_HZ                  (1000000UL)                         // Maximum frequency during low-speed operation.
+#define BSP_FEATURE_CGC_LOW_SPEED_SUPPORT_MAIN_OSC             (1UL)                               // The main clock oscillator is available in low-speed mode.
+#define BSP_FEATURE_CGC_LOW_SPEED_SUPPORT_FULL_DIVISION        (1UL)                               // Full clock division supported in low-speed mode.
+#define BSP_FEATURE_CGC_LOW_VOLTAGE_MAX_FREQ_HZ                (0UL)                               // Maximum frequency during low-voltage mode.
+#define BSP_FEATURE_CGC_MIDDLE_SPEED_MAX_FREQ_HZ               (0UL)                               // Middle speed clock maximum frequency.
+#define BSP_FEATURE_CGC_MOCO_STABILIZATION_MAX_US              (15UL)                              // MOCO stabilization time in microseconds.
+#define BSP_FEATURE_CGC_MODRV_MASK                             (R_SYSTEM_MOMCR_MODRV0_Msk | \
+                                                                CGC_MAINCLOCK_DRIVE_RESERVED_MASK) // Mask used on MODRV register.
+#define BSP_FEATURE_CGC_MODRV_SHIFT                            (R_SYSTEM_MOMCR_MODRV0_Pos)         // Shift used for MODRV register.
+#define BSP_FEATURE_CGC_OSCILLATON_STOP_DETECT                 (1UL)                               // Oscillation stop detection is available.
+#define BSP_FEATURE_CGC_PLL_HOCO_MAX_CPUCLK_HZ                 (600000000UL)                       // Maximum allowed clock speed when HOCO is the PLL source clock for the CPUCLK.
+#define BSP_FEATURE_CGC_PLL_OUT_MAX_HZ                         (600000000UL)                       // Maximum output frequency for PLL unit 1.
+#define BSP_FEATURE_CGC_PLLP_OUT_MAX_HZ                        (600000000UL)                       // Maximum output frequency for PLL out put clock P unit 1.
+#define BSP_FEATURE_CGC_PLLQ_OUT_MAX_HZ                        (500000000UL)                       // Maximum output frequency for PLL out put clock Q unit 1.
+#define BSP_FEATURE_CGC_PLLR_OUT_MAX_HZ                        (500000000UL)                       // Maximum output frequency for PLL out put clock R unit 1.
+#define BSP_FEATURE_CGC_PLL_OUT_MIN_HZ                         (60000000UL)                        // Minimum output frequency for PLL unit 1.
+#define BSP_FEATURE_CGC_PLL_REFERENCE_CLK_MAX_HZ               (24000000UL)                        // Maximum frequency of the PLL reference clock.
+#define BSP_FEATURE_CGC_PLL_REFERENCE_CLK_MIN_HZ               (8000000UL)                         // Minimum frequency of the PLL reference clock.
+#define BSP_FEATURE_CGC_PLL_SRC_MAX_HZ                         (48000000UL)                        // Maximum input frequency for PLL unit 1.
+#define BSP_FEATURE_CGC_PLL_SRC_MIN_HZ                         (8000000UL)                         // Minimum output frequency for PLL unit 1.
+#define BSP_FEATURE_CGC_PLL1_NUM_OUTPUT_CLOCKS                 (3UL)                               // Number of output clocks for PLL1.
+#define BSP_FEATURE_CGC_PLL2_NUM_OUTPUT_CLOCKS                 (3UL)                               // Number of output clocks for PLL2.
+#define BSP_FEATURE_CGC_PLL2_OUT_MAX_HZ                        (500000000UL)                       // Maximum output frequency for PLL unit 2.
+#define BSP_FEATURE_CGC_PLL2_OUT_MIN_HZ                        (60000000UL)                        // Minimum output frequency for PLL unit 2.
+#define BSP_FEATURE_CGC_PLLCCR_TYPE                            (6UL)                               // Indicates the type of PLLCCR register and PLL.
+#define BSP_FEATURE_CGC_PLLCCR_VCO_MAX_HZ                      (2400000000UL)                      // PLL VCO maximum frequency.
+#define BSP_FEATURE_CGC_PLLCCR_VCO_MIN_HZ                      (960000000UL)                       // PLL VCO minimum frequency.
+#define BSP_FEATURE_CGC_PLLCCR_WAIT_US                         (0UL)                               // Time required, in microseconds, between changing PLLCCR.PLLMUL to clearing PLLCR.PLLSTP.
+#define BSP_FEATURE_CGC_REGISTER_SET_B                         (0UL)                               // Clock generation uses an alternative register set.
+#define BSP_FEATURE_CGC_SCKDIVCR_BCLK_MATCHES_PCLKB            (0UL)                               // Requires the SCKDIVCR.BCLK bits [18:16] to match SCKDIBCR.PCLKB.
+#define BSP_FEATURE_CGC_SCKDIVCR2_HAS_EXTRA_CLOCKS             (1UL)                               // Indicates the SCKDIVCR2 register has additional clocks.
+#define BSP_FEATURE_CGC_SODRV_MASK                             (0x03UL)                            // Sub-clock drive field mask.
+#define BSP_FEATURE_CGC_SODRV_SHIFT                            (0UL)                               // Sub-clock drive field shift.
+#define BSP_FEATURE_CGC_SRAMPRCR_KW_OFFSET                     (8UL)                               // Bit offset for SRAMPRCR.KW field.
+#define BSP_FEATURE_CGC_SRAMPRCR_KW_VALUE                      (0xA5U)                             // Write enable key code for SRAMPRCR bit.
+#define BSP_FEATURE_CGC_STARTUP_OPCCR_MODE                     (0x00UL)                            // Reset value for the OPCCR regsiter.
+#define BSP_FEATURE_CGC_STARTUP_SCKDIVCR                       (0x00UL)                            // Reset value for the SCKDIVCR register.
+#define BSP_FEATURE_CGC_STARTUP_SCKDIVCR2                      (0x00UL)                            // Reset value for the SCKDIVCR2 register.
+#define BSP_FEATURE_CGC_STARTUP_SCKSCR                         (0x01UL)                            // Reset value for the SCKSCR register.
 
 #define BSP_FEATURE_CRC_IS_AVAILABLE                         (1UL)
 #define BSP_FEATURE_CRC_HAS_CRCCR0_LMS                       (1UL)                               // The CRC peripheral supports both LSB- and MSB-first calculations.
@@ -233,15 +258,16 @@
 #define BSP_FEATURE_CTSU_HAS_TXVSEL                          (0UL)                               // Feature not available on this device.
 #define BSP_FEATURE_CTSU_VERSION                             (0UL)                               // Feature not available on this device.
 
-#define BSP_FEATURE_DAC_IS_AVAILABLE                         (1UL)
-#define BSP_FEATURE_DAC_AD_SYNC_UNIT_MASK                    (0x02UL)                            // DAADSCR register is available.
-#define BSP_FEATURE_DAC_B_CHANNELS_PER_UNIT                  (1UL)                               // Number of available channels per DAC_B instance.
-#define BSP_FEATURE_DAC_B_UNIT_COUNT                         (2UL)                               // Number of available DAC_B instance.
-#define BSP_FEATURE_DAC_HAS_CHARGEPUMP                       (0UL)                               // DAPC register is available.
-#define BSP_FEATURE_DAC_HAS_DA_AD_SYNCHRONIZE                (1UL)                               // At least one channel supports A/D synchronization with the DAC.
-#define BSP_FEATURE_DAC_HAS_DAVREFCR                         (0UL)                               // DAVREFCR register is available.
-#define BSP_FEATURE_DAC_HAS_INTERNAL_OUTPUT                  (0UL)                               // DAC output can be routed to specific extra internal modules.
-#define BSP_FEATURE_DAC_HAS_OUTPUT_AMPLIFIER                 (0UL)                               // DAAMPCR register is available.
+#define BSP_FEATURE_DAC_IS_AVAILABLE                           (1UL)
+#define BSP_FEATURE_DAC_AD_SYNC_UNIT_MASK                      (0x00UL)                            // Feature not available on this device.
+#define BSP_FEATURE_DAC_B_CHANNELS_PER_UNIT                    (1UL)                               // Number of available channels per DAC_B instance.
+#define BSP_FEATURE_DAC_B_UNIT_COUNT                           (2UL)                               // Number of available DAC_B instance.
+#define BSP_FEATURE_DAC_B_OUTPUT_ENABLE                        (1UL)                               // DAOE bit function is available.
+#define BSP_FEATURE_DAC_HAS_CHARGEPUMP                         (0UL)                               // Feature not available on this device.
+#define BSP_FEATURE_DAC_HAS_DA_AD_SYNCHRONIZE                  (0UL)                               // Feature not available on this device.
+#define BSP_FEATURE_DAC_HAS_DAVREFCR                           (0UL)                               // Feature not available on this device.
+#define BSP_FEATURE_DAC_HAS_INTERNAL_OUTPUT                    (0UL)                               // Feature not available on this device.
+#define BSP_FEATURE_DAC_HAS_OUTPUT_AMPLIFIER                   (0UL)                               // Feature not available on this device.
 
 #define BSP_FEATURE_DAC8_IS_AVAILABLE                        (0UL)
 #define BSP_FEATURE_DAC8_CHANNELS_PER_UNIT                   (0UL)                               // Feature not available on this device.
@@ -254,11 +280,12 @@
 #define BSP_FEATURE_DAC12_CHANNELS_PER_UNIT                  (1UL)                               // Number of available channels per DAC12 instance.
 #define BSP_FEATURE_DAC12_UNIT_COUNT                         (2UL)                               // Feature not available on this device.
 
-#define BSP_FEATURE_DMAC_IS_AVAILABLE                        (1UL)
-#define BSP_FEATURE_DMAC_HAS_DELSR                           (0UL)                               // DELSRn registers are available in the DMA peripheral block.
-#define BSP_FEATURE_DMAC_HAS_DMCTL                           (1UL)                               // DMCTL register is available in the DMA peripheral block.
-#define BSP_FEATURE_DMAC_HAS_REPEAT_BLOCK_MODE               (1UL)                               // DMTMD register's MD bit-field allows repeat-block transfers (value: 0b11).
-#define BSP_FEATURE_DMAC_MAX_CHANNEL                         (8UL)                               // Number of DMAC channels available.
+#define BSP_FEATURE_DMAC_IS_AVAILABLE                          (1UL)
+#define BSP_FEATURE_DMAC_HAS_ALL_CHANNELS_OFFSET               (1UL)                               // All DMAC channels support offset feature
+#define BSP_FEATURE_DMAC_HAS_DMCTL                             (1UL)                               // DMCTL register is available in the DMA peripheral block.
+#define BSP_FEATURE_DMAC_HAS_REPEAT_BLOCK_MODE                 (1UL)                               // DMTMD register's MD bit-field allows repeat-block transfers (value: 0b11).
+#define BSP_FEATURE_DMAC_MAX_CHANNEL                           (8UL)                               // Number of DMAC channels available.
+#define BSP_FEATURE_DMAC_GRP_IRQ_NUM_FACTORS                   (4U)                                // Indicates the number of grouped DMAC interrupt sources.
 
 #define BSP_FEATURE_DOC_IS_AVAILABLE                         (1UL)
 #define BSP_FEATURE_DOC_VERSION                              (2UL)                               // The version of the DOC peripheral.
@@ -316,30 +343,30 @@
 #define BSP_FEATURE_FLASH_LP_SUPPORTS_DUAL_BANK              (0UL)                               // Feature not available on this device.
 #define BSP_FEATURE_FLASH_LP_VERSION                         (0UL)                               // Feature not available on this device.
 
-#define BSP_FEATURE_GPT_IS_AVAILABLE                         (1UL)
-#define BSP_FEATURE_GPT_32BIT_CHANNEL_MASK                   (0xFFFFUL)                          // Mask of 32-bit GPT channel indices.
-#define BSP_FEATURE_GPT_AD_DIRECT_START_CHANNEL_MASK         (0xFFFFUL)                          // Mask of GPT channels supporting A/D conversion start.
-#define BSP_FEATURE_GPT_AD_DIRECT_START_SUPPORTED            (1UL)                               // At least one GPT channel with A/D conversion start is available.
-#define BSP_FEATURE_GPT_CLOCK_DIVIDER_STEP_SIZE              (2UL)                               // Multiplicative step size of the clock divider (GTCR.TPCS).
-#define BSP_FEATURE_GPT_CLOCK_DIVIDER_VALUE_7_9_VALID        (0UL)                               // Whether or not the bit-values of 0b0111 and 0b1001 are valid divider settings (GTCR.TPCS).
-#define BSP_FEATURE_GPT_EVENT_COUNT_CHANNEL_MASK             (0xFFFFUL)                          // Mask of channels that support event count input (has GTUPSR register).
-#define BSP_FEATURE_GPT_EVENT_COUNT_SUPPORTED                (1UL)                               // At least one channel supports event counts.
-#define BSP_FEATURE_GPT_GPTE_CHANNEL_MASK                    (0xFFFFUL)                          // Mask of GPT channels that are the GPTE implementation.
-#define BSP_FEATURE_GPT_GPTE_SUPPORTED                       (1UL)                               // At least one GPTE implementation is available.
-#define BSP_FEATURE_GPT_GPTEH_CHANNEL_MASK                   (0x0UL)                             // Mask of GPT channels that are the GPTEH implementation.
-#define BSP_FEATURE_GPT_GPTEH_SUPPORTED                      (0UL)                               // At least one GPTEH implementation is available.
-#define BSP_FEATURE_GPT_GTDVU_CHANNEL_MASK                   (0xFFFFUL)                          // Mask of channels that support dead time control.
-#define BSP_FEATURE_GPT_GTDVU_SUPPORTED                      (1UL)                               // At least one GPT channel with   support is available.
-#define BSP_FEATURE_GPT_ODC_128_RESOLUTION_CHANNEL_MASK      (0x00UL)                            // Mask of PWM channels which support 128-bit delay resolution.
-#define BSP_FEATURE_GPT_ODC_128_RESOLUTION_SUPPORTED         (0UL)                               // The PWM delay circuit supports 128-bit resolution for delays.
-#define BSP_FEATURE_GPT_ODC_FRANGE_FREQ_MIN                  (0UL)                               // Minimum frequency for standard PDG operation, must set GTCLYCR.FRANGE bit below this value.
-#define BSP_FEATURE_GPT_ODC_FRANGE_SET_BIT(gpt_frequency)    ((BSP_FEATURE_GPT_ODC_FRANGE_FREQ_MIN <= \
-                                                               (gpt_frequency)) ? 1UL : 0UL)     // Obtains the set bit based on the GPT frequency and the FRANGE threshold.
-#define BSP_FEATURE_GPT_ODC_FREQ_MAX                         (0UL)                               // Maximum supported frequency of the PWM Delay Generation circuit.
-#define BSP_FEATURE_GPT_ODC_FREQ_MIN                         (0UL)                               // Minimum supported frequency of the PWM Delay Generation circuit.
-#define BSP_FEATURE_GPT_OPS_CHANNEL_MASK                     (0xFFFFUL)                          // Mask of channels supporting output phase switching.
-#define BSP_FEATURE_GPT_OPS_SUPPORTED                        (1UL)                               // At least one GPT channel with OPS support is available.
-#define BSP_FEATURE_GPT_TPCS_SHIFT                           (0UL)                               // Shift value to convert TPCS bit values to real multiplicative values.
+#define BSP_FEATURE_GPT_IS_AVAILABLE                           (1UL)
+#define BSP_FEATURE_GPT_32BIT_CHANNEL_MASK                     (0xFFFFUL)                          // Mask of 32-bit GPT channel indices.
+#define BSP_FEATURE_GPT_AD_DIRECT_START_CHANNEL_MASK           (0xFFFFUL)                          // Mask of GPT channels supporting A/D conversion start.
+#define BSP_FEATURE_GPT_AD_DIRECT_START_SUPPORTED              (1UL)                               // At least one GPT channel with A/D conversion start is available.
+#define BSP_FEATURE_GPT_CLOCK_DIVIDER_STEP_SIZE                (2UL)                               // Multiplicative step size of the clock divider (GTCR.TPCS).
+#define BSP_FEATURE_GPT_CLOCK_DIVIDER_VALUE_7_9_VALID          (0UL)                               // Whether or not the bit-values of 0b0111 and 0b1001 are valid divider settings (GTCR.TPCS).
+#define BSP_FEATURE_GPT_EVENT_COUNT_CHANNEL_MASK               (0xFFFFUL)                          // Mask of channels that support event count input (has GTUPSR register).
+#define BSP_FEATURE_GPT_EVENT_COUNT_SUPPORTED                  (1UL)                               // At least one channel supports event counts.
+#define BSP_FEATURE_GPT_GPTE_CHANNEL_MASK                      (0xFFF0UL)                          // Mask of GPT channels that are the GPTE implementation.
+#define BSP_FEATURE_GPT_GPTE_SUPPORTED                         (1UL)                               // At least one GPTE implementation is available.
+#define BSP_FEATURE_GPT_GPTEH_CHANNEL_MASK                     (0x0FUL)                            // Mask of GPT channels that are the GPTEH implementation.
+#define BSP_FEATURE_GPT_GPTEH_SUPPORTED                        (1UL)                               // At least one GPTEH implementation is available.
+#define BSP_FEATURE_GPT_GTDVU_CHANNEL_MASK                     (0xFFFFUL)                          // Mask of channels that support dead time control.
+#define BSP_FEATURE_GPT_GTDVU_SUPPORTED                        (1UL)                               // At least one GPT channel with   support is available.
+#define BSP_FEATURE_GPT_HRPWM_128_RESOLUTION_CHANNEL_MASK      (0x0FUL)                            // Mask of PWM channels which support 128-bit delay resolution.
+#define BSP_FEATURE_GPT_HRPWM_128_RESOLUTION_SUPPORTED         (1UL)                               // The PWM delay circuit supports 128-bit resolution for delays.
+#define BSP_FEATURE_GPT_HRPWM_FRANGE_FREQ_MIN                  (160000000UL)                       // Minimum frequency for standard HRPWM operation, must set HROCR1.FRANGE bit below this value.
+#define BSP_FEATURE_GPT_HRPWM_FRANGE_SET_BIT(gpt_frequency)    ((BSP_FEATURE_GPT_HRPWM_FRANGE_FREQ_MIN <= \
+                                                                 (gpt_frequency)) ? 1UL : 0UL)     // Obtains the set bit based on the GPT frequency and the FRANGE threshold.
+#define BSP_FEATURE_GPT_HRPWM_FREQ_MAX                         (200000000UL)                       // Maximum supported frequency of the High Resolution PWM Generation circuit.
+#define BSP_FEATURE_GPT_HRPWM_FREQ_MIN                         (80000000UL)                        // Minimum supported frequency of the High Resolution PWM Generation circuit.
+#define BSP_FEATURE_GPT_OPS_CHANNEL_MASK                       (0xFFFFUL)                          // Mask of channels supporting output phase switching.
+#define BSP_FEATURE_GPT_OPS_SUPPORTED                          (1UL)                               // At least one GPT channel with OPS support is available.
+#define BSP_FEATURE_GPT_TPCS_SHIFT                             (0UL)                               // Shift value to convert TPCS bit values to real multiplicative values.
 
 #define BSP_FEATURE_I3C_IS_AVAILABLE                         (1UL)
 #define BSP_FEATURE_I3C_HAS_HDR_MODE                         (1UL)                               // I3C support high data rate mode.
@@ -371,9 +398,10 @@
 #define BSP_FEATURE_IOPORT_ELC_PORTS                         (0x7800UL)                          // Mask of valid indices for ELC signal mapping of port input data.
 #define BSP_FEATURE_IOPORT_VERSION                           (2UL)                               // Version of the system PFS block.
 
-#define BSP_FEATURE_IWDT_IS_AVAILABLE                        (1UL)
-#define BSP_FEATURE_IWDT_CLOCK_FREQUENCY                     (16384UL)                           // Frequency of the independent watchdog clock source.
-#define BSP_FEATURE_IWDT_SUPPORTS_REGISTER_START_MODE        (1UL)                               // IWDT peripheral supports register start mode.
+#define BSP_FEATURE_IWDT_IS_AVAILABLE                          (1UL)
+#define BSP_FEATURE_IWDT_CLOCK_FREQUENCY                       (16384UL)                           // Frequency of the independent watchdog clock source.
+#define BSP_FEATURE_IWDT_SUPPORTS_REGISTER_START_MODE          (1UL)                               // IWDT peripheral supports register start mode.
+#define BSP_FEATURE_IWDT_TIMEOUT_MULTIPLIER_SHIFT              (0U)
 
 #define BSP_FEATURE_KINT_IS_AVAILABLE                        (0UL)
 #define BSP_FEATURE_KINT_HAS_MSTP                            (0UL)                               // Feature not available on this device.
@@ -434,8 +462,9 @@
 
 #define BSP_FEATURE_MACL_SUPPORTED                           (0UL)                               // On-chip multiplier and multiply-accumulator is available.
 
-#define BSP_FEATURE_MRAM_IS_AVAILABLE                        (1UL)
-#define BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES              (32UL)                              // Write size for code MRAM.
+#define BSP_FEATURE_MRAM_IS_AVAILABLE                          (1UL)
+#define BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES                (32UL)                              // Write size for code MRAM.
+#define BSP_FEATURE_DATA_MRAM_PROGRAMMING_SIZE_BYTES           (16UL)                              // Write size for data MRAM.
 
 #define BSP_FEATURE_OPAMP_IS_AVAILABLE                       (0UL)
 #define BSP_FEATURE_OPAMP_BASE_ADDRESS                       (0UL)                               // Feature not available on this device.
@@ -473,13 +502,14 @@
 #define BSP_FEATURE_RSIP_SCE9_SUPPORTED                      (0UL)                               // The device supports cryptography using SCE9.
 #define BSP_FEATURE_RSIP_TRNG_SUPPORTED                      (0UL)                               // The device supports a TRNG module.
 
-#define BSP_FEATURE_RTC_IS_AVAILABLE                         (1UL)
-#define BSP_FEATURE_RTC_HAS_HP_MODE                          (0UL)                               // Indicates HP mode is available.
-#define BSP_FEATURE_RTC_HAS_RADJ_ADJ6                        (0UL)                               // ADJ6 is appended to upper part of RADJ.ADJ[0:5] as ADJ[6].
-#define BSP_FEATURE_RTC_HAS_ROPSEL                           (0UL)                               // The RCR4.ROPSEL field is available.
-#define BSP_FEATURE_RTC_HAS_TCEN                             (0UL)                               // Timer capture is available.
-#define BSP_FEATURE_RTC_IS_IRTC                              (0UL)                               // RTC has a separate power domain (VRTC) for the sub-clock oscillator and RTC peripheral.
-#define BSP_FEATURE_RTC_RTCCR_CHANNELS                       (3UL)                               // Number of RTCCRn registers that are available.
+#define BSP_FEATURE_RTC_IS_AVAILABLE                           (1UL)
+#define BSP_FEATURE_RTC_HAS_HP_MODE                            (0UL)                               // Indicates HP mode is available.
+#define BSP_FEATURE_RTC_HAS_RADJ_ADJ6                          (0UL)                               // ADJ6 is appended to upper part of RADJ.ADJ[0:5] as ADJ[6].
+#define BSP_FEATURE_RTC_HAS_ROPSEL                             (0UL)                               // The RCR4.ROPSEL field is available.
+#define BSP_FEATURE_RTC_HAS_TCEN                               (1UL)                               // Timer capture is available.
+#define BSP_FEATURE_RTC_IS_IRTC                                (0UL)                               // RTC has a separate power domain (VRTC) for the sub-clock oscillator and RTC peripheral.
+#define BSP_FEATURE_RTC_RTCCR_CHANNELS                         (3UL)                               // Number of RTCCRn registers that are available.
+#define BSP_FEATURE_RTC_HAS_RCR3                               (0U)                                // Feature not available on this MCU
 
 #define BSP_FEATURE_SAU_IS_AVAILABLE                         (0UL)
 #define BSP_FEATURE_SAU_UART_VALID_CHANNEL_MASK              (0x00UL)                            // Feature not available on this device.
@@ -543,7 +573,10 @@
 #define BSP_FEATURE_TML_NUM_CHANNELS                         (0UL)                               // Feature not available on this device.
 #define BSP_FEATURE_TML_VALID_CHANNEL_MASK                   (0x00UL)                            // Feature not available on this device.
 
-#define BSP_FEATURE_TRNG_HAS_MODULE_STOP                     (0UL)                               // A module stop control is available for TRNG.
+#define BSP_FEATURE_TRNG_HAS_MODULE_STOP                       (0UL)                               // A module stop control is available for TRNG.
+
+#define BSP_FEATURE_TSN_CALIBRATION32_MASK                     (0xFFFFUL)                          // Mask of valid bits for TSN calibration.
+#define BSP_FEATURE_TSN_SLOPE                                  (4000UL)                            // Typical slope for the temperature sensor, in uV/degC.
 
 #define BSP_FEATURE_TZ_IS_AVAILABLE                          (0UL)
 #define BSP_FEATURE_TZ_HAS_DLM                               (0UL)                               // Device Lifecycle Management Monitor (DLMMON) register is available.
@@ -579,11 +612,16 @@
 #define BSP_FEATURE_ADC_ELC_AVAILABLE                        (1U)                                // Indicates the ADC can trigger ELC.
 #define BSP_FEATURE_ADC_SAMPLE_HOLD_ONLY_UNIT_0              (1U)                                // Supports Sample Hold Circuit only on unit 0.
 
-#define BSP_FEATURE_BSP_HAS_ESWM_DOMAIN                      (1UL)                               // Indicates that the MCU has a power domain specifically for ESWM peripherals.
-#define BSP_FEATURE_BSP_HAS_GPT_CLOCK                        (1)                                 // The MCU supports GPT CLOCK
-#define BSP_FEATURE_BSP_MSTP_TMR_MSTPF7_MAX_CH               (1U)                                // Largest channel number associated with TMR on the MSTPCRF.MSTPF7 field on this MCU.
-#define BSP_FEATURE_BSP_MSTP_CMT_MSTPF15_MAX_CH              (1U)                                // Largest channel number associated with CMT on the MSTPCRF.MSTPF15 field on this MCU.
-#define BSP_FEATURE_PRC_MAX_PROTECT_BITS                     (5U)                                // Number of available protect bits.
+#define BSP_FEATURE_BSP_HAS_DSMIF_CLOCK                        (1UL)                               // Flag indicating an DSMIF clock is present.
+#define BSP_FEATURE_BSP_HAS_ESW_CLOCK                          (1UL)                               // Flag indicating an ESW clock is present.
+#define BSP_FEATURE_BSP_HAS_ESWM_DOMAIN                        (1UL)                               // Indicates that the MCU has a power domain specifically for ESWM peripherals.
+#define BSP_FEATURE_BSP_HAS_ESWPHY_CLOCK                       (1UL)                               // Flag indicating an ESWPHY clock is present.
+#define BSP_FEATURE_BSP_HAS_ETHPHY_CLOCK                       (1UL)                               // Flag indicating an ETHPHY clock is present.
+#define BSP_FEATURE_BSP_HAS_ESC_CLOCK                          (1UL)                               // Flag indicating an ESC clock is present.
+#define BSP_FEATURE_BSP_HAS_GPT_CLOCK                          (1)                                 // The MCU supports GPT CLOCK
+#define BSP_FEATURE_BSP_MSTP_TMR_MSTPF7_MAX_CH                 (1U)                                // Largest channel number associated with TMR on the MSTPCRF.MSTPF7 field on this MCU.
+#define BSP_FEATURE_BSP_MSTP_CMT_MSTPF15_MAX_CH                (1U)                                // Largest channel number associated with CMT on the MSTPCRF.MSTPF15 field on this MCU.
+#define BSP_FEATURE_PRC_MAX_PROTECT_BITS                       (5U)                                // Number of available protect bits.
 
 #define BSP_FEATURE_CGC_HAS_CLKOUT                           (1)                                 // The MCU supports CLKOUT
 #define BSP_FEATURE_CGC_HAS_MOCO                             (1U)                                // The MCU supports MOCO
@@ -596,9 +634,7 @@
 #define BSP_FEATURE_CMTW_CLOCK                               (FSP_PRIV_CLOCK_PCLKB)              // Indicates the clock provided to the CMTW.
 #define BSP_FEATURE_CMTW_VALID_CHANNEL_MASK                  (0x03U)                             // Mask of CMTW channel indices.
 
-#define BSP_FEATURE_DAC_MAX_CHANNELS                         (2U)                                // Number of DAC channels available.
-
-#define BSP_FEATURE_DMAC_GRP_IRQ_NUM_FACTORS                 (4U)                                // Indicates the number of grouped DMAC interrupt sources.
+#define BSP_FEATURE_DAC_MAX_CHANNELS                           (2U)                                // Number of DAC channels available.
 
 #define BSP_FEATURE_DTC_MIN_VECTOR_NUMBER                    (26U)                               // Indicates the minimum interrupt source number that can activate the DTC.
 
@@ -610,17 +646,18 @@
 #define BSP_FEATURE_I3C_SUPPORT_IIC                          (1U)                                // IIC is available in I3C module.
 #define BSP_FEATURE_I3C_ICDR_DEPTH                           (4U)                                // Size of ICDR.
 
-#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0                 (1U)                                // Indicates there is a gropu interrupt AL0.
-#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1                 (1U)                                // Indicates there is a gropu interrupt AL1.
-#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2                 (1U)                                // Indicates there is a gropu interrupt AL2.
-#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3                 (1U)                                // Indicates there is a gropu interrupt AL3.
-#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4                 (1U)                                // Indicates there is a gropu interrupt AL4.
-#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5                 (1U)                                // Indicates there is a gropu interrupt AL5.
-#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6                 (1U)                                // Indicates there is a gropu interrupt AL6.
-#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0                 (1U)                                // Indicates there is a gropu interrupt BL0.
-#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1                 (1U)                                // Indicates there is a gropu interrupt BL1.
-#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0                 (1U)                                // Indicates there is a gropu interrupt IL0.
-#define BSP_FEATURE_ICU_HAS_DMAC_GRP_IRQ                     (1U)                                // The MCU supports DMAC group interrupt.
+#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0                   (1U)                                // Indicates there is a gropu interrupt AL0.
+#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1                   (1U)                                // Indicates there is a gropu interrupt AL1.
+#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2                   (1U)                                // Indicates there is a gropu interrupt AL2.
+#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3                   (1U)                                // Indicates there is a gropu interrupt AL3.
+#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4                   (1U)                                // Indicates there is a gropu interrupt AL4.
+#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5                   (1U)                                // Indicates there is a gropu interrupt AL5.
+#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6                   (1U)                                // Indicates there is a gropu interrupt AL6.
+#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0                   (1U)                                // Indicates there is a gropu interrupt BL0.
+#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1                   (1U)                                // Indicates there is a gropu interrupt BL1.
+#define BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0                   (1U)                                // Indicates there is a gropu interrupt IL0.
+#define BSP_FEATURE_ICU_HAS_DMAC_GRP_IRQ                       (1U)                                // The MCU supports DMAC group interrupt.
+#define BSP_FEATURE_ICU_VERSION                                (2UL)                               // Version of the ICU peripheral.
 
 #define BSP_FEATURE_IOPORT_IS_AVAILABLE                      (1UL)
 
@@ -633,6 +670,11 @@
 
 #define BSP_FEATURE_SPI_HAS_SPPSR                            (1U)  // SPPSR register is available.
 
-#define BSP_FEATURE_OSPI_B_HAS_CHANNEL_1                     (0U)  // Indicates OSPI support channel 1 in each unit.
+#define BSP_FEATURE_OSPI_B_HAS_CHANNEL_1                       (0U)  // Indicates OSPI support channel 1 in each unit.
+
+#define BSP_FEATURE_TMR_VALID_CHANNEL_MASK                     (0x0FU)
+#define BSP_FEATURE_TMR_VALID_CHANNEL_16_BIT_MASK              (0x05U)
+#define BSP_FEATURE_TMR_MAX_CASCADED_CHANNEL                   (0x02U)
+#define BSP_FEATURE_TMR_CHANNELS                               (0x03U)
 
 #endif

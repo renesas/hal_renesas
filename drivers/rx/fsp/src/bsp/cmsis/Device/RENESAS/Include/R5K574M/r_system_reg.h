@@ -1,4 +1,22 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/***********************************************************************************************************************
+ * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ *
+ * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
+ * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
+ * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
+ * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
+ * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
+ * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
+ * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
+ * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
+ * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
+ * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
+ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
+ * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
+ * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
+ * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
+ **********************************************************************************************************************/
 
 #ifndef R_SYSTEM_REG_H
 #define R_SYSTEM_REG_H
@@ -232,8 +250,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
         struct
         {
-            __IOM uint8_t CKOSEL : 3;  /*!< [2..0] Clock Out source select                                            */
-            uint8_t              : 1;
+            __IOM uint8_t CKOSEL : 4;  /*!< [3..0] Clock Out source select                                            */
             __IOM uint8_t CKODIV : 3;  /*!< [6..4] Clock out input frequency Division Select                          */
             __IOM uint8_t CKOEN  : 1;  /*!< [7..7] Clock out enable                                                   */
         } CKOCR_b;
@@ -894,19 +911,19 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
     union
     {
-        __IOM uint8_t PVD1CR1;         /*!< (@ 0x000000E0) Voltage Monitor 1 Circuit Control Register 1               */
+        __IOM uint8_t LVD1CR1;         /*!< (@ 0x000000E0) Voltage Monitor 1 Circuit Control Register 1               */
 
         struct
         {
             __IOM uint8_t IDTSEL : 2;  /*!< [1..0] Voltage Monitor m Interrupt Generation Condition Select            */
             __IOM uint8_t IRQSEL : 1;  /*!< [2..2] Voltage Monitor m Interrupt Type Select                            */
             uint8_t              : 5;
-        } PVD1CR1_b;
+        } LVD1CR1_b;
     };
 
     union
     {
-        __IOM uint8_t PVD1SR;          /*!< (@ 0x000000E1) Voltage Monitor 1 Circuit Status Register                  */
+        __IOM uint8_t LVD1SR;          /*!< (@ 0x000000E1) Voltage Monitor 1 Circuit Status Register                  */
 
         struct
         {
@@ -916,24 +933,24 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
                                         *   0.                                                                        */
             __IOM uint8_t MON : 1;     /*!< [1..1] Voltage Monitor m Interrupt Type Select                            */
             uint8_t           : 6;
-        } PVD1SR_b;
+        } LVD1SR_b;
     };
 
     union
     {
-        __IOM uint8_t PVD2CR1;         /*!< (@ 0x000000E2) Voltage Monitor 2 Circuit Control Register 1               */
+        __IOM uint8_t LVD2CR1;         /*!< (@ 0x000000E2) Voltage Monitor 2 Circuit Control Register 1               */
 
         struct
         {
             __IOM uint8_t IDTSEL : 2;  /*!< [1..0] Voltage Monitor m Interrupt Generation Condition Select            */
             __IOM uint8_t IRQSEL : 1;  /*!< [2..2] Voltage Monitor m Interrupt Type Select                            */
             uint8_t              : 5;
-        } PVD2CR1_b;
+        } LVD2CR1_b;
     };
 
     union
     {
-        __IOM uint8_t PVD2SR;          /*!< (@ 0x000000E3) Voltage Monitor 2 Circuit Status Register                  */
+        __IOM uint8_t LVD2SR;          /*!< (@ 0x000000E3) Voltage Monitor 2 Circuit Status Register                  */
 
         struct
         {
@@ -943,9 +960,63 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
                                         *   0.                                                                        */
             __IOM uint8_t MON : 1;     /*!< [1..1] Voltage Monitor m Interrupt Type Select                            */
             uint8_t           : 6;
-        } PVD2SR_b;
+        } LVD2SR_b;
     };
-    __IM uint32_t RESERVED47[7];
+
+    union
+    {
+        __IOM uint8_t LVD3CR1;         /*!< (@ 0x000000E4) Voltage Monitor 2 Circuit Control Register 1               */
+
+        struct
+        {
+            __IOM uint8_t IDTSEL : 2;  /*!< [1..0] Voltage Monitor m Interrupt Generation Condition Select            */
+            __IOM uint8_t IRQSEL : 1;  /*!< [2..2] Voltage Monitor m Interrupt Type Select                            */
+            uint8_t              : 5;
+        } LVD3CR1_b;
+    };
+
+    union
+    {
+        __IOM uint8_t LVD3SR;          /*!< (@ 0x000000E5) Voltage Monitor 2 Circuit Status Register                  */
+
+        struct
+        {
+            __IOM uint8_t DET : 1;     /*!< [0..0] Voltage Monitor Voltage Change Detection Flag NOTE: Only
+                                        *   0 can be written to this bit. After writing 0 to this bit,
+                                        *   it takes 2 system clock cycles for the bit to be read as
+                                        *   0.                                                                        */
+            __IOM uint8_t MON : 1;     /*!< [1..1] Voltage Monitor m Interrupt Type Select                            */
+            uint8_t           : 6;
+        } LVD3SR_b;
+    };
+
+    union
+    {
+        __IOM uint8_t LVD4CR1;         /*!< (@ 0x000000E6) Voltage Monitor 2 Circuit Control Register 1               */
+
+        struct
+        {
+            __IOM uint8_t IDTSEL : 2;  /*!< [1..0] Voltage Monitor m Interrupt Generation Condition Select            */
+            __IOM uint8_t IRQSEL : 1;  /*!< [2..2] Voltage Monitor m Interrupt Type Select                            */
+            uint8_t              : 5;
+        } LVD4CR1_b;
+    };
+    __IM uint8_t RESERVED47;
+
+    union
+    {
+        __IOM uint8_t LVD5CR1;         /*!< (@ 0x000000E8) Voltage Monitor 2 Circuit Control Register 1               */
+
+        struct
+        {
+            __IOM uint8_t IDTSEL : 2;  /*!< [1..0] Voltage Monitor m Interrupt Generation Condition Select            */
+            __IOM uint8_t IRQSEL : 1;  /*!< [2..2] Voltage Monitor m Interrupt Type Select                            */
+            uint8_t              : 5;
+        } LVD5CR1_b;
+    };
+    __IM uint8_t  RESERVED48;
+    __IM uint16_t RESERVED49;
+    __IM uint32_t RESERVED50[5];
 
     union
     {
@@ -957,9 +1028,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t            : 7;
         } CPUDSCR_b;
     };
-    __IM uint8_t  RESERVED48;
-    __IM uint16_t RESERVED49;
-    __IM uint32_t RESERVED50[5];
+    __IM uint8_t  RESERVED51;
+    __IM uint16_t RESERVED52;
+    __IM uint32_t RESERVED53[5];
 
     union
     {
@@ -973,9 +1044,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IM uint8_t PDPGSF : 1;   /*!< [7..7] Power gating status flag                                           */
         } PDCTRESWM_b;
     };
-    __IM uint8_t  RESERVED51;
-    __IM uint16_t RESERVED52;
-    __IM uint32_t RESERVED53[9];
+    __IM uint8_t  RESERVED54;
+    __IM uint16_t RESERVED55;
+    __IM uint32_t RESERVED56[9];
 
     union
     {
@@ -998,7 +1069,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint16_t               : 4;
         } PDRAMSCR0_b;
     };
-    __IM uint8_t RESERVED54;
+    __IM uint8_t RESERVED57;
 
     union
     {
@@ -1010,7 +1081,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t              : 7;
         } PDRAMSCR2_b;
     };
-    __IM uint32_t RESERVED55[155];
+    __IM uint32_t RESERVED58[155];
 
     union
     {
@@ -1023,8 +1094,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
                                         *   between Secure region and non-secure                                      */
         } VBRSABAR_b;
     };
-    __IM uint16_t RESERVED56;
-    __IM uint32_t RESERVED57[3];
+    __IM uint16_t RESERVED59;
+    __IM uint32_t RESERVED60[3];
 
     union
     {
@@ -1116,17 +1187,17 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
     union
     {
-        __IOM uint32_t PVDSAR;          /*!< (@ 0x000003CC) Programable Voltage Detection Security Attribution
+        __IOM uint32_t LVDSAR;          /*!< (@ 0x000003CC) Programable Voltage Detection Security Attribution
                                          *                  Register                                                   */
 
         struct
         {
             __IOM uint32_t NONSEC0 : 1; /*!< [0..0] Non-secure Attribute bit 0 Target register: registers
-                                         *   for PVD1                                                                  */
+                                         *   for LVD1                                                                  */
             __IOM uint32_t NONSEC1 : 1; /*!< [1..1] Non-secure Attribute bit 1 Target register: registers
-                                         *   for PVD2                                                                  */
+                                         *   for LVD2                                                                  */
             uint32_t : 30;
-        } PVDSAR_b;
+        } LVDSAR_b;
     };
 
     union
@@ -1161,7 +1232,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint16_t : 7;
         } MDSAR_b;
     };
-    __IM uint16_t RESERVED58;
+    __IM uint16_t RESERVED61;
 
     union
     {
@@ -1175,7 +1246,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint32_t               : 24;
         } PGCSAR_b;
     };
-    __IM uint32_t RESERVED59;
+    __IM uint32_t RESERVED62;
 
     union
     {
@@ -1370,8 +1441,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint32_t : 16;
         } DPFSAR1_b;
     };
-    __IM uint32_t RESERVED60[3];
-    __IM uint16_t RESERVED61;
+    __IM uint32_t RESERVED63[3];
+    __IM uint16_t RESERVED64;
 
     union
     {
@@ -1395,7 +1466,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __OM uint16_t PRKEY : 8;   /*!< [15..8] PRC Key Code                                                      */
         } PRCR_b;
     };
-    __IM uint32_t RESERVED62;
+    __IM uint32_t RESERVED65;
 
     union
     {
@@ -1407,7 +1478,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t             : 7;
         } LOCOCR_b;
     };
-    __IM uint8_t RESERVED63;
+    __IM uint8_t RESERVED66;
 
     union
     {
@@ -1418,8 +1489,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t LOCOUTRM : 8; /*!< [7..0] LOCO User Trimming                                                 */
         } LOCOUTCR_b;
     };
-    __IM uint8_t  RESERVED64;
-    __IM uint32_t RESERVED65[383];
+    __IM uint8_t  RESERVED67;
+    __IM uint32_t RESERVED68[383];
 
     union
     {
@@ -1436,9 +1507,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t              : 1;
         } DPSBYCR_b;
     };
-    __IM uint8_t  RESERVED66;
-    __IM uint16_t RESERVED67;
-    __IM uint32_t RESERVED68;
+    __IM uint8_t  RESERVED69;
+    __IM uint16_t RESERVED70;
+    __IM uint32_t RESERVED71;
 
     union
     {
@@ -1456,8 +1527,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ7E : 1;  /*!< [7..7] IRQ7-DS Pin Enable                                                 */
         } DPSIER0_b;
     };
-    __IM uint8_t  RESERVED69;
-    __IM uint16_t RESERVED70;
+    __IM uint8_t  RESERVED72;
+    __IM uint16_t RESERVED73;
 
     union
     {
@@ -1475,8 +1546,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ15E : 1; /*!< [7..7] IRQ15-DS Pin Enable                                                */
         } DPSIER1_b;
     };
-    __IM uint8_t  RESERVED71;
-    __IM uint16_t RESERVED72;
+    __IM uint8_t  RESERVED74;
+    __IM uint16_t RESERVED75;
 
     union
     {
@@ -1492,8 +1563,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t               : 3;
         } DPSIER2_b;
     };
-    __IM uint8_t  RESERVED73;
-    __IM uint16_t RESERVED74;
+    __IM uint8_t  RESERVED76;
+    __IM uint16_t RESERVED77;
 
     union
     {
@@ -1510,8 +1581,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DVBATTADIE : 1; /*!< [7..7] VBATT Tamper Detection Deep Standby Cancel Signal Enable           */
         } DPSIER3_b;
     };
-    __IM uint8_t  RESERVED75;
-    __IM uint16_t RESERVED76;
+    __IM uint8_t  RESERVED78;
+    __IM uint16_t RESERVED79;
 
     union
     {
@@ -1529,8 +1600,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ7F : 1;  /*!< [7..7] IRQ7-DS Pin Deep Standby Cancel Flag                               */
         } DPSIFR0_b;
     };
-    __IM uint8_t  RESERVED77;
-    __IM uint16_t RESERVED78;
+    __IM uint8_t  RESERVED80;
+    __IM uint16_t RESERVED81;
 
     union
     {
@@ -1548,8 +1619,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ15F : 1; /*!< [7..7] IRQ15-DS Pin Deep Standby Cancel Flag                              */
         } DPSIFR1_b;
     };
-    __IM uint8_t  RESERVED79;
-    __IM uint16_t RESERVED80;
+    __IM uint8_t  RESERVED82;
+    __IM uint16_t RESERVED83;
 
     union
     {
@@ -1565,8 +1636,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t               : 3;
         } DPSIFR2_b;
     };
-    __IM uint8_t  RESERVED81;
-    __IM uint16_t RESERVED82;
+    __IM uint8_t  RESERVED84;
+    __IM uint16_t RESERVED85;
 
     union
     {
@@ -1583,8 +1654,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DVBATTADIF : 1; /*!< [7..7] VBATT Tamper Detection Deep Standby Cancel Flag                    */
         } DPSIFR3_b;
     };
-    __IM uint8_t  RESERVED83;
-    __IM uint16_t RESERVED84;
+    __IM uint8_t  RESERVED86;
+    __IM uint16_t RESERVED87;
 
     union
     {
@@ -1602,8 +1673,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ7EG : 1; /*!< [7..7] IRQ7-DS Pin Edge Select                                            */
         } DPSIEGR0_b;
     };
-    __IM uint8_t  RESERVED85;
-    __IM uint16_t RESERVED86;
+    __IM uint8_t  RESERVED88;
+    __IM uint16_t RESERVED89;
 
     union
     {
@@ -1621,8 +1692,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ15EG : 1; /*!< [7..7] IRQ15-DS Pin Edge Select                                           */
         } DPSIEGR1_b;
     };
-    __IM uint8_t  RESERVED87;
-    __IM uint16_t RESERVED88;
+    __IM uint8_t  RESERVED90;
+    __IM uint16_t RESERVED91;
 
     union
     {
@@ -1637,8 +1708,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t               : 3;
         } DPSIEGR2_b;
     };
-    __IM uint8_t  RESERVED89;
-    __IM uint16_t RESERVED90;
+    __IM uint8_t  RESERVED92;
+    __IM uint16_t RESERVED93;
 
     union
     {
@@ -1656,9 +1727,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ23EG : 1; /*!< [7..7] IRQ23-DS Pin Edge Select                                           */
         } DPSIEGR3_b;
     };
-    __IM uint8_t  RESERVED91;
-    __IM uint16_t RESERVED92;
-    __IM uint32_t RESERVED93[2];
+    __IM uint8_t  RESERVED94;
+    __IM uint16_t RESERVED95;
+    __IM uint32_t RESERVED96[2];
 
     union
     {
@@ -1668,28 +1739,28 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
         {
             __IOM uint8_t PORF : 1;    /*!< [0..0] Power-On Reset Detect FlagNOTE: Writable only to clear
                                         *   the flag. Confirm the value is 1 and then write 0.                        */
-            __IOM uint8_t PVD0RF : 1;  /*!< [1..1] Voltage Monitor 0 Reset Detect FlagNOTE: Writable only
+            __IOM uint8_t LVD0RF : 1;  /*!< [1..1] Voltage Monitor 0 Reset Detect FlagNOTE: Writable only
                                         *   to clear the flag. Confirm the value is 1 and then write
                                         *   0.                                                                        */
-            __IOM uint8_t PVD1RF : 1;  /*!< [2..2] Voltage Monitor 1 Reset Detect FlagNOTE: Writable only
+            __IOM uint8_t LVD1RF : 1;  /*!< [2..2] Voltage Monitor 1 Reset Detect FlagNOTE: Writable only
                                         *   to clear the flag. Confirm the value is 1 and then write
                                         *   0.                                                                        */
-            __IOM uint8_t PVD2RF : 1;  /*!< [3..3] Voltage Monitor 2 Reset Detect FlagNOTE: Writable only
+            __IOM uint8_t LVD2RF : 1;  /*!< [3..3] Voltage Monitor 2 Reset Detect FlagNOTE: Writable only
                                         *   to clear the flag. Confirm the value is 1 and then write
                                         *   0.                                                                        */
             uint8_t              : 1;
-            __IOM uint8_t PVD4RF : 1;  /*!< [5..5] Voltage Monitor 4 Reset Detect FlagNOTE: Writable only
+            __IOM uint8_t LVD4RF : 1;  /*!< [5..5] Voltage Monitor 4 Reset Detect FlagNOTE: Writable only
                                         *   to clear the flag. Confirm the value is 1 and then write
                                         *   0.                                                                        */
-            __IOM uint8_t PVD5RF : 1;  /*!< [6..6] Voltage Monitor 5 Reset Detect FlagNOTE: Writable only
+            __IOM uint8_t LVD5RF : 1;  /*!< [6..6] Voltage Monitor 5 Reset Detect FlagNOTE: Writable only
                                         *   to clear the flag. Confirm the value is 1 and then write
                                         *   0.                                                                        */
             __IOM uint8_t DPSRSTF : 1; /*!< [7..7] Deep Software Standby Reset FlagNOTE: Writable only to
                                         *   clear the flag. Confirm the value is 1 and then write 0.                  */
         } RSTSR0_b;
     };
-    __IM uint8_t  RESERVED94;
-    __IM uint16_t RESERVED95;
+    __IM uint8_t  RESERVED97;
+    __IM uint16_t RESERVED98;
 
     union
     {
@@ -1701,8 +1772,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t            : 7;
         } RSTSR2_b;
     };
-    __IM uint8_t  RESERVED96;
-    __IM uint16_t RESERVED97;
+    __IM uint8_t  RESERVED99;
+    __IM uint16_t RESERVED100;
 
     union
     {
@@ -1715,9 +1786,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t TEMPRF : 1;  /*!< [7..7] Temperature MonitorReset Detect Flag                               */
         } RSTSR3_b;
     };
-    __IM uint8_t  RESERVED98;
-    __IM uint16_t RESERVED99;
-    __IM uint32_t RESERVED100;
+    __IM uint8_t  RESERVED101;
+    __IM uint16_t RESERVED102;
+    __IM uint32_t RESERVED103;
 
     union
     {
@@ -1733,71 +1804,84 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t              : 1;
         } MOMCR_b;
     };
-    __IM uint8_t  RESERVED101;
-    __IM uint16_t RESERVED102;
-    __IM uint32_t RESERVED103;
-
-    union
-    {
-        __IOM uint8_t PVD1CMPCR;       /*!< (@ 0x00000A58) Voltage Monitor 1 Comparator Control Register              */
-
-        struct
-        {
-            __IOM uint8_t PVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
-            uint8_t              : 2;
-            __IOM uint8_t PVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
-        } PVD1CMPCR_b;
-    };
     __IM uint8_t  RESERVED104;
     __IM uint16_t RESERVED105;
+    __IM uint32_t RESERVED106;
 
     union
     {
-        __IOM uint8_t PVD2CMPCR;       /*!< (@ 0x00000A5C) Voltage Monitor 2 Comparator Control Register              */
+        __IOM uint8_t LVD1CMPCR;       /*!< (@ 0x00000A58) Voltage Monitor 1 Comparator Control Register              */
 
         struct
         {
-            __IOM uint8_t PVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
+            __IOM uint8_t LVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
             uint8_t              : 2;
-            __IOM uint8_t PVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
-        } PVD2CMPCR_b;
+            __IOM uint8_t LVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
+        } LVD1CMPCR_b;
     };
-    __IM uint8_t  RESERVED106;
-    __IM uint16_t RESERVED107;
-    __IM uint32_t RESERVED108;
+    __IM uint8_t  RESERVED107;
+    __IM uint16_t RESERVED108;
 
     union
     {
-        __IOM uint8_t PVD4CMPCR;       /*!< (@ 0x00000A64) Voltage Monitor 4 Comparator Control Register              */
+        __IOM uint8_t LVD2CMPCR;       /*!< (@ 0x00000A5C) Voltage Monitor 2 Comparator Control Register              */
 
         struct
         {
-            __IOM uint8_t PVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
+            __IOM uint8_t LVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
             uint8_t              : 2;
-            __IOM uint8_t PVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
-        } PVD4CMPCR_b;
+            __IOM uint8_t LVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
+        } LVD2CMPCR_b;
     };
     __IM uint8_t  RESERVED109;
     __IM uint16_t RESERVED110;
 
     union
     {
-        __IOM uint8_t PVD5CMPCR;       /*!< (@ 0x00000A68) Voltage Monitor 5 Comparator Control Register              */
+        __IOM uint8_t LVD3CMPCR;       /*!< (@ 0x00000A5C) Voltage Monitor 2 Comparator Control Register              */
 
         struct
         {
-            __IOM uint8_t PVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
+            __IOM uint8_t LVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
             uint8_t              : 2;
-            __IOM uint8_t PVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
-        } PVD5CMPCR_b;
+            __IOM uint8_t LVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
+        } LVD3CMPCR_b;
     };
     __IM uint8_t  RESERVED111;
     __IM uint16_t RESERVED112;
-    __IM uint32_t RESERVED113;
 
     union
     {
-        __IOM uint8_t PVD1CR0;         /*!< (@ 0x00000A70) Voltage Monitor 1 Circuit Control Register 0               */
+        __IOM uint8_t LVD4CMPCR;       /*!< (@ 0x00000A64) Voltage Monitor 4 Comparator Control Register              */
+
+        struct
+        {
+            __IOM uint8_t LVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
+            uint8_t              : 2;
+            __IOM uint8_t LVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
+        } LVD4CMPCR_b;
+    };
+    __IM uint8_t  RESERVED113;
+    __IM uint16_t RESERVED114;
+
+    union
+    {
+        __IOM uint8_t LVD5CMPCR;       /*!< (@ 0x00000A68) Voltage Monitor 5 Comparator Control Register              */
+
+        struct
+        {
+            __IOM uint8_t LVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
+            uint8_t              : 2;
+            __IOM uint8_t LVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
+        } LVD5CMPCR_b;
+    };
+    __IM uint8_t  RESERVED115;
+    __IM uint16_t RESERVED116;
+    __IM uint32_t RESERVED117;
+
+    union
+    {
+        __IOM uint8_t LVD1CR0;         /*!< (@ 0x00000A70) Voltage Monitor 1 Circuit Control Register 0               */
 
         struct
         {
@@ -1808,14 +1892,14 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t FSAMP : 2;   /*!< [5..4] Sampling Clock Select                                              */
             __IOM uint8_t RI    : 1;   /*!< [6..6] Voltage Monitor m Circuit Mode Select                              */
             __IOM uint8_t RN    : 1;   /*!< [7..7] Voltage Monitor m Reset Negate Select                              */
-        } PVD1CR0_b;
+        } LVD1CR0_b;
     };
-    __IM uint8_t  RESERVED114;
-    __IM uint16_t RESERVED115;
+    __IM uint8_t  RESERVED118;
+    __IM uint16_t RESERVED119;
 
     union
     {
-        __IOM uint8_t PVD2CR0;         /*!< (@ 0x00000A74) Voltage Monitor 2 Circuit Control Register 0               */
+        __IOM uint8_t LVD2CR0;         /*!< (@ 0x00000A74) Voltage Monitor 2 Circuit Control Register 0               */
 
         struct
         {
@@ -1826,45 +1910,64 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t FSAMP : 2;   /*!< [5..4] Sampling Clock Select                                              */
             __IOM uint8_t RI    : 1;   /*!< [6..6] Voltage Monitor m Circuit Mode Select                              */
             __IOM uint8_t RN    : 1;   /*!< [7..7] Voltage Monitor m Reset Negate Select                              */
-        } PVD2CR0_b;
+        } LVD2CR0_b;
     };
-    __IM uint8_t  RESERVED116;
-    __IM uint16_t RESERVED117;
-    __IM uint32_t RESERVED118;
+    __IM uint8_t  RESERVED120;
+    __IM uint16_t RESERVED121;
 
     union
     {
-        __IOM uint8_t PVD4CR0;         /*!< (@ 0x00000A7C) Voltage Monitor 4 Circuit Control Register 0               */
+        __IOM uint8_t LVD3CR0;         /*!< (@ 0x00000A74) Voltage Monitor 2 Circuit Control Register 0               */
 
         struct
         {
-            __IOM uint8_t RE    : 1;   /*!< [0..0] Voltage Monitor n Reset Enable                                     */
-            __IOM uint8_t DFDIS : 1;   /*!< [1..1] Voltage Monitor n Digital Filter Disable Mode Select               */
-            __IOM uint8_t CMPE  : 1;   /*!< [2..2] Voltage Monitor n Circuit Comparison Result Output Enable          */
+            __IOM uint8_t RIE   : 1;   /*!< [0..0] Voltage Monitor m Interrupt/Reset Enable                           */
+            __IOM uint8_t DFDIS : 1;   /*!< [1..1] Voltage Monitor m Digital Filter Disable Mode Select               */
+            __IOM uint8_t CMPE  : 1;   /*!< [2..2] Voltage Monitor m Circuit Comparison Result Output Enable          */
             uint8_t             : 1;
             __IOM uint8_t FSAMP : 2;   /*!< [5..4] Sampling Clock Select                                              */
-            uint8_t             : 2;
-        } PVD4CR0_b;
+            __IOM uint8_t RI    : 1;   /*!< [6..6] Voltage Monitor m Circuit Mode Select                              */
+            __IOM uint8_t RN    : 1;   /*!< [7..7] Voltage Monitor m Reset Negate Select                              */
+        } LVD3CR0_b;
     };
-    __IM uint8_t  RESERVED119;
-    __IM uint16_t RESERVED120;
+    __IM uint8_t  RESERVED122;
+    __IM uint16_t RESERVED123;
 
     union
     {
-        __IOM uint8_t PVD5CR0;         /*!< (@ 0x00000A80) Voltage Monitor 5 Circuit Control Register 0               */
+        __IOM uint8_t LVD4CR0;         /*!< (@ 0x00000A7C) Voltage Monitor 4 Circuit Control Register 0               */
 
         struct
         {
-            __IOM uint8_t RE    : 1;   /*!< [0..0] Voltage Monitor n Reset Enable                                     */
-            __IOM uint8_t DFDIS : 1;   /*!< [1..1] Voltage Monitor n Digital Filter Disable Mode Select               */
-            __IOM uint8_t CMPE  : 1;   /*!< [2..2] Voltage Monitor n Circuit Comparison Result Output Enable          */
+            __IOM uint8_t RIE   : 1;   /*!< [0..0] Voltage Monitor m Interrupt/Reset Enable                           */
+            __IOM uint8_t DFDIS : 1;   /*!< [1..1] Voltage Monitor m Digital Filter Disable Mode Select               */
+            __IOM uint8_t CMPE  : 1;   /*!< [2..2] Voltage Monitor m Circuit Comparison Result Output Enable          */
             uint8_t             : 1;
             __IOM uint8_t FSAMP : 2;   /*!< [5..4] Sampling Clock Select                                              */
-            uint8_t             : 2;
-        } PVD5CR0_b;
+            __IOM uint8_t RI    : 1;   /*!< [6..6] Voltage Monitor m Circuit Mode Select                              */
+            __IOM uint8_t RN    : 1;   /*!< [7..7] Voltage Monitor m Reset Negate Select                              */
+        } LVD4CR0_b;
     };
-    __IM uint8_t  RESERVED121;
-    __IM uint16_t RESERVED122;
+    __IM uint8_t  RESERVED124;
+    __IM uint16_t RESERVED125;
+
+    union
+    {
+        __IOM uint8_t LVD5CR0;         /*!< (@ 0x00000A80) Voltage Monitor 5 Circuit Control Register 0               */
+
+        struct
+        {
+            __IOM uint8_t RIE   : 1;   /*!< [0..0] Voltage Monitor Interrupt/Reset Enable                             */
+            __IOM uint8_t DFDIS : 1;   /*!< [1..1] Voltage Monitor Digital Filter Disable Mode Select                 */
+            __IOM uint8_t CMPE  : 1;   /*!< [2..2] Voltage Monitor Circuit Comparison Result Output Enable            */
+            uint8_t             : 1;
+            __IOM uint8_t FSAMP : 2;   /*!< [5..4] Sampling Clock Select                                              */
+            __IOM uint8_t RI    : 1;   /*!< [6..6] Voltage Monitor Circuit Mode Select                                */
+            __IOM uint8_t RN    : 1;   /*!< [7..7] Voltage Monitor Reset Negate Select                                */
+        } LVD5CR0_b;
+    };
+    __IM uint8_t  RESERVED126;
+    __IM uint16_t RESERVED127;
 
     union
     {
@@ -1877,8 +1980,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t                  : 7;
         } VBATTMNSELR_b;
     };
-    __IM uint8_t  RESERVED123;
-    __IM uint16_t RESERVED124;
+    __IM uint8_t  RESERVED128;
+    __IM uint16_t RESERVED129;
 
     union
     {
@@ -1890,9 +1993,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t                : 7;
         } VBTBPCR1_b;
     };
-    __IM uint8_t  RESERVED125;
-    __IM uint16_t RESERVED126;
-    __IM uint32_t RESERVED127;
+    __IM uint8_t  RESERVED130;
+    __IM uint16_t RESERVED131;
+    __IM uint32_t RESERVED132;
 
     union
     {
@@ -1904,9 +2007,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t            : 4;
         } LPSCR_b;
     };
-    __IM uint8_t  RESERVED128;
-    __IM uint16_t RESERVED129;
-    __IM uint32_t RESERVED130;
+    __IM uint8_t  RESERVED133;
+    __IM uint16_t RESERVED134;
+    __IM uint32_t RESERVED135;
 
     union
     {
@@ -1920,8 +2023,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t             : 4;
         } SSCR1_b;
     };
-    __IM uint8_t  RESERVED131;
-    __IM uint16_t RESERVED132;
+    __IM uint8_t  RESERVED136;
+    __IM uint16_t RESERVED137;
 
     union
     {
@@ -1933,9 +2036,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t             : 5;
         } SVSCR_b;
     };
-    __IM uint8_t  RESERVED133;
-    __IM uint16_t RESERVED134;
-    __IM uint32_t RESERVED135[4];
+    __IM uint8_t  RESERVED138;
+    __IM uint16_t RESERVED139;
+    __IM uint32_t RESERVED140[4];
 
     union
     {
@@ -1947,8 +2050,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t             : 7;
         } LVOCR_b;
     };
-    __IM uint8_t  RESERVED136;
-    __IM uint16_t RESERVED137;
+    __IM uint8_t  RESERVED141;
+    __IM uint16_t RESERVED142;
 
     union
     {
@@ -1960,8 +2063,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t           : 6;
         } MWMCR_b;
     };
-    __IM uint8_t  RESERVED138;
-    __IM uint16_t RESERVED139;
+    __IM uint8_t  RESERVED143;
+    __IM uint16_t RESERVED144;
 
     union
     {
@@ -1973,9 +2076,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t WCODE    : 7; /*!< [7..1] Write CODE                                                         */
         } DCCR_b;
     };
-    __IM uint8_t  RESERVED140;
-    __IM uint16_t RESERVED141;
-    __IM uint32_t RESERVED142[5];
+    __IM uint8_t  RESERVED145;
+    __IM uint16_t RESERVED146;
+    __IM uint32_t RESERVED147[5];
 
     union
     {
@@ -1992,9 +2095,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t BUSMASK  : 1; /*!< [7..7] BUS error Reset Mask                                               */
         } SYRSTMSK0_b;
     };
-    __IM uint8_t  RESERVED143;
-    __IM uint16_t RESERVED144;
-    __IM uint32_t RESERVED145;
+    __IM uint8_t  RESERVED148;
+    __IM uint16_t RESERVED149;
+    __IM uint32_t RESERVED150;
 
     union
     {
@@ -2007,8 +2110,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t                : 6;
         } SYRSTMSK2_b;
     };
-    __IM uint8_t  RESERVED146;
-    __IM uint16_t RESERVED147;
+    __IM uint8_t  RESERVED151;
+    __IM uint16_t RESERVED152;
 
     union
     {
@@ -2023,8 +2126,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t               : 4;
         } TEMPRCR_b;
     };
-    __IM uint8_t  RESERVED148;
-    __IM uint16_t RESERVED149;
+    __IM uint8_t  RESERVED153;
+    __IM uint16_t RESERVED154;
 
     union
     {
@@ -2036,9 +2139,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t            : 7;
         } TEMPRLR_b;
     };
-    __IM uint8_t  RESERVED150;
-    __IM uint16_t RESERVED151;
-    __IM uint32_t RESERVED152[4];
+    __IM uint8_t  RESERVED155;
+    __IM uint16_t RESERVED156;
+    __IM uint32_t RESERVED157[4];
 
     union
     {
@@ -2051,9 +2154,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IM uint8_t EFUPTSF : 1;  /*!< [7..7] LDO Efficiency Up Transition Status Flag                           */
         } LDOECR_b;
     };
-    __IM uint8_t  RESERVED153;
-    __IM uint16_t RESERVED154;
-    __IM uint32_t RESERVED155[3];
+    __IM uint8_t  RESERVED158;
+    __IM uint16_t RESERVED159;
+    __IM uint32_t RESERVED160[3];
 
     union
     {
@@ -2066,8 +2169,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t              : 6;
         } PLL1LDOCR_b;
     };
-    __IM uint8_t  RESERVED156;
-    __IM uint16_t RESERVED157;
+    __IM uint8_t  RESERVED161;
+    __IM uint16_t RESERVED162;
 
     union
     {
@@ -2080,8 +2183,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t              : 6;
         } PLL2LDOCR_b;
     };
-    __IM uint8_t  RESERVED158;
-    __IM uint16_t RESERVED159;
+    __IM uint8_t  RESERVED163;
+    __IM uint16_t RESERVED164;
 
     union
     {
@@ -2094,62 +2197,74 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t              : 6;
         } HOCOLDOCR_b;
     };
-    __IM uint8_t  RESERVED160;
-    __IM uint16_t RESERVED161;
-    __IM uint32_t RESERVED162[4];
-
-    union
-    {
-        __IOM uint8_t PVD1FCR;         /*!< (@ 0x00000B20) Voltage Monitor 1 Function Control Register                */
-
-        struct
-        {
-            __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
-            uint8_t             : 7;
-        } PVD1FCR_b;
-    };
-    __IM uint8_t  RESERVED163;
-    __IM uint16_t RESERVED164;
-
-    union
-    {
-        __IOM uint8_t PVD2FCR;         /*!< (@ 0x00000B24) Voltage Monitor 2 Function Control Register                */
-
-        struct
-        {
-            __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
-            uint8_t             : 7;
-        } PVD2FCR_b;
-    };
     __IM uint8_t  RESERVED165;
     __IM uint16_t RESERVED166;
-    __IM uint32_t RESERVED167;
+    __IM uint32_t RESERVED167[4];
 
     union
     {
-        __IOM uint8_t PVD4FCR;         /*!< (@ 0x00000B2C) Voltage Monitor 4 Function Control Register                */
+        __IOM uint8_t LVD1FCR;         /*!< (@ 0x00000B20) Voltage Monitor 1 Function Control Register                */
 
         struct
         {
             __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
             uint8_t             : 7;
-        } PVD4FCR_b;
+        } LVD1FCR_b;
     };
     __IM uint8_t  RESERVED168;
     __IM uint16_t RESERVED169;
 
     union
     {
-        __IOM uint8_t PVD5FCR;         /*!< (@ 0x00000B30) Voltage Monitor 5 Function Control Register                */
+        __IOM uint8_t LVD2FCR;         /*!< (@ 0x00000B24) Voltage Monitor 2 Function Control Register                */
 
         struct
         {
             __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
             uint8_t             : 7;
-        } PVD5FCR_b;
+        } LVD2FCR_b;
     };
     __IM uint8_t  RESERVED170;
     __IM uint16_t RESERVED171;
+
+    union
+    {
+        __IOM uint8_t LVD3FCR;         /*!< (@ 0x00000B24) Voltage Monitor 2 Function Control Register                */
+
+        struct
+        {
+            __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
+            uint8_t             : 7;
+        } LVD3FCR_b;
+    };
+    __IM uint8_t  RESERVED172;
+    __IM uint16_t RESERVED173;
+
+    union
+    {
+        __IOM uint8_t LVD4FCR;         /*!< (@ 0x00000B2C) Voltage Monitor 4 Function Control Register                */
+
+        struct
+        {
+            __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
+            uint8_t             : 7;
+        } LVD4FCR_b;
+    };
+    __IM uint8_t  RESERVED174;
+    __IM uint16_t RESERVED175;
+
+    union
+    {
+        __IOM uint8_t LVD5FCR;         /*!< (@ 0x00000B30) Voltage Monitor 5 Function Control Register                */
+
+        struct
+        {
+            __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
+            uint8_t             : 7;
+        } LVD5FCR_b;
+    };
+    __IM uint8_t  RESERVED176;
+    __IM uint16_t RESERVED177;
 
     union
     {
@@ -2161,9 +2276,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t            : 7;
         } PVDLR_b;
     };
-    __IM uint8_t  RESERVED172;
-    __IM uint16_t RESERVED173;
-    __IM uint32_t RESERVED174[2];
+    __IM uint8_t  RESERVED178;
+    __IM uint16_t RESERVED179;
+    __IM uint32_t RESERVED180[2];
 
     union
     {
@@ -2181,8 +2296,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ23E : 1; /*!< [7..7] IRQ23-DS Pin Enable                                                */
         } DPSIER4_b;
     };
-    __IM uint8_t  RESERVED175;
-    __IM uint16_t RESERVED176;
+    __IM uint8_t  RESERVED181;
+    __IM uint16_t RESERVED182;
 
     union
     {
@@ -2200,8 +2315,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ31E : 1; /*!< [7..7] IRQ31-DS Pin Enable                                                */
         } DPSIER5_b;
     };
-    __IM uint8_t  RESERVED177;
-    __IM uint16_t RESERVED178;
+    __IM uint8_t  RESERVED183;
+    __IM uint16_t RESERVED184;
 
     union
     {
@@ -2219,8 +2334,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ23F : 1; /*!< [7..7] IRQ23-DS Pin Deep Standby Cancel Flag                              */
         } DPSIFR4_b;
     };
-    __IM uint8_t  RESERVED179;
-    __IM uint16_t RESERVED180;
+    __IM uint8_t  RESERVED185;
+    __IM uint16_t RESERVED186;
 
     union
     {
@@ -2238,8 +2353,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ31F : 1; /*!< [7..7] IRQ31-DS Pin Deep Standby Cancel Flag                              */
         } DPSIFR5_b;
     };
-    __IM uint8_t  RESERVED181;
-    __IM uint16_t RESERVED182;
+    __IM uint8_t  RESERVED187;
+    __IM uint16_t RESERVED188;
 
     union
     {
@@ -2257,9 +2372,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t DIRQ31EG : 1; /*!< [7..7] IRQ31-DS Pin Edge Select                                           */
         } DPSIEGR4_b;
     };
-    __IM uint8_t  RESERVED183;
-    __IM uint16_t RESERVED184;
-    __IM uint32_t RESERVED185[9];
+    __IM uint8_t  RESERVED189;
+    __IM uint16_t RESERVED190;
+    __IM uint32_t RESERVED191[9];
 
     union
     {
@@ -2277,8 +2392,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t                : 1;
         } ROUTSR0_b;
     };
-    __IM uint8_t  RESERVED186;
-    __IM uint16_t RESERVED187;
+    __IM uint8_t  RESERVED192;
+    __IM uint16_t RESERVED193;
 
     union
     {
@@ -2310,9 +2425,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t ROTEMPRF : 1; /*!< [7..7] Temperature MonitorReset Detect Flag                               */
         } ROUTSR2_b;
     };
-    __IM uint8_t  RESERVED188;
-    __IM uint16_t RESERVED189;
-    __IM uint32_t RESERVED190[31];
+    __IM uint8_t  RESERVED194;
+    __IM uint16_t RESERVED195;
+    __IM uint32_t RESERVED196[31];
 
     union
     {
@@ -2337,7 +2452,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t             : 1;
         } SOMCR_b;
     };
-    __IM uint16_t RESERVED191;
+    __IM uint16_t RESERVED197;
 
     union
     {
@@ -2362,8 +2477,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t              : 7;
         } SOSTDSR_b;
     };
-    __IM uint16_t RESERVED192;
-    __IM uint32_t RESERVED193[14];
+    __IM uint16_t RESERVED198;
+    __IM uint32_t RESERVED199[14];
 
     union
     {
@@ -2376,9 +2491,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t            : 4;
         } VBTBER_b;
     };
-    __IM uint8_t  RESERVED194;
-    __IM uint16_t RESERVED195;
-    __IM uint8_t  RESERVED196;
+    __IM uint8_t  RESERVED200;
+    __IM uint16_t RESERVED201;
+    __IM uint8_t  RESERVED202;
 
     union
     {
@@ -2406,7 +2521,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t              : 2;
         } VBTBPSR_b;
     };
-    __IM uint8_t RESERVED197;
+    __IM uint8_t RESERVED203;
 
     union
     {
@@ -2450,7 +2565,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t                : 5;
         } VBTADCR2_b;
     };
-    __IM uint8_t RESERVED198;
+    __IM uint8_t RESERVED204;
 
     union
     {
@@ -2494,7 +2609,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t              : 5;
         } VBTIMONR_b;
     };
-    __IM uint8_t RESERVED199;
+    __IM uint8_t RESERVED205;
 
     union
     {
@@ -2506,8 +2621,8 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t             : 5;
         } VBTNCWCR_b;
     };
-    __IM uint8_t  RESERVED200;
-    __IM uint16_t RESERVED201;
+    __IM uint8_t  RESERVED206;
+    __IM uint16_t RESERVED207;
 
     union
     {
@@ -2521,9 +2636,9 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             uint8_t                : 5;
         } VBTADCR3_b;
     };
-    __IM uint8_t  RESERVED202;
-    __IM uint16_t RESERVED203;
-    __IM uint32_t RESERVED204[42];
+    __IM uint8_t  RESERVED208;
+    __IM uint16_t RESERVED209;
+    __IM uint32_t RESERVED300[42];
     __IOM uint8_t VBTBKR[128];         /*!< (@ 0x00000D00) VBATT Backup Register [0..127]                             */
 } R_SYSTEM_Type;                       /*!< Size = 3456 (0xd80)                                                       */
 

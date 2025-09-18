@@ -91,7 +91,7 @@
   RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(gptclk)))
 #define BSP_CFG_I3CCLK_SOURCE                                                  \
   RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(i3cclk)))
-#define BSP_CFG_UCK_SOURCE RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(uclk)))
+#define BSP_CFG_UCLK_SOURCE RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(uclk)))
 #define BSP_CFG_USB60CLK_SOURCE                                                \
   RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(usb60clk)))
 #define BSP_CFG_OCTA_SOURCE                                                    \
@@ -130,14 +130,14 @@
 #define BSP_CFG_CANFDCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(canfdclk), div, 10)
 #define BSP_CFG_GPTCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(gptclk), div, 4)
 #define BSP_CFG_I3CCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(i3cclk), div, 5)
-#define BSP_CFG_UCK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(uclk), div, 5)
+#define BSP_PRV_UCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(uclk), div, 5)
 #define BSP_CFG_USB60CLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(usb60clk), div, 5)
 #define BSP_CFG_OCTA_DIV RX_CGC_CLK_DIV(DT_NODELABEL(octaspiclk), div, 4)
 #define BSP_CFG_ADCCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(adcclk), div, 4)
 #define BSP_CFG_ESWCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(eswclk), div, 4)
 #define BSP_CFG_ESWPHYCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(eswphyclk), div, 4)
 #define BSP_CFG_ETHPHYCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(ethphyclk), div, 4)
-#define BSP_CFG_ESCCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(esccclk), div, 4)
+#define BSP_CFG_ESCCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(escclk), div, 4)
 #define BSP_CFG_DSMIFCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(dsmifclk), div, 4)
 #define BSP_CFG_GPT_COUNT_CLOCK_SOURCE (1) /* GPT Src: PCLKD */
 #define BSP_CFG_PINOUT_SOURCE                                                  \

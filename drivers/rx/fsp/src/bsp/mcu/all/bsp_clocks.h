@@ -1,4 +1,22 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/***********************************************************************************************************************
+ * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ *
+ * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
+ * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
+ * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
+ * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
+ * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
+ * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
+ * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
+ * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
+ * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
+ * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
+ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
+ * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
+ * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
+ * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
+ **********************************************************************************************************************/
 
 #ifndef BSP_CLOCKS_H
 #define BSP_CLOCKS_H
@@ -18,30 +36,47 @@ FSP_HEADER
 
 /* The following definitions are macros instead of enums because the values are used in preprocessor conditionals. */
 /* Must match SCKCR.CKSEL values. */
-#define BSP_CLOCKS_SOURCE_CLOCK_HOCO        (0) // The high speed on chip oscillator.
-#define BSP_CLOCKS_SOURCE_CLOCK_MOCO        (1) // The middle speed on chip oscillator.
-#define BSP_CLOCKS_SOURCE_CLOCK_LOCO        (2) // The low speed on chip oscillator.
-#define BSP_CLOCKS_SOURCE_CLOCK_MAIN_OSC    (3) // The main oscillator.
-#define BSP_CLOCKS_SOURCE_CLOCK_SUBCLOCK    (4) // The subclock oscillator.
+#define BSP_CLOCKS_SOURCE_CLOCK_HOCO               (0) // The high speed on chip oscillator.
+#define BSP_CLOCKS_SOURCE_CLOCK_MOCO               (1) // The middle speed on chip oscillator.
+#define BSP_CLOCKS_SOURCE_CLOCK_LOCO               (2) // The low speed on chip oscillator.
+#define BSP_CLOCKS_SOURCE_CLOCK_MAIN_OSC           (3) // The main oscillator.
+#define BSP_CLOCKS_SOURCE_CLOCK_SUBCLOCK           (4) // The subclock oscillator.
 
 /* The following definitions are macros instead of enums because the values are used in preprocessor conditionals. */
 /* Must match BCLKCR.EBCKASEL values. */
-#define BSP_CLOCKS_SOURCE_CLOCK_BCLK        (0)
-#define BSP_CLOCKS_SOURCE_CLOCK_BCLKA       (0)
+#define BSP_CLOCKS_SOURCE_CLOCK_BCLK               (0)
+#define BSP_CLOCKS_SOURCE_CLOCK_BCLKA              (1)
 
 #if 0 < BSP_FEATURE_CGC_PLL1_NUM_OUTPUT_CLOCKS
- #define BSP_CLOCKS_SOURCE_CLOCK_PLL        (5) // The PLL oscillator.
+ #define BSP_CLOCKS_SOURCE_CLOCK_PLL               (5) // The PLL oscillator.
 #endif
 #if 0 < BSP_FEATURE_CGC_PLL2_NUM_OUTPUT_CLOCKS
- #define BSP_CLOCKS_SOURCE_CLOCK_PLL2       (6) // The PLL2 oscillator.
+ #define BSP_CLOCKS_SOURCE_CLOCK_PLL2              (6) // The PLL2 oscillator.
 #endif
 #if (1 < BSP_FEATURE_CGC_PLL1_NUM_OUTPUT_CLOCKS && 1 < BSP_FEATURE_CGC_PLL2_NUM_OUTPUT_CLOCKS)
- #define BSP_CLOCKS_SOURCE_CLOCK_PLL1P      (BSP_CLOCKS_SOURCE_CLOCK_PLL)
- #define BSP_CLOCKS_SOURCE_CLOCK_PLL2P      (BSP_CLOCKS_SOURCE_CLOCK_PLL2)
- #define BSP_CLOCKS_SOURCE_CLOCK_PLL1Q      (7)  // The PLL1Q oscillator.
- #define BSP_CLOCKS_SOURCE_CLOCK_PLL1R      (8)  // The PLL1R oscillator.
- #define BSP_CLOCKS_SOURCE_CLOCK_PLL2Q      (9)  // The PLL2Q oscillator.
- #define BSP_CLOCKS_SOURCE_CLOCK_PLL2R      (10) // The PLL2R oscillator.
+ #define BSP_CLOCKS_SOURCE_CLOCK_PLL1P             (BSP_CLOCKS_SOURCE_CLOCK_PLL)
+ #define BSP_CLOCKS_SOURCE_CLOCK_PLL2P             (BSP_CLOCKS_SOURCE_CLOCK_PLL2)
+ #define BSP_CLOCKS_SOURCE_CLOCK_PLL1Q             (7)  // The PLL1Q oscillator.
+ #define BSP_CLOCKS_SOURCE_CLOCK_PLL1R             (8)  // The PLL1R oscillator.
+ #define BSP_CLOCKS_SOURCE_CLOCK_PLL2Q             (9)  // The PLL2Q oscillator.
+ #define BSP_CLOCKS_SOURCE_CLOCK_PLL2R             (10) // The PLL2R oscillator.
+#endif
+
+/* The following definitions are macros instead of enums because the values are used in preprocessor conditionals. */
+/* Must match CKOCR.CKOSEL values. */
+#define BSP_CLOCKS_CLKOUT_SOURCE_CLOCK_HOCO        (0)  // The high speed on chip oscillator.
+#define BSP_CLOCKS_CLKOUT_SOURCE_CLOCK_MOCO        (1)  // The middle speed on chip oscillator.
+#define BSP_CLOCKS_CLKOUT_SOURCE_CLOCK_LOCO        (2)  // The low speed on chip oscillator.
+#define BSP_CLOCKS_CLKOUT_SOURCE_CLOCK_MAIN_OSC    (3)  // The main oscillator.
+#define BSP_CLOCKS_CLKOUT_SOURCE_CLOCK_SUBCLOCK    (4)  // The subclock oscillator.
+#define BSP_CLOCKS_CLKOUT_SOURCE_CLOCK_ICLK        (5)  // The ICLK.
+
+#if (1 < BSP_FEATURE_CGC_PLL1_NUM_OUTPUT_CLOCKS && 1 < BSP_FEATURE_CGC_PLL2_NUM_OUTPUT_CLOCKS)
+ #define BSP_CLOCKS_CLKOUT_SOURCE_CLOCK_PLL1P      (8)  // The PLL1P oscillator.
+ #define BSP_CLOCKS_CLKOUT_SOURCE_CLOCK_PLL2P      (13) // The PLL2P oscillator.
+ #define BSP_CLOCKS_CLKOUT_SOURCE_CLOCK_PLL1Q      (14) // The PLL1Q oscillator.
+ #define BSP_CLOCKS_CLKOUT_SOURCE_CLOCK_PLL2Q      (15) // The PLL2Q oscillator.
+
 #endif
 
 /* PLLs are not supported in the following scenarios:
@@ -55,49 +90,49 @@ FSP_HEADER
     (4U != BSP_FEATURE_CGC_PLLCCR_TYPE) &&                      \
     (5U != BSP_FEATURE_CGC_PLLCCR_TYPE) &&                      \
     !BSP_CLOCK_CFG_MAIN_OSC_POPULATED)
- #define BSP_PRV_PLL_SUPPORTED              (1)
+ #define BSP_PRV_PLL_SUPPORTED           (1)
  #if BSP_FEATURE_CGC_HAS_PLL2
-  #define BSP_PRV_PLL2_SUPPORTED            (1)
+  #define BSP_PRV_PLL2_SUPPORTED         (1)
  #else
-  #define BSP_PRV_PLL2_SUPPORTED            (0)
+  #define BSP_PRV_PLL2_SUPPORTED         (0)
  #endif
 #else
- #define BSP_PRV_PLL_SUPPORTED              (0)
- #define BSP_PRV_PLL2_SUPPORTED             (0)
+ #define BSP_PRV_PLL_SUPPORTED           (0)
+ #define BSP_PRV_PLL2_SUPPORTED          (0)
 #endif
 
 /* The ICLK frequency at startup is used to determine the ideal operating mode to set after startup. The PLL frequency
  * calculated here is also used to initialize the g_clock_freq array. */
 #if BSP_PRV_PLL_SUPPORTED
- #define BSP_PRV_PLL_SOURCE_FREQ_HZ         (BSP_CFG_XTAL_HZ)
+ #define BSP_PRV_PLL_SOURCE_FREQ_HZ      (BSP_CFG_XTAL_HZ)
 #endif
 #if BSP_PRV_PLL2_SUPPORTED
  #if BSP_CLOCKS_SOURCE_CLOCK_HOCO == BSP_CFG_PLL2_SOURCE
-  #define BSP_PRV_PLL2_SOURCE_FREQ_HZ       (BSP_HOCO_HZ)
+  #define BSP_PRV_PLL2_SOURCE_FREQ_HZ    (BSP_HOCO_HZ)
  #else
-  #define BSP_PRV_PLL2_SOURCE_FREQ_HZ       (BSP_CFG_XTAL_HZ)
+  #define BSP_PRV_PLL2_SOURCE_FREQ_HZ    (BSP_CFG_XTAL_HZ)
  #endif
 #endif
 
-#define BSP_MOCO_FREQ_HZ                    (BSP_MOCO_HZ)
+#define BSP_MOCO_FREQ_HZ                 (BSP_MOCO_HZ)
 
 /* Frequencies of clocks with fixed freqencies. */
-#define BSP_LOCO_FREQ_HZ                    (32768U) // LOCO frequency is fixed at 32768 Hz
-#define BSP_SUBCLOCK_FREQ_HZ                (32768U) // Subclock frequency is 32768 Hz
+#define BSP_LOCO_FREQ_HZ                 (32768U) // LOCO frequency is fixed at 32768 Hz
+#define BSP_SUBCLOCK_FREQ_HZ             (32768U) // Subclock frequency is 32768 Hz
 
 #if BSP_CLOCKS_SOURCE_CLOCK_HOCO == BSP_CFG_CLOCK_SOURCE
- #define BSP_STARTUP_SOURCE_CLOCK_HZ        (BSP_HOCO_HZ)
+ #define BSP_STARTUP_SOURCE_CLOCK_HZ     (BSP_HOCO_HZ)
 #elif BSP_CLOCKS_SOURCE_CLOCK_MOCO == BSP_CFG_CLOCK_SOURCE
- #define BSP_STARTUP_SOURCE_CLOCK_HZ        (BSP_MOCO_FREQ_HZ)
+ #define BSP_STARTUP_SOURCE_CLOCK_HZ     (BSP_MOCO_FREQ_HZ)
 #elif BSP_CLOCKS_SOURCE_CLOCK_LOCO == BSP_CFG_CLOCK_SOURCE
- #define BSP_STARTUP_SOURCE_CLOCK_HZ        (BSP_LOCO_FREQ_HZ)
+ #define BSP_STARTUP_SOURCE_CLOCK_HZ     (BSP_LOCO_FREQ_HZ)
 #elif BSP_CLOCKS_SOURCE_CLOCK_SUBCLOCK == BSP_CFG_CLOCK_SOURCE
- #define BSP_STARTUP_SOURCE_CLOCK_HZ        (BSP_SUBCLOCK_FREQ_HZ)
+ #define BSP_STARTUP_SOURCE_CLOCK_HZ     (BSP_SUBCLOCK_FREQ_HZ)
 #elif BSP_CLOCKS_SOURCE_CLOCK_MAIN_OSC == BSP_CFG_CLOCK_SOURCE
- #define BSP_STARTUP_SOURCE_CLOCK_HZ        (BSP_CFG_XTAL_HZ)
+ #define BSP_STARTUP_SOURCE_CLOCK_HZ     (BSP_CFG_XTAL_HZ)
 #elif BSP_CLOCKS_SOURCE_CLOCK_PLL == BSP_CFG_CLOCK_SOURCE
  #if 6U == BSP_FEATURE_CGC_PLLCCR_TYPE
-  #define BSP_STARTUP_SOURCE_CLOCK_HZ       (BSP_CFG_PLL1P_FREQUENCY_HZ)
+  #define BSP_STARTUP_SOURCE_CLOCK_HZ    (BSP_CFG_PLL1P_FREQUENCY_HZ)
  #endif
 #endif
 
@@ -310,6 +345,18 @@ FSP_HEADER
 #define BSP_CLOCKS_DSMIF_CLOCK_DIV_10        (7)  // Divide DSMIF source clock by 10
 #define BSP_CLOCKS_DSMIF_CLOCK_DIV_16        (8)  // Divide DSMIF source clock by 16
 #define BSP_CLOCKS_DSMIF_CLOCK_DIV_32        (9)  // Divide DSMIF source clock by 32
+
+/* BCLKA clock divider options. */
+#define BSP_CLOCKS_BCLKA_CLOCK_DIV_1         (0)  // Divide BCLKA source clock by 1
+#define BSP_CLOCKS_BCLKA_CLOCK_DIV_2         (1)  // Divide BCLKA source clock by 2
+#define BSP_CLOCKS_BCLKA_CLOCK_DIV_3         (5)  // Divide BCLKA source clock by 3
+#define BSP_CLOCKS_BCLKA_CLOCK_DIV_4         (2)  // Divide BCLKA source clock by 4
+#define BSP_CLOCKS_BCLKA_CLOCK_DIV_5         (6)  // Divide BCLKA source clock by 5
+#define BSP_CLOCKS_BCLKA_CLOCK_DIV_6         (3)  // Divide BCLKA source clock by 6
+#define BSP_CLOCKS_BCLKA_CLOCK_DIV_8         (4)  // Divide BCLKA source clock by 8
+#define BSP_CLOCKS_BCLKA_CLOCK_DIV_10        (7)  // Divide BCLKA source clock by 10
+#define BSP_CLOCKS_BCLKA_CLOCK_DIV_16        (8)  // Divide BCLKA source clock by 16
+#define BSP_CLOCKS_BCLKA_CLOCK_DIV_32        (9)  // Divide BCLKA source clock by 32
 
 /* PLL divider options. */
 #define BSP_CLOCKS_PLL_DIV_1                 (0)

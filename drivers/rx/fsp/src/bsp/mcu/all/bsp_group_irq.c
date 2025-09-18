@@ -1,4 +1,22 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/***********************************************************************************************************************
+ * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ *
+ * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
+ * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
+ * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
+ * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
+ * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
+ * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
+ * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
+ * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
+ * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
+ * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
+ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
+ * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
+ * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
+ * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
+ **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
@@ -56,6 +74,10 @@ const icu_event_t g_group_irq_table[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS] =
 #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
     ICU_EVENT_FIXED_ICU_GROUPAL6,
 #endif
+
+// #if BSP_FEATURE_ICU_HAS_DMAC_GRP_IRQ
+//     ICU_EVENT_FIXED_DMAC_DMAC74I,
+// #endif
 };
 
 /** This array holds callback functions. */
@@ -867,6 +889,30 @@ void group_irq_isr (void) {
         }
     }
 }
+
+// #if BSP_FEATURE_ICU_HAS_DMAC_GRP_IRQ
+// void group_dmac_irq_isr (void) {
+//     IRQn_Type irq = R_FSP_CurrentIrqGet();
+
+//     /* Get DMAC group interrupt status */
+//     uint8_t dma_group_int_status = R_DMA->DMIST;
+
+//     /* Loop over all interrupt status flags */
+//     for (uint8_t factor = BSP_FEATURE_DMAC_GRP_IRQ_NUM_FACTORS; factor < BSP_FEATURE_DMAC_MAX_CHANNEL; factor++)
+//     {
+//         /* Updated current ISR number with group interrupt factor. */
+//         g_current_isr_number = (uint32_t) ((factor << 8U) | irq);
+
+//         /* Get the current irq status register. */
+//         if (0U != (dma_group_int_status & (1U << factor)))
+//         {
+//             extern const bsp_grp_irq_cb_t g_bsp_dmac_group_irq_callback_list[BSP_FEATURE_DMAC_MAX_CHANNEL];
+//             g_bsp_dmac_group_irq_callback_list[factor]();
+//         }
+//     }
+// }
+
+// #endif
 
 void bsp_group_irq_cfg (void) {
     /* Initialize list for group irq context. */

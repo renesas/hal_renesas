@@ -1,4 +1,22 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/***********************************************************************************************************************
+ * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ *
+ * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
+ * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
+ * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
+ * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
+ * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
+ * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
+ * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
+ * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
+ * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
+ * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
+ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
+ * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
+ * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
+ * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
+ **********************************************************************************************************************/
 
 #ifndef BSP_ICU_H
 #define BSP_ICU_H
@@ -303,13 +321,15 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_RSCI12_RXI              = (0x2AC),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_RSCI12_TXI              = (0x2AD),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_RSCI12_AED              = (0x2AE),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
-    ICU_EVENT_RI3C1_RXI               = (0x2B1),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
-    ICU_EVENT_RI3C1_TXI               = (0x2B2),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
-    ICU_EVENT_RI3C2_RXI               = (0x2B3),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
-    ICU_EVENT_RI3C2_TXI               = (0x2B4),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
+    ICU_EVENT_RIIC1_RXI               = (0x2B1),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
+    ICU_EVENT_RIIC1_TXI               = (0x2B2),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
+    ICU_EVENT_RIIC2_RXI               = (0x2B3),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
+    ICU_EVENT_RIIC2_TXI               = (0x2B4),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_RI3C0_RESPI             = (0x2B5),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_RI3C0_CMDI              = (0x2B6),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_RI3C0_IBII              = (0x2B7),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
+    ICU_EVENT_RIIC0_RXI               = (0x2B8),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
+    ICU_EVENT_RIIC0_TXI               = (0x2B9),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_RI3C0_RXI               = (0x2B8),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_RI3C0_TXI               = (0x2B9),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_RI3C0_RCVI              = (0x2BA),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
@@ -383,7 +403,22 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_ADC_CCMPUM5             = (0x337),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_ADC_CCMPUM6             = (0x338),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_ADC_CCMPUM7             = (0x339),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
-    ICU_EVENT_ICU_IRQ16_31            = (0x3FF),     // Selectable interrupt (SLIXR128-143)
+    ICU_EVENT_ICU_IRQ16               = (0x3FF),     // Selectable interrupt (SLIXR128)
+    ICU_EVENT_ICU_IRQ17               = (0x3FF),     // Selectable interrupt (SLIXR129)
+    ICU_EVENT_ICU_IRQ18               = (0x3FF),     // Selectable interrupt (SLIXR130)
+    ICU_EVENT_ICU_IRQ19               = (0x3FF),     // Selectable interrupt (SLIXR131)
+    ICU_EVENT_ICU_IRQ20               = (0x3FF),     // Selectable interrupt (SLIXR132)
+    ICU_EVENT_ICU_IRQ21               = (0x3FF),     // Selectable interrupt (SLIXR133)
+    ICU_EVENT_ICU_IRQ22               = (0x3FF),     // Selectable interrupt (SLIXR134)
+    ICU_EVENT_ICU_IRQ23               = (0x3FF),     // Selectable interrupt (SLIXR135)
+    ICU_EVENT_ICU_IRQ24               = (0x3FF),     // Selectable interrupt (SLIXR136)
+    ICU_EVENT_ICU_IRQ25               = (0x3FF),     // Selectable interrupt (SLIXR137)
+    ICU_EVENT_ICU_IRQ26               = (0x3FF),     // Selectable interrupt (SLIXR138)
+    ICU_EVENT_ICU_IRQ27               = (0x3FF),     // Selectable interrupt (SLIXR139)
+    ICU_EVENT_ICU_IRQ28               = (0x3FF),     // Selectable interrupt (SLIXR140)
+    ICU_EVENT_ICU_IRQ29               = (0x3FF),     // Selectable interrupt (SLIXR141)
+    ICU_EVENT_ICU_IRQ30               = (0x3FF),     // Selectable interrupt (SLIXR142)
+    ICU_EVENT_ICU_IRQ31               = (0x3FF),     // Selectable interrupt (SLIXR143)
 
     /* Start of non-shared IELSR.
      * These events are directly mapped to the ICU and are treated as if they are the sole event elements of a group.
@@ -421,8 +456,8 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_FIXED_VBATT_TAMPDI    = (0x53),        // IELSR83
     ICU_EVENT_FIXED_PDM_SDET        = (0x54),        // IELSR84
     ICU_EVENT_FIXED_SOST_SOSTDI     = (0x55),        // IELSR85
-    ICU_EVENT_FIXED_PVD_PVD1        = (0x58),        // IELSR88
-    ICU_EVENT_FIXED_PVD_PVD2        = (0x59),        // IELSR89
+    ICU_EVENT_FIXED_LVD_LVD1        = (0x58),        // IELSR88
+    ICU_EVENT_FIXED_LVD_LVD2        = (0x59),        // IELSR89
     ICU_EVENT_FIXED_USB0_USBR       = (0x5A),        // IELSR90
     ICU_EVENT_FIXED_RTC_ALARM       = (0x5C),        // IELSR92
     ICU_EVENT_FIXED_RTC_PERIOD      = (0x5D),        // IELSR93
@@ -674,8 +709,8 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_GROUP_RIIC1_EEI            = (0x0C69), // Error event
     ICU_EVENT_GROUP_RIIC2_TEI            = (0x0D69), // Transmit end
     ICU_EVENT_GROUP_RIIC2_EEI            = (0x0E69), // Error event
-    ICU_EVENT_GROUP_RIIC0_TEI            = (0x0F69), // Transmit end
-    ICU_EVENT_GROUP_RIIC0_EEI            = (0x1069), // Error event
+    ICU_EVENT_GROUP_RI3C0_TEI            = (0x0F69), // Transmit end
+    ICU_EVENT_GROUP_RI3C0_EEI            = (0x1069), // Error event
     ICU_EVENT_GROUP_DSMIF0_ERR           = (0x1569), // Error detect
     ICU_EVENT_GROUP_DSMIF1_ERR           = (0x1669), // Error detect
     ICU_EVENT_GROUP_RSPI0_IDLE           = (0x1769), // Idle
@@ -698,57 +733,57 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_GROUP_CANFD_GLEI           = (0x126A), // Global error
     ICU_EVENT_GROUP_CANFD_RFRI           = (0x136A), // FIFO receive interrupt
     ICU_EVENT_GROUP_CANFD2_CHTI          = (0x146A), // Channel transmit
-    ICU_EVENT_GROUP_CANFD_RMRI           = (0x156B), // Receive message buffer interrupt
-    ICU_EVENT_GROUP_POEG0_EVENT          = (0x106C), // Group A interrupt
-    ICU_EVENT_GROUP_POEG1_EVENT          = (0x116C), // Group B interrupt
-    ICU_EVENT_GROUP_POEG2_EVENT          = (0x126C), // Group C interrupt
-    ICU_EVENT_GROUP_POEG3_EVENT          = (0x136C), // Group D interrupt
-    ICU_EVENT_GROUP_ETHER_FWEI           = (0x006D), // Forwarding Error Interrupt
-    ICU_EVENT_GROUP_ETHER_CAEI           = (0x016D), // Common Error Interrupt
-    ICU_EVENT_GROUP_ETHER_GWEI0          = (0x026D), // GWCA0 Error Interrupt
-    ICU_EVENT_GROUP_ETHER_EAEI0          = (0x036D), // ETHA0 Error Interrupt
-    ICU_EVENT_GROUP_ETHER_EAEI1          = (0x046D), // ETHA1 Error Interrupt
-    ICU_EVENT_GROUP_ETHER_PTPSI0         = (0x056D), // gPTP Status Interrupt 0
-    ICU_EVENT_GROUP_ETHER_PTPSI1         = (0x066D), // gPTP Status Interrupt 1
-    ICU_EVENT_GROUP_ETHER_FWSI           = (0x076D), // Forwarding Status Interrupt
-    ICU_EVENT_GROUP_ETHER_SWSI           = (0x086D), // Switch Status Interrupt
-    ICU_EVENT_GROUP_ETHER_CAMI           = (0x096D), // Common Status Interrupt
-    ICU_EVENT_GROUP_ETHER_EASI0          = (0x0A6D), // ETHA0 Status Interrupt
-    ICU_EVENT_GROUP_ETHER_EASI1          = (0x0B6D), // ETHA1 Status Interrupt
-    ICU_EVENT_GROUP_ETHER_GWDI0          = (0x0C6D), // GWCA Data Interrupt 0
-    ICU_EVENT_GROUP_ETHER_GWDI1          = (0x0D6D), // GWCA Data Interrupt 1
-    ICU_EVENT_GROUP_ETHER_GWDI2          = (0x0E6D), // GWCA Data Interrupt 2
-    ICU_EVENT_GROUP_ETHER_GWDI3          = (0x0F6D), // GWCA Data Interrupt 3
-    ICU_EVENT_GROUP_ETHER_GWDI4          = (0x106D), // GWCA Data Interrupt 4
-    ICU_EVENT_GROUP_ETHER_GWDI5          = (0x116D), // GWCA Data Interrupt 5
-    ICU_EVENT_GROUP_ETHER_GWDI6          = (0x126D), // GWCA Data Interrupt 6
-    ICU_EVENT_GROUP_ETHER_GWDI7          = (0x136D), // GWCA Data Interrupt 7
-    ICU_EVENT_GROUP_ETHER_TSDI0          = (0x146D), // Time Stamp Data Interrupt 0
-    ICU_EVENT_GROUP_ETHER_TSDI1          = (0x156D), // Time Stamp Data Interrupt 1
-    ICU_EVENT_GROUP_ETHER_MDIO0          = (0x166D), // MDIO Interrupt 0
-    ICU_EVENT_GROUP_ETHER_MDIO1          = (0x176D), // MDIO Interrupt 1
-    ICU_EVENT_GROUP_ETHER_RMPI0          = (0x186D), // RMAC0 PHY Interrupt
-    ICU_EVENT_GROUP_ETHER_RMPI1          = (0x196D), // RMAC1 PHY Interrupt
-    ICU_EVENT_GROUP_ESC_ESCI             = (0x1C6D), // EtherCAT interrupt
-    ICU_EVENT_GROUP_ADC_LIMCLPI          = (0x006E), // Limiter clip interrupt
-    ICU_EVENT_GROUP_ADC_FIFOOVF          = (0x016E), // FIFO data overflow
-    ICU_EVENT_GROUP_ADC_CMPI0            = (0x026E), // Compare match interrupt with compare table 0
-    ICU_EVENT_GROUP_ADC_CMPI1            = (0x036E), // Compare match interrupt with compare table 1
-    ICU_EVENT_GROUP_ADC_ERR0             = (0x046E), // A/D converter unit 0 Error
-    ICU_EVENT_GROUP_ADC_RESOVF0          = (0x056E), // A/D conversion overflow on A/D converter unit 0
-    ICU_EVENT_GROUP_ADC_CALEND0          = (0x076E), // End of calibration of A/D converter unit 0
-    ICU_EVENT_GROUP_ADC_CMPI2            = (0x086E), // Compare match interrupt with compare table 2
-    ICU_EVENT_GROUP_ADC_CMPI3            = (0x096E), // Compare match interrupt with compare table 3
-    ICU_EVENT_GROUP_ADC_ERR1             = (0x0A6E), // A/D converter unit 1 Error
-    ICU_EVENT_GROUP_ADC_RESOVF1          = (0x0B6E), // A/D conversion overflow on A/D converter unit 1
-    ICU_EVENT_GROUP_ADC_CALEND1          = (0x0D6E), // End of calibration of A/D converter unit 1
-    ICU_EVENT_GROUP_ADC_CMPI4            = (0x0E6E), // Compare match interrupt with compare table 4
-    ICU_EVENT_GROUP_ADC_CMPI5            = (0x0F6E), // Compare match interrupt with compare table 5
-    ICU_EVENT_GROUP_ADC_ERR2             = (0x106E), // A/D converter unit 2 Error
-    ICU_EVENT_GROUP_ADC_RESOVF2          = (0x116E), // A/D conversion overflow on A/D converter unit 2
-    ICU_EVENT_GROUP_ADC_CALEND2          = (0x136E), // End of calibration of A/D converter unit 2
-    ICU_EVENT_GROUP_ADC_CMPI6            = (0x146E), // Compare match interrupt with compare table 6
-    ICU_EVENT_GROUP_ADC_CMPI7            = (0x156E), // Compare match interrupt with compare table 7
+    ICU_EVENT_GROUP_CANFD_RMRI           = (0x156A), // Receive message buffer interrupt
+    ICU_EVENT_GROUP_POEG0_EVENT          = (0x106B), // Group A interrupt
+    ICU_EVENT_GROUP_POEG1_EVENT          = (0x116B), // Group B interrupt
+    ICU_EVENT_GROUP_POEG2_EVENT          = (0x126B), // Group C interrupt
+    ICU_EVENT_GROUP_POEG3_EVENT          = (0x136B), // Group D interrupt
+    ICU_EVENT_GROUP_ETHER_FWEI           = (0x006C), // Forwarding Error Interrupt
+    ICU_EVENT_GROUP_ETHER_CAEI           = (0x016C), // Common Error Interrupt
+    ICU_EVENT_GROUP_ETHER_GWEI0          = (0x026C), // GWCA0 Error Interrupt
+    ICU_EVENT_GROUP_ETHER_EAEI0          = (0x036C), // ETHA0 Error Interrupt
+    ICU_EVENT_GROUP_ETHER_EAEI1          = (0x046C), // ETHA1 Error Interrupt
+    ICU_EVENT_GROUP_ETHER_PTPSI0         = (0x056C), // gPTP Status Interrupt 0
+    ICU_EVENT_GROUP_ETHER_PTPSI1         = (0x066C), // gPTP Status Interrupt 1
+    ICU_EVENT_GROUP_ETHER_FWSI           = (0x076C), // Forwarding Status Interrupt
+    ICU_EVENT_GROUP_ETHER_SWSI           = (0x086C), // Switch Status Interrupt
+    ICU_EVENT_GROUP_ETHER_CAMI           = (0x096C), // Common Status Interrupt
+    ICU_EVENT_GROUP_ETHER_EASI0          = (0x0A6C), // ETHA0 Status Interrupt
+    ICU_EVENT_GROUP_ETHER_EASI1          = (0x0B6C), // ETHA1 Status Interrupt
+    ICU_EVENT_GROUP_ETHER_GWDI0          = (0x0C6C), // GWCA Data Interrupt 0
+    ICU_EVENT_GROUP_ETHER_GWDI1          = (0x0D6C), // GWCA Data Interrupt 1
+    ICU_EVENT_GROUP_ETHER_GWDI2          = (0x0E6C), // GWCA Data Interrupt 2
+    ICU_EVENT_GROUP_ETHER_GWDI3          = (0x0F6C), // GWCA Data Interrupt 3
+    ICU_EVENT_GROUP_ETHER_GWDI4          = (0x106C), // GWCA Data Interrupt 4
+    ICU_EVENT_GROUP_ETHER_GWDI5          = (0x116C), // GWCA Data Interrupt 5
+    ICU_EVENT_GROUP_ETHER_GWDI6          = (0x126C), // GWCA Data Interrupt 6
+    ICU_EVENT_GROUP_ETHER_GWDI7          = (0x136C), // GWCA Data Interrupt 7
+    ICU_EVENT_GROUP_ETHER_TSDI0          = (0x146C), // Time Stamp Data Interrupt 0
+    ICU_EVENT_GROUP_ETHER_TSDI1          = (0x156C), // Time Stamp Data Interrupt 1
+    ICU_EVENT_GROUP_ETHER_MDIO0          = (0x166C), // MDIO Interrupt 0
+    ICU_EVENT_GROUP_ETHER_MDIO1          = (0x176C), // MDIO Interrupt 1
+    ICU_EVENT_GROUP_ETHER_RMPI0          = (0x186C), // RMAC0 PHY Interrupt
+    ICU_EVENT_GROUP_ETHER_RMPI1          = (0x196C), // RMAC1 PHY Interrupt
+    ICU_EVENT_GROUP_ESC_ESCI             = (0x1C6C), // EtherCAT interrupt
+    ICU_EVENT_GROUP_ADC_LIMCLPI          = (0x006D), // Limiter clip interrupt
+    ICU_EVENT_GROUP_ADC_FIFOOVF          = (0x016D), // FIFO data overflow
+    ICU_EVENT_GROUP_ADC_CMPI0            = (0x026D), // Compare match interrupt with compare table 0
+    ICU_EVENT_GROUP_ADC_CMPI1            = (0x036D), // Compare match interrupt with compare table 1
+    ICU_EVENT_GROUP_ADC_ERR0             = (0x046D), // A/D converter unit 0 Error
+    ICU_EVENT_GROUP_ADC_RESOVF0          = (0x056D), // A/D conversion overflow on A/D converter unit 0
+    ICU_EVENT_GROUP_ADC_CALEND0          = (0x076D), // End of calibration of A/D converter unit 0
+    ICU_EVENT_GROUP_ADC_CMPI2            = (0x086D), // Compare match interrupt with compare table 2
+    ICU_EVENT_GROUP_ADC_CMPI3            = (0x096D), // Compare match interrupt with compare table 3
+    ICU_EVENT_GROUP_ADC_ERR1             = (0x0A6D), // A/D converter unit 1 Error
+    ICU_EVENT_GROUP_ADC_RESOVF1          = (0x0B6D), // A/D conversion overflow on A/D converter unit 1
+    ICU_EVENT_GROUP_ADC_CALEND1          = (0x0D6D), // End of calibration of A/D converter unit 1
+    ICU_EVENT_GROUP_ADC_CMPI4            = (0x0E6D), // Compare match interrupt with compare table 4
+    ICU_EVENT_GROUP_ADC_CMPI5            = (0x0F6D), // Compare match interrupt with compare table 5
+    ICU_EVENT_GROUP_ADC_ERR2             = (0x106D), // A/D converter unit 2 Error
+    ICU_EVENT_GROUP_ADC_RESOVF2          = (0x116D), // A/D conversion overflow on A/D converter unit 2
+    ICU_EVENT_GROUP_ADC_CALEND2          = (0x136D), // End of calibration of A/D converter unit 2
+    ICU_EVENT_GROUP_ADC_CMPI6            = (0x146D), // Compare match interrupt with compare table 6
+    ICU_EVENT_GROUP_ADC_CMPI7            = (0x156D), // Compare match interrupt with compare table 7
 } icu_event_t;
 
 /***********************************************************************************************************************
@@ -760,8 +795,8 @@ typedef enum e_bsp_grp_nmi_irq
 {
     BSP_GRP_IRQ_IWDT_ERROR       = 0,
     BSP_GRP_IRQ_WDT_ERROR        = 1,
-    BSP_GRP_IRQ_PVD1             = 2,
-    BSP_GRP_IRQ_PVD2             = 3,
+    BSP_GRP_IRQ_LVD1             = 2,
+    BSP_GRP_IRQ_LVD2             = 3,
     BSP_GRP_IRQ_SOSC_STOP_DETECT = 5,
     BSP_GRP_IRQ_OSC_STOP_DETECT  = 6,
     BSP_GRP_IRQ_NMI_PIN          = 7,
