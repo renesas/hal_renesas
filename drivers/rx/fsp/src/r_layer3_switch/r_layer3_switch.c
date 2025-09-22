@@ -116,7 +116,7 @@ static void r_layer3_switch_module_start(void);
 static void r_layer3_switch_update_gwca_operation_mode(
     layer3_switch_instance_ctrl_t * p_instance_ctrl,
     layer3_switch_agent_mode_t      mode);
-static void r_layer3_switch_update_etha_operation_mode(uint8_t                    port,
+void r_layer3_switch_update_etha_operation_mode(uint8_t                    port,
                                                        layer3_switch_agent_mode_t mode);
 static void r_layer3_switch_reset_coma(void);
 static void r_layer3_switch_close_etha_ports(layer3_switch_instance_ctrl_t * p_instance_ctrl);
@@ -371,7 +371,7 @@ fsp_err_t R_LAYER3_SWITCH_Open (ether_switch_ctrl_t * const p_ctrl, ether_switch
     }
 
     /* Enable GWCA Data Interrupt IRQ. It occurs when a descriptor completes RX/TX or receive frame for a full queue. */
-    R_BSP_IrqCfgEnable(p_instance_ctrl->p_cfg->irq, (uint32_t) p_instance_ctrl->p_cfg->ipl, p_instance_ctrl);
+    // R_BSP_IrqCfgEnable(p_instance_ctrl->p_cfg->irq, (uint32_t) p_instance_ctrl->p_cfg->ipl, p_instance_ctrl);
 
     p_instance_ctrl->open = LAYER3_SWITCH_OPEN;
 
@@ -1324,7 +1324,7 @@ static void r_layer3_switch_update_gwca_operation_mode (layer3_switch_instance_c
  *
  * @param[in] mode New operation mode
  ***********************************************************************************************************************/
-static void r_layer3_switch_update_etha_operation_mode (uint8_t port, layer3_switch_agent_mode_t mode)
+void r_layer3_switch_update_etha_operation_mode (uint8_t port, layer3_switch_agent_mode_t mode)
 {
     R_ETHA0_Type * p_etha_reg = (R_ETHA0_Type *) (R_ETHA0_BASE + (LAYER3_SWITCH_ETHA_REG_SIZE * port));
 

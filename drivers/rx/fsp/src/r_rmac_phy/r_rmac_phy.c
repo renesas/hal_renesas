@@ -673,8 +673,8 @@ fsp_err_t R_RMAC_PHY_Write (ether_phy_ctrl_t * const p_ctrl, uint32_t reg_addr, 
     p_extend = (rmac_phy_extended_cfg_t *) p_instance_ctrl->p_ether_phy_cfg->p_extend;
 
     /* ETHA IP should be OPERATION mode */
-    RMAC_PHY_ERROR_RETURN(RMAC_PHY_ETHA_OPERATION_MODE == r_rmac_phy_get_operation_mode(p_instance_ctrl),
-                          FSP_ERR_INVALID_MODE);
+    // RMAC_PHY_ERROR_RETURN(RMAC_PHY_ETHA_OPERATION_MODE == r_rmac_phy_get_operation_mode(p_instance_ctrl),
+    //                       FSP_ERR_INVALID_MODE);
 
     /*  Create configuration value to write phy register. */
     mpsm |= R_RMAC0_MPSM_POP_Msk & (RMAC_PHY_MDIO_OPCODE_WRITE << R_RMAC0_MPSM_POP_Pos);

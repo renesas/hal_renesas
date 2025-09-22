@@ -76,19 +76,19 @@ static fsp_err_t rmac_open_param_check(rmac_instance_ctrl_t const * const p_inst
 
 #endif
 
-static void      rmac_init_descriptors(rmac_instance_ctrl_t * const p_instance_ctrl);
+void      rmac_init_descriptors(rmac_instance_ctrl_t * const p_instance_ctrl);
 static fsp_err_t rmac_init_descriptor_queues(rmac_instance_ctrl_t * const p_instance_ctrl);
-static void      rmac_init_buffers(rmac_instance_ctrl_t * const p_instance_ctrl);
+void      rmac_init_buffers(rmac_instance_ctrl_t * const p_instance_ctrl);
 
-static void      rmac_configure_reception_filter(rmac_instance_ctrl_t const * const p_instance_ctrl);
+void      rmac_configure_reception_filter(rmac_instance_ctrl_t const * const p_instance_ctrl);
 static fsp_err_t rmac_do_link(rmac_instance_ctrl_t * const                 p_instance_ctrl,
                               const layer3_switch_magic_packet_detection_t mode);
 static fsp_err_t rmac_link_status_check(rmac_instance_ctrl_t const * const p_instance_ctrl);
 
 static void      rmac_call_callback(rmac_instance_ctrl_t * p_instance_ctrl, ether_callback_args_t * p_callback_args);
-static void      r_rmac_switch_interrupt_callback(ether_switch_callback_args_t * p_args);
+void      r_rmac_switch_interrupt_callback(ether_switch_callback_args_t * p_args);
 static fsp_err_t r_rmac_reset_rx_descriptor(rmac_instance_ctrl_t * p_instance_ctrl, void * p_buffer);
-static void      r_rmac_disable_reception(rmac_instance_ctrl_t * p_instance_ctrl);
+void      r_rmac_disable_reception(rmac_instance_ctrl_t * p_instance_ctrl);
 
 /***********************************************************************************************************************
  * ISR prototypes
@@ -702,7 +702,7 @@ static fsp_err_t rmac_open_param_check (rmac_instance_ctrl_t const * const p_ins
  *                    RMAC channel number
  * Return Value : none
  ***********************************************************************************************************************/
-static void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const p_instance_ctrl)
+void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const p_instance_ctrl)
 {
     uint32_t mrafc = p_instance_ctrl->p_reg_rmac->MRAFC;
 
@@ -937,7 +937,7 @@ static void rmac_call_callback (rmac_instance_ctrl_t * p_instance_ctrl, ether_ca
  *                    RMAC channel number
  * Return Value : none
  ***********************************************************************************************************************/
-static void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
+void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
 {
     layer3_switch_descriptor_t descriptor = {0};
 
@@ -1031,7 +1031,7 @@ static void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
  *                    RMAC control block.
  * Return Value : none
  ***********************************************************************************************************************/
-static void rmac_init_buffers (rmac_instance_ctrl_t * const p_instance_ctrl)
+void rmac_init_buffers (rmac_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t i;
     uint32_t buffer_num;
@@ -1164,7 +1164,7 @@ static fsp_err_t r_rmac_reset_rx_descriptor (rmac_instance_ctrl_t * p_instance_c
 /*******************************************************************************************************************
  * Disable reception on this port.
  **********************************************************************************************************************/
-static void r_rmac_disable_reception (rmac_instance_ctrl_t * p_instance_ctrl)
+void r_rmac_disable_reception (rmac_instance_ctrl_t * p_instance_ctrl)
 {
     rmac_extended_cfg_t      * p_extend           = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     layer3_switch_port_cfg_t   port_cfg           = {0};
@@ -1193,7 +1193,7 @@ static void r_rmac_disable_reception (rmac_instance_ctrl_t * p_instance_ctrl)
  * Function Name: r_rmac_switch_interrupt_callback
  * Description  : Callback for RX/TX data interrupts. This function set to switch module callback.
  ***********************************************************************************************************************/
-static void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_args)
+void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_args)
 {
     rmac_instance_ctrl_t * p_instance_ctrl = (rmac_instance_ctrl_t *) p_args->p_context;
     rmac_extended_cfg_t  * p_extend        = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;

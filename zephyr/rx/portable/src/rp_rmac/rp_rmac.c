@@ -62,76 +62,7 @@
 #define RMAC_INCREMENT_INDEX(x, max)    (x = (x + 1) % max)
 
 extern void      r_rmac_switch_interrupt_callback(ether_switch_callback_args_t * p_args);
-
-/*******************************************************************************************************************//**
- * Configure Ethernet port features, including callback function for each port.
- *
- * @retval  FSP_SUCCESS                  Port configured successfully.
- * @retval  FSP_ERR_ASSERTION            Pointer to control block is NULL..
- * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
- * @retval  FSP_ERR_INVALID_POINTER      Pointer to a argument is NULL.
- * @retval  FSP_ERR_INVALID_ARGUMENT     Port number is invalid.
- **********************************************************************************************************************/
-static fsp_err_t RP_LAYER3_SWITCH_ConfigurePort (ether_switch_ctrl_t * const p_ctrl,
-                                         uint8_t                     port,
-                                         layer3_switch_port_cfg_t  * p_port_cfg)
-{
-    layer3_switch_instance_ctrl_t * p_instance_ctrl = (layer3_switch_instance_ctrl_t *) p_ctrl;
-    volatile uint32_t             * p_mfwd_fwpbfc_reg;
-
-#if LAYER3_SWITCH_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(p_instance_ctrl);
-    FSP_ERROR_RETURN(LAYER3_SWITCH_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
-    FSP_ERROR_RETURN(port < BSP_FEATURE_ETHER_MAX_CHANNELS, FSP_ERR_INVALID_ARGUMENT);
-    FSP_ERROR_RETURN(p_port_cfg, FSP_ERR_INVALID_POINTER);
-#endif
-    /* Copy callback settings to the control member. */
-    p_instance_ctrl->p_port_cfg_list[port].p_callback        = p_port_cfg->p_callback;
-    p_instance_ctrl->p_port_cfg_list[port].p_context         = p_port_cfg->p_context;
-    p_instance_ctrl->p_port_cfg_list[port].p_callback_memory = p_port_cfg->p_callback_memory;
-
-    p_mfwd_fwpbfc_reg =
-        (uint32_t *) ((uintptr_t) &(R_MFWD->FWPBFC0) + (uint32_t) (port * LAYER3_SWITCH_FWPBFC_REGISTER_OFFSET));
-    if (p_port_cfg->forwarding_to_cpu_enable)
-    {
-        *p_mfwd_fwpbfc_reg |= (R_MFWD_FWPBFC0_PBDV_Msk & (uint32_t) (LAYER3_SWITCH_PORT_CPU_BITMASK));
-    }
-    else
-    {
-        /* Disable forwarding to CPU. But forwarding from the LAN port to the LAN port is still enabled. */
-        *p_mfwd_fwpbfc_reg &= (R_MFWD_FWPBFC0_PBDV_Msk & (uint32_t) (~LAYER3_SWITCH_PORT_CPU_BITMASK));
-    }
-
-    return FSP_SUCCESS;
-}
-
-/*******************************************************************************************************************
- * Disable reception on this port.
- **********************************************************************************************************************/
-static void r_rmac_disable_reception (rmac_instance_ctrl_t * p_instance_ctrl)
-{
-    rmac_extended_cfg_t      * p_extend           = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
-    layer3_switch_port_cfg_t   port_cfg           = {0};
-    layer3_switch_descriptor_t descriptor         = {0};
-    rmac_queue_info_t          running_queue_info = p_extend->p_rx_queue_list[p_instance_ctrl->rx_running_queue_index];
-
-    /* When magic packet detection is enabled, disable data interrupt. */
-    port_cfg.p_callback = NULL;
-
-    /* Disable CPU reception from this port. */
-    port_cfg.forwarding_to_cpu_enable = false;
-    RP_LAYER3_SWITCH_ConfigurePort(p_extend->p_ether_switch->p_ctrl, p_instance_ctrl->p_cfg->channel, &port_cfg);
-
-    /* Set descriptors in RX running queue to stop state. */
-    descriptor.basic.dt = LAYER3_SWITCH_DESCRIPTOR_TYPE_LEMPTY;
-    for (size_t i = 0; i < running_queue_info.queue_cfg.array_length; i++)
-    {
-        R_LAYER3_SWITCH_SetDescriptor(p_extend->p_ether_switch->p_ctrl, running_queue_info.index, &descriptor);
-    }
-
-    /* Perform starting reception to initialize queue status. */
-    R_LAYER3_SWITCH_StartDescriptorQueue(p_extend->p_ether_switch->p_ctrl, running_queue_info.index);
-}
+extern void r_rmac_disable_reception(rmac_instance_ctrl_t *p_instance_ctrl);
 
  /********************************************************************************************************************//**
  * @brief Determines the partner PHY capability through auto-negotiation process. The link abilities
