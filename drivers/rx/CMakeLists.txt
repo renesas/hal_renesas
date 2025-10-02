@@ -136,3 +136,9 @@ if(CONFIG_USE_RX_RDP_LVD)
 		rdp/src/r_lvd_rx/src
 		rdp/src/r_lvd_rx/src/targets/${CONFIG_SOC_SERIES})
 endif()
+
+if(CONFIG_HAS_MAPPED_INTERRUPTS)
+	zephyr_library_sources(
+		rdp/src/r_bsp/mcu/${CONFIG_SOC_SERIES}/mcu_mapped_interrupts.c
+	)
+endif()
