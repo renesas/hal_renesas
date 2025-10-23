@@ -220,4 +220,10 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_OSPI_B)
+		zephyr_library_sources(
+			fsp/src/r_ospi_b/r_ospi_b.c
+		)
+	endif()
+
 endif()
