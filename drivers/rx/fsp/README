@@ -42,3 +42,7 @@ Patch List:
    * Update BSP_ICU_IRQ_HANDLER macro definition in bsp_irq.h
    Impacted files:
       drivers/rx/fsp/src/bsp/mcu/all/bsp_irq.h
+
+   * Add vector number macros for CANFD driver
+   Impacted files:
+      zephyr/rx/fsp_cfg/r_canfd_cfg.h

@@ -1,4 +1,6 @@
 /* generated configuration header file - do not edit */
+#include <zephyr/devicetree.h>
+
 #ifndef R_CANFD_CFG_H_
 #define R_CANFD_CFG_H_
 #ifdef __cplusplus
@@ -146,6 +148,15 @@
                                                     (0 << R_CANFD_CFCR_LTM_Pos) | \
                                                     ((3) << R_CANFD_CFCR_FDS_Pos) | \
                                                     (0 << R_CANFD_CFCR_TINT_Pos))
+
+#define CANFD_GROUP_IRQ DT_IRQ(DT_NODELABEL(group_irq_al2), irq)
+
+/* Global interrupt */
+#define CANFDG0_RFRI DT_IRQ_BY_NAME(DT_NODELABEL(canfd_global), rfri, irq)
+#define CANFDG0_GLEI DT_IRQ_BY_NAME(DT_NODELABEL(canfd_global), glei, irq)
+
+#define VECTOR_NUMBER_CANFDG0_RFRI ((IRQn_Type)(CANFDG0_RFRI << 8U | CANFD_GROUP_IRQ))
+#define VECTOR_NUMBER_CANFDG0_GLEI ((IRQn_Type)(CANFDG0_GLEI << 8U | CANFD_GROUP_IRQ))
 
 #ifdef __cplusplus
             }
