@@ -152,6 +152,12 @@
 #define BSP_FEATURE_BSP_UNIQUE_ID_OFFSET                       (0x00UL)                // Bit offset of the Unique ID in the mcu info block.
 #define BSP_FEATURE_BSP_UNIQUE_ID_POINTER                      (0x86F01000UL)          // Address of the MCU Unique ID register (UIDR).
 #define BSP_FEATURE_BSP_VBATT_HAS_VBTCR1_BPWSWSTP              (0UL)                   // VCC can switch to VBAT if the voltage drops too low.
+#define BSP_FEATURE_BSP_HAS_ESCCLK_CLOCK                       (1UL)                   // Indicates ESCCLK is available.
+#define BSP_FEATURE_BSP_HAS_ETHPHYCLK_CLOCK                    (1UL)                   // Indicates ETHPHYCLK is available.
+
+#define BSP_FEATURE_CAC_UNIT_COUNT                             (3UL)                   // Number of CAC units.
+
+#define BSP_FEATURE_CAC_UNIT_COUNT                             (3UL)                   // Number of CAC units.
 
 #define BSP_FEATURE_CAN_IS_AVAILABLE                           (0UL)
 #define BSP_FEATURE_CAN_CHECK_PCLKB_RATIO                      (0UL)                   // Feature not available on this device.
@@ -208,6 +214,10 @@
 #define BSP_FEATURE_CGC_MODRV_SHIFT                            (R_SYSTEM_MOMCR_MODRV0_Pos)         // Shift used for MODRV register.
 #define BSP_FEATURE_CGC_OSCILLATON_STOP_DETECT                 (1UL)                               // Oscillation stop detection is available.
 #define BSP_FEATURE_CGC_PLL_HOCO_MAX_CPUCLK_HZ                 (600000000UL)                       // Maximum allowed clock speed when HOCO is the PLL source clock for the CPUCLK.
+#define BSP_FEATURE_CGC_PLL_INPUT_POST_DIV_MAX_HZ              (24000000UL)                        // Maximum input frequency for PLL (after input divider).
+#define BSP_FEATURE_CGC_PLL_INPUT_POST_DIV_MIN_HZ              (8000000UL)                         // Minimum input frequency for PLL (after input divider).
+#define BSP_FEATURE_CGC_PLL_INPUT_PRE_DIV_MAX_HZ               (48000000UL)                        // Maximum input frequency of the PLL (before input divider).
+#define BSP_FEATURE_CGC_PLL_INPUT_PRE_DIV_MIN_HZ               (8000000UL)                         // Minimum input frequency of the PLL (before input divider).
 #define BSP_FEATURE_CGC_PLL_OUT_MAX_HZ                         (600000000UL)                       // Maximum output frequency for PLL unit 1.
 #define BSP_FEATURE_CGC_PLLP_OUT_MAX_HZ                        (600000000UL)                       // Maximum output frequency for PLL out put clock P unit 1.
 #define BSP_FEATURE_CGC_PLLQ_OUT_MAX_HZ                        (500000000UL)                       // Maximum output frequency for PLL out put clock Q unit 1.
@@ -520,6 +530,7 @@
 #define BSP_FEATURE_SCI_UART_FIFO_CHANNELS                     (0x1FFFUL)                          // Mask of channels which support the UART FIFO.
 #define BSP_FEATURE_SCI_UART_FIFO_DEPTH                        (16UL)                              // Depth of the UART FIFO if available.
 #define BSP_FEATURE_SCI_VERSION                                (2UL)                               // Version of the SCI peripheral.
+#define BSP_FEATURE_SCI_BASE_ADDRESS_OFFSET_EQUAL              (1U)                                // Feature not available on this MCU
 
 #define BSP_FEATURE_SDHI_IS_AVAILABLE                          (1UL)
 #define BSP_FEATURE_SDHI_CLOCK                                 (FSP_PRIV_CLOCK_PCLKB)              // Clock source for the SDHI peripheral clock.

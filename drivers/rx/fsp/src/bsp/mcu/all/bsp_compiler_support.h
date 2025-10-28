@@ -171,6 +171,19 @@ extern "C" {
   #define __DMB(x)
  #endif
 
+/* Endian support. */
+ #if defined(__CCRX__)                 /* CCRX compiler */
+
+ #elif defined(__GNUC__)               /* GCC compiler */
+  #if defined(__RX_LITTLE_ENDIAN__)
+   #define __LIT    (1)
+  #elif defined(__RX_BIG_ENDIAN__)
+   #error "RX FSP BIG endian not supported!"
+  #endif
+ #elif defined(__ICCRX__)              /* IAR compiler */
+
+ #endif
+
 /***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/

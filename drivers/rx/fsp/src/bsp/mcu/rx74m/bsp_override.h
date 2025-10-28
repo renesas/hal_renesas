@@ -44,14 +44,35 @@
 #define BSP_OVERRIDE_EXTERNAL_IRQ_TRIGGER_T
 #define BSP_OVERRIDE_IOPORT_CFG_OPTIONS_T
 #define BSP_OVERRIDE_IOPORT_PERIPHERAL_T
+#define BSP_OVERRIDE_CAC_CLOCK_SOURCE_T
 #define BSP_OVERRIDE_CGC_DIVIDER_CFG_T
 #define BSP_OVERRIDE_CGC_SYS_CLOCK_DIV_T
+#define BSP_OVERRIDE_POEG_STATE_T
+#define BSP_OVERRIDE_POEG_TRIGGER_T
 #define BSP_OVERRIDE_DAC_B_OUTPUT_T
 #define BSP_OVERRIDE_LVD_PERIPHERAL_T
 
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
+
+/** Enumeration of the possible clock sources for both the reference and measurement clocks. */
+typedef enum e_cac_clock_source
+{
+    CAC_CLOCK_SOURCE_MAIN_OSC = 0x00,  ///< Main clock oscillator
+    CAC_CLOCK_SOURCE_SUBCLOCK = 0x01,  ///< Sub-clock
+    CAC_CLOCK_SOURCE_PLL1P    = 0X01,  ///< PLL1 output clock P (divided by 16)
+    CAC_CLOCK_SOURCE_PLL2P    = 0X01,  ///< PLL2 output clock P (divided by 16)
+    CAC_CLOCK_SOURCE_HOCO     = 0x02,  ///< HOCO (High speed on chip oscillator)
+    CAC_CLOCK_SOURCE_MOCO     = 0x03,  ///< MOCO (Middle speed on chip oscillator)
+    CAC_CLOCK_SOURCE_LOCO     = 0x04,  ///< LOCO (Low speed on chip oscillator)
+    CAC_CLOCK_SOURCE_PLL1Q    = 0X04,  ///< PLL1 output clock Q (divided by 16)
+    CAC_CLOCK_SOURCE_PLL2Q    = 0X04,  ///< PLL2 output clock Q (divided by 16)
+    CAC_CLOCK_SOURCE_PCLKB    = 0x05,  ///< PCLKB (Peripheral Clock B)
+    CAC_CLOCK_SOURCE_PLL1R    = 0X06,  ///< PLL1 output clock R (divided by 16)
+    CAC_CLOCK_SOURCE_PLL2R    = 0X06,  ///< PLL2 output clock R (divided by 16)
+    CAC_CLOCK_SOURCE_EXTERNAL = 0x07,  ///< Externally supplied measurement clock on CACREF pin
+} cac_clock_source_t;
 
 /*==============================================
  * EXTERNAL_IRQ Overrides
@@ -293,11 +314,43 @@ typedef struct st_cgc_divider_cfg
     };
 } cgc_divider_cfg_t;
 
+typedef enum e_poeg_state
+{
+    POEG_STATE_NO_DISABLE_REQUEST                = 0,        ///< GPT output is not disabled by POEG
+    POEG_STATE_PIN_DISABLE_REQUEST               = 1U << 0,  ///< GPT output disabled due to GTETRG pin level
+    POEG_STATE_GPT_OR_COMPARATOR_DISABLE_REQUEST = 1U << 1,  ///< GPT output disabled due to high speed analog comparator or GPT
+    POEG_STATE_OSCILLATION_STOP_DISABLE_REQUEST  = 1U << 2,  ///< GPT output disabled due to main oscillator stop
+    POEG_STATE_SOFTWARE_STOP_DISABLE_REQUEST     = 1U << 3,  ///< GPT output disabled due to poeg_api_t::outputDisable()
+    POEG_STATE_DSMIF0_DISABLE_REQUEST            = 1U << 24, ///< GPT output disabled due to DSMIF0
+    POEG_STATE_DSMIF1_DISABLE_REQUEST            = 1U << 25, ///< GPT output disabled due to DSMIF1
+
+    /** GPT output disable request active from the GTETRG pin. If a filter is used, this flag represents the state of
+     * the filtered input. */
+    POEG_STATE_PIN_DISABLE_REQUEST_ACTIVE = 1U << 16,
+} poeg_state_t;
+
+/** Triggers that will disable GPT output pins. */
+typedef enum e_poeg_trigger
+{
+    /** Software disable is always supported with POEG. Select this option if no other triggers are used. */
+    POEG_TRIGGER_SOFTWARE         = 0U,
+    POEG_TRIGGER_PIN              = 1U << 0,  ///< Disable GPT output based on GTETRG input level
+    POEG_TRIGGER_GPT_OUTPUT_LEVEL = 1U << 1,  ///< Disable GPT output based on GPT output pin levels
+    POEG_TRIGGER_OSCILLATION_STOP = 1U << 2,  ///< Disable GPT output based on main oscillator stop
+    POEG_TRIGGER_ACMPHS0          = 1U << 4,  ///< Disable GPT output based on ACMPHS0 comparator result
+    POEG_TRIGGER_ACMPHS1          = 1U << 5,  ///< Disable GPT output based on ACMPHS1 comparator result
+    POEG_TRIGGER_ACMPHS2          = 1U << 6,  ///< Disable GPT output based on ACMPHS2 comparator result
+    POEG_TRIGGER_ACMPHS3          = 1U << 7,  ///< Disable GPT output based on ACMPHS3 comparator result
+    POEG_TRIGGER_ACMPHS4          = 1U << 8,  ///< Disable GPT output based on ACMPHS4 comparator result
+    POEG_TRIGGER_ACMPHS5          = 1U << 9,  ///< Disable GPT output based on ACMPHS5 comparator result
+    POEG_TRIGGER_DSMIF0           = 1U << 22, ///< Disable GPT output based on DSMIF0 overcurrent detection window notification
+    POEG_TRIGGER_DSMIF1           = 1U << 23, ///< Disable GPT output based on DSMIF1 overcurrent detection window notification
+} poeg_trigger_t;
 typedef enum e_dac_b_output
 {
-    DAC_B_OUTPUT_EXTERNAL = 0,         ///< DAOUTDIS[1:0] = 00
-    DAC_B_OUTPUT_INTERNAL = 2,         ///< DAOUTDIS[1:0] = 10
-    DAC_B_OUTPUT_BOTH     = 3,         ///< DAOUTDIS[1:0] = 11
+    DAC_B_OUTPUT_EXTERNAL = 0,                ///< DAOUTDIS[1:0] = 00
+    DAC_B_OUTPUT_INTERNAL = 2,                ///< DAOUTDIS[1:0] = 10
+    DAC_B_OUTPUT_BOTH     = 3,                ///< DAOUTDIS[1:0] = 11
 } dac_b_output_t;
 
 /** The thresholds supported by each MCU are in the MCU User's Manual as well as

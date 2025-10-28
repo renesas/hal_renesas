@@ -72,21 +72,20 @@ extern "C" {
 /* =========================================================================================================================== */
 /* ================                           Processor and Core Peripheral Section                           ================ */
 /* =========================================================================================================================== */
-#include "R5K574M.h"
 
-//  #if BSP_MCU_GROUP_RX26T
-//   #include "R5F526T.h"
-//  #elif BSP_MCU_GROUP_RX72N
-//   #include "R5F572N.h"
-//  #elif BSP_MCU_GROUP_RX74M
-//   #include "R5K574M.h"
-//  #else
-//   #if __has_include("renesas_internal.h")
-//    #include "renesas_internal.h"
-//   #else
-//    #warning "Unsupported MCU"
-//   #endif
-//  #endif
+ #if BSP_MCU_GROUP_RX26T
+  #include "R5F526T.h"
+ #elif BSP_MCU_GROUP_RX72N
+  #include "R5F572N.h"
+ #elif BSP_MCU_GROUP_RX74M
+  #include "R5K574M.h"
+ #else
+  #if __has_include("renesas_internal.h")
+   #include "renesas_internal.h"
+  #else
+   #warning "Unsupported MCU"
+  #endif
+ #endif
 
  #define RENESAS_RX_V3
 

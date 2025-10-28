@@ -49,13 +49,16 @@ extern "C" {
  * @{
  */
  #include "R5K574M/r_adc_b_reg.h"
+ #include "R5K574M/r_cac_reg.h"
  #include "R5K574M/r_canfd_reg.h"
  #include "R5K574M/r_cgc_reg.h"
  #include "R5K574M/r_cmt_reg.h"
+ #include "R5K574M/r_cmtw_reg.h"
  #include "R5K574M/r_crc_reg.h"
  #include "R5K574M/r_dac_b_reg.h"
  #include "R5K574M/r_dma_reg.h"
  #include "R5K574M/r_dmac_reg.h"
+ #include "R5K574M/r_doc_reg.h"
  #include "R5K574M/r_dtc_reg.h"
  #include "R5K574M/r_dsmif_reg.h"
  #include "R5K574M/r_gpt_reg.h"
@@ -63,12 +66,15 @@ extern "C" {
  #include "R5K574M/r_i3c_reg.h"
  #include "R5K574M/r_icu_reg.h"
  #include "R5K574M/r_mram_reg.h"
+ #include "R5K574M/r_pdc_reg.h"
  #include "R5K574M/r_pdm_reg.h"
+ #include "R5K574M/r_poeg_reg.h"
  #include "R5K574M/r_port_reg.h"
  #include "R5K574M/r_rtc_reg.h"
  #include "R5K574M/r_sci_b_reg.h"
  #include "R5K574M/r_sdhi_reg.h"
  #include "R5K574M/r_sram_reg.h"
+ #include "R5K574M/r_spi_b_reg.h"
  #include "R5K574M/r_xspi_reg.h"
  #include "R5K574M/r_system_reg.h"
  #include "R5K574M/r_tmr_reg.h"
@@ -81,6 +87,7 @@ extern "C" {
  #include "R5K574M/r_coma_reg.h"
  #include "R5K574M/r_gwca_reg.h"
  #include "R5K574M/r_rmac_reg.h"
+ #include "R5K574M/r_esc_reg.h"
 
 /** @} */ /* End of group Device_Peripheral_clusters */
 
@@ -88,9 +95,14 @@ extern "C" {
  * @{
  */
  #define R_ADC_B0_BASE       0x87438000UL
+ #define R_CAC_BASE          0x87802400UL
+ #define R_CAC1_BASE         0x87802480UL
+ #define R_CAC2_BASE         0x87802500UL
  #define R_CANFD_BASE        0x87480000UL
  #define R_CGC_BASE          0x87019000UL
  #define R_CMT_BASE          0x87826000UL
+ #define R_CMTW0_BASE        0x87826100UL
+ #define R_CMTW1_BASE        0x87826140UL
  #define R_CRC_BASE          0x87410000UL
  #define R_DAC_B0_BASE       0x87833000UL
  #define R_DAC_B1_BASE       0x87833100UL
@@ -103,6 +115,7 @@ extern "C" {
  #define R_DMAC5_BASE        0x87007140UL
  #define R_DMAC6_BASE        0x87007180UL
  #define R_DMAC7_BASE        0x870071C0UL
+ #define R_DOC_B_BASE        0x87411000UL
  #define R_DTC_BASE          0x87007C00UL
  #define R_DSMIF0_BASE       0x8742A000UL
  #define R_DSMIF1_BASE       0x8742A800UL
@@ -125,6 +138,10 @@ extern "C" {
  #define R_GPT_GTCLK_BASE    0x8742BF10UL
  #define R_GPT_HRPWM_BASE    0x87424000UL
  #define R_GPT_OPS_BASE      0x8742BF00UL
+ #define R_GPT_POEG0_BASE    0x87412000UL
+ #define R_GPT_POEG1_BASE    0x87412100UL
+ #define R_GPT_POEG2_BASE    0x87412200UL
+ #define R_GPT_POEG3_BASE    0x87412300UL
  #define R_I3C0_BASE         0x8745F000UL
  #define R_I3C1_BASE         0x8745F400UL
  #define R_I3C2_BASE         0x8745F800UL
@@ -132,6 +149,7 @@ extern "C" {
  #define R_IWDT_BASE         0x87802200UL
  #define R_MRAM_BASE         0x8709C000UL
  #define R_MSTP_BASE         0x87803000UL
+ #define R_PDC_BASE          0x87841000UL
  #define R_PDM_BASE          0x87856000UL
  #define R_PFS_BASE          0x87C00800UL
  #define R_PMISC_BASE        0x87C00D00UL
@@ -166,6 +184,9 @@ extern "C" {
  #define R_SCI_B10_BASE      0x87458A00UL
  #define R_SCI_B11_BASE      0x87458B00UL
  #define R_SCI_B12_BASE      0x87458C00UL
+ #define R_SPI_B0_BASE       0x8745C000UL
+ #define R_SPI_B1_BASE       0x8745C100UL
+ #define R_SPI_B2_BASE       0x8745C200UL
  #define R_SDHI0_BASE        0x87852000UL
  #define R_SRAM_BASE         0x8701C000UL
  #define R_SRAM_NS_BASE      0x0701C000UL
@@ -187,6 +208,7 @@ extern "C" {
  #define R_ETHA1_BASE        0x874CC000UL
  #define R_RMAC1_BASE        0x874CD000UL
  #define R_GWCA0_BASE        0x874CE000UL
+ #define R_ESC_BASE          0x874A0000UL
 
 /** @} */ /* End of group Device_Peripheral_peripheralAddr */
 
@@ -199,9 +221,14 @@ extern "C" {
  */
 
  #define R_ADC_B        ((R_ADC_B0_Type *) R_ADC_B0_BASE)
+ #define R_CAC          ((R_CAC_Type *) R_CAC_BASE)
+ #define R_CAC1         ((R_CAC_Type *) R_CAC1_BASE)
+ #define R_CAC2         ((R_CAC_Type *) R_CAC2_BASE)
  #define R_CANFD        ((R_CANFD_Type *) R_CANFD_BASE)
  #define R_CGC          ((R_CGC_Type *) R_CGC_BASE)
  #define R_CMT          ((R_CMT_Type *) R_CMT_BASE)
+ #define R_CMTW0        ((R_CMTW0_Type *) R_CMTW0_BASE)
+ #define R_CMTW1        ((R_CMTW0_Type *) R_CMTW1_BASE)
  #define R_CRC          ((R_CRC_Type *) R_CRC_BASE)
  #define R_DAC_B0       ((R_DAC_B0_Type *) R_DAC_B0_BASE)
  #define R_DAC_B1       ((R_DAC_B0_Type *) R_DAC_B1_BASE)
@@ -214,6 +241,7 @@ extern "C" {
  #define R_DMAC5        ((R_DMAC0_Type *) R_DMAC5_BASE)
  #define R_DMAC6        ((R_DMAC0_Type *) R_DMAC6_BASE)
  #define R_DMAC7        ((R_DMAC0_Type *) R_DMAC7_BASE)
+ #define R_DOC_B        ((R_DOC_B_Type *) R_DOC_B_BASE)
  #define R_DTC          ((R_DTC_Type *) R_DTC_BASE)
  #define R_DSMIF0       ((R_DSMIF0_Type *) R_DSMIF0_BASE)
  #define R_DSMIF1       ((R_DSMIF0_Type *) R_DSMIF1_BASE)
@@ -236,6 +264,10 @@ extern "C" {
  #define R_GPT_GTCLK    ((R_GPT_GTCLK_Type *) R_GPT_GTCLK_BASE)
  #define R_GPT_HRPWM    ((R_GPT_HRPWM_Type *) R_GPT_HRPWM_BASE)
  #define R_GPT_OPS      ((R_GPT_OPS_Type *) R_GPT_OPS_BASE)
+ #define R_GPT_POEG0    ((R_GPT_POEG0_Type *) R_GPT_POEG0_BASE)
+ #define R_GPT_POEG1    ((R_GPT_POEG0_Type *) R_GPT_POEG1_BASE)
+ #define R_GPT_POEG2    ((R_GPT_POEG0_Type *) R_GPT_POEG2_BASE)
+ #define R_GPT_POEG3    ((R_GPT_POEG0_Type *) R_GPT_POEG3_BASE)
  #define R_I3C0         ((R_I3C0_Type *) R_I3C0_BASE)
  #define R_I3C1         ((R_I3C0_Type *) R_I3C1_BASE)
  #define R_I3C2         ((R_I3C0_Type *) R_I3C2_BASE)
@@ -243,6 +275,7 @@ extern "C" {
  #define R_IWDT         ((R_IWDT_Type *) R_IWDT_BASE)
  #define R_MRAM         ((R_MRAM_Type *) R_MRAM_BASE)
  #define R_MSTP         ((R_MSTP_Type *) R_MSTP_BASE)
+ #define R_PDC          ((R_PDC_Type *) R_PDC_BASE)
  #define R_PDM          ((R_PDM_Type *) R_PDM_BASE)
  #define R_PFS          ((R_PFS_Type *) R_PFS_BASE)
  #define R_PMISC        ((R_PMISC_Type *) R_PMISC_BASE)
@@ -280,6 +313,9 @@ extern "C" {
  #define R_SDHI0        ((R_SDHI0_Type *) R_SDHI0_BASE)
  #define R_SRAM         ((R_SRAM_Type *) R_SRAM_BASE)
  #define R_SRAM_NS      ((R_SRAM_NS_Type *) R_SRAM_NS_BASE)
+ #define R_SPI_B0       ((R_SPI_B0_Type *) R_SPI_B0_BASE)
+ #define R_SPI_B1       ((R_SPI_B0_Type *) R_SPI_B1_BASE)
+ #define R_SPI_B2       ((R_SPI_B0_Type *) R_SPI_B2_BASE)
  #define R_SYSTEM       ((R_SYSTEM_Type *) R_SYSTEM_BASE)
  #define R_TMR01        ((R_TMR_Type *) R_TMR01_BASE)
  #define R_TMR23        ((R_TMR_Type *) R_TMR23_BASE)
@@ -298,6 +334,7 @@ extern "C" {
  #define R_ETHA1        ((R_ETHA0_Type *) R_ETHA1_BASE)
  #define R_RMAC1        ((R_RMAC0_Type *) R_RMAC1_BASE)
  #define R_GWCA0        ((R_GWCA0_Type *) R_GWCA0_BASE)
+ #define R_ESC          ((R_ESC_Type *) R_ESC_BASE)
 
 /** @} */ /* End of group Device_Peripheral_declaration */
 
@@ -309,13 +346,16 @@ extern "C" {
  * @{
  */
  #include "R5K574M/r_adc_b_posmsk.h"
+ #include "R5K574M/r_cac_posmsk.h"
  #include "R5K574M/r_canfd_posmsk.h"
  #include "R5K574M/r_cgc_posmsk.h"
  #include "R5K574M/r_cmt_posmsk.h"
+ #include "R5K574M/r_cmtw_posmsk.h"
  #include "R5K574M/r_crc_posmsk.h"
  #include "R5K574M/r_dac_b_posmsk.h"
  #include "R5K574M/r_dma_posmsk.h"
  #include "R5K574M/r_dmac_posmsk.h"
+ #include "R5K574M/r_doc_posmsk.h"
  #include "R5K574M/r_dtc_posmsk.h"
  #include "R5K574M/r_dsmif_posmsk.h"
  #include "R5K574M/r_gpt_posmsk.h"
@@ -323,12 +363,15 @@ extern "C" {
  #include "R5K574M/r_icu_posmsk.h"
  #include "R5K574M/r_iwdt_posmsk.h"
  #include "R5K574M/r_mram_posmsk.h"
+ #include "R5K574M/r_pdc_posmsk.h"
  #include "R5K574M/r_pdm_posmsk.h"
+ #include "R5K574M/r_poeg_posmsk.h"
  #include "R5K574M/r_port_posmsk.h"
  #include "R5K574M/r_rtc_posmsk.h"
  #include "R5K574M/r_sci_b_posmsk.h"
  #include "R5K574M/r_sdhi_posmsk.h"
  #include "R5K574M/r_sram_posmsk.h"
+ #include "R5K574M/r_spi_b_posmsk.h"
  #include "R5K574M/r_system_posmsk.h"
  #include "R5K574M/r_tmr_posmsk.h"
  #include "R5K574M/r_tsn_posmsk.h"
@@ -341,6 +384,7 @@ extern "C" {
  #include "R5K574M/r_coma_posmsk.h"
  #include "R5K574M/r_gwca_posmsk.h"
  #include "R5K574M/r_rmac_posmsk.h"
+ #include "R5K574M/r_esc_posmsk.h"
 
 /** @} */ /* End of group PosMask_peripherals */
 

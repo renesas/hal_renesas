@@ -38,7 +38,7 @@
 /***********************************************************************************************************************
  * Private global variables and functions
  **********************************************************************************************************************/
-uint32_t bsp_group_irq_get_table_index(icu_event_t irq);
+static uint32_t bsp_group_irq_get_table_index(icu_event_t irq);
 
 static void * gp_renesas_group_irq_context[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS][BSP_FEATURE_GROUP_IRQ_NUM_FACTORS];
 
@@ -75,9 +75,9 @@ const icu_event_t g_group_irq_table[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS] =
     ICU_EVENT_FIXED_ICU_GROUPAL6,
 #endif
 
-// #if BSP_FEATURE_ICU_HAS_DMAC_GRP_IRQ
-//     ICU_EVENT_FIXED_DMAC_DMAC74I,
-// #endif
+#if BSP_FEATURE_ICU_HAS_DMAC_GRP_IRQ
+    ICU_EVENT_FIXED_DMAC_DMAC74I,
+#endif
 };
 
 /** This array holds callback functions. */
@@ -851,7 +851,7 @@ void bsp_nmi_handler (void)
     FSP_HARDWARE_REGISTER_WAIT((R_ICU->NMISR & nmisr), 0);
 }
 
-uint32_t bsp_group_irq_get_table_index (icu_event_t irq) {
+static uint32_t bsp_group_irq_get_table_index (icu_event_t irq) {
     uint32_t index = 0;
 
     /* Check group irq table and return group index. */
@@ -890,29 +890,29 @@ void group_irq_isr (void) {
     }
 }
 
-// #if BSP_FEATURE_ICU_HAS_DMAC_GRP_IRQ
-// void group_dmac_irq_isr (void) {
-//     IRQn_Type irq = R_FSP_CurrentIrqGet();
+#if BSP_FEATURE_ICU_HAS_DMAC_GRP_IRQ
+void group_dmac_irq_isr (void) {
+    IRQn_Type irq = R_FSP_CurrentIrqGet();
 
-//     /* Get DMAC group interrupt status */
-//     uint8_t dma_group_int_status = R_DMA->DMIST;
+    /* Get DMAC group interrupt status */
+    uint8_t dma_group_int_status = R_DMA->DMIST;
 
-//     /* Loop over all interrupt status flags */
-//     for (uint8_t factor = BSP_FEATURE_DMAC_GRP_IRQ_NUM_FACTORS; factor < BSP_FEATURE_DMAC_MAX_CHANNEL; factor++)
-//     {
-//         /* Updated current ISR number with group interrupt factor. */
-//         g_current_isr_number = (uint32_t) ((factor << 8U) | irq);
+    /* Loop over all interrupt status flags */
+    for (uint8_t factor = BSP_FEATURE_DMAC_GRP_IRQ_NUM_FACTORS; factor < BSP_FEATURE_DMAC_MAX_CHANNEL; factor++)
+    {
+        /* Updated current ISR number with group interrupt factor. */
+        g_current_isr_number = (uint32_t) ((factor << 8U) | irq);
 
-//         /* Get the current irq status register. */
-//         if (0U != (dma_group_int_status & (1U << factor)))
-//         {
-//             extern const bsp_grp_irq_cb_t g_bsp_dmac_group_irq_callback_list[BSP_FEATURE_DMAC_MAX_CHANNEL];
-//             g_bsp_dmac_group_irq_callback_list[factor]();
-//         }
-//     }
-// }
+        /* Get the current irq status register. */
+        if (0U != (dma_group_int_status & (1U << factor)))
+        {
+            extern const bsp_grp_irq_cb_t g_bsp_dmac_group_irq_callback_list[BSP_FEATURE_DMAC_MAX_CHANNEL];
+            g_bsp_dmac_group_irq_callback_list[factor]();
+        }
+    }
+}
 
-// #endif
+#endif
 
 void bsp_group_irq_cfg (void) {
     /* Initialize list for group irq context. */
