@@ -32,3 +32,13 @@ License:
 
 License Link:
    https://opensource.org/licenses/BSD-3-Clause
+
+Patch List:
+
+   * Remove the static definition in bsp_group_irq.c
+   Impacted files:
+      drivers/rx/fsp/src/bsp/mcu/all/bsp_group_irq.c
+
+   * Update BSP_ICU_IRQ_HANDLER macro definition in bsp_irq.h
+   Impacted files:
+      drivers/rx/fsp/src/bsp/mcu/all/bsp_irq.h
