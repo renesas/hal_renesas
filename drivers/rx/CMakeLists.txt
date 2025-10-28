@@ -208,4 +208,10 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_SCI_B_I2C)
+		zephyr_library_sources(
+			fsp/src/r_sci_b_i2c/r_sci_b_i2c.c
+		)
+	endif()
+
 endif()
