@@ -1905,7 +1905,7 @@ typedef struct                         /*!< (@ 0x40090000) R_USB_HS0 Structure  
 
     union
     {
-        __IOM uint16_t DEVADD[10];     /*!< (@ 0x000000D0) Device Address Configuration Register                      */
+        __IOM uint16_t DEVADD[11];     /*!< (@ 0x000000D0) Device Address Configuration Register                      */
 
         struct
         {
@@ -1913,7 +1913,7 @@ typedef struct                         /*!< (@ 0x40090000) R_USB_HS0 Structure  
             __IOM uint16_t USBSPD  : 2; /*!< [7..6] Transfer Speed of Communication Target Device                      */
             __IOM uint16_t HUBPORT : 3; /*!< [10..8] Communication Target Connecting Hub Port                          */
             __IOM uint16_t UPPHUB  : 4; /*!< [14..11] Communication Target Connecting Hub Register                     */
-        } DEVADD_b[10];
+        } DEVADD_b[11];
     };
     __IM uint16_t RESERVED16;
     __IM uint32_t RESERVED17[6];

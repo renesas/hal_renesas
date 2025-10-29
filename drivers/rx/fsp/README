@@ -46,3 +46,7 @@ Patch List:
    * Add vector number macros for CANFD driver
    Impacted files:
       zephyr/rx/fsp_cfg/r_canfd_cfg.h
+
+   * Update DEVADD_b size to match hardware spec
+   Impacted files:
+      drivers/rx/fsp/src/bsp/cmsis/Device/RENESAS/Include/R5K574M/r_usb_basic_reg.h
