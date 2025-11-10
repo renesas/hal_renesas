@@ -226,4 +226,20 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_SCE)
+		zephyr_include_directories(
+			fsp/src/r_sce
+			fsp/src/r_sce/common
+		)
+		if(CONFIG_HAS_RENESAS_RX_RSIP_E50D)
+			zephyr_include_directories(
+				fsp/src/r_sce/crypto_procedures/src/rsip_e50d/plainkey/public/inc
+				fsp/src/r_sce/crypto_procedures/src/rsip_e50d/plainkey/private/inc)
+			file(GLOB rsip_e50d_srcs
+				"fsp/src/r_sce/crypto_procedures/src/rsip_e50d/plainkey/adaptors/*.c"
+				"fsp/src/r_sce/crypto_procedures/src/rsip_e50d/plainkey/primitive/*.c")
+			zephyr_library_sources(${rsip_e50d_srcs})
+		endif()
+	endif()
+
 endif()

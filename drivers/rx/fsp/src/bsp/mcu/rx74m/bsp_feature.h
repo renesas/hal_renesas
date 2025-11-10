@@ -496,7 +496,7 @@
 #define BSP_FEATURE_RSIP_AES_SUPPORTED                         (0UL)                               // The device supports cryptography using AES.
 #define BSP_FEATURE_RSIP_RSIP_E11A_SUPPORTED                   (0UL)                               // The device supports cryptography using RISP_E11A.
 #define BSP_FEATURE_RSIP_RSIP_E31A_SUPPORTED                   (0UL)                               // The device supports cryptography using RISP_E31A.
-#define BSP_FEATURE_RSIP_RSIP_E50D_SUPPORTED                   (0UL)                               // The device supports cryptography using RSIP_E50D.
+#define BSP_FEATURE_RSIP_RSIP_E50D_SUPPORTED                   (1UL)                               // The device supports cryptography using RSIP_E50D.
 #define BSP_FEATURE_RSIP_RSIP_E51A_SUPPORTED                   (0UL)                               // The device supports cryptography using RSIP_E51A.
 #define BSP_FEATURE_RSIP_SCE5_SUPPORTED                        (0UL)                               // The device supports cryptography using SCE5.
 #define BSP_FEATURE_RSIP_SCE5B_SUPPORTED                       (0UL)                               // The device supports cryptography using SCE5B.

@@ -70,6 +70,7 @@ extern "C" {
  #include "R5K574M/r_pdm_reg.h"
  #include "R5K574M/r_poeg_reg.h"
  #include "R5K574M/r_port_reg.h"
+ #include "R5K574M/r_pscu_reg.h"
  #include "R5K574M/r_rtc_reg.h"
  #include "R5K574M/r_sci_b_reg.h"
  #include "R5K574M/r_sdhi_reg.h"
@@ -170,6 +171,7 @@ extern "C" {
  #define R_PORT14_BASE       0x87C001C0UL
  #define R_PORT15_BASE       0x87C001E0UL
  #define R_PORT16_BASE       0x87C00200UL
+ #define R_PSCU_BASE         0x87804000UL
  #define R_RTC_BASE          0x87802000UL
  #define R_SCI_B0_BASE       0x87458000UL
  #define R_SCI_B1_BASE       0x87458100UL
@@ -296,6 +298,7 @@ extern "C" {
  #define R_PORT14       ((R_PORT0_Type *) R_PORT14_BASE)
  #define R_PORT15       ((R_PORT0_Type *) R_PORT15_BASE)
  #define R_PORT16       ((R_PORT0_Type *) R_PORT16_BASE)
+ #define R_PSCU         ((R_PSCU_Type *) R_PSCU_BASE)
  #define R_RTC          ((R_RTC_Type *) R_RTC_BASE)
  #define R_SCI_B0       ((R_SCI_B0_Type *) R_SCI_B0_BASE)
  #define R_SCI_B1       ((R_SCI_B0_Type *) R_SCI_B1_BASE)
