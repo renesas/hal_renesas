@@ -183,7 +183,7 @@ static bool rmac_phy_targets_is_support_link_partner_ability(rmac_phy_instance_c
                                                              uint32_t                   line_speed_duplex);
 static uint32_t r_rmac_phy_calculate_mpic(rmac_phy_instance_ctrl_t * p_instance_ctrl);
 static uint8_t  r_rmac_phy_get_operation_mode(rmac_phy_instance_ctrl_t * p_instance_ctrl);
-static void     r_rmac_phy_set_mii_type_configuration(rmac_phy_instance_ctrl_t * p_instance_ctrl, uint8_t port);
+void     r_rmac_phy_set_mii_type_configuration(rmac_phy_instance_ctrl_t * p_instance_ctrl, uint8_t port);
 
 /** RMAC_PHY HAL API mapping for Ethernet PHY Controller interface */
 /*LDRA_INSPECTED 27 D This structure must be accessible in user code. It cannot be static. */
@@ -995,7 +995,7 @@ static uint8_t r_rmac_phy_get_operation_mode (rmac_phy_instance_ctrl_t * p_insta
  *                    Ethernet control block
  * Return Value : uint32_t
  ***********************************************************************************************************************/
-static void r_rmac_phy_set_mii_type_configuration (rmac_phy_instance_ctrl_t * p_instance_ctrl, uint8_t port)
+void r_rmac_phy_set_mii_type_configuration (rmac_phy_instance_ctrl_t * p_instance_ctrl, uint8_t port)
 {
     volatile uint32_t * p_miicr_register;
 
