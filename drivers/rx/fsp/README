@@ -50,3 +50,7 @@ Patch List:
    * Update DEVADD_b size to match hardware spec
    Impacted files:
       drivers/rx/fsp/src/bsp/cmsis/Device/RENESAS/Include/R5K574M/r_usb_basic_reg.h
+
+   * Update PLACE_IN_RAM_SECTION definitions in r_mram.h to use the standard `.ramfunc section` instead of legacy `.code_in_ram`
+   Impacted files:
+      drivers/rx/fsp/inc/instances/r_mram.h

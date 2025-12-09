@@ -42,11 +42,11 @@ FSP_HEADER
 
 /* If Code Flash programming is enabled, then all API functions must execute out of RAM. */
 #if defined(__CCRX__)
- #define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION("__period__code_in_ram")
+ #define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION("__period__ramfunc")
 #elif defined(__GNUC__)
- #define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION(".code_in_ram")
+ #define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION(".ramfunc")
 #elif defined(__ICCRX__)
- #define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION(".code_in_ram")
+ #define PLACE_IN_RAM_SECTION    BSP_PLACE_IN_SECTION(".ramfunc")
 #endif
 
 /***********************************************************************************************************************
