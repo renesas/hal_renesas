@@ -180,6 +180,13 @@ typedef enum e_ospi_b_ddr_sampling_extension
     OSPI_B_DDR_SAMPLING_EXTENSION_7    = 7, ///< Sampling extended by 7 cycles.
 } ospi_b_ddr_sampling_extension_t;
 
+/** Output enable delay settings. */
+typedef enum e_ospi_b_output_assert_delay
+{
+    OSPI_B_ASSERTION_DELAY_DISABLE = 0, ///< Assertion delay disable
+    OSPI_B_ASSERTION_DELAY_ENABLE  = 1, ///< Assertion delay enable
+} ospi_b_output_assert_delay_t;
+
 /** Format of data frames used for communicating with the target device. */
 typedef enum e_ospi_b_frame_format
 {
@@ -243,6 +250,7 @@ typedef struct st_ospi_b_timing_setting
     ospi_b_ck_edge_t                sdr_sampling_edge;               ///< Selects the clock edge to sample the data signal.
     ospi_b_sdr_sampling_delay_t     sdr_sampling_delay;              ///< Number of cycles to delay before sampling the data signal.
     ospi_b_ddr_sampling_extension_t ddr_sampling_extension;          ///< Number of cycles to extending the data sampling window in DDR mode.
+    ospi_b_output_assert_delay_t    output_assert_delay;             ///< Assertion timing of the output buffer control signal.
 } ospi_b_timing_setting_t;
 
 /** Command set used for a protocol mode. */

@@ -359,6 +359,9 @@ fsp_err_t R_OSPI_B_Open (spi_flash_ctrl_t * const p_ctrl, spi_flash_cfg_t const 
 
     /* Set xSPI CSn signal timings. */
     p_reg->LIOCFGCS[p_cfg_extend->channel] = liocfg;
+    uint32_t comcfg = ((uint32_t) p_cfg_extend->p_timing_settings->output_assert_delay << R_XSPI0_COMCFG_OEASTEX_Pos) &
+                      R_XSPI0_COMCFG_OEASTEX_Msk;
+    p_reg->COMCFG = comcfg;
 
     /* Set xSPI memory-mapping operation. */
     ret = r_ospi_b_protocol_specific_settings(p_instance_ctrl);
