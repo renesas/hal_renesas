@@ -50,6 +50,7 @@ extern "C" {
  */
  #include "R5K574M/r_adc_b_reg.h"
  #include "R5K574M/r_cac_reg.h"
+ #include "R5K574M/r_cache_reg.h"
  #include "R5K574M/r_canfd_reg.h"
  #include "R5K574M/r_cgc_reg.h"
  #include "R5K574M/r_cmt_reg.h"
@@ -65,6 +66,8 @@ extern "C" {
  #include "R5K574M/r_iwdt_reg.h"
  #include "R5K574M/r_i3c_reg.h"
  #include "R5K574M/r_icu_reg.h"
+ #include "R5K574M/r_mpu_reg.h"
+ #include "R5K574M/r_mpu_mmpu_reg.h"
  #include "R5K574M/r_mram_reg.h"
  #include "R5K574M/r_pdc_reg.h"
  #include "R5K574M/r_pdm_reg.h"
@@ -99,6 +102,7 @@ extern "C" {
  #define R_CAC_BASE          0x87802400UL
  #define R_CAC1_BASE         0x87802480UL
  #define R_CAC2_BASE         0x87802500UL
+ #define R_CACHE_BASE        0x81010000UL
  #define R_CANFD_BASE        0x87480000UL
  #define R_CGC_BASE          0x87019000UL
  #define R_CMT_BASE          0x87826000UL
@@ -148,6 +152,8 @@ extern "C" {
  #define R_I3C2_BASE         0x8745F800UL
  #define R_ICU_BASE          0x87006000UL
  #define R_IWDT_BASE         0x87802200UL
+ #define R_MPU_BASE          0x81000800UL
+ #define R_MPU_MMPU_BASE     0x87010000UL
  #define R_MRAM_BASE         0x8709C000UL
  #define R_MSTP_BASE         0x87803000UL
  #define R_PDC_BASE          0x87841000UL
@@ -226,6 +232,7 @@ extern "C" {
  #define R_CAC          ((R_CAC_Type *) R_CAC_BASE)
  #define R_CAC1         ((R_CAC_Type *) R_CAC1_BASE)
  #define R_CAC2         ((R_CAC_Type *) R_CAC2_BASE)
+ #define R_CACHE        ((R_CACHE_Type *) R_CACHE_BASE)
  #define R_CANFD        ((R_CANFD_Type *) R_CANFD_BASE)
  #define R_CGC          ((R_CGC_Type *) R_CGC_BASE)
  #define R_CMT          ((R_CMT_Type *) R_CMT_BASE)
@@ -275,6 +282,8 @@ extern "C" {
  #define R_I3C2         ((R_I3C0_Type *) R_I3C2_BASE)
  #define R_ICU          ((R_ICU_Type *) R_ICU_BASE)
  #define R_IWDT         ((R_IWDT_Type *) R_IWDT_BASE)
+ #define R_MPU          ((R_MPU_Type *) R_MPU_BASE)
+ #define R_MPU_MMPU     ((R_MPU_MMPU_Type *) R_MPU_MMPU_BASE)
  #define R_MRAM         ((R_MRAM_Type *) R_MRAM_BASE)
  #define R_MSTP         ((R_MSTP_Type *) R_MSTP_BASE)
  #define R_PDC          ((R_PDC_Type *) R_PDC_BASE)
@@ -349,6 +358,7 @@ extern "C" {
  * @{
  */
  #include "R5K574M/r_adc_b_posmsk.h"
+ #include "R5K574M/r_cache_posmsk.h"
  #include "R5K574M/r_cac_posmsk.h"
  #include "R5K574M/r_canfd_posmsk.h"
  #include "R5K574M/r_cgc_posmsk.h"
