@@ -16,6 +16,8 @@ extern "C" {
 #define ETHER_CFG_USE_CUSTOM_PHY_DRIVER (1)
 #define ETHER_CFG_KEEP_INTERRUPT_EVENT_BACKWORD_COMPATIBILITY (1)
 
+#define RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK (1)
+
 #ifdef __cplusplus
 }
 #endif

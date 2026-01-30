@@ -310,10 +310,10 @@
 #define BSP_FEATURE_ESC_MAX_PORTS                              (2UL)                               // Feature not available on this device.
 
 #define BSP_FEATURE_ETHER_IS_AVAILABLE                         (1UL)
-#define BSP_FEATURE_ETHER_FIFO_DEPTH                           (0x070FUL)                          // Valid value of EDMACn.FDR register.
-#define BSP_FEATURE_ETHER_MAX_CHANNELS                         (2UL)                               // Number of available ethernet PHYs.
-#define BSP_FEATURE_ETHER_MAX_QUEUE_NUM                        (64UL)                              // The number of AXI bus descriptors available to Ethernet components.
-#define BSP_FEATURE_ETHER_SUPPORTS_TZ_SECURE                   (0UL)                               // Whether or not the ETHERC peripheral supports TrustZone secure access.
+#define BSP_FEATURE_ETHER_FIFO_DEPTH                           (0x070FUL)                                        // Valid value of EDMACn.FDR register.
+#define BSP_FEATURE_ETHER_MAX_QUEUE_NUM                        (64UL)                                            // The number of AXI bus descriptors available to Ethernet components.
+#define BSP_FEATURE_ETHER_NUM_CHANNELS                         (2UL)                                             // Number of available ethernet PHYs.
+#define BSP_FEATURE_ETHER_SUPPORTS_TZ_SECURE                   (0UL)                                             // Whether or not the ETHERC peripheral supports TrustZone secure access.
 
 #define BSP_FEATURE_FLASH_ARC_NSEC_MULTIPLE_MAX_COUNT          (64UL)                              // Number of bits per counter when ARC_NSEC is configured as multiple counters.
 #define BSP_FEATURE_FLASH_ARC_NSEC_NUM_COUNTERS                (4L)                                // Number of non-secure application anti-rollback counters that can be configured.
@@ -679,5 +679,14 @@
 #define BSP_FEATURE_TMR_VALID_CHANNEL_16_BIT_MASK              (0x05U)
 #define BSP_FEATURE_TMR_MAX_CASCADED_CHANNEL                   (0x02U)
 #define BSP_FEATURE_TMR_CHANNELS                               (0x03U)
+
+#define BSP_FEATURE_ESWM_IS_AVAILABLE                          (1UL)
+#define BSP_FEATURE_ESWM_ETHA_IPV_QUEUE_NUM                    (8UL)                                             // Number of IPV based transmission queue for each port.
+#define BSP_FEATURE_ESWM_GWCA_PORT                             (2UL)                                             // Port number of the CPU.
+#define BSP_FEATURE_ESWM_MAX_QUEUE_NUM                         (64UL)                                            // The number of AXI bus descriptors available to Ethernet components.
+#define BSP_FEATURE_ESWM_GPTP_PULSE_GENERATOR_NUM              (4UL)                                             // Number of Pulse Generator.
+#define BSP_FEATURE_ESWM_GPTP_TIMER_NUM                        (2UL)                                             // Number of gPTP timer.
+#define BSP_FEATURE_ESWM_TS_DESCRIPTOR_QUEUE_MAX_NUM           (2UL)                                             // Number of TS reception descriptor queue.
+#define BSP_FEATURE_ESWM_FRER_TABLE_SIZE                       (128UL)    
 
 #endif

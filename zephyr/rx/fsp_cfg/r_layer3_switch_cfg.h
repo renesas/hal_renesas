@@ -29,40 +29,17 @@
  #define LAYER3_SWITCH_CFG_PARAM_CHECKING_ENABLE    (BSP_CFG_PARAM_CHECKING_ENABLE)
 #endif
 
-#if DT_NODE_HAS_STATUS(DT_NODELABEL(rmac0), okay)
-#define LAYER3_SWITCH_CHANNEL0_QUEUE_NUM (DT_PROP(DT_NODELABEL(rmac0),  tx_queue_num) + DT_PROP(DT_NODELABEL(rmac0),  rx_queue_num))
-#else
-#define LAYER3_SWITCH_CHANNEL0_QUEUE_NUM 0
-#endif
+#define LAYER3_SWITCH_CFG_PARAM_CHECKING_ENABLE (BSP_CFG_PARAM_CHECKING_ENABLE)
 
-#if DT_NODE_HAS_STATUS(DT_NODELABEL(rmac1), okay)
-#define LAYER3_SWITCH_CHANNEL1_QUEUE_NUM (DT_PROP(DT_NODELABEL(rmac1),  tx_queue_num) + DT_PROP(DT_NODELABEL(rmac1),  rx_queue_num))
+#define LAYER3_SWITCH_GET_QUEUE_NUM(id, compat, prop)                                  \
+		    COND_CODE_1(DT_NODE_HAS_COMPAT(id,compat),(DT_PROP(id,prop)),(0))
 
-#else
-#define LAYER3_SWITCH_CHANNEL1_QUEUE_NUM 0
-#endif
+#define LAYER3_SWITCH_CFG_AVAILABLE_QUEUE_NUM                                          \
+		    (DT_FOREACH_CHILD_SEP_VARGS(DT_NODELABEL(eswm), LAYER3_SWITCH_GET_QUEUE_NUM,   \
+						(+), renesas_rx_rmac, txq_num) +          \
+		     DT_FOREACH_CHILD_SEP_VARGS(DT_NODELABEL(eswm), LAYER3_SWITCH_GET_QUEUE_NUM,   \
+						(+), renesas_rx_rmac, rxq_num))
 
-/** SPECIFY WHLAYER3_SWITCH TO INCLUDE CODE FOR API PARAMETER CHECKING
- * Setting to BSP_CFG_PARAM_CHECKING_ENABLE utilizes the system default setting
- * 1 : includes parameter checking
- * 0 : compiles out parameter checking
- */
-#ifndef LAYER3_SWITCH_CFG_AVAILABLE_QUEUE_NUM
-#define LAYER3_SWITCH_CFG_MAX_QUEUE_NUM      (64)
-#define LAYER3_SWITCH_CFG_AVAILABLE_QUEUE_NUM      (LAYER3_SWITCH_CHANNEL0_QUEUE_NUM + LAYER3_SWITCH_CHANNEL1_QUEUE_NUM)
-#endif
-
-/***********************************************************************************************************************
- * Typedef definitions
- ***********************************************************************************************************************/
-
-/***********************************************************************************************************************
- * Exported global variables
- ***********************************************************************************************************************/
-
-/***********************************************************************************************************************
- * Exported global functions (to be accessed by other files)
- ***********************************************************************************************************************/
 
 #endif                                 /* R_LAYER3_SWITCH_CFG_H */
 
