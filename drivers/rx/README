@@ -86,6 +86,7 @@ Patch List:
    * Made the group interrupt handler a global variable.
    Impacted files:
       drivers/rx/rdp/src/r_bsp/mcu/all/r_bsp_interrupts.c
+      drivers/rx/rdp/src/r_bsp/mcu/rx26t/mcu_interrupts.c
 
    * Added a new function based on R_BSP_InterruptWrite
    that allows passing a user-defined argument to the registered interrupt handler.
