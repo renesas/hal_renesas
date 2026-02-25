@@ -43,6 +43,12 @@ elseif(CONFIG_SOC_R7F70254xFABG_C
 	OR CONFIG_SOC_R7F70254xAFABB_C)
 
 	zephyr_include_directories(fsp/src/bsp/mcu/${CONFIG_SOC_SERIES}/rh850u2b10)
+
+elseif(CONFIG_SOC_R7F702600AFABB_C 
+	OR CONFIG_SOC_R7F702600FABB_C)
+
+	zephyr_include_directories(fsp/src/bsp/mcu/${CONFIG_SOC_SERIES}/rh850u2c8)
+
 endif()
 
 
