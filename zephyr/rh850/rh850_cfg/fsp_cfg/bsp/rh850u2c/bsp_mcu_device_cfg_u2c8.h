@@ -1,0 +1,30 @@
+/* generated configuration header file - do not edit */
+#ifndef BSP_MCU_DEVICE_CFG_U2C8_H_
+#define BSP_MCU_DEVICE_CFG_U2C8_H_
+
+#include "bsp_clock_cfg.h"
+#ifndef BSP_MCU_GROUP_RH850U2Cx
+ #define BSP_MCU_GROUP_RH850U2Cx         (1)
+#endif
+
+#ifndef BSP_FENMI_VECTOR_MAX_ENTRIES
+ #define BSP_FENMI_VECTOR_MAX_ENTRIES    1UL
+#endif
+
+#ifndef BSP_FEINT_VECTOR_MAX_ENTRIES
+ #define BSP_FEINT_VECTOR_MAX_ENTRIES    3UL
+#endif
+
+#ifndef BSP_INTC1_VECTOR_MAX_ENTRIES
+ #define BSP_INTC1_VECTOR_MAX_ENTRIES    32UL
+#endif
+
+#ifndef BSP_INTC2_VECTOR_MAX_ENTRIES
+ #define BSP_INTC2_VECTOR_MAX_ENTRIES    629UL
+#endif
+
+#ifndef BSP_INTC_INTBP_MAX_ENTRIES
+ #define BSP_INTC_INTBP_MAX_ENTRIES      630UL
+#endif
+
+#endif                                 /* BSP_MCU_DEVICE_CFG_U2C8_H_ */
