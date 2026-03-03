@@ -248,4 +248,13 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_SDHI)
+		zephyr_include_directories(
+			fsp/src/r_sdhi
+		)
+		zephyr_library_sources(
+			fsp/src/r_sdhi/r_sdhi.c
+		)
+	endif()
+
 endif()
