@@ -242,4 +242,10 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		endif()
 	endif()
 
+	if(CONFIG_USE_RX_FSP_DTC)
+		zephyr_library_sources(
+			fsp/src/r_dtc/r_dtc.c
+		)
+	endif()
+
 endif()
