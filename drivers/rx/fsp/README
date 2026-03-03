@@ -54,3 +54,7 @@ Patch List:
    * Update PLACE_IN_RAM_SECTION definitions in r_mram.h to use the standard `.ramfunc section` instead of legacy `.code_in_ram`
    Impacted files:
       drivers/rx/fsp/inc/instances/r_mram.h
+
+   * Align callbackSet() signature with FSP source (void * p_context).
+   Impacted files:
+      drivers/rx/fsp/inc/api/r_transfer_api.h
