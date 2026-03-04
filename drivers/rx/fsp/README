@@ -58,3 +58,7 @@ Patch List:
    * Align callbackSet() signature with FSP source (void * p_context).
    Impacted files:
       drivers/rx/fsp/inc/api/r_transfer_api.h
+
+   * Made non-static functions to allow access from Zephyr
+   Impacted files:
+      drivers/rx/fsp/src/r_sdhi/r_sdhi.c
