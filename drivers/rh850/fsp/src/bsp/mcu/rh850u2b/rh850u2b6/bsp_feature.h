@@ -124,6 +124,9 @@
 /** ENCA */
 #define BSP_FEATURE_ENCA_MAX_CHANNEL                                          (2U)                                 ///< Maximum ENCA channels
 
+/** MSPI */
+#define BSP_FEATURE_MSPI_RAM_WORDS_MAX                                        (512U)                               ///< MSPI RAM size
+
 /** TSG3 */
 #define BSP_FEATURE_TSG3_MAX_UNIT                                             (3U)                                 ///< Maximum TSG3 units
 #define BSP_FEATURE_TSG3_COMPARE_MATCH_INTERRUPT_SKIPPING_FUNCTION_SUPPORT    (1U)                                 ///< Compare-match interrupt skipping supported
@@ -144,7 +147,7 @@
 #define BSP_FEATURE_CANFD_NUM_CFIFO_PER_UNIT                                  (24UL)                               ///< Total CFIFO count
 #define BSP_FEATURE_CANFD_NUM_TXQUEUE_CHANNEL                                 (4UL)                                ///< Number of TXQUEUE channels
 #define BSP_FEATURE_CANFD_NUM_RX_FIFO_FFI_VM                                  (8UL)                                ///< Number of RX FIFO for FFI/VM mode
-#define BSP_FEATURE_CANFD_TXMB_SUPPORTED_SLOT                                 (0x0000FFFF0000FFFFULL)              ///< TXMB slot mask (0–15 & 32–47)
+#define BSP_FEATURE_CANFD_TXMB_SUPPORTED_SLOT                                 (0x0000FFFF0000FFFFULL)              ///< TXMB slot mask (0â€“15 & 32â€“47)
 #define BSP_FEATURE_CANFD_CLKC_SRC                                            (FSP_PRIV_CLOCK_CLK_CANFD_C)         ///< CANFD CLKC clock source
 #define BSP_FEATURE_CANFD_PN_MODE                                             (1U)                                 ///< Pretended Network Mode supported
 #define BSP_FEATURE_CANFD_FFI_MODE                                            (1U)                                 ///< Flexible Filtering Interface Mode supported
@@ -395,7 +398,7 @@
 /** HRPWM */
 #define BSP_FEATURE_HRPWM_VALID_CHANNEL_MASK                                  (0x1U)                               ///< Valid HRPWM channels mask
 
-/** PIC — extended */
+/** PIC â€” extended */
 #define BSP_FEATURE_PIC_TAUD_INT_SIGNAL_OUT_NUMBER                            (3U)                                 ///< TAUD interrupt signal outputs via PIC
 #define BSP_FEATURE_PIC_TAUD_TRIANGLE_WAVE_NUMBER                             (4U)                                 ///< TAUD triangle wave outputs
 #define BSP_FEATURE_PIC_TAUD_PWM_OUTPUT_NUMBER                                (4U)                                 ///< TAUD PWM output count
@@ -493,6 +496,9 @@
 
 /** ECM */
 #define BSP_FEATURE_ECM_ERROR_SOURCE_CHECK_VALID                              (319U)                               ///< Maximum ECM error source index supported
+
+/** ICU */
+#define BSP_FEATURE_FCLA5_IS_AVAILABLE                                        (1U)                                 ///< FCLA5 register availability (1 = available)
 
 /***********************************************************************************************************************
  * Exported global variables (to be accessed by other files)

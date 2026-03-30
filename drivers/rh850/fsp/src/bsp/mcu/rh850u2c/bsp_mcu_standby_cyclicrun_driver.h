@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2026 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2025 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -11,7 +11,6 @@
  * Includes
  **********************************************************************************************************************/
 #include "bsp_api.h"
-#include "memory_regions.h"
 
 #if (BSP_CYCLICRUN_MODE_ENABLE) && (BSP_PE0_USED)
 

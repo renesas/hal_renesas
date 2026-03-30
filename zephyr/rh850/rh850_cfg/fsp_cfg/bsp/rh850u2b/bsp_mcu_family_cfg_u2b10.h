@@ -3,7 +3,6 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
 #ifndef BSP_MCU_FAMILY_CFG_U2B10_H_
 #define BSP_MCU_FAMILY_CFG_U2B10_H_
 #include "bsp_mcu_device_pn_cfg.h"

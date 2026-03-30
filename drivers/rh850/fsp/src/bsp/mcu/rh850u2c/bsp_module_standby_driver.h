@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2026 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2025 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -18,33 +18,33 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
-#define BSP_MODULE_STANDBY_RSCFD_DEFAULT_VALUE       (0x00000003UL) ///< Standby default value for RSCFD
-#define BSP_MODULE_STANDBY_FLXA_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for FLXA
-#define BSP_MODULE_STANDBY_GTM_DEFAULT_VALUE         (0x00000001UL) ///< Standby default value for GTM
-#define BSP_MODULE_STANDBY_ETND_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for ETND
-#define BSP_MODULE_STANDBY_ETNF_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for ETNF
-#define BSP_MODULE_STANDBY_RSENT_DEFAULT_VALUE       (0x000000FFUL) ///< Standby default value for RSENT
-#define BSP_MODULE_STANDBY_MSPI_DEFAULT_VALUE        (0x000003FFUL) ///< Standby default value for MSPI
-#define BSP_MODULE_STANDBY_RLIN3_DEFAULT_VALUE       (0x00FFFFFFUL) ///< Standby default value for RLIN3
-#define BSP_MODULE_STANDBY_ADCK_ISO_DEFAULT_VALUE    (0x00000003UL) ///< Standby default value for ADCK_ISO
-#define BSP_MODULE_STANDBY_CXPI_DEFAULT_VALUE        (0x0000000FUL) ///< Standby default value for CXPI
-#define BSP_MODULE_STANDBY_MMCA_DEFAULT_VALUE        (0x00000001UL) ///< Standby default value for MMCA
-#define BSP_MODULE_STANDBY_ENCA_DEFAULT_VALUE        (0x00000001UL) ///< Standby default value for ENCA
-#define BSP_MODULE_STANDBY_PSI5_DEFAULT_VALUE        (0x00000023UL) ///< Standby default value for PSI5
-#define BSP_MODULE_STANDBY_PSI5S_DEFAULT_VALUE       (0x00000001UL) ///< Standby default value for PSI5S
-#define BSP_MODULE_STANDBY_PWMD_DEFAULT_VALUE        (0x00000001UL) ///< Standby default value for PWMD
-#define BSP_MODULE_STANDBY_SFMA_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for SFMA
-#define BSP_MODULE_STANDBY_TAPA_DEFAULT_VALUE        (0x0000000FUL) ///< Standby default value for TAPA
-#define BSP_MODULE_STANDBY_TAUD_DEFAULT_VALUE        (0x00000007UL) ///< Standby default value for TAUD
-#define BSP_MODULE_STANDBY_TAUJ_ISO_DEFAULT_VALUE    (0x00000003UL) ///< Standby default value for TAUJ_ISO
-#define BSP_MODULE_STANDBY_TSG3_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for TSG3
-#define BSP_MODULE_STANDBY_OSTM_DEFAULT_VALUE        (0x0000000FUL) ///< Standby default value for OSTM
-#define BSP_MODULE_STANDBY_RI3C_DEFAULT_VALUE        (0x0000000FUL) ///< Standby default value for RI3C
-#define BSP_MODULE_STANDBY_SSIF_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for SSIF
-#define BSP_MODULE_STANDBY_ADCK_AWO_DEFAULT_VALUE    (0x00000001UL) ///< Standby default value for ADCK_AWO
-#define BSP_MODULE_STANDBY_RTCA_DEFAULT_VALUE        (0x00000001UL) ///< Standby default value for RTCA
-#define BSP_MODULE_STANDBY_TAUJ_AWO_DEFAULT_VALUE    (0x00000003UL) ///< Standby default value for TAUJ_AWO
-#define BSP_MODULE_STANDBY_WDTB_AWO_DEFAULT_VALUE    (0x00000000UL) ///< Standby default value for WDTB_AWO
+#define BSP_MODULE_STANDBY_MSR_RSCFD_DEFAULT_VALUE       (0x00000003UL) ///< Standby default value for RSCFD
+#define BSP_MODULE_STANDBY_MSR_FLXA_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for FLXA
+#define BSP_MODULE_STANDBY_MSR_GTM_DEFAULT_VALUE         (0x00000001UL) ///< Standby default value for GTM
+#define BSP_MODULE_STANDBY_MSR_ETND_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for ETND
+#define BSP_MODULE_STANDBY_MSR_ETNF_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for ETNF
+#define BSP_MODULE_STANDBY_MSR_RSENT_DEFAULT_VALUE       (0x000000FFUL) ///< Standby default value for RSENT
+#define BSP_MODULE_STANDBY_MSR_MSPI_DEFAULT_VALUE        (0x000003FFUL) ///< Standby default value for MSPI
+#define BSP_MODULE_STANDBY_MSR_RLIN3_DEFAULT_VALUE       (0x00FFFFFFUL) ///< Standby default value for RLIN3
+#define BSP_MODULE_STANDBY_MSR_ADCK_ISO_DEFAULT_VALUE    (0x00000003UL) ///< Standby default value for ADCK_ISO
+#define BSP_MODULE_STANDBY_MSR_CXPI_DEFAULT_VALUE        (0x0000000FUL) ///< Standby default value for CXPI
+#define BSP_MODULE_STANDBY_MSR_MMCA_DEFAULT_VALUE        (0x00000001UL) ///< Standby default value for MMCA
+#define BSP_MODULE_STANDBY_MSR_ENCA_DEFAULT_VALUE        (0x00000001UL) ///< Standby default value for ENCA
+#define BSP_MODULE_STANDBY_MSR_PSI5_DEFAULT_VALUE        (0x00000023UL) ///< Standby default value for PSI5
+#define BSP_MODULE_STANDBY_MSR_PSI5S_DEFAULT_VALUE       (0x00000001UL) ///< Standby default value for PSI5S
+#define BSP_MODULE_STANDBY_MSR_PWMD_DEFAULT_VALUE        (0x00000001UL) ///< Standby default value for PWMD
+#define BSP_MODULE_STANDBY_MSR_SFMA_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for SFMA
+#define BSP_MODULE_STANDBY_MSR_TAPA_DEFAULT_VALUE        (0x0000000FUL) ///< Standby default value for TAPA
+#define BSP_MODULE_STANDBY_MSR_TAUD_DEFAULT_VALUE        (0x00000007UL) ///< Standby default value for TAUD
+#define BSP_MODULE_STANDBY_MSR_TAUJ_ISO_DEFAULT_VALUE    (0x00000003UL) ///< Standby default value for TAUJ_ISO
+#define BSP_MODULE_STANDBY_MSR_TSG3_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for TSG3
+#define BSP_MODULE_STANDBY_MSR_OSTM_DEFAULT_VALUE        (0x0000000FUL) ///< Standby default value for OSTM
+#define BSP_MODULE_STANDBY_MSR_RI3C_DEFAULT_VALUE        (0x0000000FUL) ///< Standby default value for RI3C
+#define BSP_MODULE_STANDBY_MSR_SSIF_DEFAULT_VALUE        (0x00000003UL) ///< Standby default value for SSIF
+#define BSP_MODULE_STANDBY_MSR_ADCK_AWO_DEFAULT_VALUE    (0x00000001UL) ///< Standby default value for ADCK_AWO
+#define BSP_MODULE_STANDBY_MSR_RTCA_DEFAULT_VALUE        (0x00000001UL) ///< Standby default value for RTCA
+#define BSP_MODULE_STANDBY_MSR_TAUJ_AWO_DEFAULT_VALUE    (0x00000003UL) ///< Standby default value for TAUJ_AWO
+#define BSP_MODULE_STANDBY_MSR_WDTB_AWO_DEFAULT_VALUE    (0x00000000UL) ///< Standby default value for WDTB_AWO
 
 #define BSP_MODULE_MSR_STPMSK_Pos                        (31U)          ///< STPMSK bit position
 
@@ -79,47 +79,55 @@ FSP_HEADER
 /** Standby control module list */
 typedef enum e_bsp_module_standby
 {
-    BSP_MODULE_STANDBY_RSCFD_ISO,      ///< Standby module RSCFD
-    BSP_MODULE_STANDBY_FLXA_ISO,       ///< Standby module FLXA
-    BSP_MODULE_STANDBY_GTM_ISO,        ///< Standby module GTM
-    BSP_MODULE_STANDBY_ETND_ISO,       ///< Standby module ETND
-    BSP_MODULE_STANDBY_ETNF_ISO,       ///< Standby module ETNF
-    BSP_MODULE_STANDBY_RSENT_ISO,      ///< Standby module RSENT
-    BSP_MODULE_STANDBY_MSPI_ISO,       ///< Standby module MSPI
-    BSP_MODULE_STANDBY_RLIN3_ISO,      ///< Standby module RLIN3
-    BSP_MODULE_STANDBY_ADCK_ISO,   ///< Standby module ADCK_ISO
-    BSP_MODULE_STANDBY_CXPI_ISO,       ///< Standby module CXPI
-    BSP_MODULE_STANDBY_MMCA_ISO,       ///< Standby module MMCA
-    BSP_MODULE_STANDBY_ENCA_ISO,       ///< Standby module ENCA
-    BSP_MODULE_STANDBY_PSI5_ISO,       ///< Standby module PSI5
-    BSP_MODULE_STANDBY_PSI5S_ISO,      ///< Standby module PSI5S
-    BSP_MODULE_STANDBY_PWMD_ISO,       ///< Standby module PWMD
-    BSP_MODULE_STANDBY_SFMA_ISO,       ///< Standby module SFMA
-    BSP_MODULE_STANDBY_TAPA_ISO,       ///< Standby module TAPA
-    BSP_MODULE_STANDBY_TAUD_ISO,       ///< Standby module TAUD
-    BSP_MODULE_STANDBY_TAUJ_ISO,   ///< Standby module TAUJ_ISO
-    BSP_MODULE_STANDBY_TSG3_ISO,       ///< Standby module TSG3
-    BSP_MODULE_STANDBY_OSTM_ISO,       ///< Standby module OSTM
-    BSP_MODULE_STANDBY_RI3C_ISO,       ///< Standby module RI3C
-    BSP_MODULE_STANDBY_SSIF_ISO,       ///< Standby module SSIF
-    BSP_MODULE_STANDBY_ADCK_AWO,   ///< Standby module ADCK_AWO
-    BSP_MODULE_STANDBY_RTCA_ISO,       ///< Standby module RTCA
-    BSP_MODULE_STANDBY_TAUJ_AWO,   ///< Standby module TAUJ_AWO
-    BSP_MODULE_STANDBY_WDTB_AWO,   ///< Standby module WDTB_AWO
+    BSP_MODULE_STANDBY_MSR_RSCFD,      ///< Standby module RSCFD
+#if (BSP_FEATURE_FLXA_IS_AVAILABLE)
+    BSP_MODULE_STANDBY_MSR_FLXA,       ///< Standby module FLXA
+#endif /* #if (BSP_FEATURE_FLXA_IS_AVAILABLE) */
+    BSP_MODULE_STANDBY_MSR_GTM,        ///< Standby module GTM
+#if (BSP_FEATURE_ETND_IS_AVAILABLE)
+    BSP_MODULE_STANDBY_MSR_ETND,       ///< Standby module ETND
+#endif /* #if (BSP_FEATURE_ETND_IS_AVAILABLE) */
+    BSP_MODULE_STANDBY_MSR_ETNF,       ///< Standby module ETNF
+    BSP_MODULE_STANDBY_MSR_RSENT,      ///< Standby module RSENT
+    BSP_MODULE_STANDBY_MSR_MSPI,       ///< Standby module MSPI
+    BSP_MODULE_STANDBY_MSR_RLIN3,      ///< Standby module RLIN3
+    BSP_MODULE_STANDBY_MSR_ADCK_ISO,   ///< Standby module ADCK_ISO
+    BSP_MODULE_STANDBY_MSR_CXPI,       ///< Standby module CXPI
+#if (BSP_FEATURE_MMCA_IS_AVAILABLE)
+    BSP_MODULE_STANDBY_MSR_MMCA,       ///< Standby module MMCA
+#endif /* #if (BSP_FEATURE_MMCA_IS_AVAILABLE) */
+    BSP_MODULE_STANDBY_MSR_ENCA,       ///< Standby module ENCA
+    BSP_MODULE_STANDBY_MSR_PSI5,       ///< Standby module PSI5
+#if (BSP_FEATURE_PSI5S_IS_AVAILABLE)
+    BSP_MODULE_STANDBY_MSR_PSI5S,      ///< Standby module PSI5S
+#endif /* #if (BSP_FEATURE_PSI5S_IS_AVAILABLE) */
+    BSP_MODULE_STANDBY_MSR_PWMD,       ///< Standby module PWMD
+    BSP_MODULE_STANDBY_MSR_SFMA,       ///< Standby module SFMA
+    BSP_MODULE_STANDBY_MSR_TAPA,       ///< Standby module TAPA
+    BSP_MODULE_STANDBY_MSR_TAUD,       ///< Standby module TAUD
+    BSP_MODULE_STANDBY_MSR_TAUJ_ISO,   ///< Standby module TAUJ_ISO
+    BSP_MODULE_STANDBY_MSR_TSG3,       ///< Standby module TSG3
+    BSP_MODULE_STANDBY_MSR_OSTM,       ///< Standby module OSTM
+    BSP_MODULE_STANDBY_MSR_RI3C,       ///< Standby module RI3C
+    BSP_MODULE_STANDBY_MSR_SSIF,       ///< Standby module SSIF
+    BSP_MODULE_STANDBY_MSR_ADCK_AWO,   ///< Standby module ADCK_AWO
+    BSP_MODULE_STANDBY_MSR_RTCA,       ///< Standby module RTCA
+    BSP_MODULE_STANDBY_MSR_TAUJ_AWO,   ///< Standby module TAUJ_AWO
+    BSP_MODULE_STANDBY_MSR_WDTB_AWO,   ///< Standby module WDTB_AWO
     BSP_MODULE_STANDBY_TOTAL_INDEX_END ///< Total number of standby modules
 } bsp_module_standby_t;
 
 /** Stop-mode operation mapping to standby modules */
 typedef enum e_bsp_module_stopmode
 {
-    BSP_MODULE_OPERATION_MODE_MSR_RSCFD    = BSP_MODULE_STANDBY_RSCFD_ISO,    ///< Stop mode module RSCFD
-    BSP_MODULE_OPERATION_MODE_MSR_RLIN3    = BSP_MODULE_STANDBY_RLIN3_ISO,    ///< Stop mode module RLIN3
-    BSP_MODULE_OPERATION_MODE_MSR_ADCK_ISO = BSP_MODULE_STANDBY_ADCK_ISO, ///< Stop mode module ADCK_ISO
-    BSP_MODULE_OPERATION_MODE_MSR_RI3C     = BSP_MODULE_STANDBY_RI3C_ISO,     ///< Stop mode module RI3C
-    BSP_MODULE_OPERATION_MODE_MSR_ADCK_AWO = BSP_MODULE_STANDBY_ADCK_AWO, ///< Stop mode module ADCK_AWO
-    BSP_MODULE_OPERATION_MODE_MSR_RTCA     = BSP_MODULE_STANDBY_RTCA_ISO,     ///< Stop mode module RTCA
-    BSP_MODULE_OPERATION_MODE_MSR_TAUJ_AWO = BSP_MODULE_STANDBY_TAUJ_AWO, ///< Stop mode module TAUJ_AWO
-    BSP_MODULE_OPERATION_MODE_MSR_WDTB_AWO = BSP_MODULE_STANDBY_WDTB_AWO  ///< Stop mode module WDTB_AWO
+    BSP_MODULE_OPERATION_MODE_MSR_RSCFD    = BSP_MODULE_STANDBY_MSR_RSCFD,    ///< Stop mode module RSCFD
+    BSP_MODULE_OPERATION_MODE_MSR_RLIN3    = BSP_MODULE_STANDBY_MSR_RLIN3,    ///< Stop mode module RLIN3
+    BSP_MODULE_OPERATION_MODE_MSR_ADCK_ISO = BSP_MODULE_STANDBY_MSR_ADCK_ISO, ///< Stop mode module ADCK_ISO
+    BSP_MODULE_OPERATION_MODE_MSR_RI3C     = BSP_MODULE_STANDBY_MSR_RI3C,     ///< Stop mode module RI3C
+    BSP_MODULE_OPERATION_MODE_MSR_ADCK_AWO = BSP_MODULE_STANDBY_MSR_ADCK_AWO, ///< Stop mode module ADCK_AWO
+    BSP_MODULE_OPERATION_MODE_MSR_RTCA     = BSP_MODULE_STANDBY_MSR_RTCA,     ///< Stop mode module RTCA
+    BSP_MODULE_OPERATION_MODE_MSR_TAUJ_AWO = BSP_MODULE_STANDBY_MSR_TAUJ_AWO, ///< Stop mode module TAUJ_AWO
+    BSP_MODULE_OPERATION_MODE_MSR_WDTB_AWO = BSP_MODULE_STANDBY_MSR_WDTB_AWO  ///< Stop mode module WDTB_AWO
 } bsp_module_stopmode_t;
 
 /** Stop-mode clock supply configuration */

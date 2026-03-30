@@ -1,9 +1,8 @@
 /*
-* Copyright (c) 2025 - 2026 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2025 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
 #ifndef BSP_CLOCK_CFG_U2B10_BGA292_H_
 #define BSP_CLOCK_CFG_U2B10_BGA292_H_
 #ifndef BSP_CFG_CLOCKS_SECURE
