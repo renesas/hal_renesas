@@ -3,7 +3,6 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
 #ifndef BSP_MCU_DEVICE_PN_CFG_U2B10_H_
 #define BSP_MCU_DEVICE_PN_CFG_U2B10_H_
 

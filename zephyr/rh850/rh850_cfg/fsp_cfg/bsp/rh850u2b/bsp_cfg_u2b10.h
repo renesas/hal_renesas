@@ -3,7 +3,6 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
 #ifndef BSP_CFG_U2B10_H_
 #define BSP_CFG_U2B10_H_
 #include "bsp_clock_cfg.h"
@@ -11,7 +10,6 @@
 #include "board_cfg.h"
 #include "bsp_common_cfg.h"
 #include "bsp_mcu_cpu_memory_cfg.h"
-
 #ifndef BSP_API_OVERRIDE
  #define BSP_API_OVERRIDE    "bsp_api_override.h"
 #endif
