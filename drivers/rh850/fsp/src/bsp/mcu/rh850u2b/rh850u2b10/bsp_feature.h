@@ -145,7 +145,7 @@
 #define BSP_FEATURE_CANFD_NUM_CFIFO_PER_UNIT                                  (24UL)                               ///< Total CFIFO entries per unit
 #define BSP_FEATURE_CANFD_NUM_TXQUEUE_CHANNEL                                 (4UL)                                ///< Number of TX queue channels
 #define BSP_FEATURE_CANFD_NUM_RX_FIFO_FFI_VM                                  (8UL)                                ///< Number of RX FIFO for FFI/VM
-#define BSP_FEATURE_CANFD_TXMB_SUPPORTED_SLOT                                 (0x0000FFFF0000FFFFULL)              ///< Supported TXMB slots (0–15, 32–47)
+#define BSP_FEATURE_CANFD_TXMB_SUPPORTED_SLOT                                 (0x0000FFFF0000FFFFULL)              ///< Supported TXMB slots (0â€“15, 32â€“47)
 #define BSP_FEATURE_CANFD_CLKC_SRC                                            (FSP_PRIV_CLOCK_CLK_CANFD_C)         ///< CANFD CLKC source
 #define BSP_FEATURE_CANFD_PN_MODE                                             (1U)                                 ///< Pretended Network Mode supported
 #define BSP_FEATURE_CANFD_FFI_MODE                                            (1U)                                 ///< FFI Mode supported
@@ -159,6 +159,9 @@
 
 /** RSENT */
 #define BSP_FEATURE_RSENT_SENT_NUM_OF_UNIT                                    (30U)                                ///< Number of RSENT units
+
+/** MSPI */
+#define BSP_FEATURE_MSPI_RAM_WORDS_MAX                                        (512U)                               ///< MSPI RAM size
 
 /** TAUD3P */
 #define BSP_FEATURE_TAUD_THREE_PHASE_NUMBER_OF_UNIT                           (3U)                                 ///< TAUD three-phase control units
@@ -396,7 +399,7 @@
 /** HRPWM */
 #define BSP_FEATURE_HRPWM_VALID_CHANNEL_MASK                                  (0x1U)                               ///< Valid HRPWM channel mask
 
-/** PIC — advanced signals */
+/** PIC â€” advanced signals */
 #define BSP_FEATURE_PIC_TAUD_INT_SIGNAL_OUT_NUMBER                            (3U)                                 ///< TAUD interrupt outputs
 #define BSP_FEATURE_PIC_TAUD_TRIANGLE_WAVE_NUMBER                             (4U)                                 ///< Number of triangle-wave generators
 #define BSP_FEATURE_PIC_TAUD_PWM_OUTPUT_NUMBER                                (4U)                                 ///< TAUD PWM output count
@@ -499,6 +502,9 @@
 
 /** ECM */
 #define BSP_FEATURE_ECM_ERROR_SOURCE_CHECK_VALID                              (351U)                               ///< Maximum ECM error source index supported
+
+/** ICU */
+#define BSP_FEATURE_FCLA5_IS_AVAILABLE                                        (1U)                                 ///< FCLA5 register availability (1 = available)
 
 /***********************************************************************************************************************
  * Exported global variables (to be accessed by other files)

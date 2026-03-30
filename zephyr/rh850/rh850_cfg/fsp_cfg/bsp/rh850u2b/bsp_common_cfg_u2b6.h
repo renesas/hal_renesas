@@ -3,7 +3,6 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
 #ifndef BSP_COMMON_CFG_U2B6_H_
 #define BSP_COMMON_CFG_U2B6_H_
 

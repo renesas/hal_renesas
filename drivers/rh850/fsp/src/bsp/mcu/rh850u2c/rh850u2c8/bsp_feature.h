@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2026 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2025 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -72,6 +72,10 @@
 #define BSP_FEATURE_DTS_GUARD_MAX_CHANNEL                                     (128U)                       ///< Maximum DTS guardable channel
 #define BSP_FEATURE_DMAC_GUARD_MAX_CHANNEL                                    (16U)                        ///< Maximum DMAC guardable channel
 
+/** INT MASK */
+#define BSP_FEATURE_DEVICE_HAS_ORED_IRQ                                       (1U)                         ///< ORed IRQ support available
+#define BSP_FEATURE_VIRQ_MAX_ENTRIES                                          (672UL)                      ///< Maximum virtual IRQ entries
+
 /** IIC */
 #define BSP_FEATURE_IIC_VALID_CHANNEL_MASK                                    (0x00U)                      ///< No valid IIC channels on this device
 
@@ -86,10 +90,6 @@
 
 /** ENCA */
 #define BSP_FEATURE_ENCA_MAX_CHANNEL                                          (1U)                         ///< Maximum ENCA channels
-
-/** INT MASK */
-#define BSP_FEATURE_DEVICE_HAS_ORED_IRQ                                       (1U)                         ///< ORed IRQ support available
-#define BSP_FEATURE_VIRQ_MAX_ENTRIES                                          (672UL)                      ///< Maximum virtual IRQ entries
 
 /** TSG3 */
 #define BSP_FEATURE_TSG3_MAX_UNIT                                             (2U)                         ///< Number of TSG3 units
@@ -159,6 +159,9 @@
 
 /** RSENT */
 #define BSP_FEATURE_RSENT_SENT_NUM_OF_UNIT                                    (8U)                         ///< Number of RSENT units
+
+/** MSPI */
+#define BSP_FEATURE_MSPI_RAM_WORDS_MAX                                        (512U)                       ///< MSPI RAM size
 
 /** TAUD3P */
 #define BSP_FEATURE_TAUD_THREE_PHASE_NUMBER_OF_UNIT                           (2U)                         ///< Number of TAUD three-phase units
@@ -473,6 +476,9 @@
 
 /** ECM */
 #define BSP_FEATURE_ECM_ERROR_SOURCE_CHECK_VALID                              (287U)                       ///< Max ECM error-source index supported
+
+/** ICU */
+#define BSP_FEATURE_FCLA5_IS_AVAILABLE                                        (1U)                         ///< FCLA5 register availability (1 = available)
 
 /***********************************************************************************************************************
  * Exported global variables (to be accessed by other files)

@@ -3,7 +3,6 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
 #ifndef BSP_MCU_CPU_MEMORY_CFG_U2B6_H_
 #define BSP_MCU_CPU_MEMORY_CFG_U2B6_H_
 #ifndef BSP_REGION00_ENABLE
