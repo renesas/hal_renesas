@@ -7,6 +7,7 @@
 
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/clock_control/renesas_rx_cgc.h>
+#include <zephyr/autoconf.h>
 
 #ifndef BSP_CLOCK_CFG_H_
 #define BSP_CLOCK_CFG_H_
@@ -94,8 +95,14 @@
 #define BSP_CFG_UCLK_SOURCE RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(uclk)))
 #define BSP_CFG_USB60CLK_SOURCE                                                \
   RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(usb60clk)))
+
+#if (CONFIG_SOC_RX74M_SKIP_OSPI_CLOCK_SETUP)
+#define BSP_CFG_OCTA_SOURCE BSP_CLOCKS_CLOCK_DISABLED
+#else
 #define BSP_CFG_OCTA_SOURCE                                                    \
   RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(octaspiclk)))
+#endif
+
 #define BSP_CFG_ADCCLK_SOURCE                                                  \
   RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(adcclk)))
 #define BSP_CFG_ESWCLK_SOURCE                                                  \

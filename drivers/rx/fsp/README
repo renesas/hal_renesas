@@ -62,3 +62,7 @@ Patch List:
    * Made non-static functions to allow access from Zephyr
    Impacted files:
       drivers/rx/fsp/src/r_sdhi/r_sdhi.c
+
+   * Made update to ospi driver to add address mode and write data mask setting
+      drivers/rx/fsp/src/r_ospi_b/r_ospi_b.c
+      driver/rx/fsp/inc/instances/r_ospi_b.h

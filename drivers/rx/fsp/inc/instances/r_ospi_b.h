@@ -233,6 +233,12 @@ typedef enum e_ospi_b_combination_function
     OSPI_B_COMBINATION_FUNCTION_2BYTE   = 0x1FF, ///< Combine up to 2 bytes
 } ospi_b_combination_function_t;
 
+typedef enum e_ospi_b_address_mode
+{
+    OSPI_B_NORMAL_ADDRESS_MODE = 0,
+    OSPI_B_ARRAY_ADDRESS_MODE = 1,
+} ospi_b_address_mode_t;
+
 /** Simple array length table structure. */
 typedef struct st_ospi_b_table
 {
@@ -251,6 +257,7 @@ typedef struct st_ospi_b_timing_setting
     ospi_b_sdr_sampling_delay_t     sdr_sampling_delay;              ///< Number of cycles to delay before sampling the data signal.
     ospi_b_ddr_sampling_extension_t ddr_sampling_extension;          ///< Number of cycles to extending the data sampling window in DDR mode.
     ospi_b_output_assert_delay_t    output_assert_delay;             ///< Assertion timing of the output buffer control signal.
+    bool                            write_data_mask_enable;          ///< Use the XSPIn_DS signal as a mask signal for each byte in the write data
 } ospi_b_timing_setting_t;
 
 /** Command set used for a protocol mode. */
@@ -261,6 +268,7 @@ typedef struct st_ospi_b_xspi_command_set
     ospi_b_latency_mode_t     latency_mode;         ///< Configurable or variable latency, only valid for OSPI_B_FRAME_FORMAT_XSPI_PROFILE_2 and OSPI_B_FRAME_FORMAT_XSPI_PROFILE_2_EXTENDED.
     ospi_b_command_bytes_t    command_bytes;        ///< Number of command bytes for each command code.
     spi_flash_address_bytes_t address_bytes;        ///< Number of bytes used during the address phase.
+    ospi_b_address_mode_t     address_mode;
 
     uint16_t read_command;                          ///< Read command.
     uint16_t program_command;                       ///< Memory program/write command.

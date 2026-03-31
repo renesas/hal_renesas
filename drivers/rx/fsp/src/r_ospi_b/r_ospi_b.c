@@ -357,6 +357,9 @@ fsp_err_t R_OSPI_B_Open (spi_flash_ctrl_t * const p_ctrl, spi_flash_cfg_t const 
     liocfg |= ((uint32_t) p_cfg_extend->p_timing_settings->ddr_sampling_extension << R_XSPI0_LIOCFGCS_DDRSMPEX_Pos) &
               R_XSPI0_LIOCFGCS_DDRSMPEX_Msk;
 
+    liocfg |= ((uint32_t) p_cfg_extend->p_timing_settings->write_data_mask_enable << R_XSPI0_LIOCFGCS_WRMSKMD_Pos) &
+              R_XSPI0_LIOCFGCS_WRMSKMD_Msk;
+
     /* Set xSPI CSn signal timings. */
     p_reg->LIOCFGCS[p_cfg_extend->channel] = liocfg;
     uint32_t comcfg = ((uint32_t) p_cfg_extend->p_timing_settings->output_assert_delay << R_XSPI0_COMCFG_OEASTEX_Pos) &
@@ -1056,7 +1059,8 @@ static fsp_err_t r_ospi_b_protocol_specific_settings (ospi_b_instance_ctrl_t * p
     uint32_t cmcfg0 = ((uint32_t) (p_cmd_set->address_msb_mask << R_XSPI0_CMCFGCS_CMCFG0_ADDRPEN_Pos)) |
                       ((uint32_t) (p_cmd_set->frame_format << R_XSPI0_CMCFGCS_CMCFG0_FFMT_Pos)) |
                       (((uint32_t) p_cmd_set->address_bytes << R_XSPI0_CMCFGCS_CMCFG0_ADDSIZE_Pos) &
-                       R_XSPI0_CMCFGCS_CMCFG0_ADDSIZE_Msk);
+                       R_XSPI0_CMCFGCS_CMCFG0_ADDSIZE_Msk) |
+                       p_cmd_set->address_mode << R_XSPI0_CMCFGCS_CMCFG0_ARYAMD_Pos;
 
     /* When using 4-byte addressing, always mask off the most-significant nybble to remove the system bus offset from
      * the transmitted addresses. Ex. CS1 starts at 0x9000_0000 so it needs to mask off bits [31:28]. */
