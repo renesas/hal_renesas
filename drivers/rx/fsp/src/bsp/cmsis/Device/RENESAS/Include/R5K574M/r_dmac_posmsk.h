@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -26,11 +26,7 @@
 /* =========================================================================================================================== */
 
 /* =========================================================  DMSAR  ========================================================= */
-#define R_DMAC0_DMSAR_DMSAR_Pos     (0UL)          /*!< DMSAR (Bit 0)                                         */
-#define R_DMAC0_DMSAR_DMSAR_Msk     (0xffffffffUL) /*!< DMSAR (Bitfield-Mask: 0xffffffff)                     */
 /* =========================================================  DMDAR  ========================================================= */
-#define R_DMAC0_DMDAR_DMDAR_Pos     (0UL)          /*!< DMDAR (Bit 0)                                         */
-#define R_DMAC0_DMDAR_DMDAR_Msk     (0xffffffffUL) /*!< DMDAR (Bitfield-Mask: 0xffffffff)                     */
 /* =========================================================  DMCRA  ========================================================= */
 #define R_DMAC0_DMCRA_DMCRAH_Pos    (16UL)         /*!< DMCRAH (Bit 16)                                       */
 #define R_DMAC0_DMCRA_DMCRAH_Msk    (0x3ff0000UL)  /*!< DMCRAH (Bitfield-Mask: 0x3ff)                         */
@@ -77,8 +73,6 @@
 #define R_DMAC0_DMAMD_DARA_Pos      (0UL)          /*!< DARA (Bit 0)                                          */
 #define R_DMAC0_DMAMD_DARA_Msk      (0x1fUL)       /*!< DARA (Bitfield-Mask: 0x1f)                            */
 /* =========================================================  DMOFR  ========================================================= */
-#define R_DMAC0_DMOFR_DMOFR_Pos     (0UL)          /*!< DMOFR (Bit 0)                                         */
-#define R_DMAC0_DMOFR_DMOFR_Msk     (0xffffffffUL) /*!< DMOFR (Bitfield-Mask: 0xffffffff)                     */
 /* =========================================================  DMCNT  ========================================================= */
 #define R_DMAC0_DMCNT_DTE_Pos       (0UL)          /*!< DTE (Bit 0)                                           */
 #define R_DMAC0_DMCNT_DTE_Msk       (0x1UL)        /*!< DTE (Bitfield-Mask: 0x01)                             */

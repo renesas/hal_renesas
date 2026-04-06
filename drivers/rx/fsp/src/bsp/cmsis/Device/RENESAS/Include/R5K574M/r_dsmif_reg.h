@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -380,46 +380,24 @@ typedef struct
 
     union
     {
-        __IM uint32_t DSOCDRCH0;       /*!< (@ 0x000003FC) Overcurrent Data Register Channel 0                        */
+        __IM uint32_t DSOCDR;          /*!< (@ 0x000003FC) Overcurrent Data Register                                  */
 
         struct
         {
             __IM uint32_t ODR : 16;    /*!< [15..0] Overcurrent data                                                  */
             uint32_t          : 16;
-        } DSOCDRCH0_b;
+        } DSOCDR_b;
     };
 
     union
     {
-        __IM uint32_t DSCOCDR0;        /*!< (@ 0x00000100) Capture Overcurrent Data Register 0                        */
+        __IM uint32_t DSCOCDR[3];      /*!< (@ 0x00000100) Capture Overcurrent Data Register                          */
 
         struct
         {
-            __IM uint32_t CODR0 : 16;  /*!< [15..0] Capture overcurrent data 0                                        */
-            uint32_t            : 16;
-        } DSCOCDR0_b;
-    };
-
-    union
-    {
-        __IM uint32_t DSCOCDR1;        /*!< (@ 0x00000104) Capture Overcurrent Data Register 1                        */
-
-        struct
-        {
-            __IM uint32_t CODR1 : 16;  /*!< [15..0] Capture overcurrent data 1                                        */
-            uint32_t            : 16;
-        } DSCOCDR1_b;
-    };
-
-    union
-    {
-        __IM uint32_t DSCOCDR2;        /*!< (@ 0x00000108) Capture Overcurrent Data Register 2                        */
-
-        struct
-        {
-            __IM uint32_t CODR2 : 16;  /*!< [15..0] Capture overcurrent data 2                                        */
-            uint32_t            : 16;
-        } DSCOCDR2_b;
+            __IM uint32_t CODR : 16;   /*!< [15..0] Capture overcurrent data                                          */
+            uint32_t           : 16;
+        } DSCOCDR_b[3];
     };
     __IM uint32_t RESERVED7[5];
 
@@ -589,38 +567,13 @@ typedef struct                         /*!< (@ 0x8742A000) R_DSMIF0 Structure   
 
     union
     {
-        __IM uint32_t DSSECDR0;        /*!< (@ 0x000000A0) Overcurrent Sum Error detect Capture Data Register
-                                        *                  0                                                          */
+        __IOM uint32_t DSSECDR[3];     /*!< (@ 0x000000A0) Overcurrent Sum Error Detect Capture Data Register         */
 
         struct
         {
-            __IM uint32_t SECDR : 16;  /*!< [15..0] Overcurrent sum error detect capture data                         */
-            uint32_t            : 16;
-        } DSSECDR0_b;
-    };
-
-    union
-    {
-        __IM uint32_t DSSECDR1;        /*!< (@ 0x000000A4) Overcurrent Sum Error detect Capture Data Register
-                                        *                  1                                                          */
-
-        struct
-        {
-            __IM uint32_t SECDR : 16;  /*!< [15..0] Overcurrent sum error detect capture data                         */
-            uint32_t            : 16;
-        } DSSECDR1_b;
-    };
-
-    union
-    {
-        __IM uint32_t DSSECDR2;        /*!< (@ 0x000000A8) Overcurrent Sum Error detect Capture Data Register
-                                        *                  2                                                          */
-
-        struct
-        {
-            __IM uint32_t SECDR : 16;  /*!< [15..0] Overcurrent sum error detect capture data                         */
-            uint32_t            : 16;
-        } DSSECDR2_b;
+            __IOM uint32_t SECDR : 16; /*!< [15..0] Overcurrent sum error detect capture data                         */
+            uint32_t             : 16;
+        } DSSECDR_b[3];
     };
     __IM uint32_t RESERVED2[5];
 

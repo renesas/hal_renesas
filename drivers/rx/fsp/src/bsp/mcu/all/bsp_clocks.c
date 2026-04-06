@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -373,6 +373,9 @@
  #define BSP_PRV_LOCO_USED                         (1)
 #elif defined(BSP_CFG_ADCCLK_SOURCE) && (BSP_CFG_ADCCLK_SOURCE == BSP_CLOCKS_SOURCE_CLOCK_LOCO)
  #define BSP_PRV_LOCO_USED                         (1)
+#elif defined(BSP_CLOCK_CFG_SUBCLOCK_POPULATED) && (BSP_CLOCK_CFG_SUBCLOCK_POPULATED == 0) && \
+    (BSP_FEATURE_CGC_HAS_SOSC == 1U)
+ #define BSP_PRV_LOCO_USED                         (1)
 #else
  #define BSP_PRV_LOCO_USED                         (0)
 #endif
@@ -430,6 +433,7 @@
 /***********************************************************************************************************************
  * Private global variables and functions
  **********************************************************************************************************************/
+
 static uint8_t bsp_clock_set_prechange(uint32_t requested_freq_hz);
 static void    bsp_clock_set_postchange(uint32_t updated_freq_hz, uint8_t new_rom_wait_state);
 
@@ -762,12 +766,39 @@ void bsp_prv_clock_set (uint32_t clock, uint32_t sckdivcr, uint16_t sckdivcr2)
 
 bool bsp_prv_clock_prepare_pre_sleep (void)
 {
-    return 0;
+    /* Must wait before entering or exiting sleep modes.
+     * See "Notes on transitioning to or canceling low power state" in the LPM section of the relevant hardware manual */
+    R_BSP_SoftwareDelay(BSP_CFG_CLOCK_SETTLING_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
+
+    /* Need to slow CPUCLK down before sleeping if it is above 300MHz. */
+    bool cpuclk_slowed = false;
+    if (SystemCoreClock > BSP_MAX_CLOCK_CHANGE_THRESHOLD)
+    {
+        /* Reduce speed of CPUCLK to /3 or /4 of current, select which ones based on what ICLK divider is. */
+        R_SYSTEM->SCKDIVCR2 =
+            (uint16_t) (((0x8 << R_SYSTEM_SCKDIVCR_ICK_Pos) &
+                         R_SYSTEM->SCKDIVCR) ? BSP_CLOCKS_SYS_CLOCK_DIV_3 : BSP_CLOCKS_SYS_CLOCK_DIV_4);
+
+        cpuclk_slowed = true;
+        SystemCoreClockUpdate();
+        R_BSP_SoftwareDelay(BSP_CFG_CLOCK_SETTLING_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
+    }
+
+    return cpuclk_slowed;
 }
 
 void bsp_prv_clock_prepare_post_sleep (bool cpuclk_slowed)
 {
-    FSP_PARAMETER_NOT_USED(cpuclk_slowed);
+    /* Set CPUCLK back to original speed here if it was slowed down before sleeping (dropped to below 300MHz)
+     * Add delays as described in Section 10.7.10 of the relevant hardware manual */
+    R_BSP_SoftwareDelay(BSP_CFG_CLOCK_SETTLING_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
+    if (cpuclk_slowed)
+    {
+        /* Set divider of CPUCLK back to /2. This is the only possible value for it to have been over 300MHz before sleeping. */
+        R_SYSTEM->SCKDIVCR2 = BSP_CLOCKS_SYS_CLOCK_DIV_2;
+        SystemCoreClockUpdate();
+        R_BSP_SoftwareDelay(BSP_CFG_CLOCK_SETTLING_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
+    }
 }
 
 #endif
@@ -1506,7 +1537,7 @@ static void bsp_prv_sosc_init (void)
                 R_BSP_SoftwareDelay(BSP_PRV_SUBCLOCK_STOP_INTERVAL_US, BSP_DELAY_UNITS_MICROSECONDS);
 
                 /*
-                 * r01uh1955-rx74m 9.2.14 SOSCCR : Sub-Clock Oscillator Control Register:
+                 * r01uh1055-rx74m 9.2.14 SOSCCR : Sub-Clock Oscillator Control Register:
                  * When changing the value of the SOSTP bit, execute subsequent instructions
                  * only after reading the bit to check that the value is updated.
                  */
@@ -1519,7 +1550,14 @@ static void bsp_prv_sosc_init (void)
 
             R_SYSTEM->SOSCCR = 0U;
 
-            /* r01uh1955-rx74m 9.2.14 SOSCCR : Sub-Clock Oscillator Control Register:
+            /*
+             * r01uh1055-rx74m 9.2.14 SOSCCR : Sub-Clock Oscillator Control Register:
+             * When changing the value of the SOSTP bit, execute subsequent instructions
+             * only after reading the bit to check that the value is updated.
+             */
+            FSP_HARDWARE_REGISTER_WAIT(R_SYSTEM->SOSCCR, 0U);
+
+            /* r01uh1055-rx74m 9.2.14 SOSCCR : Sub-Clock Oscillator Control Register:
              * After setting the SOSTP bit to 0, use the sub-clock only after the sub-clock
              * oscillation stabilization time has elapsed.
              */
@@ -1536,6 +1574,13 @@ static void bsp_prv_sosc_init (void)
     }
  #else
     R_SYSTEM->SOSCCR = 1U;
+
+    /*
+     * r01uh1055-rx74m 9.2.14 SOSCCR : Sub-Clock Oscillator Control Register:
+     * When changing the value of the SOSTP bit, execute subsequent instructions
+     * only after reading the bit to check that the value is updated.
+     */
+    FSP_HARDWARE_REGISTER_WAIT(R_SYSTEM->SOSCCR, 1U);
  #endif
 #endif
 }
@@ -1549,6 +1594,11 @@ static void bsp_prv_sosc_init (void)
 void R_BSP_OctaclkUpdate (bsp_octaclk_settings_t * p_octaclk_setting)
 {
 #if BSP_FEATURE_BSP_HAS_OCTASPI_CLOCK
+ #if BSP_FEATURE_OSPI_B_IS_AVAILABLE
+  #define OSPI_UNIT_COUNT    BSP_FEATURE_OSPI_B_UNIT_COUNT
+ #else
+  #define OSPI_UNIT_COUNT    (1U)
+ #endif
 
     /* Store initial value of CGC and LPM protection registers. */
     uint16_t bsp_prv_prcr_orig = R_SYSTEM->PRCR;
@@ -1557,6 +1607,28 @@ void R_BSP_OctaclkUpdate (bsp_octaclk_settings_t * p_octaclk_setting)
     R_SYSTEM->PRCR = (uint16_t) BSP_PRV_PRCR_UNLOCK;
 
     /* Request to change the XSPI Clock. */
+
+    /* All XSPI peripherals need to be stopped before the clock change. */
+    uint32_t started_modules = 0;
+    for (uint32_t i = 0; i < OSPI_UNIT_COUNT; i++)
+    {
+        /* BSP_MSTP_BIT_FSP_IP_XSPI has a semi-colon at the end of the macro which messes up using
+         * it in an expression. Save the flag then if it is zero the IP is stopped. */
+        const uint32_t ip_stopped = BSP_MSTP_REG_FSP_IP_XSPI(i) & BSP_MSTP_BIT_FSP_IP_XSPI(i);
+        if (0 == ip_stopped)
+        {
+            /* Save the module index as a flag then stop it. */
+            started_modules |= (1U << i);
+            R_BSP_MODULE_STOP(FSP_IP_XSPI, i);
+        }
+    }
+
+    /* Must wait 2 OCTACLK cycles after the module has been stopped before changing the clock. */
+    const uint32_t octaclk_freq_hz = R_BSP_SourceClockHzGet((fsp_priv_source_clock_t) R_SYSTEM->XSPICKCR_b.XSPICKSEL) /
+                                     R_FSP_ClockDividerGet((uint32_t) R_SYSTEM->XSPICKDIVCR_b.XSPICKDIV);
+    const uint32_t octaclk_period_us = octaclk_freq_hz / BSP_PRV_HZ_PER_MHZ;
+
+    R_BSP_SoftwareDelay(2U * octaclk_period_us, BSP_DELAY_UNITS_MICROSECONDS);
     R_SYSTEM->XSPICKCR_b.XSPICKSREQ = 1;
 
     /* Wait for the clock to be stopped. */
@@ -1572,8 +1644,17 @@ void R_BSP_OctaclkUpdate (bsp_octaclk_settings_t * p_octaclk_setting)
     /* Wait for the XSPI Clock to be started. */
     FSP_HARDWARE_REGISTER_WAIT(R_SYSTEM->XSPICKCR_b.XSPICKSRDY, 0U);
 
+    /* Restore any XSPI peripherals that were stopped. */
+    for (uint32_t i = 0; i < OSPI_UNIT_COUNT; i++)
+    {
+        if (started_modules & (1U << i))
+        {
+            R_BSP_MODULE_START(FSP_IP_XSPI, i);
+        }
+    }
+
     /* Restore CGC and LPM protection registers. */
-    R_SYSTEM->PRCR = bsp_prv_prcr_orig;
+    R_SYSTEM->PRCR = (uint16_t) (BSP_PRV_PRCR_KEY | bsp_prv_prcr_orig);
 #else
     FSP_PARAMETER_NOT_USED(p_octaclk_setting);
 #endif
@@ -1600,11 +1681,26 @@ static void bsp_prv_init_rtc (void)
 {
  #if !BSP_CFG_RTC_USED
   #if BSP_PRV_LOCO_USED || (BSP_FEATURE_CGC_HAS_SOSC && BSP_CLOCK_CFG_SUBCLOCK_POPULATED)
+    uint8_t dummy_read = 0;
 
-    /*Wait for 6 clocks: 200 > (6*1000000) / 32K */
+    /* Wait for 6 RTC count source clcok cycle.
+     * 6 count of 32kHz : (1000000/32768)*6=183.105us
+     * In the case of MOCO frequency is 8.8MHz : 183.105/(1000000/8800000)=1611.843cycle
+     * (1611.843+2)*(1000000/8000000)=201.749us("+2" is overhead cycle)
+     */
     R_BSP_SoftwareDelay(BSP_PRV_RTC_RESET_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
 
     R_RTC->RCR2 = 0;
+
+    /* Dummy read four times following the procedure from
+     * "30.6.5 Notes on Writing to and Reading from Registers" in the RX74M manual R01UH1055.
+     */
+    for (uint32_t i = 0; i < 4; i++)
+    {
+        dummy_read = R_RTC->RCR2;
+        FSP_PARAMETER_NOT_USED(dummy_read);
+    }
+
     FSP_HARDWARE_REGISTER_WAIT(R_RTC->RCR2, 0);
 
     R_RTC->RCR2_b.RESET = 1;
@@ -1614,7 +1710,8 @@ static void bsp_prv_init_rtc (void)
     R_RTC->RCR1 = 0;
 
     /* When the RCR1 register is modified, check that all the bits are updated before proceeding
-     * (see section 30.2.17 "RTC Control Register 1 (RCR1)" of the Rx74M manual R01UH1055JJ)*/
+     * (see section 30.2.17 "RTC Control Register 1 (RCR1)" of the RX74M manual R01UH1055)
+     */
     FSP_HARDWARE_REGISTER_WAIT(R_RTC->RCR1, 0);
   #endif
 
@@ -1651,6 +1748,7 @@ void R_BSP_Init_RTC (void)
      * clock source if it is available. Note RCR4.ROPSEL is also cleared.
      */
  #if BSP_PRV_LOCO_USED
+  #if !BSP_CFG_RTC_USED
     volatile uint8_t dummy_read;
 
     R_RTC->RCR4 = 1 << R_RTC_RCR4_RCKSEL_Pos;
@@ -1662,6 +1760,7 @@ void R_BSP_Init_RTC (void)
         dummy_read = R_RTC->RCR4;
         FSP_PARAMETER_NOT_USED(dummy_read);
     }
+  #endif
     bsp_prv_init_rtc();
  #endif
 

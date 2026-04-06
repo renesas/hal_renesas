@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -124,6 +124,8 @@ extern "C" {
   #define __SET_PSW(x)     __set_psw(x)
   #define __NOP()          __nop()
   #define __WAIT()         __wait()
+  #define __WFI()          __wait()
+  #define __DSB()
  #elif defined(__GNUC__)               /* GCC scompiler */
   #define __BKPT(x)        __asm volatile ("brk" : : :)
   #define __SET_ISP(x)     __asm volatile ("mvtc %0, isp" : : "r" (x) :)
@@ -135,6 +137,11 @@ extern "C" {
   #define __SET_PSW(x)     __asm volatile ("mvtc %0,psw" ::"r" (x))
   #define __NOP()          __asm volatile ("nop")
   #define __WAIT()         __asm volatile ("wait")
+  #define __WFI()          __asm volatile ("wait")
+  #define __DSB()          do { \
+        __sync_synchronize();   \
+        __asm__ __volatile__ ("nop\n\tnop\n\tnop" ::: "memory");                      \
+} while (0)
  #elif defined(__ICCRX__)              /* IAR compiler */
   #define __BKPT(x)        __asm volatile ("brk" : : :)
   #define __SET_ISP(x)     __asm volatile ("mvtc %0, isp" : : "r" (x) :)
@@ -146,6 +153,8 @@ extern "C" {
   #define __SET_PSW(x)     __asm volatile ("mvtc %0,psw" ::"r" (x))
   #define __NOP()          __asm volatile ("nop")
   #define __WAIT()         __asm volatile ("wait")
+  #define __WFI()          __asm volatile ("wait")
+  #define __DSB()
  #endif
 
  #if defined(__CCRX__)                 /* CCRX compiler */

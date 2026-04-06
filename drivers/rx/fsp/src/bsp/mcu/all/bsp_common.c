@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -178,3 +178,35 @@ BSP_WEAK_REFERENCE void __assert_func (const char * file, int line, const char *
 }
 
 #endif
+
+#if (defined __CCRX__)
+ #if defined(_RX_ORDINAL)
+BSP_WEAK_REFERENCE long write (long fileno, const unsigned char * buf, long count)
+{
+    FSP_PARAMETER_NOT_USED(fileno);
+    FSP_PARAMETER_NOT_USED(buf);
+
+    return count;
+}
+
+ #endif
+
+BSP_WEAK_REFERENCE void abort (void)
+{
+    while (1)
+    {
+        /* assert() failure trap */
+    }
+}
+
+BSP_WEAK_REFERENCE void exit (long status)
+{
+    FSP_PARAMETER_NOT_USED(status);
+
+    while (1)
+    {
+        /* Program termination trap */
+    }
+}
+
+#endif                                 /* defined(__CCRX__) */

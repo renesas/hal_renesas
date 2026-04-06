@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -164,12 +164,12 @@ FSP_HEADER
 #ifndef FSP_CRITICAL_SECTION_ENTER
  #define FSP_CRITICAL_SECTION_ENTER                            \
     old_mask_level = FSP_CRITICAL_SECTION_GET_CURRENT_STATE(); \
-    FSP_CRITICAL_SECTION_SET_STATE(FSP_CRITICAL_SECTION_IRQ_MASK_SET);
+    FSP_CRITICAL_SECTION_SET_STATE(FSP_CRITICAL_SECTION_IRQ_MASK_SET)
 #endif
 
 /** This macro restores the previously saved interrupt state, reenabling interrupts. */
 #ifndef FSP_CRITICAL_SECTION_EXIT
- #define FSP_CRITICAL_SECTION_EXIT              FSP_CRITICAL_SECTION_SET_STATE(old_mask_level);
+ #define FSP_CRITICAL_SECTION_EXIT              FSP_CRITICAL_SECTION_SET_STATE(old_mask_level)
 
 #endif
 
@@ -188,6 +188,14 @@ FSP_HEADER
 #else
  #define BSP_SECTION_EARLY_INIT
 #endif
+
+/*
+ * If the STYPE3 register's security attribution is set to secure, the non-secure application must read the register
+ * from the secure application using the provided non-secure callable functions.
+ */
+#define FSP_STYPE3_REG8_READ(X, S)     (X)
+#define FSP_STYPE3_REG16_READ(X, S)    (X)
+#define FSP_STYPE3_REG32_READ(X, S)    (X)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -335,17 +343,17 @@ __STATIC_INLINE uint32_t R_FSP_ClockDividerGet (uint32_t ckdivcr)
     else if (6U == ckdivcr)
     {
         /* Clock Divided by 5 */
-        return 5;
+        return 5U;
     }
     else if (7U == ckdivcr)
     {
         /* Clock Divided by 10 */
-        return 10;
+        return 10U;
     }
     else if (8U == ckdivcr)
     {
         /* Clock Divided by 16 */
-        return 16;
+        return 16U;
     }
     else
     {

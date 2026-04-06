@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -22,7 +22,9 @@
  * Includes   <System Includes> , "Project Includes"
  ***********************************************************************************************************************/
 #include "r_layer3_switch.h"
+#ifndef LAYER3_SWICH_CFG_SKIP_PHY_LINK_SETUP
 #include "r_rmac_phy.h"
+#endif
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -394,6 +396,7 @@ fsp_err_t R_LAYER3_SWITCH_Open (ether_switch_ctrl_t * const p_ctrl, ether_switch
         }
     }
 
+#ifndef LAYER3_SWICH_CFG_SKIP_PHY_LINK_SETUP
     /* Open all ETHER_PHY instances. */
     for (uint8_t channel = 0;
          (channel < BSP_FEATURE_ETHER_NUM_CHANNELS) && ((FSP_SUCCESS == phy_err) | (FSP_ERR_ALREADY_OPEN == phy_err));
@@ -427,6 +430,9 @@ fsp_err_t R_LAYER3_SWITCH_Open (ether_switch_ctrl_t * const p_ctrl, ether_switch
             phy_err = p_ether_phy->p_api->startAutoNegotiate(p_ether_phy->p_ctrl);
         }
     }
+#else
+    FSP_PARAMETER_NOT_USED(p_ether_phy);
+#endif
 
     /* If failed to open a PHY instance, revert all configurations and return error. */
     if (FSP_SUCCESS != phy_err)
@@ -3519,6 +3525,7 @@ void layer3_switch_gwdi_isr (void)
     layer3_switch_instance_ctrl_t * p_instance_ctrl = (layer3_switch_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
     ether_switch_callback_args_t    callback_arg    = {0};
     bool port_callback_exists = false;
+
     uint32_t            gwdi_status;
     uint32_t            gwei2_status;
     volatile uint32_t * p_gwca_gwdi_reg;
@@ -3610,6 +3617,9 @@ void layer3_switch_gwdi_isr (void)
             }
         }
     }
+
+    // /* Clear pending interrupt flag to make sure it doesn't fire again after exiting. */
+    // R_BSP_IrqStatusClear(R_FSP_CurrentIrqGet());
 
     /* Restore context if RTOS is used. */
     FSP_CONTEXT_RESTORE

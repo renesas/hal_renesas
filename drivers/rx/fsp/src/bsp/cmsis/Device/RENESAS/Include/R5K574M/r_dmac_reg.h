@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -110,18 +110,8 @@ typedef struct                          /*!< (@ 0x87007000) R_DMAC0 Structure   
             __IOM uint16_t SM   : 2;   /*!< [15..14] Source Address Update Mode                                       */
         } DMAMD_b;
     };
-    __IM uint16_t RESERVED1;
-
-    union
-    {
-        __IOM uint32_t DMOFR;          /*!< (@ 0x00000018) DMA Offset Register                                        */
-
-        struct
-        {
-            __IOM uint32_t DMOFR : 32; /*!< [31..0] Specifies the offset when offset addition is selected
-                                        *   as the address update mode for transfer source or destination.            */
-        } DMOFR_b;
-    };
+    __IM uint16_t  RESERVED1;
+    __IOM uint32_t DMOFR;              /*!< (@ 0x00000018) DMA Offset Register                                        */
 
     union
     {

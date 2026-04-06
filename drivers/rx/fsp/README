@@ -39,10 +39,6 @@ Patch List:
    Impacted files:
       drivers/rx/fsp/src/bsp/mcu/all/bsp_group_irq.c
 
-   * Update BSP_ICU_IRQ_HANDLER macro definition in bsp_irq.h
-   Impacted files:
-      drivers/rx/fsp/src/bsp/mcu/all/bsp_irq.h
-
    * Add vector number macros for CANFD driver
    Impacted files:
       zephyr/rx/fsp_cfg/r_canfd_cfg.h
@@ -55,14 +51,16 @@ Patch List:
    Impacted files:
       drivers/rx/fsp/inc/instances/r_mram.h
 
-   * Align callbackSet() signature with FSP source (void * p_context).
-   Impacted files:
-      drivers/rx/fsp/inc/api/r_transfer_api.h
-
    * Made non-static functions to allow access from Zephyr
    Impacted files:
       drivers/rx/fsp/src/r_sdhi/r_sdhi.c
 
    * Made update to ospi driver to add address mode and write data mask setting
-      drivers/rx/fsp/src/r_ospi_b/r_ospi_b.c
-      driver/rx/fsp/inc/instances/r_ospi_b.h
+      drivers/rx/fsp/src/r_xspi_controller/r_xspi_controller.c
+      driver/rx/fsp/inc/instances/r_xspi_controller.h
+
+   * Add phy link configure skip for RMAC and ESWM module, phylink configure is done in Zephyr side
+      drivers/rx/fsp/src/r_rmac/r_rmac.c
+      drivers/rx/fsp/src/r_layer3_switch/r_layer3_switch.c
+      zephyr/rx/fsp_cfg/r_rmac_cfg.h
+      zephyr/rx/fsp_cfg/r_layer3_switch_cfg.h

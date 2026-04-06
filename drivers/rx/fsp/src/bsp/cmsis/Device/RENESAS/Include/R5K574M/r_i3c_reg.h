@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -36,7 +36,7 @@ typedef struct
 {
     union
     {
-        __IOM uint32_t ICTDATR;        /*!< (@ 0x00000000) Target Device Address Register y (y = 0 to 2)              */
+        __IOM uint32_t ICTDATR;        /*!< (@ 0x00000000) Target Device Address Register y (y = 0 to 7)              */
 
         struct
         {
@@ -105,9 +105,7 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
         {
             __IOM uint32_t IBAINC   : 1; /*!< [0..0] I3C Broadcast Address Include                                      */
             __IOM uint32_t BAEXITMD : 1; /*!< [1..1] Broadcast Address Exit Mode                                        */
-            uint32_t                : 5;
-            __IOM uint32_t I2CDS    : 1; /*!< [7..7] I2C Device Support                                                 */
-            uint32_t                : 21;
+            uint32_t                : 27;
             __IOM uint32_t ABORT    : 1; /*!< [29..29] Host Controller Abort                                            */
             __IOM uint32_t RESUME   : 1; /*!< [30..30] Host Controller Resume                                           */
             __IOM uint32_t ICE      : 1; /*!< [31..31] Bus Interface Enable                                             */
@@ -130,25 +128,25 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IOM uint32_t ICRCR;            /*!< (@ 0x00000020) Reset Control Register                                     */
+        __IOM uint32_t ICRCR;          /*!< (@ 0x00000020) Reset Control Register                                     */
 
         struct
         {
-            __IOM uint32_t MRST     : 1; /*!< [0..0] Module Reset                                                       */
-            __IOM uint32_t CQRST    : 1; /*!< [1..1] Command Queue Reset                                                */
-            __IOM uint32_t RQRST    : 1; /*!< [2..2] Response Queue Reset                                               */
-            __IOM uint32_t TBRST    : 1; /*!< [3..3] Transmit Data Buffer Reset                                         */
-            __IOM uint32_t RBRST    : 1; /*!< [4..4] Receive Data Buffer Reset                                          */
-            __IOM uint32_t IQRST    : 1; /*!< [5..5] IBI Queue Reset                                                    */
-            __IOM uint32_t SQRST    : 1; /*!< [6..6] Receive Status Queue Reset                                         */
-            uint32_t                : 2;
-            __IOM uint32_t HCMDQRST : 1; /*!< [9..9] High Priority Command Queue Software Reset                         */
-            __IOM uint32_t HRSPQRST : 1; /*!< [10..10] High Priority Response Queue Software Reset                      */
-            __IOM uint32_t HTDBRST  : 1; /*!< [11..11] High Priority Tx DATA Buffer Software Reset                      */
-            __IOM uint32_t HRDBRST  : 1; /*!< [12..12] High Priority Rx DATA Buffer Software Reset                      */
-            uint32_t                : 3;
-            __IOM uint32_t ISRST    : 1; /*!< [16..16] Internal Status Reset                                            */
-            uint32_t                : 15;
+            __IOM uint32_t MRST   : 1; /*!< [0..0] Module Reset                                                       */
+            __IOM uint32_t CQRST  : 1; /*!< [1..1] Command Queue Reset                                                */
+            __IOM uint32_t RQRST  : 1; /*!< [2..2] Response Queue Reset                                               */
+            __IOM uint32_t TBRST  : 1; /*!< [3..3] Transmit Data Buffer Reset                                         */
+            __IOM uint32_t RBRST  : 1; /*!< [4..4] Receive Data Buffer Reset                                          */
+            __IOM uint32_t IQRST  : 1; /*!< [5..5] IBI Queue Reset                                                    */
+            __IOM uint32_t SQRST  : 1; /*!< [6..6] Receive Status Queue Reset                                         */
+            uint32_t              : 2;
+            __IOM uint32_t HCQRST : 1; /*!< [9..9] High Priority Command Queue Software Reset                         */
+            __IOM uint32_t HRQRST : 1; /*!< [10..10] High Priority Response Queue Software Reset                      */
+            __IOM uint32_t HTBRST : 1; /*!< [11..11] High Priority Tx DATA Buffer Software Reset                      */
+            __IOM uint32_t HRBRST : 1; /*!< [12..12] High Priority Rx DATA Buffer Software Reset                      */
+            uint32_t              : 3;
+            __IOM uint32_t ISRST  : 1; /*!< [16..16] Internal Status Reset                                            */
+            uint32_t              : 15;
         } ICRCR_b;
     };
 
@@ -258,16 +256,11 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
     {
         union
         {
-            __IOM uint32_t ICTCR;         /*!< (@ 0x00000064) Target Mode Control Register                               */
+            __IOM uint32_t ICTCR;      /*!< (@ 0x00000064) Target Mode Control Register                               */
 
             struct
             {
-                __IOM uint32_t GCAE  : 1; /*!< [0..0] General Call Address Detection Enable                              */
-                uint32_t             : 4;
-                __IOM uint32_t HSMCE : 1; /*!< [5..5] Hs-mode Master Code Detection Enable                               */
-                __IOM uint32_t DIDE  : 1; /*!< [6..6] Device-ID Address Detection Enable                                 */
-                uint32_t             : 8;
-                __IOM uint32_t HOAE  : 1; /*!< [15..15] Host Address Detection Enable                                    */
+                uint32_t             : 16;
                 __IOM uint32_t TA0DE : 1; /*!< [16..16] Target Address 0 Detection Enable                                */
                 __IOM uint32_t TA1DE : 1; /*!< [17..17] Target Address 1 Detection Enable                                */
                 __IOM uint32_t TA2DE : 1; /*!< [18..18] Target Address 2 Detection Enable                                */
@@ -287,9 +280,9 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
                 __IOM uint32_t DIDE  : 1; /*!< [6..6] Device-ID Address Detection Enable                                 */
                 uint32_t             : 8;
                 __IOM uint32_t HOAE  : 1; /*!< [15..15] Host Address Detection Enable                                    */
-                __IOM uint32_t SAR0E : 1; /*!< [16..16] Target Address 0 Detection Enable                                */
-                __IOM uint32_t SAR1E : 1; /*!< [17..17] Target Address 1 Detection Enable                                */
-                __IOM uint32_t SAR2E : 1; /*!< [18..18] Target Address 2 Detection Enable                                */
+                __IOM uint32_t SAR0E : 1; /*!< [16..16] Slave Address 0 Detection Enable                                 */
+                __IOM uint32_t SAR1E : 1; /*!< [17..17] Slave Address 1 Detection Enable                                 */
+                __IOM uint32_t SAR2E : 1; /*!< [18..18] Slave Address 2 Detection Enable                                 */
                 uint32_t             : 13;
             } ICSCR_b;
         };
@@ -302,12 +295,8 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
         struct
         {
-            __IOM uint32_t CKS    : 3; /*!< [2..0] Internal Reference Clock Select                                    */
-            uint32_t              : 13;
-            __IOM uint32_t MSKCYC : 2; /*!< [17..16] MASK CycleThese bits configure MASK cycle between SCL
-                                        *   and SDA in HDR-TSx mode. It should be configured with a
-                                        *   value more than the skew between SCL and SDA.                             */
-            uint32_t : 14;
+            __IOM uint32_t CKS : 3;    /*!< [2..0] Internal Reference Clock Select                                    */
+            uint32_t           : 29;
         } ICRCCR_b;
     };
 
@@ -331,52 +320,67 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
         union
         {
-            __IOM uint32_t ICFBR;        /*!< (@ 0x00000074) F/S Mode Bitrate Register                                  */
+            __IOM uint32_t ICFBR;        /*!< (@ 0x00000074) F/S-Mode Bitrate Register                                  */
 
             struct
             {
-                __IOM uint32_t LOW  : 8; /*!< [7..0] Low Width Setting Bit                                              */
-                __IOM uint32_t HIGH : 8; /*!< [15..8] High Width Setting Bit                                            */
+                __IOM uint32_t LOW  : 8; /*!< [7..0] Open-Drain Low Width Setting                                       */
+                __IOM uint32_t HIGH : 8; /*!< [15..8] Open-Drain High Width Setting                                     */
                 uint32_t            : 15;
-                __IOM uint32_t DBL  : 1; /*!< [31..31] High/Low Width Doubling Bit                                      */
+                __IOM uint32_t DBL  : 1; /*!< [31..31] Open-Drain High/Low Width Doubling                               */
             } ICFBR_b;
         };
     };
+
     union
     {
-        __IOM uint32_t ICEBR;           /*!< (@ 0x00000078) Extended Bitrate Register                                  */
-
-        struct
+        union
         {
-            __IOM uint32_t ODLW : 8;    /*!< [7..0] Open-Drain Low Width Setting                                       */
-            __IOM uint32_t ODHW : 8;    /*!< [15..8] Open-Drain High Width Setting                                     */
-            __IOM uint32_t PPLW : 6;    /*!< [21..16] Push-Pull Low Width Setting                                      */
-            uint32_t            : 2;
-            __IOM uint32_t PPHW : 6;    /*!< [29..24] Push-Pull High Width Setting                                     */
-            uint32_t            : 2;
-        } ICEBR_b;
+            __IOM uint32_t ICEBR;        /*!< (@ 0x00000078) Extended Bitrate Register                                  */
+
+            struct
+            {
+                __IOM uint32_t ODLW : 8; /*!< [7..0] Open-Drain Low Width Setting                                       */
+                __IOM uint32_t ODHW : 8; /*!< [15..8] Open-Drain High Width Setting                                     */
+                __IOM uint32_t PPLW : 6; /*!< [21..16] Push-Pull Low Width Setting                                      */
+                uint32_t            : 2;
+                __IOM uint32_t PPHW : 6; /*!< [29..24] Push-Pull High Width Setting                                     */
+                uint32_t            : 2;
+            } ICEBR_b;
+        };
+
+        union
+        {
+            __IOM uint32_t ICHBR;        /*!< (@ 0x00000078) Hs-Mode Bitrate Register                                   */
+
+            struct
+            {
+                __IOM uint32_t LOW  : 8; /*!< [7..0] Low Width Setting                                                  */
+                __IOM uint32_t HIGH : 8; /*!< [15..8] High Width Setting                                                */
+                uint32_t            : 16;
+            } ICHBR_b;
+        };
     };
-    __IOM uint32_t ICBFTR;              /*!< (@ 0x0000007C) Bus Free Time Setting Register                             */
-    __IOM uint32_t ICBATR;              /*!< (@ 0x00000080) Bus Available Time Setting Register                        */
-    __IOM uint32_t ICBITR;              /*!< (@ 0x00000084) Bus Idle Time Setting Register                             */
+    __IOM uint32_t ICBFTR;             /*!< (@ 0x0000007C) Bus Free Time Setting Register                             */
+    __IOM uint32_t ICBATR;             /*!< (@ 0x00000080) Bus Available Time Setting Register                        */
+    __IOM uint32_t ICBITR;             /*!< (@ 0x00000084) Bus Idle Time Setting Register                             */
 
     union
     {
-        __IOM uint32_t ICOCR;           /*!< (@ 0x00000088) Output Signal Control Register                             */
+        __IOM uint32_t ICOCR;          /*!< (@ 0x00000088) Output Signal Control Register                             */
 
         struct
         {
-            __IOM uint32_t SDAO    : 1; /*!< [0..0] SDA Output Control                                                 */
-            __IOM uint32_t SCLO    : 1; /*!< [1..1] SCL Output Control                                                 */
-            __OM uint32_t  SOWP    : 1; /*!< [2..2] SCLO/SDAO Write Protect                                            */
-            uint32_t               : 1;
-            __IOM uint32_t CLO     : 1; /*!< [4..4] Additional SCL Output                                              */
-            uint32_t               : 3;
-            __IOM uint32_t SDDL    : 3; /*!< [10..8] SDA Output Delay Setting                                          */
-            uint32_t               : 4;
-            __IOM uint32_t DLCS    : 1; /*!< [15..15] SDA Output Delay Clock Source Select                             */
-            __IOM uint32_t SDHDCYC : 2; /*!< [17..16] SDA Hold Cycle                                                   */
-            uint32_t               : 14;
+            __IOM uint32_t SDAO : 1;   /*!< [0..0] SDA Output Control                                                 */
+            __IOM uint32_t SCLO : 1;   /*!< [1..1] SCL Output Control                                                 */
+            __OM uint32_t  SOWP : 1;   /*!< [2..2] SCLO/SDAO Write Protect                                            */
+            uint32_t            : 1;
+            __IOM uint32_t CLO  : 1;   /*!< [4..4] Additional SCL Output                                              */
+            uint32_t            : 3;
+            __IOM uint32_t SDDL : 3;   /*!< [10..8] SDA Output Delay Setting                                          */
+            uint32_t            : 4;
+            __IOM uint32_t DLCS : 1;   /*!< [15..15] SDA Output Delay Clock Source Select                             */
+            uint32_t            : 16;
         } ICOCR_b;
     };
 
@@ -411,18 +415,18 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IOM uint32_t WUCTL;           /*!< (@ 0x00000098) Wake Up Unit Control Register                              */
+        __IOM uint32_t ICWUCR;          /*!< (@ 0x00000098) Wake Up Unit Control Register                              */
 
         struct
         {
             __IOM uint32_t WUACKS  : 1; /*!< [0..0] Wake-Up Acknowledge Selection                                      */
             uint32_t               : 3;
-            __IOM uint32_t WUANFS  : 1; /*!< [4..4] Wake-Up Analog Noise Filter Selection                              */
+            __IOM uint32_t WUANFE  : 1; /*!< [4..4] Wake-Up Analog Noise Filter Selection                              */
             uint32_t               : 1;
             __IOM uint32_t WUFSYNE : 1; /*!< [6..6] Wake-Up function Synchronous Enable                                */
             __IOM uint32_t WUFE    : 1; /*!< [7..7] Wake Up function Enable                                            */
             uint32_t               : 24;
-        } WUCTL_b;
+        } ICWUCR_b;
     };
     __IM uint32_t RESERVED8;
 
@@ -493,40 +497,39 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IOM uint32_t ATCTL;          /*!< (@ 0x00000124) Asynchronous Timimg Control Register                       */
+        __IOM uint32_t ICATCR;         /*!< (@ 0x00000124) Asynchronous Timimg Control Register                       */
 
         struct
         {
             __IOM uint32_t ATTRGS : 1; /*!< [0..0] Asynchronous Timing Trigger Select                                 */
-            __IOM uint32_t MREFOE : 1; /*!< [1..1] MREF Output Enable (Capture Event / Counter Overflow)              */
-            __IOM uint32_t AMEOE  : 1; /*!< [2..2] Additional Master-initiated bus Event Output Enable                */
+            __IOM uint32_t CREFOE : 1; /*!< [1..1] C_REF Event Output Enable (Capture Event / Counter Overflow)       */
+            __IOM uint32_t ABEOE  : 1; /*!< [2..2] Additional Bus Event Output Enable                                 */
             uint32_t              : 5;
             __IOM uint32_t CDIV   : 8; /*!< [15..8] TCLK Counter Divide Setting                                       */
             uint32_t              : 16;
-        } ATCTL_b;
+        } ICATCR_b;
     };
 
     union
     {
-        __IOM uint32_t ATTRG;          /*!< (@ 0x00000128) Asynchronous Timiming Trigger Register                     */
+        __IOM uint32_t ICATTR;         /*!< (@ 0x00000128) Asynchronous Timiming Trigger Register                     */
 
         struct
         {
             __OM uint32_t ATSTRG : 1;  /*!< [0..0] Asynchronous Timing Software Trigger                               */
             uint32_t             : 31;
-        } ATTRG_b;
+        } ICATTR_b;
     };
 
     union
     {
-        __IOM uint32_t ATCCNTE;        /*!< (@ 0x0000012C) Asynchronous Timing Contorol Counter enable Register       */
+        __IOM uint32_t ICATCCR;        /*!< (@ 0x0000012C) Asynchronous Timing Control Register                       */
 
         struct
         {
-            __IOM uint32_t ATCE : 1;   /*!< [0..0] Asynchronous Timing Counter Enable for MREF, MC2, SC1,
-                                        *   SC2.                                                                      */
-            uint32_t : 31;
-        } ATCCNTE_b;
+            __IOM uint32_t ATCE : 1;   /*!< [0..0] Asynchronous Timing Counter Enable                                 */
+            uint32_t            : 31;
+        } ICATCCR_b;
     };
     __IM uint32_t RESERVED12[4];
 
@@ -549,9 +552,9 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
     __IM uint32_t  RESERVED14[8];
     __IOM uint32_t ICIQR;              /*!< (@ 0x0000017C) IBI Queue Register                                         */
     __IM uint32_t  ICSQR;              /*!< (@ 0x00000180) Receive Status Queue Register                              */
-    __OM uint32_t  HCMDQP;             /*!< (@ 0x00000184) High Priority Command Queue Port Register                  */
-    __IM uint32_t  HRSPQP;             /*!< (@ 0x00000188) High Priority Response Queue Port Register                 */
-    __IOM uint32_t HTDTBP;             /*!< (@ 0x0000018C) High Priority Transfer Data Buffer Port Register           */
+    __OM uint32_t  ICHCQR;             /*!< (@ 0x00000184) High Priority Command Queue Register                       */
+    __IM uint32_t  ICHRQR;             /*!< (@ 0x00000188) High Priority Response Queue Register                      */
+    __IOM uint32_t ICHDR;              /*!< (@ 0x0000018C) High Priority Transfer Data Buffer Register                */
 
     union
     {
@@ -597,101 +600,101 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IOM uint32_t HQTHCTL;        /*!< (@ 0x000001C4) High Priority Queue Threshold Control Register             */
+        __IOM uint32_t ICHQBTCR;       /*!< (@ 0x000001C4) High Priority Queue Threshold Control Register             */
 
         struct
         {
-            __IOM uint32_t CMDQTH : 8; /*!< [7..0] High Priority Command Ready Queue Threshold                        */
-            __IOM uint32_t RSPQTH : 8; /*!< [15..8] High Priority Response Queue Threshold                            */
-            uint32_t              : 16;
-        } HQTHCTL_b;
+            __IOM uint32_t HCQTH : 8;  /*!< [7..0] High Priority Command Ready Queue Threshold                        */
+            __IOM uint32_t HRQTH : 8;  /*!< [15..8] High Priority Response Queue Threshold                            */
+            uint32_t             : 16;
+        } ICHQBTCR_b;
     };
 
     union
     {
-        __IOM uint32_t HTBTHCTL;       /*!< (@ 0x000001C8) High Priority Transfer Data Buffer Threshold
+        __IOM uint32_t ICHDBTCR;       /*!< (@ 0x000001C8) High Priority Transfer Data Buffer Threshold
                                         *                  Control Register                                           */
 
         struct
         {
-            __IOM uint32_t TXDBTH : 3; /*!< [2..0] High Priority Tx Data Buffer Threshold                             */
-            uint32_t              : 5;
-            __IOM uint32_t RXDBTH : 3; /*!< [10..8] High Priority Rx Data Buffer Threshold                            */
-            uint32_t              : 5;
-            __IOM uint32_t TXSTTH : 3; /*!< [18..16] High Priority Tx Start Threshold                                 */
-            uint32_t              : 5;
-            __IOM uint32_t RXSTTH : 3; /*!< [26..24] High Priority Rx Start Threshold                                 */
-            uint32_t              : 5;
-        } HTBTHCTL_b;
+            __IOM uint32_t HTETH : 3;  /*!< [2..0] High Priority Tx Data Buffer Threshold                             */
+            uint32_t             : 5;
+            __IOM uint32_t HRFTH : 3;  /*!< [10..8] High Priority Rx Data Buffer Threshold                            */
+            uint32_t             : 5;
+            __IOM uint32_t HTSTH : 3;  /*!< [18..16] High Priority Tx Start Threshold                                 */
+            uint32_t             : 5;
+            __IOM uint32_t HRSTH : 3;  /*!< [26..24] High Priority Rx Start Threshold                                 */
+            uint32_t             : 5;
+        } ICHDBTCR_b;
     };
     __IM uint32_t RESERVED16;
 
     union
     {
-        __IOM uint32_t ICSR2;           /*!< (@ 0x000001D0) Status Register 2                                          */
+        __IOM uint32_t ICSR2;          /*!< (@ 0x000001D0) Status Register 2                                          */
 
         struct
         {
-            __IOM uint32_t START   : 1; /*!< [0..0] START Condition Detection Flag                                     */
-            __IOM uint32_t STOP    : 1; /*!< [1..1] STOP Condition Detection Flag                                      */
-            __IOM uint32_t HDRXDF  : 1; /*!< [2..2] HDR Exit Pattern Detection Flag                                    */
-            uint32_t               : 1;
-            __IOM uint32_t NACKF   : 1; /*!< [4..4] NACK Detection Flag                                                */
-            uint32_t               : 3;
-            __IOM uint32_t TEND    : 1; /*!< [8..8] Transmission End Flag                                              */
-            uint32_t               : 7;
-            __IOM uint32_t AL      : 1; /*!< [16..16] Arbitration Lost Flag                                            */
-            uint32_t               : 3;
-            __IOM uint32_t TMOF    : 1; /*!< [20..20] Timeout Detection Flag                                           */
-            uint32_t               : 3;
-            __IOM uint32_t WUCNDDF : 1; /*!< [24..24] Wake-Up Condition Detection Flag                                 */
-            uint32_t               : 7;
+            __IOM uint32_t START  : 1; /*!< [0..0] START Condition Detection Flag                                     */
+            __IOM uint32_t STOP   : 1; /*!< [1..1] STOP Condition Detection Flag                                      */
+            __IOM uint32_t HDRXDF : 1; /*!< [2..2] HDR Exit Pattern Detection Flag                                    */
+            uint32_t              : 1;
+            __IOM uint32_t NACKF  : 1; /*!< [4..4] NACK Detection Flag                                                */
+            uint32_t              : 3;
+            __IOM uint32_t TEND   : 1; /*!< [8..8] Transmission End Flag                                              */
+            uint32_t              : 7;
+            __IOM uint32_t AL     : 1; /*!< [16..16] Arbitration Lost Flag                                            */
+            uint32_t              : 3;
+            __IOM uint32_t TMOF   : 1; /*!< [20..20] Timeout Detection Flag                                           */
+            uint32_t              : 3;
+            __IOM uint32_t WUDF   : 1; /*!< [24..24] Wake-Up Condition Detection Flag                                 */
+            uint32_t              : 7;
         } ICSR2_b;
     };
 
     union
     {
-        __IOM uint32_t ICSER;           /*!< (@ 0x000001D4) Status Detection Enable Register                           */
+        __IOM uint32_t ICSER;          /*!< (@ 0x000001D4) Status Detection Enable Register                           */
 
         struct
         {
-            __IOM uint32_t STDE    : 1; /*!< [0..0] START Condition Detection Enable                                   */
-            __IOM uint32_t SPDE    : 1; /*!< [1..1] STOP Condition Detection Enable                                    */
-            __IOM uint32_t HDRXDE  : 1; /*!< [2..2] HDR Exit Pattern Detection Enable                                  */
-            uint32_t               : 1;
-            __IOM uint32_t NAKDE   : 1; /*!< [4..4] NACK Detection Enable                                              */
-            uint32_t               : 3;
-            __IOM uint32_t TEDE    : 1; /*!< [8..8] Transmission End Detection Enable                                  */
-            uint32_t               : 7;
-            __IOM uint32_t ALE     : 1; /*!< [16..16] Arbitration Lost Detection Enable                                */
-            uint32_t               : 3;
-            __IOM uint32_t TMOE    : 1; /*!< [20..20] Timeout Detection Enable                                         */
-            uint32_t               : 3;
-            __IOM uint32_t WUCNDDE : 1; /*!< [24..24] Wake-up Condition Detection Enable                               */
-            uint32_t               : 7;
+            __IOM uint32_t STDE   : 1; /*!< [0..0] START Condition Detection Enable                                   */
+            __IOM uint32_t SPDE   : 1; /*!< [1..1] STOP Condition Detection Enable                                    */
+            __IOM uint32_t HDRXDE : 1; /*!< [2..2] HDR Exit Pattern Detection Enable                                  */
+            uint32_t              : 1;
+            __IOM uint32_t NAKDE  : 1; /*!< [4..4] NACK Detection Enable                                              */
+            uint32_t              : 3;
+            __IOM uint32_t TEDE   : 1; /*!< [8..8] Transmission End Detection Enable                                  */
+            uint32_t              : 7;
+            __IOM uint32_t ALE    : 1; /*!< [16..16] Arbitration Lost Detection Enable                                */
+            uint32_t              : 3;
+            __IOM uint32_t TMOE   : 1; /*!< [20..20] Timeout Detection Enable                                         */
+            uint32_t              : 3;
+            __IOM uint32_t WUDE   : 1; /*!< [24..24] Wake-up Condition Detection Enable                               */
+            uint32_t              : 7;
         } ICSER_b;
     };
 
     union
     {
-        __IOM uint32_t ICSIER;           /*!< (@ 0x000001D8) Status Interrupt Enable Register                           */
+        __IOM uint32_t ICSIER;         /*!< (@ 0x000001D8) Status Interrupt Enable Register                           */
 
         struct
         {
-            __IOM uint32_t STIE     : 1; /*!< [0..0] START Condition Detection Interrupt Enable                         */
-            __IOM uint32_t SPIE     : 1; /*!< [1..1] STOP Condition Detection Interrupt Enable                          */
-            __IOM uint32_t HDRXIE   : 1; /*!< [2..2] HDR Exit Pattern Detection Interrupt Enable                        */
-            uint32_t                : 1;
-            __IOM uint32_t NAKIE    : 1; /*!< [4..4] NACK Detection Interrupt Enable                                    */
-            uint32_t                : 3;
-            __IOM uint32_t TEIE     : 1; /*!< [8..8] Transmit End Interrupt Enable                                      */
-            uint32_t                : 7;
-            __IOM uint32_t ALIE     : 1; /*!< [16..16] Arbitration Lost Detection Interrupt Enable                      */
-            uint32_t                : 3;
-            __IOM uint32_t TMOIE    : 1; /*!< [20..20] Timeout Detection Interrupt Enable                               */
-            uint32_t                : 3;
-            __IOM uint32_t WUCNDDIE : 1; /*!< [24..24] Wake-Up Condition Detection Interrupt Enable                     */
-            uint32_t                : 7;
+            __IOM uint32_t STIE   : 1; /*!< [0..0] START Condition Detection Interrupt Enable                         */
+            __IOM uint32_t SPIE   : 1; /*!< [1..1] STOP Condition Detection Interrupt Enable                          */
+            __IOM uint32_t HDRXIE : 1; /*!< [2..2] HDR Exit Pattern Detection Interrupt Enable                        */
+            uint32_t              : 1;
+            __IOM uint32_t NAKIE  : 1; /*!< [4..4] NACK Detection Interrupt Enable                                    */
+            uint32_t              : 3;
+            __IOM uint32_t TEIE   : 1; /*!< [8..8] Transmit End Interrupt Enable                                      */
+            uint32_t              : 7;
+            __IOM uint32_t ALIE   : 1; /*!< [16..16] Arbitration Lost Detection Interrupt Enable                      */
+            uint32_t              : 3;
+            __IOM uint32_t TMOIE  : 1; /*!< [20..20] Timeout Detection Interrupt Enable                               */
+            uint32_t              : 3;
+            __IOM uint32_t WUDIE  : 1; /*!< [24..24] Wake-Up Condition Detection Interrupt Enable                     */
+            uint32_t              : 7;
         } ICSIER_b;
     };
     __IM uint32_t RESERVED17;
@@ -759,56 +762,56 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IOM uint32_t HTST;           /*!< (@ 0x00000200) High Priority Transfer Status Register                     */
+        __IOM uint32_t ICHCSR;         /*!< (@ 0x00000200) High Priority Transfer Status Register                     */
 
         struct
         {
-            __IOM uint32_t TDBEF  : 1; /*!< [0..0] High Priority Tx Data Buffer Empty Flag                            */
-            __IOM uint32_t RDBFF  : 1; /*!< [1..1] High Priority Rx Data Buffer Full Flag                             */
-            uint32_t              : 1;
-            __IOM uint32_t CMDQEF : 1; /*!< [3..3] High Priority Command Queue Empty Flag                             */
-            __IOM uint32_t RSPQFF : 1; /*!< [4..4] High Priority Response Queue Full Flag                             */
-            __IOM uint32_t TABTF  : 1; /*!< [5..5] High Priority Transfer Abort Flag                                  */
-            uint32_t              : 3;
-            __IOM uint32_t TEF    : 1; /*!< [9..9] High Priority Transfer Error Flag                                  */
-            uint32_t              : 22;
-        } HTST_b;
+            __IOM uint32_t HTDRE : 1;  /*!< [0..0] High Priority Tx Data Buffer Empty Flag                            */
+            __IOM uint32_t HRDRF : 1;  /*!< [1..1] High Priority Rx Data Buffer Full Flag                             */
+            uint32_t             : 1;
+            __IOM uint32_t HCQEF : 1;  /*!< [3..3] High Priority Command Queue Empty Flag                             */
+            __IOM uint32_t HRQFF : 1;  /*!< [4..4] High Priority Response Queue Full Flag                             */
+            __IOM uint32_t HDTAF : 1;  /*!< [5..5] High Priority Transfer Abort Flag                                  */
+            uint32_t             : 3;
+            __IOM uint32_t HDTEF : 1;  /*!< [9..9] High Priority Transfer Error Flag                                  */
+            uint32_t             : 22;
+        } ICHCSR_b;
     };
 
     union
     {
-        __IOM uint32_t HTSTE;          /*!< (@ 0x00000204) High Priority Transfer Status Enable Register              */
+        __IOM uint32_t ICHCSER;        /*!< (@ 0x00000204) High Priority Transfer Status Enable Register              */
 
         struct
         {
-            __IOM uint32_t TDBEE  : 1; /*!< [0..0] High Priority Tx Data Buffer Empty Enable                          */
-            __IOM uint32_t RDBFE  : 1; /*!< [1..1] High Priority Rx Data Buffer Full Enable                           */
+            __IOM uint32_t HTDE   : 1; /*!< [0..0] High Priority Tx Data Buffer Empty Enable                          */
+            __IOM uint32_t HRDE   : 1; /*!< [1..1] High Priority Rx Data Buffer Full Enable                           */
             uint32_t              : 1;
-            __IOM uint32_t CMDQEE : 1; /*!< [3..3] High Priority Command Queue Empty Enable.                          */
-            __IOM uint32_t RSPQFE : 1; /*!< [4..4] High Priority Response Queue Full Enable                           */
-            __IOM uint32_t TABTE  : 1; /*!< [5..5] High Priority Transfer Abort Enable                                */
+            __IOM uint32_t HCQEDE : 1; /*!< [3..3] High Priority Command Queue Empty Enable.                          */
+            __IOM uint32_t HRQFDE : 1; /*!< [4..4] High Priority Response Queue Full Enable                           */
+            __IOM uint32_t HDTADE : 1; /*!< [5..5] High Priority Transfer Abort Enable                                */
             uint32_t              : 3;
-            __IOM uint32_t TEE    : 1; /*!< [9..9] High Priority Transfer Error Enable                                */
+            __IOM uint32_t HDTEDE : 1; /*!< [9..9] High Priority Transfer Error Enable                                */
             uint32_t              : 22;
-        } HTSTE_b;
+        } ICHCSER_b;
     };
 
     union
     {
-        __IOM uint32_t HTIE;            /*!< (@ 0x00000208) High Priority Transfer Interrupt Enable Register           */
+        __IOM uint32_t ICHCSIER;       /*!< (@ 0x00000208) High Priority Transfer Interrupt Enable Register           */
 
         struct
         {
-            __IOM uint32_t TDBEIE  : 1; /*!< [0..0] High Priority Tx Data Buffer Empty Interrupt Enable                */
-            __IOM uint32_t RDBFIE  : 1; /*!< [1..1] High Priority Rx Data Buffer Full Interrupt Enable                 */
-            uint32_t               : 1;
-            __IOM uint32_t CMDQEIE : 1; /*!< [3..3] High Priority Command Queue Empty Interrupt Enable                 */
-            __IOM uint32_t RSPQFIE : 1; /*!< [4..4] High Priority Response Queue Full Interrupt Enable                 */
-            __IOM uint32_t TABTIE  : 1; /*!< [5..5] High Priority Transfer Abort Interrupt Enable                      */
-            uint32_t               : 3;
-            __IOM uint32_t TEIE    : 1; /*!< [9..9] High Priority Transfer Error Interrupt Enable                      */
-            uint32_t               : 22;
-        } HTIE_b;
+            __IOM uint32_t HTIE   : 1; /*!< [0..0] High Priority Tx Data Buffer Empty Interrupt Enable                */
+            __IOM uint32_t HRIE   : 1; /*!< [1..1] High Priority Rx Data Buffer Full Interrupt Enable                 */
+            uint32_t              : 1;
+            __IOM uint32_t HCQEIE : 1; /*!< [3..3] High Priority Command Queue Empty Interrupt Enable                 */
+            __IOM uint32_t HRQFIE : 1; /*!< [4..4] High Priority Response Queue Full Interrupt Enable                 */
+            __IOM uint32_t HDTAIE : 1; /*!< [5..5] High Priority Transfer Abort Interrupt Enable                      */
+            uint32_t              : 3;
+            __IOM uint32_t HDTEIE : 1; /*!< [9..9] High Priority Transfer Error Interrupt Enable                      */
+            uint32_t              : 22;
+        } ICHCSIER_b;
     };
     __IM uint32_t RESERVED19;
 
@@ -846,16 +849,15 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IM uint32_t WUST;            /*!< (@ 0x00000218) Wake Up Unit Operating Status Register                     */
+        __IM uint32_t ICWUSR;            /*!< (@ 0x00000218) Wake Up Unit Status Register                               */
 
         struct
         {
-            __IM uint32_t WUASYNF : 1; /*!< [0..0] Wake-Up function Asynchronous operation status Flag                */
+            __IM uint32_t WUASYNF : 1;   /*!< [0..0] Wake-Up function Asynchronous operation status Flag                */
             uint32_t              : 31;
-        } WUST_b;
+        } ICWUSR_b;
     };
-
-    __IM uint32_t            MRCCPT;     /*!< (@ 0x0000021C) MsyncCNT Counter Capture Register                          */
+    __IM uint32_t            ICCSCCR;    /*!< (@ 0x0000021C) C_SyncCNT Capture Register                                 */
     __IM uint32_t            RESERVED20;
     __IOM R_I3C_ICTDATR_Type ICTDATR[8]; /*!< (@ 0x00000224) Target Device Address Table Register                       */
     __IM uint32_t            RESERVED21[15];
@@ -878,24 +880,38 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IOM uint32_t ICDAR[3];       /*!< (@ 0x000002B0) Device Address Register n (n = 0 - 2)                      */
-
-        struct
+        union
         {
-            __IOM uint32_t SADR : 10;  /*!< [9..0] Static Address                                                     */
-            __IOM uint32_t FS   : 1;   /*!< [10..10] Address Format Selection                                         */
-            uint32_t            : 1;
-            __IM uint32_t IBIPL : 1;   /*!< [12..12] IBI Payload                                                      */
-            uint32_t            : 3;
-            __IOM uint32_t DADR : 7;   /*!< [22..16] Dynamic Address                                                  */
-            uint32_t            : 9;
-        } ICDAR_b[3];
+            __IOM uint32_t ICDAR[3];      /*!< (@ 0x000002B0) Device Address Register n (n = 0 - 2)                      */
+
+            struct
+            {
+                __IOM uint32_t SADR : 10; /*!< [9..0] Static Address                                                     */
+                uint32_t            : 2;
+                __IM uint32_t IBIPL : 1;  /*!< [12..12] IBI Payload                                                      */
+                uint32_t            : 3;
+                __IOM uint32_t DADR : 7;  /*!< [22..16] Dynamic Address                                                  */
+                uint32_t            : 9;
+            } ICDAR_b[3];
+        };
+
+        union
+        {
+            __IOM uint32_t SAR[3];       /*!< (@ 0x000002B0) Slave Address Register n (n = 0 - 2)                       */
+
+            struct
+            {
+                __IOM uint32_t SVA : 10; /*!< [9..0] Slave Address                                                      */
+                __IOM uint32_t FS  : 1;  /*!< [10..10] Address Format Selection                                         */
+                uint32_t           : 21;
+            } SAR_b[3];
+        };
     };
     __IM uint32_t RESERVED23[5];
 
     union
     {
-        __IOM uint32_t ICTDCTR[8];     /*!< (@ 0x000002D0) Target Device Characteristics Table Register n (n = 0 - 7) */
+        __IOM uint32_t ICTDCTR[8];     /*!< (@ 0x000002D0) Target Device Characteristics Register                     */
 
         struct
         {
@@ -904,8 +920,8 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
             __IOM uint32_t IBIRQC : 1; /*!< [9..9] IBI Request Capable                                                */
             __IOM uint32_t IBIPL  : 1; /*!< [10..10] IBI Payload                                                      */
             __IOM uint32_t OFLC   : 1; /*!< [11..11] Offline Capable                                                  */
-            __IOM uint32_t RBCR4  : 1; /*!< [12..12] Bridge Identifier                                                */
-            __IOM uint32_t RBCR5  : 1; /*!< [13..13] SDR Only / SDR and HDR Capable                                   */
+            __IOM uint32_t VTSUP  : 1; /*!< [12..12] Bridge Identifier                                                */
+            __IOM uint32_t ADVCAP : 1; /*!< [13..13] SDR Only / SDR and HDR Capable                                   */
             __IOM uint32_t ROLE   : 2; /*!< [15..14] Device Role Setting                                              */
             uint32_t              : 16;
         } ICTDCTR_b[8];
@@ -923,8 +939,8 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
             __IOM uint32_t IBIRQC : 1; /*!< [9..9] IBI Request Capable                                                */
             __IOM uint32_t IBIPL  : 1; /*!< [10..10] IBI Payload                                                      */
             __IOM uint32_t OFLC   : 1; /*!< [11..11] Offline Capable                                                  */
-            __IOM uint32_t TBCR4  : 1; /*!< [12..12] Bridge Identifier                                                */
-            __IOM uint32_t TBCR5  : 1; /*!< [13..13] SDR Only / SDR and HDR Capable                                   */
+            __IOM uint32_t VTSUP  : 1; /*!< [12..12] Bridge Identifier                                                */
+            __IOM uint32_t ADVCAP : 1; /*!< [13..13] SDR Only / SDR and HDR Capable                                   */
             __IOM uint32_t ROLE   : 2; /*!< [15..14] Device Role Setting                                              */
             uint32_t              : 16;
         } ICDCTR_b;
@@ -935,18 +951,35 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IM uint32_t ICDAMR[3];       /*!< (@ 0x00000330) Device Address Monitor Register n (n = 0 - 2)              */
-
-        struct
+        union
         {
-            uint32_t           : 16;
-            __IM uint32_t TADR : 10;   /*!< [25..16] Target Address                                                   */
-            uint32_t           : 1;
-            __IM uint32_t FS   : 1;    /*!< [27..27] Address Format Flag                                              */
-            uint32_t           : 2;
-            __IM uint32_t SAV  : 1;    /*!< [30..30] Static Address Valid Flag                                        */
-            __IM uint32_t DAV  : 1;    /*!< [31..31] Dynamic Address Valid Flag                                       */
-        } ICDAMR_b[3];
+            __IM uint32_t ICDAMR[3];   /*!< (@ 0x00000330) Device Address Monitor Register                            */
+
+            struct
+            {
+                uint32_t           : 16;
+                __IM uint32_t TADR : 10; /*!< [25..16] Target Address                                                   */
+                uint32_t           : 4;
+                __IM uint32_t SAV  : 1;  /*!< [30..30] Static Address Valid Flag                                        */
+                __IM uint32_t DAV  : 1;  /*!< [31..31] Dynamic Address Valid Flag                                       */
+            } ICDAMR_b[3];
+        };
+
+        union
+        {
+            __IM uint32_t SAMR[3];     /*!< (@ 0x00000330) Slave Address Monitor Register                             */
+
+            struct
+            {
+                uint32_t          : 16;
+                __IM uint32_t SVA : 10; /*!< [25..16] Slave Address                                                    */
+                uint32_t          : 1;
+                __IM uint32_t FS  : 1;  /*!< [27..27] Address Format Flag                                              */
+                uint32_t          : 2;
+                __IM uint32_t SAV : 1;  /*!< [30..30] Slave Address Valid Flag                                         */
+                uint32_t          : 1;
+            } SAMR_b[3];
+        };
     };
     __IM uint32_t RESERVED26[5];
 
@@ -1062,47 +1095,35 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IOM uint32_t ICTSIR;           /*!< (@ 0x00000374) Timing Support Information Register                        */
+        __IOM uint32_t ICTSIR;         /*!< (@ 0x00000374) Timing Support Information Register                        */
 
         struct
         {
-            __IOM uint32_t SPTSYN   : 1; /*!< [0..0] Supports Sync Mode                                                 */
-            __IOM uint32_t SPTASYN0 : 1; /*!< [1..1] Supports Async Mode 0                                              */
-            __IOM uint32_t SPTASYN1 : 1; /*!< [2..2] Supports Async Mode 1                                              */
-            uint32_t                : 5;
-            __IOM uint32_t FREQ     : 8; /*!< [15..8] Frequency Setting                                                 */
-            __IOM uint32_t INAC     : 8; /*!< [23..16] Frequency Inaccuracy Setting                                     */
-            uint32_t                : 8;
+            __IOM uint32_t SSM  : 1;   /*!< [0..0] Supports Sync Mode                                                 */
+            __IOM uint32_t SAM0 : 1;   /*!< [1..1] Supports Async Mode 0                                              */
+            __IOM uint32_t SAM1 : 1;   /*!< [2..2] Supports Async Mode 1                                              */
+            uint32_t            : 5;
+            __IOM uint32_t FREQ : 8;   /*!< [15..8] Frequency Setting                                                 */
+            __IOM uint32_t INAC : 8;   /*!< [23..16] Frequency Inaccuracy Setting                                     */
+            uint32_t            : 8;
         } ICTSIR_b;
     };
 
     union
     {
-        __IOM uint32_t CETSS;          /*!< (@ 0x00000378) CCC Exchange Timing Support Information S(State )
-                                        *                  Register                                                   */
+        __IOM uint32_t ICTSIR2;        /*!< (@ 0x00000378) Timing Support Information Register 2                      */
 
         struct
         {
-            __IOM uint32_t SYNE  : 1;  /*!< [0..0] Sync Mode Enabled                                                  */
-            __IOM uint32_t ASYNE : 2;  /*!< [2..1] Async Mode Enabled                                                 */
-            uint32_t             : 4;
-            __IOM uint32_t ICOVF : 1;  /*!< [7..7] Internal Counter Overflow                                          */
-            uint32_t             : 24;
-        } CETSS_b;
+            __IOM uint32_t SME  : 1;   /*!< [0..0] Sync Mode Enabled                                                  */
+            __IOM uint32_t AM0E : 1;   /*!< [1..1] Async Mode 0 Enabled                                               */
+            __IOM uint32_t AM1E : 1;   /*!< [2..2] Async Mode 1 Enabled                                               */
+            uint32_t            : 4;
+            __IOM uint32_t OVF  : 1;   /*!< [7..7] Internal Counter Overflow                                          */
+            uint32_t            : 24;
+        } ICTSIR2_b;
     };
-
-    union
-    {
-        __IOM uint32_t CGHDRCAP;       /*!< (@ 0x0000037C) CCC Get HDR capability Register                            */
-
-        struct
-        {
-            __IOM uint32_t DDREN : 1;  /*!< [0..0] HDR-DDR Operation Enable                                           */
-            __IOM uint32_t TSPEN : 1;  /*!< [1..1] HDR-TSP Operation Enable                                           */
-            __IOM uint32_t TSLEN : 1;  /*!< [2..2] HDR-TSL Operation Enable                                           */
-            uint32_t             : 29;
-        } CGHDRCAP_b;
-    };
+    __IM uint32_t RESERVED27;
 
     union
     {
@@ -1114,7 +1135,7 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
             uint32_t         : 27;
         } ICBCR_b;
     };
-    __IM uint32_t RESERVED27[4];
+    __IM uint32_t RESERVED28[4];
 
     union
     {
@@ -1141,7 +1162,7 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
             uint32_t           : 16;
         } ICDBSR_b;
     };
-    __IM uint32_t RESERVED28[9];
+    __IM uint32_t RESERVED29[9];
 
     union
     {
@@ -1156,26 +1177,26 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IM uint32_t HQSTLV;          /*!< (@ 0x000003C4) High Priority Queue Status Level Register                  */
+        __IM uint32_t ICHQBSR;         /*!< (@ 0x000003C4) High Priority Queue Status Level Register                  */
 
         struct
         {
-            __IM uint32_t CMDQLV : 8;  /*!< [7..0] High Priority Command Queue Level                                  */
-            __IM uint32_t RSPQLV : 8;  /*!< [15..8] High Priority Response Queue Level                                */
-            uint32_t             : 16;
-        } HQSTLV_b;
+            __IM uint32_t HCQFL : 8;   /*!< [7..0] High Priority Command Queue Level                                  */
+            __IM uint32_t HRQFL : 8;   /*!< [15..8] High Priority Response Queue Level                                */
+            uint32_t            : 16;
+        } ICHQBSR_b;
     };
 
     union
     {
-        __IM uint32_t HDBSTLV;         /*!< (@ 0x000003C8) High Priority Data Buffer Status Level Register            */
+        __IM uint32_t ICHDBSR;         /*!< (@ 0x000003C8) High Priority Data Buffer Status Level Register            */
 
         struct
         {
-            __IM uint32_t TDBFLV : 8;  /*!< [7..0] High Priority Tx Data Buffer Free Level                            */
-            __IM uint32_t RDBLV  : 8;  /*!< [15..8] High Priority Rx Data Buffer Level                                */
-            uint32_t             : 16;
-        } HDBSTLV_b;
+            __IM uint32_t HTBFL : 8;   /*!< [7..0] High Priority Tx Data Buffer Free Level                            */
+            __IM uint32_t HRBFL : 8;   /*!< [15..8] High Priority Rx Data Buffer Level                                */
+            uint32_t            : 16;
+        } ICHDBSR_b;
     };
 
     union
@@ -1202,28 +1223,28 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
             uint32_t           : 24;
         } ICCECR_b;
     };
-    __IM uint32_t RESERVED29[3];
+    __IM uint32_t RESERVED30[3];
 
     union
     {
-        __IM uint32_t SC1CPT;          /*!< (@ 0x000003E0) SC1 Capture monitor Register                               */
+        __IM uint32_t ICTC1CR;         /*!< (@ 0x000003E0) SC1 Capture monitor Register                               */
 
         struct
         {
             __IM uint32_t SC1C : 16;   /*!< [15..0] SC1 Capture                                                       */
             uint32_t           : 16;
-        } SC1CPT_b;
+        } ICTC1CR_b;
     };
 
     union
     {
-        __IM uint32_t SC2CPT;          /*!< (@ 0x000003E4) SC2 Capture monitor Register                               */
+        __IM uint32_t ICTC2CR;         /*!< (@ 0x000003E4) SC2 Capture monitor Register                               */
 
         struct
         {
             __IM uint32_t SC2C : 16;   /*!< [15..0] SC2 Capture                                                       */
             uint32_t           : 16;
-        } SC2CPT_b;
+        } ICTC2CR_b;
     };
 } R_I3C0_Type;                         /*!< Size = 1000 (0x3e8)                                                       */
 

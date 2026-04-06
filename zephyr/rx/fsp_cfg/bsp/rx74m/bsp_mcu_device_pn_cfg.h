@@ -1,4 +1,8 @@
-/* generated configuration header file - do not edit */
+/*
+* Copyright (c) 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 #ifndef BSP_MCU_DEVICE_PN_CFG_H_
 #define BSP_MCU_DEVICE_PN_CFG_H_
 #define BSP_MCU_R5K574MCBxAE

@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -911,19 +911,19 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
     union
     {
-        __IOM uint8_t LVD1CR1;         /*!< (@ 0x000000E0) Voltage Monitor 1 Circuit Control Register 1               */
+        __IOM uint8_t PVD1CR1;         /*!< (@ 0x000000E0) Voltage Monitor 1 Circuit Control Register 1               */
 
         struct
         {
             __IOM uint8_t IDTSEL : 2;  /*!< [1..0] Voltage Monitor m Interrupt Generation Condition Select            */
             __IOM uint8_t IRQSEL : 1;  /*!< [2..2] Voltage Monitor m Interrupt Type Select                            */
             uint8_t              : 5;
-        } LVD1CR1_b;
+        } PVD1CR1_b;
     };
 
     union
     {
-        __IOM uint8_t LVD1SR;          /*!< (@ 0x000000E1) Voltage Monitor 1 Circuit Status Register                  */
+        __IOM uint8_t PVD1SR;          /*!< (@ 0x000000E1) Voltage Monitor 1 Circuit Status Register                  */
 
         struct
         {
@@ -933,24 +933,24 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
                                         *   0.                                                                        */
             __IOM uint8_t MON : 1;     /*!< [1..1] Voltage Monitor m Interrupt Type Select                            */
             uint8_t           : 6;
-        } LVD1SR_b;
+        } PVD1SR_b;
     };
 
     union
     {
-        __IOM uint8_t LVD2CR1;         /*!< (@ 0x000000E2) Voltage Monitor 2 Circuit Control Register 1               */
+        __IOM uint8_t PVD2CR1;         /*!< (@ 0x000000E2) Voltage Monitor 2 Circuit Control Register 1               */
 
         struct
         {
             __IOM uint8_t IDTSEL : 2;  /*!< [1..0] Voltage Monitor m Interrupt Generation Condition Select            */
             __IOM uint8_t IRQSEL : 1;  /*!< [2..2] Voltage Monitor m Interrupt Type Select                            */
             uint8_t              : 5;
-        } LVD2CR1_b;
+        } PVD2CR1_b;
     };
 
     union
     {
-        __IOM uint8_t LVD2SR;          /*!< (@ 0x000000E3) Voltage Monitor 2 Circuit Status Register                  */
+        __IOM uint8_t PVD2SR;          /*!< (@ 0x000000E3) Voltage Monitor 2 Circuit Status Register                  */
 
         struct
         {
@@ -960,24 +960,24 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
                                         *   0.                                                                        */
             __IOM uint8_t MON : 1;     /*!< [1..1] Voltage Monitor m Interrupt Type Select                            */
             uint8_t           : 6;
-        } LVD2SR_b;
+        } PVD2SR_b;
     };
 
     union
     {
-        __IOM uint8_t LVD3CR1;         /*!< (@ 0x000000E4) Voltage Monitor 2 Circuit Control Register 1               */
+        __IOM uint8_t PVD3CR1;         /*!< (@ 0x000000E4) Voltage Monitor 3 Circuit Control Register 1               */
 
         struct
         {
             __IOM uint8_t IDTSEL : 2;  /*!< [1..0] Voltage Monitor m Interrupt Generation Condition Select            */
             __IOM uint8_t IRQSEL : 1;  /*!< [2..2] Voltage Monitor m Interrupt Type Select                            */
             uint8_t              : 5;
-        } LVD3CR1_b;
+        } PVD3CR1_b;
     };
 
     union
     {
-        __IOM uint8_t LVD3SR;          /*!< (@ 0x000000E5) Voltage Monitor 2 Circuit Status Register                  */
+        __IOM uint8_t PVD3SR;          /*!< (@ 0x000000E5) Voltage Monitor 3 Circuit Status Register                  */
 
         struct
         {
@@ -987,32 +987,32 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
                                         *   0.                                                                        */
             __IOM uint8_t MON : 1;     /*!< [1..1] Voltage Monitor m Interrupt Type Select                            */
             uint8_t           : 6;
-        } LVD3SR_b;
+        } PVD3SR_b;
     };
 
     union
     {
-        __IOM uint8_t LVD4CR1;         /*!< (@ 0x000000E6) Voltage Monitor 2 Circuit Control Register 1               */
+        __IOM uint8_t PVD4CR1;         /*!< (@ 0x000000E6) Voltage Monitor 4 Circuit Control Register 1               */
 
         struct
         {
             __IOM uint8_t IDTSEL : 2;  /*!< [1..0] Voltage Monitor m Interrupt Generation Condition Select            */
             __IOM uint8_t IRQSEL : 1;  /*!< [2..2] Voltage Monitor m Interrupt Type Select                            */
             uint8_t              : 5;
-        } LVD4CR1_b;
+        } PVD4CR1_b;
     };
     __IM uint8_t RESERVED47;
 
     union
     {
-        __IOM uint8_t LVD5CR1;         /*!< (@ 0x000000E8) Voltage Monitor 2 Circuit Control Register 1               */
+        __IOM uint8_t PVD5CR1;         /*!< (@ 0x000000E8) Voltage Monitor 5 Circuit Control Register 1               */
 
         struct
         {
             __IOM uint8_t IDTSEL : 2;  /*!< [1..0] Voltage Monitor m Interrupt Generation Condition Select            */
             __IOM uint8_t IRQSEL : 1;  /*!< [2..2] Voltage Monitor m Interrupt Type Select                            */
             uint8_t              : 5;
-        } LVD5CR1_b;
+        } PVD5CR1_b;
     };
     __IM uint8_t  RESERVED48;
     __IM uint16_t RESERVED49;
@@ -1187,17 +1187,17 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
     union
     {
-        __IOM uint32_t LVDSAR;          /*!< (@ 0x000003CC) Programable Voltage Detection Security Attribution
+        __IOM uint32_t PVDSAR;          /*!< (@ 0x000003CC) Programable Voltage Detection Security Attribution
                                          *                  Register                                                   */
 
         struct
         {
             __IOM uint32_t NONSEC0 : 1; /*!< [0..0] Non-secure Attribute bit 0 Target register: registers
-                                         *   for LVD1                                                                  */
+                                         *   for PVD1                                                                  */
             __IOM uint32_t NONSEC1 : 1; /*!< [1..1] Non-secure Attribute bit 1 Target register: registers
-                                         *   for LVD2                                                                  */
+                                         *   for PVD2                                                                  */
             uint32_t : 30;
-        } LVDSAR_b;
+        } PVDSAR_b;
     };
 
     union
@@ -1739,20 +1739,20 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
         {
             __IOM uint8_t PORF : 1;    /*!< [0..0] Power-On Reset Detect FlagNOTE: Writable only to clear
                                         *   the flag. Confirm the value is 1 and then write 0.                        */
-            __IOM uint8_t LVD0RF : 1;  /*!< [1..1] Voltage Monitor 0 Reset Detect FlagNOTE: Writable only
+            __IOM uint8_t PVD0RF : 1;  /*!< [1..1] Voltage Monitor 0 Reset Detect FlagNOTE: Writable only
                                         *   to clear the flag. Confirm the value is 1 and then write
                                         *   0.                                                                        */
-            __IOM uint8_t LVD1RF : 1;  /*!< [2..2] Voltage Monitor 1 Reset Detect FlagNOTE: Writable only
+            __IOM uint8_t PVD1RF : 1;  /*!< [2..2] Voltage Monitor 1 Reset Detect FlagNOTE: Writable only
                                         *   to clear the flag. Confirm the value is 1 and then write
                                         *   0.                                                                        */
-            __IOM uint8_t LVD2RF : 1;  /*!< [3..3] Voltage Monitor 2 Reset Detect FlagNOTE: Writable only
+            __IOM uint8_t PVD2RF : 1;  /*!< [3..3] Voltage Monitor 2 Reset Detect FlagNOTE: Writable only
                                         *   to clear the flag. Confirm the value is 1 and then write
                                         *   0.                                                                        */
             uint8_t              : 1;
-            __IOM uint8_t LVD4RF : 1;  /*!< [5..5] Voltage Monitor 4 Reset Detect FlagNOTE: Writable only
+            __IOM uint8_t PVD4RF : 1;  /*!< [5..5] Voltage Monitor 4 Reset Detect FlagNOTE: Writable only
                                         *   to clear the flag. Confirm the value is 1 and then write
                                         *   0.                                                                        */
-            __IOM uint8_t LVD5RF : 1;  /*!< [6..6] Voltage Monitor 5 Reset Detect FlagNOTE: Writable only
+            __IOM uint8_t PVD5RF : 1;  /*!< [6..6] Voltage Monitor 5 Reset Detect FlagNOTE: Writable only
                                         *   to clear the flag. Confirm the value is 1 and then write
                                         *   0.                                                                        */
             __IOM uint8_t DPSRSTF : 1; /*!< [7..7] Deep Software Standby Reset FlagNOTE: Writable only to
@@ -1810,70 +1810,70 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
     union
     {
-        __IOM uint8_t LVD1CMPCR;       /*!< (@ 0x00000A58) Voltage Monitor 1 Comparator Control Register              */
+        __IOM uint8_t PVD1CMPCR;       /*!< (@ 0x00000A58) Voltage Monitor 1 Comparator Control Register              */
 
         struct
         {
-            __IOM uint8_t LVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
+            __IOM uint8_t PVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
             uint8_t              : 2;
-            __IOM uint8_t LVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
-        } LVD1CMPCR_b;
+            __IOM uint8_t PVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
+        } PVD1CMPCR_b;
     };
     __IM uint8_t  RESERVED107;
     __IM uint16_t RESERVED108;
 
     union
     {
-        __IOM uint8_t LVD2CMPCR;       /*!< (@ 0x00000A5C) Voltage Monitor 2 Comparator Control Register              */
+        __IOM uint8_t PVD2CMPCR;       /*!< (@ 0x00000A5C) Voltage Monitor 2 Comparator Control Register              */
 
         struct
         {
-            __IOM uint8_t LVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
+            __IOM uint8_t PVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
             uint8_t              : 2;
-            __IOM uint8_t LVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
-        } LVD2CMPCR_b;
+            __IOM uint8_t PVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
+        } PVD2CMPCR_b;
     };
     __IM uint8_t  RESERVED109;
     __IM uint16_t RESERVED110;
 
     union
     {
-        __IOM uint8_t LVD3CMPCR;       /*!< (@ 0x00000A5C) Voltage Monitor 2 Comparator Control Register              */
+        __IOM uint8_t PVD3CMPCR;       /*!< (@ 0x00000A60) Voltage Monitor 3 Comparator Control Register              */
 
         struct
         {
-            __IOM uint8_t LVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
+            __IOM uint8_t PVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
             uint8_t              : 2;
-            __IOM uint8_t LVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
-        } LVD3CMPCR_b;
+            __IOM uint8_t PVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
+        } PVD3CMPCR_b;
     };
     __IM uint8_t  RESERVED111;
     __IM uint16_t RESERVED112;
 
     union
     {
-        __IOM uint8_t LVD4CMPCR;       /*!< (@ 0x00000A64) Voltage Monitor 4 Comparator Control Register              */
+        __IOM uint8_t PVD4CMPCR;       /*!< (@ 0x00000A64) Voltage Monitor 4 Comparator Control Register              */
 
         struct
         {
-            __IOM uint8_t LVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
+            __IOM uint8_t PVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
             uint8_t              : 2;
-            __IOM uint8_t LVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
-        } LVD4CMPCR_b;
+            __IOM uint8_t PVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
+        } PVD4CMPCR_b;
     };
     __IM uint8_t  RESERVED113;
     __IM uint16_t RESERVED114;
 
     union
     {
-        __IOM uint8_t LVD5CMPCR;       /*!< (@ 0x00000A68) Voltage Monitor 5 Comparator Control Register              */
+        __IOM uint8_t PVD5CMPCR;       /*!< (@ 0x00000A68) Voltage Monitor 5 Comparator Control Register              */
 
         struct
         {
-            __IOM uint8_t LVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
+            __IOM uint8_t PVDLVL : 5;  /*!< [4..0] Detection Voltage m Level Select                                   */
             uint8_t              : 2;
-            __IOM uint8_t LVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
-        } LVD5CMPCR_b;
+            __IOM uint8_t PVDE   : 1;  /*!< [7..7] Voltage Detection m Enable                                         */
+        } PVD5CMPCR_b;
     };
     __IM uint8_t  RESERVED115;
     __IM uint16_t RESERVED116;
@@ -1881,7 +1881,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
     union
     {
-        __IOM uint8_t LVD1CR0;         /*!< (@ 0x00000A70) Voltage Monitor 1 Circuit Control Register 0               */
+        __IOM uint8_t PVD1CR0;         /*!< (@ 0x00000A70) Voltage Monitor 1 Circuit Control Register 0               */
 
         struct
         {
@@ -1892,14 +1892,14 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t FSAMP : 2;   /*!< [5..4] Sampling Clock Select                                              */
             __IOM uint8_t RI    : 1;   /*!< [6..6] Voltage Monitor m Circuit Mode Select                              */
             __IOM uint8_t RN    : 1;   /*!< [7..7] Voltage Monitor m Reset Negate Select                              */
-        } LVD1CR0_b;
+        } PVD1CR0_b;
     };
     __IM uint8_t  RESERVED118;
     __IM uint16_t RESERVED119;
 
     union
     {
-        __IOM uint8_t LVD2CR0;         /*!< (@ 0x00000A74) Voltage Monitor 2 Circuit Control Register 0               */
+        __IOM uint8_t PVD2CR0;         /*!< (@ 0x00000A74) Voltage Monitor 2 Circuit Control Register 0               */
 
         struct
         {
@@ -1910,14 +1910,14 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t FSAMP : 2;   /*!< [5..4] Sampling Clock Select                                              */
             __IOM uint8_t RI    : 1;   /*!< [6..6] Voltage Monitor m Circuit Mode Select                              */
             __IOM uint8_t RN    : 1;   /*!< [7..7] Voltage Monitor m Reset Negate Select                              */
-        } LVD2CR0_b;
+        } PVD2CR0_b;
     };
     __IM uint8_t  RESERVED120;
     __IM uint16_t RESERVED121;
 
     union
     {
-        __IOM uint8_t LVD3CR0;         /*!< (@ 0x00000A74) Voltage Monitor 2 Circuit Control Register 0               */
+        __IOM uint8_t PVD3CR0;         /*!< (@ 0x00000A78) Voltage Monitor 3 Circuit Control Register 0               */
 
         struct
         {
@@ -1928,14 +1928,14 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t FSAMP : 2;   /*!< [5..4] Sampling Clock Select                                              */
             __IOM uint8_t RI    : 1;   /*!< [6..6] Voltage Monitor m Circuit Mode Select                              */
             __IOM uint8_t RN    : 1;   /*!< [7..7] Voltage Monitor m Reset Negate Select                              */
-        } LVD3CR0_b;
+        } PVD3CR0_b;
     };
     __IM uint8_t  RESERVED122;
     __IM uint16_t RESERVED123;
 
     union
     {
-        __IOM uint8_t LVD4CR0;         /*!< (@ 0x00000A7C) Voltage Monitor 4 Circuit Control Register 0               */
+        __IOM uint8_t PVD4CR0;         /*!< (@ 0x00000A7C) Voltage Monitor 4 Circuit Control Register 0               */
 
         struct
         {
@@ -1946,14 +1946,14 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t FSAMP : 2;   /*!< [5..4] Sampling Clock Select                                              */
             __IOM uint8_t RI    : 1;   /*!< [6..6] Voltage Monitor m Circuit Mode Select                              */
             __IOM uint8_t RN    : 1;   /*!< [7..7] Voltage Monitor m Reset Negate Select                              */
-        } LVD4CR0_b;
+        } PVD4CR0_b;
     };
     __IM uint8_t  RESERVED124;
     __IM uint16_t RESERVED125;
 
     union
     {
-        __IOM uint8_t LVD5CR0;         /*!< (@ 0x00000A80) Voltage Monitor 5 Circuit Control Register 0               */
+        __IOM uint8_t PVD5CR0;         /*!< (@ 0x00000A80) Voltage Monitor 5 Circuit Control Register 0               */
 
         struct
         {
@@ -1964,7 +1964,7 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
             __IOM uint8_t FSAMP : 2;   /*!< [5..4] Sampling Clock Select                                              */
             __IOM uint8_t RI    : 1;   /*!< [6..6] Voltage Monitor Circuit Mode Select                                */
             __IOM uint8_t RN    : 1;   /*!< [7..7] Voltage Monitor Reset Negate Select                                */
-        } LVD5CR0_b;
+        } PVD5CR0_b;
     };
     __IM uint8_t  RESERVED126;
     __IM uint16_t RESERVED127;
@@ -2203,65 +2203,65 @@ typedef struct                         /*!< (@ 0x87019000) R_SYSTEM Structure   
 
     union
     {
-        __IOM uint8_t LVD1FCR;         /*!< (@ 0x00000B20) Voltage Monitor 1 Function Control Register                */
+        __IOM uint8_t PVD1FCR;         /*!< (@ 0x00000B20) Voltage Monitor 1 Function Control Register                */
 
         struct
         {
             __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
             uint8_t             : 7;
-        } LVD1FCR_b;
+        } PVD1FCR_b;
     };
     __IM uint8_t  RESERVED168;
     __IM uint16_t RESERVED169;
 
     union
     {
-        __IOM uint8_t LVD2FCR;         /*!< (@ 0x00000B24) Voltage Monitor 2 Function Control Register                */
+        __IOM uint8_t PVD2FCR;         /*!< (@ 0x00000B24) Voltage Monitor 2 Function Control Register                */
 
         struct
         {
             __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
             uint8_t             : 7;
-        } LVD2FCR_b;
+        } PVD2FCR_b;
     };
     __IM uint8_t  RESERVED170;
     __IM uint16_t RESERVED171;
 
     union
     {
-        __IOM uint8_t LVD3FCR;         /*!< (@ 0x00000B24) Voltage Monitor 2 Function Control Register                */
+        __IOM uint8_t PVD3FCR;         /*!< (@ 0x00000B28) Voltage Monitor 3 Function Control Register                */
 
         struct
         {
             __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
             uint8_t             : 7;
-        } LVD3FCR_b;
+        } PVD3FCR_b;
     };
     __IM uint8_t  RESERVED172;
     __IM uint16_t RESERVED173;
 
     union
     {
-        __IOM uint8_t LVD4FCR;         /*!< (@ 0x00000B2C) Voltage Monitor 4 Function Control Register                */
+        __IOM uint8_t PVD4FCR;         /*!< (@ 0x00000B2C) Voltage Monitor 4 Function Control Register                */
 
         struct
         {
             __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
             uint8_t             : 7;
-        } LVD4FCR_b;
+        } PVD4FCR_b;
     };
     __IM uint8_t  RESERVED174;
     __IM uint16_t RESERVED175;
 
     union
     {
-        __IOM uint8_t LVD5FCR;         /*!< (@ 0x00000B30) Voltage Monitor 5 Function Control Register                */
+        __IOM uint8_t PVD5FCR;         /*!< (@ 0x00000B30) Voltage Monitor 5 Function Control Register                */
 
         struct
         {
             __IOM uint8_t RHSEL : 1;   /*!< [0..0] Rise Hysteresis Select                                             */
             uint8_t             : 7;
-        } LVD5FCR_b;
+        } PVD5FCR_b;
     };
     __IM uint8_t  RESERVED176;
     __IM uint16_t RESERVED177;

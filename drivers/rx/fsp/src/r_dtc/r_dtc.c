@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -439,7 +439,7 @@ fsp_err_t R_DTC_Reload (transfer_ctrl_t * const p_api_ctrl,
  **********************************************************************************************************************/
 fsp_err_t R_DTC_CallbackSet (transfer_ctrl_t * const          p_api_ctrl,
                              void (                         * p_callback)(transfer_callback_args_t *),
-                             void * const               p_context,
+                             void * const                     p_context,
                              transfer_callback_args_t * const p_callback_memory)
 {
     /* This function isn't supported.  It is defined only to implement a required function of transfer_api_t.

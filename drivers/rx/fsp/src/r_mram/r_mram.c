@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -34,7 +34,7 @@
 /** "MRAM" in ASCII, used to avoid multiple open. */
 #define MRAM_PRV_OPEN                                (0x4D52414DU)
 
-#define MRAM_AREA_OFFSET                             (0x80000)
+#define MRAM_AREA_OFFSET                             (BSP_ROM_SIZE_BYTES / 2)
 
 #define MRAM_PRV_CMD_BASE                            (0x87080000U)
 
@@ -62,8 +62,13 @@
 
 #define MRAM_PRV_MRCPC0_KEY                          (0x8600)
 #define MRAM_PRV_MRCPC1_KEY                          (0x6800)
+
 #define MRAM_PRV_MRCFLR_FLUSH                        (0xC301)
 #define MRAM_PRV_MRCBFLR_FLUSH                       (0xC302)
+
+#define MRAM_PRV_MRC_AREA_A                          (0)
+#define MRAM_PRV_MRC_AREA_B                          (1)
+
 #define MRAM_PRV_MRDFLR_FLUSH                        (0xC401)
 
 /* The number of CPU cycles per each timeout loop. */
@@ -97,10 +102,18 @@ typedef struct                         /*!< (@ 0x87080000) MRAM_PRV_CMD Structur
 static const flash_block_info_t g_code_mram_macro_info[] =
 {
     {
-        .block_section_st_addr  = BSP_FEATURE_FLASH_CODE_FLASH_START,
-        .block_section_end_addr = (uint32_t) (BSP_FEATURE_FLASH_CODE_FLASH_START + BSP_ROM_SIZE_BYTES - 1),
-        .block_size             = BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES,
-        .block_size_write       = 1
+        .block_section_st_addr  = BSP_FEATURE_MRAM_REGION_CODE_A_START_ADDRESS,
+        .block_section_end_addr =
+            (uint32_t) (BSP_FEATURE_MRAM_REGION_CODE_A_START_ADDRESS + (BSP_ROM_SIZE_BYTES / 2) - 1),
+        .block_size       = BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES,
+        .block_size_write = 1
+    },
+    {
+        .block_section_st_addr  = BSP_FEATURE_MRAM_REGION_CODE_B_START_ADDRESS,
+        .block_section_end_addr =
+            (uint32_t) (BSP_FEATURE_MRAM_REGION_CODE_B_START_ADDRESS + (BSP_ROM_SIZE_BYTES / 2) - 1),
+        .block_size       = BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES,
+        .block_size_write = 1
     }
 };
 
@@ -116,6 +129,35 @@ static const flash_regions_t g_mram_data_region =
     .p_block_array = NULL
 };
 
+typedef struct st_mram_program_info
+{
+    uint8_t  mrcps_abufemp_mask;
+    uint8_t  mrcps_abuffull_mask;
+    uint8_t  mrcps_prgbsyc_mask;
+    uint16_t mrcflr_flush_code;
+} mram_program_info_t;
+
+static const mram_program_info_t g_mram_program_info[] =
+{
+#if BSP_FEATURE_MRAM_HAS_CODE_MRAM_REGION_A
+    {
+        .mrcps_abufemp_mask  = R_MRAM_MRCPS_ABUFEMP_Msk,
+        .mrcps_abuffull_mask = R_MRAM_MRCPS_ABUFFULL_Msk,
+        .mrcps_prgbsyc_mask  = R_MRAM_MRCPS_PRGBSYC_Msk,
+        .mrcflr_flush_code   = MRAM_PRV_MRCFLR_FLUSH,
+    },
+#endif
+
+#if BSP_FEATURE_MRAM_HAS_CODE_MRAM_REGION_B
+    {
+        .mrcps_abufemp_mask  = R_MRAM_MRCPS_ABUFEMPB_Msk,
+        .mrcps_abuffull_mask = R_MRAM_MRCPS_ABUFFULLB_Msk,
+        .mrcps_prgbsyc_mask  = R_MRAM_MRCPS_PRGBSYCB_Msk,
+        .mrcflr_flush_code   = MRAM_PRV_MRCBFLR_FLUSH,
+    }
+#endif
+};
+
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
@@ -123,9 +165,14 @@ static const flash_regions_t g_mram_data_region =
 /* Internal functions. */
 static void mram_init(mram_instance_ctrl_t * p_ctrl);
 
-static fsp_err_t mram_erase_blocks(uint32_t address, uint32_t num_blocks) PLACE_IN_RAM_SECTION;
+static fsp_err_t mram_erase_blocks(uint32_t                          address,
+                                   uint32_t                          num_blocks,
+                                   mram_program_info_t const * const mram_program_info) PLACE_IN_RAM_SECTION;
 
-static fsp_err_t mram_write_data(uint32_t src_address, uint32_t mram_address, uint32_t num_bytes) PLACE_IN_RAM_SECTION;
+static fsp_err_t mram_write_data(uint32_t                          src_address,
+                                 uint32_t                          mram_address,
+                                 uint32_t                          num_bytes,
+                                 mram_program_info_t const * const mram_program_info) PLACE_IN_RAM_SECTION;
 
 static void mram_program_control(uint32_t address, bool enable);
 
@@ -143,6 +190,11 @@ static fsp_err_t r_mram_write_erase_parameter_checking(mram_instance_ctrl_t * co
 static fsp_err_t mram_df_erase_blocks(uint32_t address, uint32_t num_blocks);
 
 static fsp_err_t mram_df_write_data(uint32_t src_address, uint32_t mram_address, uint32_t num_bytes);
+
+__STATIC_INLINE uint32_t mram_calc_operation_address(uint8_t    area,
+                                                     uint32_t   mram_address,
+                                                     uint32_t   num_bytes,
+                                                     uint32_t * write_mram_address);
 
 /***********************************************************************************************************************
  * Exported global variables
@@ -246,6 +298,7 @@ fsp_err_t R_MRAM_Write (flash_ctrl_t * const p_api_ctrl,
 {
     FSP_PARAMETER_NOT_USED(p_api_ctrl);
     fsp_err_t err = FSP_SUCCESS;
+
 #if (MRAM_CFG_PARAM_CHECKING_ENABLE == 1)
     mram_instance_ctrl_t * p_ctrl = (mram_instance_ctrl_t *) p_api_ctrl;
 
@@ -255,9 +308,20 @@ fsp_err_t R_MRAM_Write (flash_ctrl_t * const p_api_ctrl,
 #endif
     FSP_ERROR_RETURN(0 == (R_MRAM->MRCPS & (R_MRAM_MRCPS_ABUFFULL_Msk | R_MRAM_MRCPS_PRGBSYC_Msk)), FSP_ERR_IN_USE);
 
-    if ((mram_address & BSP_FEATURE_FLASH_CODE_FLASH_START) == BSP_FEATURE_FLASH_CODE_FLASH_START)
+    if (mram_address >= BSP_FEATURE_FLASH_CODE_FLASH_START)
     {
-        err = mram_write_data(src_address, mram_address, num_bytes);
+        for (uint8_t area = 0; area < BSP_FEATURE_MRAM_REGION_CODE_AREA_NUM; area++)
+        {
+            uint32_t write_mram_address;
+            uint32_t write_num_bytes = mram_calc_operation_address(area, mram_address, num_bytes, &write_mram_address);
+
+            if (write_num_bytes > 0)
+            {
+                uint32_t write_src_address = src_address + (write_mram_address - mram_address);
+                err =
+                    mram_write_data(write_src_address, write_mram_address, write_num_bytes, &g_mram_program_info[area]);
+            }
+        }
     }
     else
     {
@@ -284,28 +348,41 @@ fsp_err_t R_MRAM_Erase (flash_ctrl_t * const p_api_ctrl, uint32_t const address,
 {
     FSP_PARAMETER_NOT_USED(p_api_ctrl);
     fsp_err_t err = FSP_SUCCESS;
+    uint8_t   mram_program_size;
+
+    if ((address & BSP_FEATURE_FLASH_CODE_FLASH_START) == BSP_FEATURE_FLASH_CODE_FLASH_START)
+    {
+        mram_program_size = BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES;
+    }
+    else
+    {
+        mram_program_size = BSP_FEATURE_DATA_MRAM_PROGRAMMING_SIZE_BYTES;
+    }
+
 #if (MRAM_CFG_PARAM_CHECKING_ENABLE == 1)
     mram_instance_ctrl_t * p_ctrl = (mram_instance_ctrl_t *) p_api_ctrl;
 
     /* Verify parameters. */
-    err = r_mram_write_erase_parameter_checking(p_ctrl,
-                                                address,
-                                                num_blocks * BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES,
-                                                FSP_ERR_INVALID_BLOCKS);
+    err =
+        r_mram_write_erase_parameter_checking(p_ctrl, address, num_blocks * mram_program_size, FSP_ERR_INVALID_BLOCKS);
     FSP_ERROR_RETURN((err == FSP_SUCCESS), err);
-    if ((address & BSP_FEATURE_FLASH_CODE_FLASH_START) == BSP_FEATURE_FLASH_CODE_FLASH_START)
-    {
-        FSP_ERROR_RETURN(0 == address % BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES, FSP_ERR_INVALID_ADDRESS);
-    }
-    else
-    {
-        FSP_ERROR_RETURN(0 == address % BSP_FEATURE_DATA_MRAM_PROGRAMMING_SIZE_BYTES, FSP_ERR_INVALID_ADDRESS);
-    }
+    FSP_ERROR_RETURN(0 == address % mram_program_size, FSP_ERR_INVALID_ADDRESS);
 #endif
 
-    if ((address & BSP_FEATURE_FLASH_CODE_FLASH_START) == BSP_FEATURE_FLASH_CODE_FLASH_START)
+    if (address >= BSP_FEATURE_FLASH_CODE_FLASH_START)
     {
-        err = mram_erase_blocks(address, num_blocks);
+        for (uint8_t area = 0; area < BSP_FEATURE_MRAM_REGION_CODE_AREA_NUM; area++)
+        {
+            uint32_t erase_start;
+            uint32_t erase_num_bytes  = num_blocks * mram_program_size;
+            uint32_t erase_num_blocks = mram_calc_operation_address(area, address, erase_num_bytes, &erase_start) /
+                                        mram_program_size;
+
+            if (erase_num_blocks > 0)
+            {
+                err = mram_erase_blocks(erase_start, erase_num_blocks, &g_mram_program_info[area]);
+            }
+        }
     }
     else
     {
@@ -647,10 +724,14 @@ fsp_err_t R_MRAM_UserLockableAreaWrite (flash_ctrl_t * const p_api_ctrl,
  * @param[in]  src_address         Address of the data to be written
  * @param[in]  mram_address        Address of the MRAM to write
  * @param[in]  num_bytes           Number of bytes to write
+ * @param[in]  mram_program_info   Structure of information written to MRAM
  *
  * @retval     FSP_SUCCESS         Write completed successfully
  **********************************************************************************************************************/
-static fsp_err_t mram_write_data (uint32_t src_address, uint32_t mram_address, uint32_t num_bytes)
+static fsp_err_t mram_write_data (uint32_t                          src_address,
+                                  uint32_t                          mram_address,
+                                  uint32_t                          num_bytes,
+                                  mram_program_info_t const * const mram_program_info)
 {
     fsp_err_t err = FSP_SUCCESS;
 
@@ -664,13 +745,14 @@ static fsp_err_t mram_write_data (uint32_t src_address, uint32_t mram_address, u
      * RX74M manual R01UH1055EJ0051. */
     while (operations_remaining > 0 && FSP_SUCCESS == err)
     {
-        FSP_HARDWARE_REGISTER_WAIT(R_MRAM->MRCPS_b.PRGBSYC, 0);
-        FSP_HARDWARE_REGISTER_WAIT(R_MRAM->MRCPS_b.ABUFFULL, 0);
-        uint32_t write_count =
-            (operations_remaining <
-             BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES) ? operations_remaining :
-            BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES -
-            ((uint32_t) p_dest_address % BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES);
+        FSP_HARDWARE_REGISTER_WAIT((R_MRAM->MRCPS & mram_program_info->mrcps_prgbsyc_mask), 0);
+        FSP_HARDWARE_REGISTER_WAIT((R_MRAM->MRCPS & mram_program_info->mrcps_abuffull_mask), 0);
+
+        uint32_t arrignment_size = BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES -
+                                   ((uint32_t) p_dest_address % BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES);
+        uint32_t write_count = (arrignment_size <
+                                operations_remaining) ? arrignment_size : operations_remaining;
+
         for (uint32_t i = 0; i < write_count; i++)
         {
             *p_dest_address = *p_src_address;
@@ -687,18 +769,12 @@ static fsp_err_t mram_write_data (uint32_t src_address, uint32_t mram_address, u
 
         if (BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES != write_count)
         {
-            if ((mram_address & MRAM_AREA_OFFSET) == MRAM_AREA_OFFSET)
-            {
-                R_MRAM->MRCFLR = MRAM_PRV_MRCFLR_FLUSH;
-            }
-            else
-            {
-                R_MRAM->MRCFLR = MRAM_PRV_MRCBFLR_FLUSH;
-            }
+            R_MRAM->MRCFLR |= mram_program_info->mrcflr_flush_code;
         }
 
-        FSP_HARDWARE_REGISTER_WAIT(R_MRAM->MRCPS_b.ABUFEMP, 1);
-        FSP_HARDWARE_REGISTER_WAIT(R_MRAM->MRCPS_b.PRGBSYC, 0);
+        FSP_HARDWARE_REGISTER_WAIT((R_MRAM->MRCPS & mram_program_info->mrcps_abufemp_mask),
+                                   mram_program_info->mrcps_abufemp_mask);
+        FSP_HARDWARE_REGISTER_WAIT((R_MRAM->MRCPS & mram_program_info->mrcps_prgbsyc_mask), 0);
     }
 
     mram_program_control(mram_address, false);
@@ -711,10 +787,13 @@ static fsp_err_t mram_write_data (uint32_t src_address, uint32_t mram_address, u
  *
  * @param[in]  address          Address of the simulated block to start erasing
  * @param[in]  num_blocks       Number of simulated blocks to erase
+ * @param[in]  mram_program_info   Structure of information written to MRAM
  *
  * @retval     FSP_SUCCESS     The erase completed successfully.
  **********************************************************************************************************************/
-static fsp_err_t mram_erase_blocks (uint32_t address, uint32_t num_blocks)
+static fsp_err_t mram_erase_blocks (uint32_t                          address,
+                                    uint32_t                          num_blocks,
+                                    mram_program_info_t const * const mram_program_info)
 {
     fsp_err_t err = FSP_SUCCESS;
 
@@ -725,12 +804,12 @@ static fsp_err_t mram_erase_blocks (uint32_t address, uint32_t num_blocks)
 
     mram_program_control(address, true);
 
-    /* Follow the "Code MRAM programming procedure (32-bytes programming)": Figure 66.3 of the
+    /* Follow the "Code MRAM programming procedure (32-bytes programming)": Figure 67.3 of the
      * RX74M manual R01UH1055EJ0051. */
     while (0 < operations_remaining && FSP_SUCCESS == err)
     {
-        FSP_HARDWARE_REGISTER_WAIT(R_MRAM->MRCPS_b.PRGBSYC, 0);
-        FSP_HARDWARE_REGISTER_WAIT(R_MRAM->MRCPS_b.ABUFFULL, 0);
+        FSP_HARDWARE_REGISTER_WAIT((R_MRAM->MRCPS & mram_program_info->mrcps_prgbsyc_mask), 0);
+        FSP_HARDWARE_REGISTER_WAIT((R_MRAM->MRCPS & mram_program_info->mrcps_abuffull_mask), 0);
 
         for (uint32_t j = 0; j < BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES; j++)
         {
@@ -740,8 +819,9 @@ static fsp_err_t mram_erase_blocks (uint32_t address, uint32_t num_blocks)
 
         operations_remaining--;
 
-        FSP_HARDWARE_REGISTER_WAIT(R_MRAM->MRCPS_b.ABUFEMP, 1);
-        FSP_HARDWARE_REGISTER_WAIT(R_MRAM->MRCPS_b.PRGBSYC, 0);
+        FSP_HARDWARE_REGISTER_WAIT((R_MRAM->MRCPS & mram_program_info->mrcps_abufemp_mask),
+                                   mram_program_info->mrcps_abufemp_mask);
+        FSP_HARDWARE_REGISTER_WAIT((R_MRAM->MRCPS & mram_program_info->mrcps_prgbsyc_mask), 0);
     }
 
     mram_program_control(address, false);
@@ -799,7 +879,7 @@ static fsp_err_t r_mram_write_erase_parameter_checking (mram_instance_ctrl_t * c
     fsp_err_t err = r_mram_common_parameter_checking(p_ctrl);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
-    if ((mram_address & BSP_FEATURE_FLASH_CODE_FLASH_START) == BSP_FEATURE_FLASH_CODE_FLASH_START)
+    if (mram_address >= BSP_FEATURE_FLASH_CODE_FLASH_START)
     {
         FSP_ERROR_RETURN(BSP_FEATURE_FLASH_CODE_FLASH_START <= mram_address, FSP_ERR_INVALID_ADDRESS);
         FSP_ERROR_RETURN(mram_address < (BSP_FEATURE_FLASH_CODE_FLASH_START - 1) + BSP_ROM_SIZE_BYTES,
@@ -812,7 +892,7 @@ static fsp_err_t r_mram_write_erase_parameter_checking (mram_instance_ctrl_t * c
         FSP_ERROR_RETURN(BSP_FEATURE_FLASH_DATA_FLASH_START <= mram_address, FSP_ERR_INVALID_ADDRESS);
         FSP_ERROR_RETURN(mram_address < (BSP_FEATURE_FLASH_DATA_FLASH_START - 1) + BSP_DATA_FLASH_SIZE_BYTES,
                          FSP_ERR_INVALID_ADDRESS);
-        FSP_ERROR_RETURN(mram_address < ((BSP_FEATURE_FLASH_DATA_FLASH_START + BSP_DATA_FLASH_SIZE_BYTES) - num_bytes),
+        FSP_ERROR_RETURN(mram_address <= ((BSP_FEATURE_FLASH_DATA_FLASH_START + BSP_DATA_FLASH_SIZE_BYTES) - num_bytes),
                          size_err);
     }
 
@@ -856,7 +936,7 @@ static fsp_err_t r_mram_common_parameter_checking (mram_instance_ctrl_t * const 
  * This function will initialize the internal timeout values based on the system clock frequency.
  *
  * @param      p_ctrl        Pointer to the instance control block
- * @retval     FSP_SUCCESS   Clock and timeouts configured succesfully.
+ * @retval     FSP_SUCCESS   Clock and timeouts configured successfully.
  **********************************************************************************************************************/
 static void mram_init (mram_instance_ctrl_t * p_ctrl)
 {
@@ -901,7 +981,7 @@ static fsp_err_t mram_df_write_data (uint32_t src_address, uint32_t mram_address
 
     mram_program_control(mram_address, true);
 
-    /* Follow the "Data MRAM programming procedure (smaller than 16-bytes programming)": Figure 66.3 of the
+    /* Follow the "Data MRAM programming procedure (smaller than 16-bytes programming)": Figure 67.3 of the
      * RX74M manual R01UH1055EJ0051. */
     while (operations_remaining > 0 && FSP_SUCCESS == err)
     {
@@ -954,7 +1034,7 @@ static fsp_err_t mram_df_erase_blocks (uint32_t address, uint32_t num_blocks)
 
     mram_program_control(address, true);
 
-    /* Follow the "Data MRAM programming procedure (16-bytes programming)": Figure 66.3 of the
+    /* Follow the "Data MRAM programming procedure (16-bytes programming)": Figure 67.3 of the
      * RX74M manual R01UH1055EJ0051. */
     while (0 < operations_remaining && FSP_SUCCESS == err)
     {
@@ -976,4 +1056,40 @@ static fsp_err_t mram_df_erase_blocks (uint32_t address, uint32_t num_blocks)
     mram_program_control(address, false);
 
     return err;
+}
+
+/*******************************************************************************************************************//**
+ * Calculate the operation start address in MRAM.
+ *
+ * @param[in]  area               write MRAM area number (0 = MRCA, 1 = MRCB)
+ * @param[in]  mram_address       Operation start address
+ * @param[in]  num_bytes          Operation size
+ * @param[in]  write_mram_address
+ * @retval     Operation data size in bytes.
+ *             Returns 0 if there is no data to operate.
+ **********************************************************************************************************************/
+__STATIC_INLINE uint32_t mram_calc_operation_address (uint8_t    area,
+                                                      uint32_t   mram_address,
+                                                      uint32_t   num_bytes,
+                                                      uint32_t * write_mram_address)
+{
+    /* Check if the data is within the valid range  */
+    if ((mram_address < g_code_mram_macro_info[area].block_section_end_addr) &&
+        ((mram_address + num_bytes - 1) >= g_code_mram_macro_info[area].block_section_st_addr))
+    {
+        /* Operation start address in each Code MRAM area */
+        *write_mram_address =
+            (g_code_mram_macro_info[area].block_section_st_addr >
+             mram_address) ? g_code_mram_macro_info[area].block_section_st_addr : mram_address;
+
+        /* End address of the operation requested by the API */
+        uint32_t mram_end_address = (mram_address + num_bytes - 1);
+
+        /* Returns the size used for the operation */
+        return (g_code_mram_macro_info[area].block_section_end_addr >
+                mram_end_address) ? (mram_end_address - *write_mram_address + 1) :
+               (g_code_mram_macro_info[area].block_section_end_addr - *write_mram_address + 1);
+    }
+
+    return 0;
 }

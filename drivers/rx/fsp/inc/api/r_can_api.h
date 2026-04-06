@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -51,7 +51,7 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
-#if BSP_FEATURE_CANFD_NUM_CHANNELS
+#if BSP_FEATURE_CANFD_NUM_CHANNELS || BSP_FEATURE_CANFD_IS_AVAILABLE
  #define CAN_DATA_BUFFER_LENGTH    (64)
 #else
  #define CAN_DATA_BUFFER_LENGTH    (8)

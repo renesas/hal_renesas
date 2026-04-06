@@ -1,4 +1,22 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/***********************************************************************************************************************
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ *
+ * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
+ * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
+ * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
+ * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
+ * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
+ * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
+ * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
+ * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
+ * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
+ * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
+ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
+ * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
+ * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
+ * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
+ **********************************************************************************************************************/
 
 /***********************************************************************************************************************
  * Includes
@@ -280,6 +298,8 @@ const uart_api_t g_uart_on_sci_b =
     .communicationAbort = R_SCI_B_UART_Abort,
     .callbackSet        = R_SCI_B_UART_CallbackSet,
     .readStop           = R_SCI_B_UART_ReadStop,
+    .receiveSuspend     = R_SCI_B_UART_ReceiveSuspend,
+    .receiveResume      = R_SCI_B_UART_ReceiveResume,
 };
 
 /*******************************************************************************************************************//**
@@ -682,7 +702,7 @@ fsp_err_t R_SCI_B_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * co
  **********************************************************************************************************************/
 fsp_err_t R_SCI_B_UART_CallbackSet (uart_ctrl_t * const          p_api_ctrl,
                                     void (                     * p_callback)(uart_callback_args_t *),
-                                    void const * const           p_context,
+                                    void * const                 p_context,
                                     uart_callback_args_t * const p_callback_memory)
 {
     sci_b_uart_instance_ctrl_t * p_ctrl = (sci_b_uart_instance_ctrl_t *) p_api_ctrl;
@@ -1096,6 +1116,30 @@ fsp_err_t R_SCI_B_UART_BaudCalculate (uint32_t                     baudrate,
     FSP_ERROR_RETURN((hit_bit_err <= (int32_t) baud_rate_error_x_1000), FSP_ERR_INVALID_ARGUMENT);
 
     return FSP_SUCCESS;
+}
+
+/*******************************************************************************************************************//**
+ * Suspend Reception
+ *
+ * @retval     FSP_ERR_UNSUPPORTED       Functionality not supported by this driver instance
+ **********************************************************************************************************************/
+fsp_err_t R_SCI_B_UART_ReceiveSuspend (uart_ctrl_t * const p_api_ctrl)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/*******************************************************************************************************************//**
+ * Resume Reception
+ *
+ * @retval     FSP_ERR_UNSUPPORTED       Functionality not supported by this driver instance
+ **********************************************************************************************************************/
+fsp_err_t R_SCI_B_UART_ReceiveResume (uart_ctrl_t * const p_api_ctrl)
+{
+    FSP_PARAMETER_NOT_USED(p_api_ctrl);
+
+    return FSP_ERR_UNSUPPORTED;
 }
 
 /*******************************************************************************************************************//**

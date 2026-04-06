@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -51,10 +51,12 @@ extern "C" {
  #include "R5K574M/r_adc_b_reg.h"
  #include "R5K574M/r_cac_reg.h"
  #include "R5K574M/r_cache_reg.h"
+ #include "R5K574M/r_canfdg_reg.h"
  #include "R5K574M/r_canfd_reg.h"
  #include "R5K574M/r_cgc_reg.h"
  #include "R5K574M/r_cmt_reg.h"
  #include "R5K574M/r_cmtw_reg.h"
+ #include "R5K574M/r_cpscu_reg.h"
  #include "R5K574M/r_crc_reg.h"
  #include "R5K574M/r_dac_b_reg.h"
  #include "R5K574M/r_dma_reg.h"
@@ -62,10 +64,13 @@ extern "C" {
  #include "R5K574M/r_doc_reg.h"
  #include "R5K574M/r_dtc_reg.h"
  #include "R5K574M/r_dsmif_reg.h"
+ #include "R5K574M/r_elc_reg.h"
  #include "R5K574M/r_gpt_reg.h"
+ #include "R5K574M/r_gptp_reg.h"
  #include "R5K574M/r_iwdt_reg.h"
  #include "R5K574M/r_i3c_reg.h"
  #include "R5K574M/r_icu_reg.h"
+ #include "R5K574M/r_lpm_reg.h"
  #include "R5K574M/r_mpu_reg.h"
  #include "R5K574M/r_mpu_mmpu_reg.h"
  #include "R5K574M/r_mram_reg.h"
@@ -75,9 +80,11 @@ extern "C" {
  #include "R5K574M/r_port_reg.h"
  #include "R5K574M/r_pscu_reg.h"
  #include "R5K574M/r_rtc_reg.h"
+ #include "R5K574M/r_sau_reg.h"
  #include "R5K574M/r_sci_b_reg.h"
  #include "R5K574M/r_sdhi_reg.h"
  #include "R5K574M/r_sram_reg.h"
+ #include "R5K574M/r_ssi_reg.h"
  #include "R5K574M/r_spi_b_reg.h"
  #include "R5K574M/r_xspi_reg.h"
  #include "R5K574M/r_system_reg.h"
@@ -92,6 +99,7 @@ extern "C" {
  #include "R5K574M/r_gwca_reg.h"
  #include "R5K574M/r_rmac_reg.h"
  #include "R5K574M/r_esc_reg.h"
+ #include "R5K574M/r_gptp_reg.h"
 
 /** @} */ /* End of group Device_Peripheral_clusters */
 
@@ -103,11 +111,13 @@ extern "C" {
  #define R_CAC1_BASE         0x87802480UL
  #define R_CAC2_BASE         0x87802500UL
  #define R_CACHE_BASE        0x81010000UL
- #define R_CANFD_BASE        0x87480000UL
+ #define R_CANFDG_BASE       0x87480000UL
+ #define R_CANFD_BASE        0x87470000UL
  #define R_CGC_BASE          0x87019000UL
  #define R_CMT_BASE          0x87826000UL
  #define R_CMTW0_BASE        0x87826100UL
  #define R_CMTW1_BASE        0x87826140UL
+ #define R_CPSCU_BASE        0x87018000UL
  #define R_CRC_BASE          0x87410000UL
  #define R_DAC_B0_BASE       0x87833000UL
  #define R_DAC_B1_BASE       0x87833100UL
@@ -124,6 +134,7 @@ extern "C" {
  #define R_DTC_BASE          0x87007C00UL
  #define R_DSMIF0_BASE       0x8742A000UL
  #define R_DSMIF1_BASE       0x8742A800UL
+ #define R_ELC_BASE          0x87801000UL
  #define R_GPT0_BASE         0x8742C000UL
  #define R_GPT1_BASE         0x8742C100UL
  #define R_GPT2_BASE         0x8742C200UL
@@ -152,6 +163,7 @@ extern "C" {
  #define R_I3C2_BASE         0x8745F800UL
  #define R_ICU_BASE          0x87006000UL
  #define R_IWDT_BASE         0x87802200UL
+ #define R_LPM_BASE          0x87019000UL
  #define R_MPU_BASE          0x81000800UL
  #define R_MPU_MMPU_BASE     0x87010000UL
  #define R_MRAM_BASE         0x8709C000UL
@@ -179,6 +191,7 @@ extern "C" {
  #define R_PORT16_BASE       0x87C00200UL
  #define R_PSCU_BASE         0x87804000UL
  #define R_RTC_BASE          0x87802000UL
+ #define R_SAU_BASE          0x81000400UL
  #define R_SCI_B0_BASE       0x87458000UL
  #define R_SCI_B1_BASE       0x87458100UL
  #define R_SCI_B2_BASE       0x87458200UL
@@ -198,6 +211,8 @@ extern "C" {
  #define R_SDHI0_BASE        0x87852000UL
  #define R_SRAM_BASE         0x8701C000UL
  #define R_SRAM_NS_BASE      0x0701C000UL
+ #define R_SSI0_BASE         0x8785D000UL
+ #define R_SSI1_BASE         0x8785D100UL
  #define R_SYSTEM_BASE       0x87019000UL
  #define R_TMR01_BASE        0x87825000UL
  #define R_TMR23_BASE        0x87825010UL
@@ -205,6 +220,7 @@ extern "C" {
  #define R_TSN_CTRL_BASE     0x87835000UL
  #define R_USB_FS0_BASE      0x87850000UL
  #define R_USB_HS0_BASE      0x87451000UL
+ #define R_GPTP_BASE         0x874E0000UL
  #define R_WDT_BASE          0x87802600UL
  #define R_XSPI0_BASE        0x87868000UL
  #define R_XSPI1_BASE        0x87868400UL
@@ -217,6 +233,7 @@ extern "C" {
  #define R_RMAC1_BASE        0x874CD000UL
  #define R_GWCA0_BASE        0x874CE000UL
  #define R_ESC_BASE          0x874A0000UL
+ #define R_GPTP_BASE         0x874E0000UL
 
 /** @} */ /* End of group Device_Peripheral_peripheralAddr */
 
@@ -233,11 +250,13 @@ extern "C" {
  #define R_CAC1         ((R_CAC_Type *) R_CAC1_BASE)
  #define R_CAC2         ((R_CAC_Type *) R_CAC2_BASE)
  #define R_CACHE        ((R_CACHE_Type *) R_CACHE_BASE)
+ #define R_CANFDG       ((R_CANFDG_Type *) R_CANFDG_BASE)
  #define R_CANFD        ((R_CANFD_Type *) R_CANFD_BASE)
  #define R_CGC          ((R_CGC_Type *) R_CGC_BASE)
  #define R_CMT          ((R_CMT_Type *) R_CMT_BASE)
  #define R_CMTW0        ((R_CMTW0_Type *) R_CMTW0_BASE)
  #define R_CMTW1        ((R_CMTW0_Type *) R_CMTW1_BASE)
+ #define R_CPSCU        ((R_CPSCU_Type *) R_CPSCU_BASE)
  #define R_CRC          ((R_CRC_Type *) R_CRC_BASE)
  #define R_DAC_B0       ((R_DAC_B0_Type *) R_DAC_B0_BASE)
  #define R_DAC_B1       ((R_DAC_B0_Type *) R_DAC_B1_BASE)
@@ -254,6 +273,7 @@ extern "C" {
  #define R_DTC          ((R_DTC_Type *) R_DTC_BASE)
  #define R_DSMIF0       ((R_DSMIF0_Type *) R_DSMIF0_BASE)
  #define R_DSMIF1       ((R_DSMIF0_Type *) R_DSMIF1_BASE)
+ #define R_ELC          ((R_ELC_Type *) R_ELC_BASE)
  #define R_GPT0         ((R_GPT0_Type *) R_GPT0_BASE)
  #define R_GPT1         ((R_GPT0_Type *) R_GPT1_BASE)
  #define R_GPT2         ((R_GPT0_Type *) R_GPT2_BASE)
@@ -282,6 +302,7 @@ extern "C" {
  #define R_I3C2         ((R_I3C0_Type *) R_I3C2_BASE)
  #define R_ICU          ((R_ICU_Type *) R_ICU_BASE)
  #define R_IWDT         ((R_IWDT_Type *) R_IWDT_BASE)
+ #define R_LPM          ((R_LPM_Type *) R_LPM_BASE)
  #define R_MPU          ((R_MPU_Type *) R_MPU_BASE)
  #define R_MPU_MMPU     ((R_MPU_MMPU_Type *) R_MPU_MMPU_BASE)
  #define R_MRAM         ((R_MRAM_Type *) R_MRAM_BASE)
@@ -309,6 +330,7 @@ extern "C" {
  #define R_PORT16       ((R_PORT0_Type *) R_PORT16_BASE)
  #define R_PSCU         ((R_PSCU_Type *) R_PSCU_BASE)
  #define R_RTC          ((R_RTC_Type *) R_RTC_BASE)
+ #define R_SAU          ((R_SAU_Type *) R_SAU_BASE)
  #define R_SCI_B0       ((R_SCI_B0_Type *) R_SCI_B0_BASE)
  #define R_SCI_B1       ((R_SCI_B0_Type *) R_SCI_B1_BASE)
  #define R_SCI_B2       ((R_SCI_B0_Type *) R_SCI_B2_BASE)
@@ -325,6 +347,8 @@ extern "C" {
  #define R_SDHI0        ((R_SDHI0_Type *) R_SDHI0_BASE)
  #define R_SRAM         ((R_SRAM_Type *) R_SRAM_BASE)
  #define R_SRAM_NS      ((R_SRAM_NS_Type *) R_SRAM_NS_BASE)
+ #define R_SSI0         ((R_SSI0_Type *) R_SSI0_BASE)
+ #define R_SSI1         ((R_SSI0_Type *) R_SSI1_BASE)
  #define R_SPI_B0       ((R_SPI_B0_Type *) R_SPI_B0_BASE)
  #define R_SPI_B1       ((R_SPI_B0_Type *) R_SPI_B1_BASE)
  #define R_SPI_B2       ((R_SPI_B0_Type *) R_SPI_B2_BASE)
@@ -335,6 +359,7 @@ extern "C" {
  #define R_TSN_CTRL     ((R_TSN_CTRL_Type *) R_TSN_CTRL_BASE)
  #define R_USB_FS0      ((R_USB_FS0_Type *) R_USB_FS0_BASE)
  #define R_USB_HS0      ((R_USB_HS0_Type *) R_USB_HS0_BASE)
+ #define R_GPTP         ((R_GPTP_Type *) R_GPTP_BASE)
  #define R_WDT          ((R_WDT_Type *) R_WDT_BASE)
  #define R_XSPI0        ((R_XSPI0_Type *) R_XSPI0_BASE)
  #define R_XSPI1        ((R_XSPI0_Type *) R_XSPI1_BASE)
@@ -347,6 +372,7 @@ extern "C" {
  #define R_RMAC1        ((R_RMAC0_Type *) R_RMAC1_BASE)
  #define R_GWCA0        ((R_GWCA0_Type *) R_GWCA0_BASE)
  #define R_ESC          ((R_ESC_Type *) R_ESC_BASE)
+ #define R_GPTP         ((R_GPTP_Type *) R_GPTP_BASE)
 
 /** @} */ /* End of group Device_Peripheral_declaration */
 
@@ -358,12 +384,14 @@ extern "C" {
  * @{
  */
  #include "R5K574M/r_adc_b_posmsk.h"
- #include "R5K574M/r_cache_posmsk.h"
  #include "R5K574M/r_cac_posmsk.h"
+ #include "R5K574M/r_cache_posmsk.h"
+ #include "R5K574M/r_canfdg_posmsk.h"
  #include "R5K574M/r_canfd_posmsk.h"
  #include "R5K574M/r_cgc_posmsk.h"
  #include "R5K574M/r_cmt_posmsk.h"
  #include "R5K574M/r_cmtw_posmsk.h"
+ #include "R5K574M/r_cpscu_posmsk.h"
  #include "R5K574M/r_crc_posmsk.h"
  #include "R5K574M/r_dac_b_posmsk.h"
  #include "R5K574M/r_dma_posmsk.h"
@@ -371,19 +399,27 @@ extern "C" {
  #include "R5K574M/r_doc_posmsk.h"
  #include "R5K574M/r_dtc_posmsk.h"
  #include "R5K574M/r_dsmif_posmsk.h"
+ #include "R5K574M/r_elc_posmsk.h"
  #include "R5K574M/r_gpt_posmsk.h"
+ #include "R5K574M/r_gptp_posmsk.h"
  #include "R5K574M/r_i3c_posmsk.h"
  #include "R5K574M/r_icu_posmsk.h"
  #include "R5K574M/r_iwdt_posmsk.h"
+ #include "R5K574M/r_lpm_posmsk.h"
+ #include "R5K574M/r_mpu_posmsk.h"
+ #include "R5K574M/r_mpu_mmpu_posmsk.h"
  #include "R5K574M/r_mram_posmsk.h"
  #include "R5K574M/r_pdc_posmsk.h"
  #include "R5K574M/r_pdm_posmsk.h"
  #include "R5K574M/r_poeg_posmsk.h"
  #include "R5K574M/r_port_posmsk.h"
+ #include "R5K574M/r_pscu_posmsk.h"
  #include "R5K574M/r_rtc_posmsk.h"
+ #include "R5K574M/r_sau_posmsk.h"
  #include "R5K574M/r_sci_b_posmsk.h"
  #include "R5K574M/r_sdhi_posmsk.h"
  #include "R5K574M/r_sram_posmsk.h"
+ #include "R5K574M/r_ssi_posmsk.h"
  #include "R5K574M/r_spi_b_posmsk.h"
  #include "R5K574M/r_system_posmsk.h"
  #include "R5K574M/r_tmr_posmsk.h"
@@ -398,6 +434,7 @@ extern "C" {
  #include "R5K574M/r_gwca_posmsk.h"
  #include "R5K574M/r_rmac_posmsk.h"
  #include "R5K574M/r_esc_posmsk.h"
+ #include "R5K574M/r_gptp_posmsk.h"
 
 /** @} */ /* End of group PosMask_peripherals */
 

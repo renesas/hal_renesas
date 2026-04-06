@@ -180,13 +180,6 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
-	if(CONFIG_USE_RX_FSP_RMAC_PHY)
-		zephyr_library_sources(
-			fsp/src/r_rmac_phy/r_rmac_phy.c
-			fsp/src/r_rmac_phy/targets/VSC8541/r_rmac_phy_target_vsc8541.c
-		)
-	endif()
-
 	if(CONFIG_USE_RX_FSP_USB_DEVICE)
 		zephyr_include_directories(
 			fsp/src/r_usb_device
@@ -196,9 +189,9 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
-	if(CONFIG_USE_RX_FSP_CANFD)
+	if(CONFIG_USE_RX_FSP_CANFDG)
 		zephyr_library_sources(
-			fsp/src/r_canfd/r_canfd.c
+			fsp/src/r_canfdg/r_canfdg.c
 		)
 	endif()
 
@@ -220,9 +213,9 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
-	if(CONFIG_USE_RX_FSP_OSPI_B)
+	if(CONFIG_USE_RX_FSP_XSPI_CONTROLLER)
 		zephyr_library_sources(
-			fsp/src/r_ospi_b/r_ospi_b.c
+			fsp/src/r_xspi_controller/r_xspi_controller.c
 		)
 	endif()
 

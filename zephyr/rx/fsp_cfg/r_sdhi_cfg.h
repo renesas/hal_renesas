@@ -2,8 +2,8 @@
 #ifndef R_SDHI_CFG_H_
 #define R_SDHI_CFG_H_
 #ifdef __cplusplus
-        extern "C" {
-        #endif
+extern "C" {
+#endif
 
 #define SDHI_CFG_PARAM_CHECKING_ENABLE (BSP_CFG_PARAM_CHECKING_ENABLE)
 #define SDMMC_CFG_UNALIGNED_ACCESS_ENABLE (0)
@@ -15,6 +15,6 @@
 #endif
 
 #ifdef __cplusplus
-        }
-        #endif
+}
+#endif
 #endif /* R_SDHI_CFG_H_ */

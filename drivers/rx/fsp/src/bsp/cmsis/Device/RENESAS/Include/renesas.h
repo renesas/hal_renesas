@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -79,6 +79,8 @@ extern "C" {
   #include "R5F572N.h"
  #elif BSP_MCU_GROUP_RX74M
   #include "R5K574M.h"
+ #elif BSP_MCU_GROUP_RX74N
+  #include "R5K574N.h"
  #else
   #if __has_include("renesas_internal.h")
    #include "renesas_internal.h"

@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -105,20 +105,20 @@ typedef struct                         /*!< (@ 0x87007C00) R_DTC Structure      
 
     union
     {
-        __IOM uint32_t DTEVR;          /*!< (@ 0x00000020) DTC Error Vector Register                                  */
+        __IOM uint32_t DTCEVR;         /*!< (@ 0x00000020) DTC Error Vector Register                                  */
 
         struct
         {
-            __IM uint32_t DTEV    : 8; /*!< [7..0] DTC Error Vector Number                                            */
-            __IM uint32_t DTEVSAM : 1; /*!< [8..8] DTC Error Vector Number SA Monitor Indicates the SA of
+            __IM uint32_t ERRVCT : 8;  /*!< [7..0] DTC Error Vector Number                                            */
+            __IM uint32_t ERRSAF : 1;  /*!< [8..8] DTC Error Vector Number SA Monitor Indicates the SA of
                                         *   vector number causing the error. (*1)                                     */
-            uint32_t             : 3;
-            __IM uint32_t DTERRD : 3;  /*!< [14..12] DTC Error Detailed Status Indicates the state that
+            uint32_t            : 3;
+            __IM uint32_t ERRTI : 3;   /*!< [14..12] DTC Error Detailed Status Indicates the state that
                                         *   error occurs.                                                             */
-            __IM uint32_t DTEWB : 1;   /*!< [15..15] DTC Transfer Information Write Back Status when error
+            __IM uint32_t WBCF : 1;    /*!< [15..15] DTC Transfer Information Write Back Status when error
                                         *   occurs When an error occurs during DTC transfer, it indicates
                                         *   whether transfer information write back was done.                         */
-            __IOM uint32_t DTESTA : 1; /*!< [16..16] DTC Error Status Flag                                            */
+            __IOM uint32_t ERRSTS : 1; /*!< [16..16] DTC Error Status Flag                                            */
             uint32_t              : 15;
         } DTEVR_b;
     };

@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -76,7 +76,7 @@ const icu_event_t g_group_irq_table[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS] =
 #endif
 
 #if BSP_FEATURE_ICU_HAS_DMAC_GRP_IRQ
-    ICU_EVENT_FIXED_DMAC_DMAC74I,
+    ICU_EVENT_FIXED_DMAC74_INT,
 #endif
 };
 

@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -51,10 +51,9 @@ typedef struct                         /*!< (@ 0x00088200) R_TMR Structure      
 
         struct
         {
-            __IOM uint8_t OSA  : 2;    /*!< [1..0] Output Select A                                                    */
-            __IOM uint8_t OSB  : 2;    /*!< [3..2] Output Select B                                                    */
-            __IOM uint8_t ADTE : 1;    /*!< [4..4] A/D Trigger Enable                                                 */
-            uint8_t            : 3;
+            __IOM uint8_t OSA : 2;     /*!< [1..0] Output Select A                                                    */
+            __IOM uint8_t OSB : 2;     /*!< [3..2] Output Select B                                                    */
+            uint8_t           : 4;
         } TCSR_b[2];
     };
 

@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -24,7 +24,9 @@
 #include "r_rmac_cfg.h"
 #include "r_rmac.h"
 #include "r_layer3_switch.h"
+#ifndef RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK
 #include "r_rmac_phy.h"
+#endif
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -1162,6 +1164,7 @@ static fsp_err_t rmac_link_status_check (rmac_instance_ctrl_t const * const p_in
     p_phy_instance        =
         (ether_phy_instance_t *) p_switch_extended_cfg->p_ether_phy_instances[p_instance_ctrl->p_cfg->channel];
 
+#ifndef RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK
     /* Update PHY LSI information */
     R_RMAC_PHY_ChipSelect(p_phy_instance->p_ctrl, p_instance_ctrl->p_cfg->channel);
 
@@ -1184,7 +1187,13 @@ static fsp_err_t rmac_link_status_check (rmac_instance_ctrl_t const * const p_in
                                                      &local_pause,
                                                      &partner_pause);
     }
-
+#else
+    /* When skipping PHY link ability check, assume the link is up. */
+    FSP_PARAMETER_NOT_USED(link_status);
+    FSP_PARAMETER_NOT_USED(line_speed_duplex);
+    FSP_PARAMETER_NOT_USED(local_pause);
+    FSP_PARAMETER_NOT_USED(partner_pause);
+#endif 
     return err;
 }                                      /* End of function rmac_link_status_check() */
 

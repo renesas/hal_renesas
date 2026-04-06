@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -50,7 +50,7 @@
 #define BSP_OVERRIDE_POEG_STATE_T
 #define BSP_OVERRIDE_POEG_TRIGGER_T
 #define BSP_OVERRIDE_DAC_B_OUTPUT_T
-#define BSP_OVERRIDE_LVD_PERIPHERAL_T
+#define BSP_OVERRIDE_VOLTAGE_DETECTION_PERIPHERAL_T
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -337,12 +337,6 @@ typedef enum e_poeg_trigger
     POEG_TRIGGER_PIN              = 1U << 0,  ///< Disable GPT output based on GTETRG input level
     POEG_TRIGGER_GPT_OUTPUT_LEVEL = 1U << 1,  ///< Disable GPT output based on GPT output pin levels
     POEG_TRIGGER_OSCILLATION_STOP = 1U << 2,  ///< Disable GPT output based on main oscillator stop
-    POEG_TRIGGER_ACMPHS0          = 1U << 4,  ///< Disable GPT output based on ACMPHS0 comparator result
-    POEG_TRIGGER_ACMPHS1          = 1U << 5,  ///< Disable GPT output based on ACMPHS1 comparator result
-    POEG_TRIGGER_ACMPHS2          = 1U << 6,  ///< Disable GPT output based on ACMPHS2 comparator result
-    POEG_TRIGGER_ACMPHS3          = 1U << 7,  ///< Disable GPT output based on ACMPHS3 comparator result
-    POEG_TRIGGER_ACMPHS4          = 1U << 8,  ///< Disable GPT output based on ACMPHS4 comparator result
-    POEG_TRIGGER_ACMPHS5          = 1U << 9,  ///< Disable GPT output based on ACMPHS5 comparator result
     POEG_TRIGGER_DSMIF0           = 1U << 22, ///< Disable GPT output based on DSMIF0 overcurrent detection window notification
     POEG_TRIGGER_DSMIF1           = 1U << 23, ///< Disable GPT output based on DSMIF1 overcurrent detection window notification
 } poeg_trigger_t;
@@ -354,24 +348,24 @@ typedef enum e_dac_b_output
 } dac_b_output_t;
 
 /** The thresholds supported by each MCU are in the MCU User's Manual as well as
- *  in the r_lvd module description on the stack tab of the RX project. */
+ *  in the r_pvd module description on the stack tab of the RX project. */
 typedef enum
 {
-    LVD_THRESHOLD_MONITOR_LEVEL_3_86V = 0x03UL, ///< 3.86V
-    LVD_THRESHOLD_MONITOR_LEVEL_3_14V = 0x04UL, ///< 3.14V
-    LVD_THRESHOLD_MONITOR_LEVEL_3_10V = 0x05UL, ///< 3.10V
-    LVD_THRESHOLD_MONITOR_LEVEL_3_08V = 0x06UL, ///< 3.08V
-    LVD_THRESHOLD_MONITOR_LEVEL_2_85V = 0x07UL, ///< 2.85V
-    LVD_THRESHOLD_MONITOR_LEVEL_2_83V = 0x08UL, ///< 2.83V
-    LVD_THRESHOLD_MONITOR_LEVEL_2_80V = 0x09UL, ///< 2.80V
-    LVD_THRESHOLD_MONITOR_LEVEL_2_62V = 0x0AUL, ///< 2.62V
-    LVD_THRESHOLD_MONITOR_LEVEL_2_33V = 0x0BUL, ///< 2.33V
-    LVD_THRESHOLD_MONITOR_LEVEL_1_90V = 0x0CUL, ///< 1.90V
-    LVD_THRESHOLD_MONITOR_LEVEL_1_86V = 0x0DUL, ///< 1.86V
-    LVD_THRESHOLD_MONITOR_LEVEL_1_74V = 0x0EUL, ///< 1.74V
-    LVD_THRESHOLD_MONITOR_LEVEL_1_71V = 0x0FUL, ///< 1.71V
-    LVD_THRESHOLD_NOT_AVAILABLE       = 0xFFUL, ///< Not Used
-} lvd_threshold_t;
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_3_86V = 0x03UL, ///< 3.86V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_3_14V = 0x04UL, ///< 3.14V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_3_10V = 0x05UL, ///< 3.10V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_3_08V = 0x06UL, ///< 3.08V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_2_85V = 0x07UL, ///< 2.85V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_2_83V = 0x08UL, ///< 2.83V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_2_80V = 0x09UL, ///< 2.80V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_2_62V = 0x0AUL, ///< 2.62V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_2_33V = 0x0BUL, ///< 2.33V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_1_90V = 0x0CUL, ///< 1.90V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_1_86V = 0x0DUL, ///< 1.86V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_1_74V = 0x0EUL, ///< 1.74V
+    VOLTAGE_DETECTION_THRESHOLD_MONITOR_LEVEL_1_71V = 0x0FUL, ///< 1.71V
+    VOLTAGE_DETECTION_THRESHOLD_NOT_AVAILABLE       = 0xFFUL, ///< Not Used
+} voltage_detection_threshold_t;
 
 /***********************************************************************************************************************
  * Exported global variables

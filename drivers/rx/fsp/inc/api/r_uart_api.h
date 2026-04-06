@@ -1,4 +1,22 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/***********************************************************************************************************************
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ *
+ * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
+ * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
+ * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
+ * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
+ * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
+ * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
+ * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
+ * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
+ * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
+ * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
+ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
+ * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
+ * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
+ * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
+ **********************************************************************************************************************/
 
 /*******************************************************************************************************************//**
  * @ingroup RENESAS_CONNECTIVITY_INTERFACES
@@ -109,8 +127,8 @@ typedef struct st_uart_callback_arg
 
     /** Contains the next character received for the events UART_EVENT_RX_CHAR, UART_EVENT_ERR_PARITY,
      * UART_EVENT_ERR_FRAMING, or UART_EVENT_ERR_OVERFLOW.  Otherwise unused. */
-    uint32_t     data;
-    void const * p_context;            ///< Context provided to user during callback
+    uint32_t data;
+    void   * p_context;                ///< Context provided to user during callback
 } uart_callback_args_t;
 
 /** UART Configuration */
@@ -140,7 +158,7 @@ typedef struct st_uart_cfg
 
     /* Configuration for UART Event processing */
     void (* p_callback)(uart_callback_args_t * p_args); ///< Pointer to callback function
-    void const * p_context;                             ///< User defined context passed into callback function
+    void * p_context;                                   ///< User defined context passed into callback function
 
     /* Pointer to UART peripheral specific configuration */
     void const * p_extend;                              ///< UART hardware dependent configuration
@@ -195,8 +213,8 @@ typedef struct st_uart_api
 
     /** Get the driver specific information.
      *
-     * @param[in]   p_ctrl     Pointer to the UART control block.
-     * @param[in]   baudrate   Baud rate in bps.
+     * @param[in]    p_ctrl     Pointer to the UART control block.
+     * @param[out]   p_info     Pointer to UART information structure.
      */
     fsp_err_t (* infoGet)(uart_ctrl_t * const p_ctrl, uart_info_t * const p_info);
 
@@ -218,7 +236,7 @@ typedef struct st_uart_api
      *                                       Callback arguments allocated here are only valid during the callback.
      */
     fsp_err_t (* callbackSet)(uart_ctrl_t * const p_ctrl, void (* p_callback)(uart_callback_args_t *),
-                              void const * const p_context, uart_callback_args_t * const p_callback_memory);
+                              void * const p_context, uart_callback_args_t * const p_callback_memory);
 
     /** Close UART device.
      *
@@ -232,6 +250,19 @@ typedef struct st_uart_api
      * @param[in,out]  remaining_bytes       Pointer to location to store remaining bytes for read.
      */
     fsp_err_t (* readStop)(uart_ctrl_t * const p_ctrl, uint32_t * remaining_bytes);
+
+    /** Suspend RX operations for UART device.
+     *
+     * @param[in]   p_ctrl     Pointer to the UART control block.
+     */
+    fsp_err_t (* receiveSuspend)(uart_ctrl_t * const p_ctrl);
+
+
+    /** Resume RX operations for UART device.
+     *
+     * @param[in]   p_ctrl     Pointer to the UART control block.
+     */
+    fsp_err_t (* receiveResume)(uart_ctrl_t * const p_ctrl);
 } uart_api_t;
 
 /** This structure encompasses everything that is needed to use an instance of this interface. */

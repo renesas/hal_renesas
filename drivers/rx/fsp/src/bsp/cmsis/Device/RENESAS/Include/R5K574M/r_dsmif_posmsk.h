@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -181,15 +181,9 @@
 /* ========================================================  DSOCDR  ========================================================= */
 #define R_DSMIF0_CH_DSOCDR_ODR_Pos            (0UL)          /*!< ODR (Bit 0)                                           */
 #define R_DSMIF0_CH_DSOCDR_ODR_Msk            (0xffffUL)     /*!< ODR (Bitfield-Mask: 0xffff)                           */
-/* =======================================================  DSCOCDR0  ======================================================== */
-#define R_DSMIF0_CH_DSCOCDR0_CODR0_Pos        (0UL)          /*!< CODR0 (Bit 0)                                         */
-#define R_DSMIF0_CH_DSCOCDR0_CODR0_Msk        (0xffffUL)     /*!< CODR0 (Bitfield-Mask: 0xffff)                         */
-/* =======================================================  DSCOCDR1  ======================================================== */
-#define R_DSMIF0_CH_DSCOCDR1_CODR1_Pos        (0UL)          /*!< CODR1 (Bit 0)                                         */
-#define R_DSMIF0_CH_DSCOCDR1_CODR1_Msk        (0xffffUL)     /*!< CODR1 (Bitfield-Mask: 0xffff)                         */
-/* =======================================================  DSCOCDR2  ======================================================== */
-#define R_DSMIF0_CH_DSCOCDR2_CODR2_Pos        (0UL)          /*!< CODR2 (Bit 0)                                         */
-#define R_DSMIF0_CH_DSCOCDR2_CODR2_Msk        (0xffffUL)     /*!< CODR2 (Bitfield-Mask: 0xffff)                         */
+/* ========================================================  DSCOCDR  ======================================================== */
+#define R_DSMIF0_CH_DSCOCDR_CODR_Pos          (0UL)          /*!< CODR (Bit 0)                                          */
+#define R_DSMIF0_CH_DSCOCDR_CODR_Msk          (0xffffUL)     /*!< CODR (Bitfield-Mask: 0xffff)                          */
 /* =========================================================  DSCSR  ========================================================= */
 #define R_DSMIF0_CH_DSCSR_OC2CMPH_Pos         (29UL)         /*!< OC2CMPH (Bit 29)                                      */
 #define R_DSMIF0_CH_DSCSR_OC2CMPH_Msk         (0x20000000UL) /*!< OC2CMPH (Bitfield-Mask: 0x01)                         */
@@ -289,15 +283,9 @@
 #define R_DSMIF0_DSSECR_SEEH_Msk            (0x2UL)      /*!< SEEH (Bitfield-Mask: 0x01)                            */
 #define R_DSMIF0_DSSECR_SEEL_Pos            (0UL)        /*!< SEEL (Bit 0)                                          */
 #define R_DSMIF0_DSSECR_SEEL_Msk            (0x1UL)      /*!< SEEL (Bitfield-Mask: 0x01)                            */
-/* =======================================================  DSSECDR0  ======================================================== */
-#define R_DSMIF0_DSSECDR0_SECDR_Pos         (0UL)        /*!< SECDR (Bit 0)                                         */
-#define R_DSMIF0_DSSECDR0_SECDR_Msk         (0xffffUL)   /*!< SECDR (Bitfield-Mask: 0xffff)                         */
-/* =======================================================  DSSECDR1  ======================================================== */
-#define R_DSMIF0_DSSECDR1_SECDR_Pos         (0UL)        /*!< SECDR (Bit 0)                                         */
-#define R_DSMIF0_DSSECDR1_SECDR_Msk         (0xffffUL)   /*!< SECDR (Bitfield-Mask: 0xffff)                         */
-/* =======================================================  DSSECDR2  ======================================================== */
-#define R_DSMIF0_DSSECDR2_SECDR_Pos         (0UL)        /*!< SECDR (Bit 0)                                         */
-#define R_DSMIF0_DSSECDR2_SECDR_Msk         (0xffffUL)   /*!< SECDR (Bitfield-Mask: 0xffff)                         */
+/* ========================================================  DSSECDR  ======================================================== */
+#define R_DSMIF0_DSSECDR_SECDR_Pos          (0UL)        /*!< SECDR (Bit 0)                                         */
+#define R_DSMIF0_DSSECDR_SECDR_Msk          (0xffffUL)   /*!< SECDR (Bitfield-Mask: 0xffff)                         */
 /* ========================================================  DSCMSR  ========================================================= */
 #define R_DSMIF0_DSCMSR_CISM_Pos            (1UL)        /*!< CISM (Bit 1)                                          */
 #define R_DSMIF0_DSCMSR_CISM_Msk            (0x6UL)      /*!< CISM (Bitfield-Mask: 0x03)                            */

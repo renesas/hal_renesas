@@ -1,4 +1,22 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/***********************************************************************************************************************
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ *
+ * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
+ * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
+ * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
+ * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
+ * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
+ * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
+ * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
+ * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
+ * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
+ * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
+ * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
+ * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
+ * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
+ * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
+ **********************************************************************************************************************/
 
 /*******************************************************************************************************************//**
  * @ingroup RENESAS_TRANSFER_INTERFACES
@@ -58,7 +76,7 @@ typedef enum e_transfer_mode
     TRANSFER_MODE_NORMAL = 0,
 
     /** Repeat mode is like normal mode, except that when the transfer length reaches 0, the pointer to the
-     *  repeat area and the transfer length will be reset to their initial values.  If DMAC is used, the
+     *  repeat area and the transfer length will be reset to their initial values.  If DMAC or EXDMAC is used, the
      *  transfer repeats only transfer_info_t::num_blocks times.  After the transfer repeats
      *  transfer_info_t::num_blocks times, transfer requests will not cause any further transfers.  If DTC is
      *  used, the transfer repeats continuously (no limit to the number of repeat transfers). */
@@ -87,7 +105,8 @@ typedef enum e_transfer_size
 {
     TRANSFER_SIZE_1_BYTE = 0,          ///< Each transfer transfers a 8-bit value
     TRANSFER_SIZE_2_BYTE = 1,          ///< Each transfer transfers a 16-bit value
-    TRANSFER_SIZE_4_BYTE = 2           ///< Each transfer transfers a 32-bit value
+    TRANSFER_SIZE_4_BYTE = 2,          ///< Each transfer transfers a 32-bit value
+    TRANSFER_SIZE_8_BYTE = 3           ///< Each transfer transfers a 64-bit value
 } transfer_size_t;
 
 #endif
@@ -169,7 +188,7 @@ typedef enum e_transfer_irq
 /** Callback function parameter data. */
 typedef struct st_transfer_callback_args_t
 {
-    void const * p_context;            ///< Placeholder for user data.  Set in @ref transfer_api_t::open function in ::transfer_cfg_t.
+    void * p_context;                  ///< Placeholder for user data.  Set in @ref transfer_api_t::open function in ::transfer_cfg_t.
 } transfer_callback_args_t;
 
 #endif
@@ -233,9 +252,9 @@ typedef struct st_transfer_info
     void const * volatile p_src;       ///< Source pointer
     void * volatile       p_dest;      ///< Destination pointer
 
-    /** Number of blocks to transfer when using @ref TRANSFER_MODE_BLOCK (both DTC an DMAC) or
-     * @ref TRANSFER_MODE_REPEAT (DMAC only) or
-     * @ref TRANSFER_MODE_REPEAT_BLOCK (DMAC only), unused in other modes. */
+    /** Number of blocks to transfer when using @ref TRANSFER_MODE_BLOCK (DTC, DMAC and EXDMAC) or
+     * @ref TRANSFER_MODE_REPEAT (DMAC and EXDMAC only) or
+     * @ref TRANSFER_MODE_REPEAT_BLOCK (DMAC and EXDMAC only), unused in other modes. */
     volatile uint16_t num_blocks;
 
     /** Length of each transfer.  Range limited for @ref TRANSFER_MODE_BLOCK, @ref TRANSFER_MODE_REPEAT,
@@ -289,7 +308,7 @@ typedef struct st_transfer_api
      * @param[in]     p_ctrl         Control block set in @ref transfer_api_t::open call for this transfer.
      * @param[in]     p_src          Pointer to source. Set to NULL if source pointer should not change.
      * @param[in]     p_dest         Pointer to destination. Set to NULL if destination pointer should not change.
-     * @param[in]     num_transfers  Transfer length in normal mode or number of blocks in block mode.  In DMAC only,
+     * @param[in]     num_transfers  Transfer length in normal mode or number of blocks in block mode.  In DMAC and EXDMAC only,
      *                               resets number of repeats (initially stored in transfer_info_t::num_blocks) in
      *                               repeat mode.  Not used in repeat mode for DTC.
      */
@@ -304,7 +323,7 @@ typedef struct st_transfer_api
     fsp_err_t (* enable)(transfer_ctrl_t * const p_ctrl);
 
     /** Disable transfer. Transfers do not occur after the activation source event (or when
-     * @ref transfer_api_t::softwareStart is called if no peripheral event is chosen as the DMAC activation source).
+     * @ref transfer_api_t::softwareStart is called if no peripheral event is chosen as the DMAC or EXDMAC activation source).
      * @note If a transfer is in progress, it will be completed.  Subsequent transfer requests do not cause a
      * transfer.
      *
@@ -313,7 +332,7 @@ typedef struct st_transfer_api
     fsp_err_t (* disable)(transfer_ctrl_t * const p_ctrl);
 
     /** Start transfer in software.
-     * @warning Only works if no peripheral event is chosen as the DMAC activation source.
+     * @warning Only works if no peripheral event is chosen as the DMAC or EXDMAC activation source.
      * @note Not supported for DTC.
      *
      * @param[in]     p_ctrl   Control block set in @ref transfer_api_t::open call for this transfer.
@@ -324,7 +343,7 @@ typedef struct st_transfer_api
     /** Stop transfer in software. The transfer will stop after completion of the current transfer.
      * @note Not supported for DTC.
      * @note Only applies for transfers started with TRANSFER_START_MODE_REPEAT.
-     * @warning Only works if no peripheral event is chosen as the DMAC activation source.
+     * @warning Only works if no peripheral event is chosen as the DMAC or EXDMAC activation source.
      *
      * @param[in]     p_ctrl   Control block set in @ref transfer_api_t::open call for this transfer.
      */

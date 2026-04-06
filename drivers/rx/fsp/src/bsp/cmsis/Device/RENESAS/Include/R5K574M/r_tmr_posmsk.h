@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -35,8 +35,6 @@
 #define R_TMR_TCR_CCLR_Pos       (3UL)    /*!< CCLR (Bit 3)                                          */
 #define R_TMR_TCR_CCLR_Msk       (0x18UL) /*!< CCLR (Bitfield-Mask: 0x03)                            */
 /* =========================================================  TCSR  ========================================================== */
-#define R_TMR_TCSR_ADTE_Pos      (4UL)    /*!< ADTE (Bit 4)                                          */
-#define R_TMR_TCSR_ADTE_Msk      (0x10UL) /*!< ADTE (Bitfield-Mask: 0x01)                            */
 #define R_TMR_TCSR_OSB_Pos       (2UL)    /*!< OSB (Bit 2)                                           */
 #define R_TMR_TCSR_OSB_Msk       (0xcUL)  /*!< OSB (Bitfield-Mask: 0x03)                             */
 #define R_TMR_TCSR_OSA_Pos       (0UL)    /*!< OSA (Bit 0)                                           */

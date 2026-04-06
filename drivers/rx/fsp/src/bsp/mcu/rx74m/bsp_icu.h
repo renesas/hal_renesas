@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -73,10 +73,10 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_ELC_ELSR89I             = (0x9B),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_ELC_ELSR90I             = (0x9C),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_ELC_ELSR91I             = (0x9D),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
-    ICU_EVENT_PORTB_EVENT             = (0x9F),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
-    ICU_EVENT_PORTC_EVENT             = (0x9F),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
-    ICU_EVENT_PORTD_EVENT             = (0xA0),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
-    ICU_EVENT_PORTE_EVENT             = (0xA1),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
+    ICU_EVENT_IOPORT_EVENT_B          = (0x9F),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
+    ICU_EVENT_IOPORT_EVENT_C          = (0x9F),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
+    ICU_EVENT_IOPORT_EVENT_D          = (0xA0),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
+    ICU_EVENT_IOPORT_EVENT_E          = (0xA1),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_PDMIF_DAT0              = (0xA2),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_SDHI_SBFAI              = (0xA5),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_SSIE0_SSITXI            = (0xA7),      // Selectable interrupt (SLIXR128-143 or SLIR144-255)
@@ -451,13 +451,13 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_FIXED_ICU_IRQ14       = (0x4E),        // IELSR78
     ICU_EVENT_FIXED_ICU_IRQ15       = (0x4F),        // IELSR79
     ICU_EVENT_FIXED_RI3C0_WUI       = (0x50),        // IELSR80
-    ICU_EVENT_FIXED_RI3C1_WUI       = (0x51),        // IELSR81
-    ICU_EVENT_FIXED_RI3C2_WUI       = (0x52),        // IELSR82
+    ICU_EVENT_FIXED_RIIC1_WUI       = (0x51),        // IELSR81
+    ICU_EVENT_FIXED_RIIC2_WUI       = (0x52),        // IELSR82
     ICU_EVENT_FIXED_VBATT_TAMPDI    = (0x53),        // IELSR83
     ICU_EVENT_FIXED_PDM_SDET        = (0x54),        // IELSR84
     ICU_EVENT_FIXED_SOST_SOSTDI     = (0x55),        // IELSR85
-    ICU_EVENT_FIXED_LVD_LVD1        = (0x58),        // IELSR88
-    ICU_EVENT_FIXED_LVD_LVD2        = (0x59),        // IELSR89
+    ICU_EVENT_FIXED_PVD_PVD1        = (0x58),        // IELSR88
+    ICU_EVENT_FIXED_PVD_PVD2        = (0x59),        // IELSR89
     ICU_EVENT_FIXED_USB0_USBR       = (0x5A),        // IELSR90
     ICU_EVENT_FIXED_RTC_ALARM       = (0x5C),        // IELSR92
     ICU_EVENT_FIXED_RTC_PERIOD      = (0x5D),        // IELSR93
@@ -482,11 +482,11 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_FIXED_ICU_GROUPAL4_NS = (0x75),        // IELSR117
     ICU_EVENT_FIXED_ICU_GROUPAL5_NS = (0x76),        // IELSR118
     ICU_EVENT_FIXED_ICU_GROUPAL6_NS = (0x77),        // IELSR119
-    ICU_EVENT_FIXED_DMAC_DMAC0I     = (0x78),        // IELSR120
-    ICU_EVENT_FIXED_DMAC_DMAC1I     = (0x79),        // IELSR121
-    ICU_EVENT_FIXED_DMAC_DMAC2I     = (0x7A),        // IELSR122
-    ICU_EVENT_FIXED_DMAC_DMAC3I     = (0x7B),        // IELSR123
-    ICU_EVENT_FIXED_DMAC_DMAC74I    = (0x7C),        // IELSR124
+    ICU_EVENT_FIXED_DMAC0_INT       = (0x78),        // IELSR120
+    ICU_EVENT_FIXED_DMAC1_INT       = (0x79),        // IELSR121
+    ICU_EVENT_FIXED_DMAC2_INT       = (0x7A),        // IELSR122
+    ICU_EVENT_FIXED_DMAC3_INT       = (0x7B),        // IELSR123
+    ICU_EVENT_FIXED_DMAC74_INT      = (0x7C),        // IELSR124
     ICU_EVENT_FIXED_OST_OSTDI       = (0x7D),        // IELSR125
     ICU_EVENT_FIXED_EXDMAC_EXDMAC0I = (0x7E),        // IELSR126
     ICU_EVENT_FIXED_EXDMAC_EXDMAC1I = (0x7F),        // IELSR127
@@ -709,6 +709,8 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_GROUP_RIIC1_EEI            = (0x0C69), // Error event
     ICU_EVENT_GROUP_RIIC2_TEI            = (0x0D69), // Transmit end
     ICU_EVENT_GROUP_RIIC2_EEI            = (0x0E69), // Error event
+    ICU_EVENT_GROUP_RIIC0_TEI            = (0x0F69), // Transmit end
+    ICU_EVENT_GROUP_RIIC0_EEI            = (0x1069), // Error event
     ICU_EVENT_GROUP_RI3C0_TEI            = (0x0F69), // Transmit end
     ICU_EVENT_GROUP_RI3C0_EEI            = (0x1069), // Error event
     ICU_EVENT_GROUP_DSMIF0_ERR           = (0x1569), // Error detect
@@ -724,10 +726,10 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_GROUP_CANFDG0_GLEI         = (0x016A), // Global error
     ICU_EVENT_GROUP_CANFD0_CHTI          = (0x026A), // Channel transmit
     ICU_EVENT_GROUP_CANFD0_CHEI          = (0x036A), // Channel error
-    ICU_EVENT_GROUP_CANFD0_CFRI          = (0x046A), // Common FIFO receive interrupt
+    ICU_EVENT_GROUP_CANFD0_CHRI          = (0x046A), // Channel receive
     ICU_EVENT_GROUP_CANFD1_CHTI          = (0x056A), // Channel transmit
     ICU_EVENT_GROUP_CANFD1_CHEI          = (0x066A), // Channel error
-    ICU_EVENT_GROUP_CANFD1_CFRI          = (0x076A), // Common FIFO receive interrupt
+    ICU_EVENT_GROUP_CANFD1_CHRI          = (0x076A), // Channel receive
     ICU_EVENT_GROUP_CANFD2_CHEI          = (0x106A), // Channel error
     ICU_EVENT_GROUP_CANFD2_CFRI          = (0x116A), // Common FIFO receive interrupt
     ICU_EVENT_GROUP_CANFD_GLEI           = (0x126A), // Global error
@@ -795,8 +797,8 @@ typedef enum e_bsp_grp_nmi_irq
 {
     BSP_GRP_IRQ_IWDT_ERROR       = 0,
     BSP_GRP_IRQ_WDT_ERROR        = 1,
-    BSP_GRP_IRQ_LVD1             = 2,
-    BSP_GRP_IRQ_LVD2             = 3,
+    BSP_GRP_IRQ_PVD1             = 2,
+    BSP_GRP_IRQ_PVD2             = 3,
     BSP_GRP_IRQ_SOSC_STOP_DETECT = 5,
     BSP_GRP_IRQ_OSC_STOP_DETECT  = 6,
     BSP_GRP_IRQ_NMI_PIN          = 7,

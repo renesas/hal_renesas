@@ -1,17 +1,21 @@
-/* generated configuration header file - do not edit */
+/*
+* Copyright (c) 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 #ifndef BSP_CFG_H_
 #define BSP_CFG_H_
 #ifdef __cplusplus
-            extern "C" {
-            #endif
+extern "C" {
+#endif
 
 #include "../../../rx/fsp/src/bsp/mcu/all/bsp_compiler_support.h"
 #include "soc.h"
 #include "bsp_clock_cfg.h"
 #include "bsp_mcu_family_cfg.h"
+#include <zephyr/devicetree.h>
 
 #define SUBCLOCK_STABILIZATION_MAX(x) ((x < 10000) ? x : 10000)
-
 #define RA_NOT_DEFINED 0
 #ifndef BSP_CFG_RTOS
 #if (RA_NOT_DEFINED) != (FSP_NOT_DEFINED)
@@ -62,6 +66,6 @@
 #endif
 
 #ifdef __cplusplus
-            }
-            #endif
+}
+#endif
 #endif /* BSP_CFG_H_ */

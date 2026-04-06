@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -50,17 +50,17 @@
 /* ========================================================  DTCDISP  ======================================================== */
 #define R_DTC_DTCDISP_DTCDISP_Pos          (0UL)          /*!< DTCDISP (Bit 0)                                       */
 #define R_DTC_DTCDISP_DTCDISP_Msk          (0xffffffffUL) /*!< DTCDISP (Bitfield-Mask: 0xffffffff)                   */
-/* =========================================================  DTEVR  ========================================================= */
-#define R_DTC_DTEVR_DTESTA_Pos             (16UL)         /*!< DTESTA (Bit 16)                                       */
-#define R_DTC_DTEVR_DTESTA_Msk             (0x10000UL)    /*!< DTESTA (Bitfield-Mask: 0x01)                          */
-#define R_DTC_DTEVR_DTEWB_Pos              (15UL)         /*!< DTEWB (Bit 15)                                        */
-#define R_DTC_DTEVR_DTEWB_Msk              (0x8000UL)     /*!< DTEWB (Bitfield-Mask: 0x01)                           */
-#define R_DTC_DTEVR_DTERRD_Pos             (12UL)         /*!< DTERRD (Bit 12)                                       */
-#define R_DTC_DTEVR_DTERRD_Msk             (0x7000UL)     /*!< DTERRD (Bitfield-Mask: 0x07)                          */
-#define R_DTC_DTEVR_DTEVSAM_Pos            (8UL)          /*!< DTEVSAM (Bit 8)                                       */
-#define R_DTC_DTEVR_DTEVSAM_Msk            (0x100UL)      /*!< DTEVSAM (Bitfield-Mask: 0x01)                         */
-#define R_DTC_DTEVR_DTEV_Pos               (0UL)          /*!< DTEV (Bit 0)                                          */
-#define R_DTC_DTEVR_DTEV_Msk               (0xffUL)       /*!< DTEV (Bitfield-Mask: 0xff)                            */
+/* =========================================================  DTCEVR  ========================================================= */
+#define R_DTC_DTCEVR_ERRSTS_Pos            (16UL)         /*!< ERRSTS (Bit 16)                                       */
+#define R_DTC_DTCEVR_ERRSTS_Msk            (0x10000UL)    /*!< ERRSTS (Bitfield-Mask: 0x01)                          */
+#define R_DTC_DTCEVR_WBCF_Pos              (15UL)         /*!< WBCF (Bit 15)                                         */
+#define R_DTC_DTCEVR_WBCF_Msk              (0x8000UL)     /*!< WBCF (Bitfield-Mask: 0x01)                            */
+#define R_DTC_DTCEVR_ERRTI_Pos             (12UL)         /*!< ERRTI (Bit 12)                                        */
+#define R_DTC_DTCEVR_ERRTI_Msk             (0x7000UL)     /*!< ERRTI (Bitfield-Mask: 0x07)                           */
+#define R_DTC_DTCEVR_ERRSAF_Pos            (8UL)          /*!< ERRSAF (Bit 8)                                        */
+#define R_DTC_DTCEVR_ERRSAF_Msk            (0x100UL)      /*!< ERRSAF (Bitfield-Mask: 0x01)                          */
+#define R_DTC_DTCEVR_ERRVCT_Pos            (0UL)          /*!< ERRVCT (Bit 0)                                        */
+#define R_DTC_DTCEVR_ERRVCT_Msk            (0xffUL)       /*!< ERRVCT (Bitfield-Mask: 0xff)                          */
 /* ========================================================  DTCIBR  ========================================================= */
 #define R_DTC_DTCIBR_DTCIBR_Pos            (10UL)         /*!< DTCIBR (Bit 10)                                       */
 #define R_DTC_DTCIBR_DTCIBR_Msk            (0xfffffc00UL) /*!< DTCIBR (Bitfield-Mask: 0x3fffff)                      */

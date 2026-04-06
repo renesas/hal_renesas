@@ -1,5 +1,5 @@
 /***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
+ * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
  *
  * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
  * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
@@ -46,8 +46,6 @@
 #define R_I3C0_ICCR_RESUME_Msk       (0x40000000UL) /*!< RESUME (Bitfield-Mask: 0x01)                          */
 #define R_I3C0_ICCR_ABORT_Pos        (29UL)         /*!< ABORT (Bit 29)                                        */
 #define R_I3C0_ICCR_ABORT_Msk        (0x20000000UL) /*!< ABORT (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_ICCR_I2CDS_Pos        (7UL)          /*!< I2CDS (Bit 7)                                         */
-#define R_I3C0_ICCR_I2CDS_Msk        (0x80UL)       /*!< I2CDS (Bitfield-Mask: 0x01)                           */
 #define R_I3C0_ICCR_BAEXITMD_Pos     (1UL)          /*!< BAEXITMD (Bit 1)                                      */
 #define R_I3C0_ICCR_BAEXITMD_Msk     (0x2UL)        /*!< BAEXITMD (Bitfield-Mask: 0x01)                        */
 #define R_I3C0_ICCR_IBAINC_Pos       (0UL)          /*!< IBAINC (Bit 0)                                        */
@@ -60,14 +58,14 @@
 /* =========================================================  ICRCR  ========================================================= */
 #define R_I3C0_ICRCR_ISRST_Pos       (16UL)         /*!< ISRST (Bit 16)                                        */
 #define R_I3C0_ICRCR_ISRST_Msk       (0x10000UL)    /*!< ISRST (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_ICRCR_HRDBRST_Pos     (12UL)         /*!< HRDBRST (Bit 12)                                      */
-#define R_I3C0_ICRCR_HRDBRST_Msk     (0x1000UL)     /*!< HRDBRST (Bitfield-Mask: 0x01)                         */
-#define R_I3C0_ICRCR_HTDBRST_Pos     (11UL)         /*!< HTDBRST (Bit 11)                                      */
-#define R_I3C0_ICRCR_HTDBRST_Msk     (0x800UL)      /*!< HTDBRST (Bitfield-Mask: 0x01)                         */
-#define R_I3C0_ICRCR_HRSPQRST_Pos    (10UL)         /*!< HRSPQRST (Bit 10)                                     */
-#define R_I3C0_ICRCR_HRSPQRST_Msk    (0x400UL)      /*!< HRSPQRST (Bitfield-Mask: 0x01)                        */
-#define R_I3C0_ICRCR_HCMDQRST_Pos    (9UL)          /*!< HCMDQRST (Bit 9)                                      */
-#define R_I3C0_ICRCR_HCMDQRST_Msk    (0x200UL)      /*!< HCMDQRST (Bitfield-Mask: 0x01)                        */
+#define R_I3C0_ICRCR_HRBRST_Pos      (12UL)         /*!< HRBRST (Bit 12)                                       */
+#define R_I3C0_ICRCR_HRBRST_Msk      (0x1000UL)     /*!< HRBRST (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICRCR_HTBRST_Pos      (11UL)         /*!< HTBRST (Bit 11)                                       */
+#define R_I3C0_ICRCR_HTBRST_Msk      (0x800UL)      /*!< HTBRST (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICRCR_HRQRST_Pos      (10UL)         /*!< HRQRST (Bit 10)                                       */
+#define R_I3C0_ICRCR_HRQRST_Msk      (0x400UL)      /*!< HRQRST (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICRCR_HCQRST_Pos      (9UL)          /*!< HCQRST (Bit 9)                                        */
+#define R_I3C0_ICRCR_HCQRST_Msk      (0x200UL)      /*!< HCQRST (Bitfield-Mask: 0x01)                          */
 #define R_I3C0_ICRCR_SQRST_Pos       (6UL)          /*!< SQRST (Bit 6)                                         */
 #define R_I3C0_ICRCR_SQRST_Msk       (0x40UL)       /*!< SQRST (Bitfield-Mask: 0x01)                           */
 #define R_I3C0_ICRCR_IQRST_Pos       (5UL)          /*!< IQRST (Bit 5)                                         */
@@ -128,14 +126,6 @@
 #define R_I3C0_ICTCR_TA1DE_Msk       (0x20000UL)    /*!< TA1DE (Bitfield-Mask: 0x01)                           */
 #define R_I3C0_ICTCR_TA0DE_Pos       (16UL)         /*!< TA0DE (Bit 16)                                        */
 #define R_I3C0_ICTCR_TA0DE_Msk       (0x10000UL)    /*!< TA0DE (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_ICTCR_HOAE_Pos        (15UL)         /*!< HOAE (Bit 15)                                         */
-#define R_I3C0_ICTCR_HOAE_Msk        (0x8000UL)     /*!< HOAE (Bitfield-Mask: 0x01)                            */
-#define R_I3C0_ICTCR_DIDE_Pos        (6UL)          /*!< DIDE (Bit 6)                                          */
-#define R_I3C0_ICTCR_DIDE_Msk        (0x40UL)       /*!< DIDE (Bitfield-Mask: 0x01)                            */
-#define R_I3C0_ICTCR_HSMCE_Pos       (5UL)          /*!< HSMCE (Bit 5)                                         */
-#define R_I3C0_ICTCR_HSMCE_Msk       (0x20UL)       /*!< HSMCE (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_ICTCR_GCAE_Pos        (0UL)          /*!< GCAE (Bit 0)                                          */
-#define R_I3C0_ICTCR_GCAE_Msk        (0x1UL)        /*!< GCAE (Bitfield-Mask: 0x01)                            */
 /* =========================================================  ICSCR  ========================================================= */
 #define R_I3C0_ICSCR_SAR2E_Pos       (18UL)         /*!< SAR2E (Bit 18)                                        */
 #define R_I3C0_ICSCR_SAR2E_Msk       (0x40000UL)    /*!< SAR2E (Bitfield-Mask: 0x01)                           */
@@ -152,8 +142,6 @@
 #define R_I3C0_ICSCR_GCAE_Pos        (0UL)          /*!< GCAE (Bit 0)                                          */
 #define R_I3C0_ICSCR_GCAE_Msk        (0x1UL)        /*!< GCAE (Bitfield-Mask: 0x01)                            */
 /* ========================================================  ICRCCR  ========================================================= */
-#define R_I3C0_ICRCCR_MSKCYC_Pos     (16UL)         /*!< MSKCYC (Bit 16)                                       */
-#define R_I3C0_ICRCCR_MSKCYC_Msk     (0x30000UL)    /*!< MSKCYC (Bitfield-Mask: 0x03)                          */
 #define R_I3C0_ICRCCR_CKS_Pos        (0UL)          /*!< CKS (Bit 0)                                           */
 #define R_I3C0_ICRCCR_CKS_Msk        (0x7UL)        /*!< CKS (Bitfield-Mask: 0x07)                             */
 /* =========================================================  ICSBR  ========================================================= */
@@ -183,12 +171,15 @@
 #define R_I3C0_ICEBR_ODHW_Msk        (0xff00UL)     /*!< ODHW (Bitfield-Mask: 0xff)                            */
 #define R_I3C0_ICEBR_ODLW_Pos        (0UL)          /*!< ODLW (Bit 0)                                          */
 #define R_I3C0_ICEBR_ODLW_Msk        (0xffUL)       /*!< ODLW (Bitfield-Mask: 0xff)                            */
+/* =========================================================  ICHBR  ========================================================= */
+#define R_I3C0_ICHBR_HIGH_Pos        (8UL)          /*!< HIGH (Bit 8)                                          */
+#define R_I3C0_ICHBR_HIGH_Msk        (0xff00UL)     /*!< HIGH (Bitfield-Mask: 0xff)                            */
+#define R_I3C0_ICHBR_LOW_Pos         (0UL)          /*!< LOW (Bit 0)                                           */
+#define R_I3C0_ICHBR_LOW_Msk         (0xffUL)       /*!< LOW (Bitfield-Mask: 0xff)                             */
 /* ========================================================  ICBFTR  ========================================================= */
 /* ========================================================  ICBATR  ========================================================= */
 /* ========================================================  ICBITR  ========================================================= */
 /* =========================================================  ICOCR  ========================================================= */
-#define R_I3C0_ICOCR_SDHDCYC_Pos     (16UL)         /*!< SDHDCYC (Bit 16)                                      */
-#define R_I3C0_ICOCR_SDHDCYC_Msk     (0x30000UL)    /*!< SDHDCYC (Bitfield-Mask: 0x03)                         */
 #define R_I3C0_ICOCR_DLCS_Pos        (15UL)         /*!< DLCS (Bit 15)                                         */
 #define R_I3C0_ICOCR_DLCS_Msk        (0x8000UL)     /*!< DLCS (Bitfield-Mask: 0x01)                            */
 #define R_I3C0_ICOCR_SDDL_Pos        (8UL)          /*!< SDDL (Bit 8)                                          */
@@ -217,15 +208,15 @@
 #define R_I3C0_ICTOR_TMOL_Msk        (0x10UL)       /*!< TMOL (Bitfield-Mask: 0x01)                            */
 #define R_I3C0_ICTOR_TMOS_Pos        (0UL)          /*!< TMOS (Bit 0)                                          */
 #define R_I3C0_ICTOR_TMOS_Msk        (0x3UL)        /*!< TMOS (Bitfield-Mask: 0x03)                            */
-/* =========================================================  WUCTL  ========================================================= */
-#define R_I3C0_WUCTL_WUFE_Pos        (7UL)          /*!< WUFE (Bit 7)                                          */
-#define R_I3C0_WUCTL_WUFE_Msk        (0x80UL)       /*!< WUFE (Bitfield-Mask: 0x01)                            */
-#define R_I3C0_WUCTL_WUFSYNE_Pos     (6UL)          /*!< WUFSYNE (Bit 6)                                       */
-#define R_I3C0_WUCTL_WUFSYNE_Msk     (0x40UL)       /*!< WUFSYNE (Bitfield-Mask: 0x01)                         */
-#define R_I3C0_WUCTL_WUANFS_Pos      (4UL)          /*!< WUANFS (Bit 4)                                        */
-#define R_I3C0_WUCTL_WUANFS_Msk      (0x10UL)       /*!< WUANFS (Bitfield-Mask: 0x01)                          */
-#define R_I3C0_WUCTL_WUACKS_Pos      (0UL)          /*!< WUACKS (Bit 0)                                        */
-#define R_I3C0_WUCTL_WUACKS_Msk      (0x1UL)        /*!< WUACKS (Bitfield-Mask: 0x01)                          */
+/* ========================================================  ICWUCR  ========================================================= */
+#define R_I3C0_ICWUCR_WUFE_Pos       (7UL)          /*!< WUFE (Bit 7)                                          */
+#define R_I3C0_ICWUCR_WUFE_Msk       (0x80UL)       /*!< WUFE (Bitfield-Mask: 0x01)                            */
+#define R_I3C0_ICWUCR_WUFSYNE_Pos    (6UL)          /*!< WUFSYNE (Bit 6)                                       */
+#define R_I3C0_ICWUCR_WUFSYNE_Msk    (0x40UL)       /*!< WUFSYNE (Bitfield-Mask: 0x01)                         */
+#define R_I3C0_ICWUCR_WUANFE_Pos     (4UL)          /*!< WUANFE (Bit 4)                                        */
+#define R_I3C0_ICWUCR_WUANFE_Msk     (0x10UL)       /*!< WUANFE (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICWUCR_WUACKS_Pos     (0UL)          /*!< WUACKS (Bit 0)                                        */
+#define R_I3C0_ICWUCR_WUACKS_Msk     (0x1UL)        /*!< WUACKS (Bitfield-Mask: 0x01)                          */
 /* ========================================================  ICACKR  ========================================================= */
 #define R_I3C0_ICACKR_ACKWP_Pos      (2UL)          /*!< ACKWP (Bit 2)                                         */
 #define R_I3C0_ICACKR_ACKWP_Msk      (0x4UL)        /*!< ACKWP (Bitfield-Mask: 0x01)                           */
@@ -253,21 +244,21 @@
 /* =========================================================  STCTL  ========================================================= */
 #define R_I3C0_STCTL_STOE_Pos        (0UL)          /*!< STOE (Bit 0)                                          */
 #define R_I3C0_STCTL_STOE_Msk        (0x1UL)        /*!< STOE (Bitfield-Mask: 0x01)                            */
-/* =========================================================  ATCTL  ========================================================= */
-#define R_I3C0_ATCTL_CDIV_Pos        (8UL)          /*!< CDIV (Bit 8)                                          */
-#define R_I3C0_ATCTL_CDIV_Msk        (0xff00UL)     /*!< CDIV (Bitfield-Mask: 0xff)                            */
-#define R_I3C0_ATCTL_AMEOE_Pos       (2UL)          /*!< AMEOE (Bit 2)                                         */
-#define R_I3C0_ATCTL_AMEOE_Msk       (0x4UL)        /*!< AMEOE (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_ATCTL_MREFOE_Pos      (1UL)          /*!< MREFOE (Bit 1)                                        */
-#define R_I3C0_ATCTL_MREFOE_Msk      (0x2UL)        /*!< MREFOE (Bitfield-Mask: 0x01)                          */
-#define R_I3C0_ATCTL_ATTRGS_Pos      (0UL)          /*!< ATTRGS (Bit 0)                                        */
-#define R_I3C0_ATCTL_ATTRGS_Msk      (0x1UL)        /*!< ATTRGS (Bitfield-Mask: 0x01)                          */
-/* =========================================================  ATTRG  ========================================================= */
-#define R_I3C0_ATTRG_ATSTRG_Pos      (0UL)          /*!< ATSTRG (Bit 0)                                        */
-#define R_I3C0_ATTRG_ATSTRG_Msk      (0x1UL)        /*!< ATSTRG (Bitfield-Mask: 0x01)                          */
-/* ========================================================  ATCCNTE  ======================================================== */
-#define R_I3C0_ATCCNTE_ATCE_Pos      (0UL)          /*!< ATCE (Bit 0)                                          */
-#define R_I3C0_ATCCNTE_ATCE_Msk      (0x1UL)        /*!< ATCE (Bitfield-Mask: 0x01)                            */
+/* ========================================================  ICATCR  ========================================================= */
+#define R_I3C0_ICATCR_CDIV_Pos       (8UL)          /*!< CDIV (Bit 8)                                          */
+#define R_I3C0_ICATCR_CDIV_Msk       (0xff00UL)     /*!< CDIV (Bitfield-Mask: 0xff)                            */
+#define R_I3C0_ICATCR_ABEOE_Pos      (2UL)          /*!< ABEOE (Bit 2)                                         */
+#define R_I3C0_ICATCR_ABEOE_Msk      (0x4UL)        /*!< ABEOE (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICATCR_CREFOE_Pos     (1UL)          /*!< CREFOE (Bit 1)                                        */
+#define R_I3C0_ICATCR_CREFOE_Msk     (0x2UL)        /*!< CREFOE (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICATCR_ATTRGS_Pos     (0UL)          /*!< ATTRGS (Bit 0)                                        */
+#define R_I3C0_ICATCR_ATTRGS_Msk     (0x1UL)        /*!< ATTRGS (Bitfield-Mask: 0x01)                          */
+/* ========================================================  ICATTR  ========================================================= */
+#define R_I3C0_ICATTR_ATSTRG_Pos     (0UL)          /*!< ATSTRG (Bit 0)                                        */
+#define R_I3C0_ICATTR_ATSTRG_Msk     (0x1UL)        /*!< ATSTRG (Bitfield-Mask: 0x01)                          */
+/* ========================================================  ICATCCR  ======================================================== */
+#define R_I3C0_ICATCCR_ATCE_Pos      (0UL)          /*!< ATCE (Bit 0)                                          */
+#define R_I3C0_ICATCCR_ATCE_Msk      (0x1UL)        /*!< ATCE (Bitfield-Mask: 0x01)                            */
 /* =========================================================  ICCGR  ========================================================= */
 #define R_I3C0_ICCGR_SP_Pos          (2UL)          /*!< SP (Bit 2)                                            */
 #define R_I3C0_ICCGR_SP_Msk          (0x4UL)        /*!< SP (Bitfield-Mask: 0x01)                              */
@@ -280,9 +271,9 @@
 /* =========================================================  ICDR  ========================================================== */
 /* =========================================================  ICIQR  ========================================================= */
 /* =========================================================  ICSQR  ========================================================= */
-/* ========================================================  HCMDQP  ========================================================= */
-/* ========================================================  HRSPQP  ========================================================= */
-/* ========================================================  HTDTBP  ========================================================= */
+/* ========================================================  ICHCQR  ========================================================= */
+/* ========================================================  ICHRQR  ========================================================= */
+/* =========================================================  ICHDR  ========================================================= */
 /* ========================================================  ICQBTCR  ======================================================== */
 #define R_I3C0_ICQBTCR_IQTH_Pos       (24UL)         /*!< IQTH (Bit 24)                                         */
 #define R_I3C0_ICQBTCR_IQTH_Msk       (0xff000000UL) /*!< IQTH (Bitfield-Mask: 0xff)                            */
@@ -304,23 +295,23 @@
 /* ========================================================  ICSQTCR  ======================================================== */
 #define R_I3C0_ICSQTCR_SQTH_Pos       (0UL)          /*!< SQTH (Bit 0)                                          */
 #define R_I3C0_ICSQTCR_SQTH_Msk       (0xffUL)       /*!< SQTH (Bitfield-Mask: 0xff)                            */
-/* ========================================================  HQTHCTL  ======================================================== */
-#define R_I3C0_HQTHCTL_RSPQTH_Pos     (8UL)          /*!< RSPQTH (Bit 8)                                        */
-#define R_I3C0_HQTHCTL_RSPQTH_Msk     (0xff00UL)     /*!< RSPQTH (Bitfield-Mask: 0xff)                          */
-#define R_I3C0_HQTHCTL_CMDQTH_Pos     (0UL)          /*!< CMDQTH (Bit 0)                                        */
-#define R_I3C0_HQTHCTL_CMDQTH_Msk     (0xffUL)       /*!< CMDQTH (Bitfield-Mask: 0xff)                          */
-/* =======================================================  HTBTHCTL  ======================================================== */
-#define R_I3C0_HTBTHCTL_RXSTTH_Pos    (24UL)         /*!< RXSTTH (Bit 24)                                       */
-#define R_I3C0_HTBTHCTL_RXSTTH_Msk    (0x7000000UL)  /*!< RXSTTH (Bitfield-Mask: 0x07)                          */
-#define R_I3C0_HTBTHCTL_TXSTTH_Pos    (16UL)         /*!< TXSTTH (Bit 16)                                       */
-#define R_I3C0_HTBTHCTL_TXSTTH_Msk    (0x70000UL)    /*!< TXSTTH (Bitfield-Mask: 0x07)                          */
-#define R_I3C0_HTBTHCTL_RXDBTH_Pos    (8UL)          /*!< RXDBTH (Bit 8)                                        */
-#define R_I3C0_HTBTHCTL_RXDBTH_Msk    (0x700UL)      /*!< RXDBTH (Bitfield-Mask: 0x07)                          */
-#define R_I3C0_HTBTHCTL_TXDBTH_Pos    (0UL)          /*!< TXDBTH (Bit 0)                                        */
-#define R_I3C0_HTBTHCTL_TXDBTH_Msk    (0x7UL)        /*!< TXDBTH (Bitfield-Mask: 0x07)                          */
+/* =======================================================  ICHQBTCR  ======================================================== */
+#define R_I3C0_ICHQBTCR_HRQTH_Pos     (8UL)          /*!< HRQTH (Bit 8)                                         */
+#define R_I3C0_ICHQBTCR_HRQTH_Msk     (0xff00UL)     /*!< HRQTH (Bitfield-Mask: 0xff)                           */
+#define R_I3C0_ICHQBTCR_HCQTH_Pos     (0UL)          /*!< HCQTH (Bit 0)                                         */
+#define R_I3C0_ICHQBTCR_HCQTH_Msk     (0xffUL)       /*!< HCQTH (Bitfield-Mask: 0xff)                           */
+/* =======================================================  ICHDBTCR  ======================================================== */
+#define R_I3C0_ICHDBTCR_HRSTH_Pos     (24UL)         /*!< HRSTH (Bit 24)                                        */
+#define R_I3C0_ICHDBTCR_HRSTH_Msk     (0x7000000UL)  /*!< HRSTH (Bitfield-Mask: 0x07)                           */
+#define R_I3C0_ICHDBTCR_HTSTH_Pos     (16UL)         /*!< HTSTH (Bit 16)                                        */
+#define R_I3C0_ICHDBTCR_HTSTH_Msk     (0x70000UL)    /*!< HTSTH (Bitfield-Mask: 0x07)                           */
+#define R_I3C0_ICHDBTCR_HRFTH_Pos     (8UL)          /*!< HRFTH (Bit 8)                                         */
+#define R_I3C0_ICHDBTCR_HRFTH_Msk     (0x700UL)      /*!< HRFTH (Bitfield-Mask: 0x07)                           */
+#define R_I3C0_ICHDBTCR_HTETH_Pos     (0UL)          /*!< HTETH (Bit 0)                                         */
+#define R_I3C0_ICHDBTCR_HTETH_Msk     (0x7UL)        /*!< HTETH (Bitfield-Mask: 0x07)                           */
 /* =========================================================  ICSR2  ========================================================= */
-#define R_I3C0_ICSR2_WUCNDDF_Pos      (24UL)         /*!< WUCNDDF (Bit 24)                                      */
-#define R_I3C0_ICSR2_WUCNDDF_Msk      (0x1000000UL)  /*!< WUCNDDF (Bitfield-Mask: 0x01)                         */
+#define R_I3C0_ICSR2_WUDF_Pos         (24UL)         /*!< WUDF (Bit 24)                                         */
+#define R_I3C0_ICSR2_WUDF_Msk         (0x1000000UL)  /*!< WUDF (Bitfield-Mask: 0x01)                            */
 #define R_I3C0_ICSR2_TMOF_Pos         (20UL)         /*!< TMOF (Bit 20)                                         */
 #define R_I3C0_ICSR2_TMOF_Msk         (0x100000UL)   /*!< TMOF (Bitfield-Mask: 0x01)                            */
 #define R_I3C0_ICSR2_AL_Pos           (16UL)         /*!< AL (Bit 16)                                           */
@@ -336,8 +327,8 @@
 #define R_I3C0_ICSR2_START_Pos        (0UL)          /*!< START (Bit 0)                                         */
 #define R_I3C0_ICSR2_START_Msk        (0x1UL)        /*!< START (Bitfield-Mask: 0x01)                           */
 /* =========================================================  ICSER  ========================================================= */
-#define R_I3C0_ICSER_WUCNDDE_Pos      (24UL)         /*!< WUCNDDE (Bit 24)                                      */
-#define R_I3C0_ICSER_WUCNDDE_Msk      (0x1000000UL)  /*!< WUCNDDE (Bitfield-Mask: 0x01)                         */
+#define R_I3C0_ICSER_WUDE_Pos         (24UL)         /*!< WUDE (Bit 24)                                         */
+#define R_I3C0_ICSER_WUDE_Msk         (0x1000000UL)  /*!< WUDE (Bitfield-Mask: 0x01)                            */
 #define R_I3C0_ICSER_TMOE_Pos         (20UL)         /*!< TMOE (Bit 20)                                         */
 #define R_I3C0_ICSER_TMOE_Msk         (0x100000UL)   /*!< TMOE (Bitfield-Mask: 0x01)                            */
 #define R_I3C0_ICSER_ALE_Pos          (16UL)         /*!< ALE (Bit 16)                                          */
@@ -353,8 +344,8 @@
 #define R_I3C0_ICSER_STDE_Pos         (0UL)          /*!< STDE (Bit 0)                                          */
 #define R_I3C0_ICSER_STDE_Msk         (0x1UL)        /*!< STDE (Bitfield-Mask: 0x01)                            */
 /* ========================================================  ICSIER  ========================================================= */
-#define R_I3C0_ICSIER_WUCNDDIE_Pos    (24UL)         /*!< WUCNDDIE (Bit 24)                                     */
-#define R_I3C0_ICSIER_WUCNDDIE_Msk    (0x1000000UL)  /*!< WUCNDDIE (Bitfield-Mask: 0x01)                        */
+#define R_I3C0_ICSIER_WUDIE_Pos       (24UL)         /*!< WUDIE (Bit 24)                                        */
+#define R_I3C0_ICSIER_WUDIE_Msk       (0x1000000UL)  /*!< WUDIE (Bitfield-Mask: 0x01)                           */
 #define R_I3C0_ICSIER_TMOIE_Pos       (20UL)         /*!< TMOIE (Bit 20)                                        */
 #define R_I3C0_ICSIER_TMOIE_Msk       (0x100000UL)   /*!< TMOIE (Bitfield-Mask: 0x01)                           */
 #define R_I3C0_ICSIER_ALIE_Pos        (16UL)         /*!< ALIE (Bit 16)                                         */
@@ -420,45 +411,45 @@
 #define R_I3C0_ICCSIER_RIE_Msk        (0x2UL)        /*!< RIE (Bitfield-Mask: 0x01)                             */
 #define R_I3C0_ICCSIER_TIE_Pos        (0UL)          /*!< TIE (Bit 0)                                           */
 #define R_I3C0_ICCSIER_TIE_Msk        (0x1UL)        /*!< TIE (Bitfield-Mask: 0x01)                             */
-/* =========================================================  HTST  ========================================================== */
-#define R_I3C0_HTST_TEF_Pos           (9UL)          /*!< TEF (Bit 9)                                           */
-#define R_I3C0_HTST_TEF_Msk           (0x200UL)      /*!< TEF (Bitfield-Mask: 0x01)                             */
-#define R_I3C0_HTST_TABTF_Pos         (5UL)          /*!< TABTF (Bit 5)                                         */
-#define R_I3C0_HTST_TABTF_Msk         (0x20UL)       /*!< TABTF (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_HTST_RSPQFF_Pos        (4UL)          /*!< RSPQFF (Bit 4)                                        */
-#define R_I3C0_HTST_RSPQFF_Msk        (0x10UL)       /*!< RSPQFF (Bitfield-Mask: 0x01)                          */
-#define R_I3C0_HTST_CMDQEF_Pos        (3UL)          /*!< CMDQEF (Bit 3)                                        */
-#define R_I3C0_HTST_CMDQEF_Msk        (0x8UL)        /*!< CMDQEF (Bitfield-Mask: 0x01)                          */
-#define R_I3C0_HTST_RDBFF_Pos         (1UL)          /*!< RDBFF (Bit 1)                                         */
-#define R_I3C0_HTST_RDBFF_Msk         (0x2UL)        /*!< RDBFF (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_HTST_TDBEF_Pos         (0UL)          /*!< TDBEF (Bit 0)                                         */
-#define R_I3C0_HTST_TDBEF_Msk         (0x1UL)        /*!< TDBEF (Bitfield-Mask: 0x01)                           */
-/* =========================================================  HTSTE  ========================================================= */
-#define R_I3C0_HTSTE_TEE_Pos          (9UL)          /*!< TEE (Bit 9)                                           */
-#define R_I3C0_HTSTE_TEE_Msk          (0x200UL)      /*!< TEE (Bitfield-Mask: 0x01)                             */
-#define R_I3C0_HTSTE_TABTE_Pos        (5UL)          /*!< TABTE (Bit 5)                                         */
-#define R_I3C0_HTSTE_TABTE_Msk        (0x20UL)       /*!< TABTE (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_HTSTE_RSPQFE_Pos       (4UL)          /*!< RSPQFE (Bit 4)                                        */
-#define R_I3C0_HTSTE_RSPQFE_Msk       (0x10UL)       /*!< RSPQFE (Bitfield-Mask: 0x01)                          */
-#define R_I3C0_HTSTE_CMDQEE_Pos       (3UL)          /*!< CMDQEE (Bit 3)                                        */
-#define R_I3C0_HTSTE_CMDQEE_Msk       (0x8UL)        /*!< CMDQEE (Bitfield-Mask: 0x01)                          */
-#define R_I3C0_HTSTE_RDBFE_Pos        (1UL)          /*!< RDBFE (Bit 1)                                         */
-#define R_I3C0_HTSTE_RDBFE_Msk        (0x2UL)        /*!< RDBFE (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_HTSTE_TDBEE_Pos        (0UL)          /*!< TDBEE (Bit 0)                                         */
-#define R_I3C0_HTSTE_TDBEE_Msk        (0x1UL)        /*!< TDBEE (Bitfield-Mask: 0x01)                           */
-/* =========================================================  HTIE  ========================================================== */
-#define R_I3C0_HTIE_TEIE_Pos          (9UL)          /*!< TEIE (Bit 9)                                          */
-#define R_I3C0_HTIE_TEIE_Msk          (0x200UL)      /*!< TEIE (Bitfield-Mask: 0x01)                            */
-#define R_I3C0_HTIE_TABTIE_Pos        (5UL)          /*!< TABTIE (Bit 5)                                        */
-#define R_I3C0_HTIE_TABTIE_Msk        (0x20UL)       /*!< TABTIE (Bitfield-Mask: 0x01)                          */
-#define R_I3C0_HTIE_RSPQFIE_Pos       (4UL)          /*!< RSPQFIE (Bit 4)                                       */
-#define R_I3C0_HTIE_RSPQFIE_Msk       (0x10UL)       /*!< RSPQFIE (Bitfield-Mask: 0x01)                         */
-#define R_I3C0_HTIE_CMDQEIE_Pos       (3UL)          /*!< CMDQEIE (Bit 3)                                       */
-#define R_I3C0_HTIE_CMDQEIE_Msk       (0x8UL)        /*!< CMDQEIE (Bitfield-Mask: 0x01)                         */
-#define R_I3C0_HTIE_RDBFIE_Pos        (1UL)          /*!< RDBFIE (Bit 1)                                        */
-#define R_I3C0_HTIE_RDBFIE_Msk        (0x2UL)        /*!< RDBFIE (Bitfield-Mask: 0x01)                          */
-#define R_I3C0_HTIE_TDBEIE_Pos        (0UL)          /*!< TDBEIE (Bit 0)                                        */
-#define R_I3C0_HTIE_TDBEIE_Msk        (0x1UL)        /*!< TDBEIE (Bitfield-Mask: 0x01)                          */
+/* ========================================================  ICHCSR  ========================================================= */
+#define R_I3C0_ICHCSR_HDTEF_Pos       (9UL)          /*!< HDTEF (Bit 9)                                         */
+#define R_I3C0_ICHCSR_HDTEF_Msk       (0x200UL)      /*!< HDTEF (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICHCSR_HDTAF_Pos       (5UL)          /*!< HDTAF (Bit 5)                                         */
+#define R_I3C0_ICHCSR_HDTAF_Msk       (0x20UL)       /*!< HDTAF (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICHCSR_HRQFF_Pos       (4UL)          /*!< HRQFF (Bit 4)                                         */
+#define R_I3C0_ICHCSR_HRQFF_Msk       (0x10UL)       /*!< HRQFF (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICHCSR_HCQEF_Pos       (3UL)          /*!< HCQEF (Bit 3)                                         */
+#define R_I3C0_ICHCSR_HCQEF_Msk       (0x8UL)        /*!< HCQEF (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICHCSR_HRDRF_Pos       (1UL)          /*!< HRDRF (Bit 1)                                         */
+#define R_I3C0_ICHCSR_HRDRF_Msk       (0x2UL)        /*!< HRDRF (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICHCSR_HTDRE_Pos       (0UL)          /*!< HTDRE (Bit 0)                                         */
+#define R_I3C0_ICHCSR_HTDRE_Msk       (0x1UL)        /*!< HTDRE (Bitfield-Mask: 0x01)                           */
+/* ========================================================  ICHCSER  ======================================================== */
+#define R_I3C0_ICHCSER_HDTEDE_Pos     (9UL)          /*!< HDTEDE (Bit 9)                                        */
+#define R_I3C0_ICHCSER_HDTEDE_Msk     (0x200UL)      /*!< HDTEDE (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICHCSER_HDTADE_Pos     (5UL)          /*!< HDTADE (Bit 5)                                        */
+#define R_I3C0_ICHCSER_HDTADE_Msk     (0x20UL)       /*!< HDTADE (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICHCSER_HRQFDE_Pos     (4UL)          /*!< HRQFDE (Bit 4)                                        */
+#define R_I3C0_ICHCSER_HRQFDE_Msk     (0x10UL)       /*!< HRQFDE (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICHCSER_HCQEDE_Pos     (3UL)          /*!< HCQEDE (Bit 3)                                        */
+#define R_I3C0_ICHCSER_HCQEDE_Msk     (0x8UL)        /*!< HCQEDE (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICHCSER_HRDE_Pos       (1UL)          /*!< HRDE (Bit 1)                                          */
+#define R_I3C0_ICHCSER_HRDE_Msk       (0x2UL)        /*!< HRDE (Bitfield-Mask: 0x01)                            */
+#define R_I3C0_ICHCSER_HTDE_Pos       (0UL)          /*!< HTDE (Bit 0)                                          */
+#define R_I3C0_ICHCSER_HTDE_Msk       (0x1UL)        /*!< HTDE (Bitfield-Mask: 0x01)                            */
+/* =======================================================  ICHCSIER  ======================================================== */
+#define R_I3C0_ICHCSIER_HDTEIE_Pos    (9UL)          /*!< HDTEIE (Bit 9)                                        */
+#define R_I3C0_ICHCSIER_HDTEIE_Msk    (0x200UL)      /*!< HDTEIE (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICHCSIER_HDTAIE_Pos    (5UL)          /*!< HDTAIE (Bit 5)                                        */
+#define R_I3C0_ICHCSIER_HDTAIE_Msk    (0x20UL)       /*!< HDTAIE (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICHCSIER_HRQFIE_Pos    (4UL)          /*!< HRQFIE (Bit 4)                                        */
+#define R_I3C0_ICHCSIER_HRQFIE_Msk    (0x10UL)       /*!< HRQFIE (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICHCSIER_HCQEIE_Pos    (3UL)          /*!< HCQEIE (Bit 3)                                        */
+#define R_I3C0_ICHCSIER_HCQEIE_Msk    (0x8UL)        /*!< HCQEIE (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICHCSIER_HRIE_Pos      (1UL)          /*!< HRIE (Bit 1)                                          */
+#define R_I3C0_ICHCSIER_HRIE_Msk      (0x2UL)        /*!< HRIE (Bitfield-Mask: 0x01)                            */
+#define R_I3C0_ICHCSIER_HTIE_Pos      (0UL)          /*!< HTIE (Bit 0)                                          */
+#define R_I3C0_ICHCSIER_HTIE_Msk      (0x1UL)        /*!< HTIE (Bitfield-Mask: 0x01)                            */
 /* =========================================================  ICBSR  ========================================================= */
 #define R_I3C0_ICBSR_BIDL_Pos         (2UL)          /*!< BIDL (Bit 2)                                          */
 #define R_I3C0_ICBSR_BIDL_Msk         (0x4UL)        /*!< BIDL (Bitfield-Mask: 0x01)                            */
@@ -481,10 +472,10 @@
 #define R_I3C0_ICSSR_HSMC_Msk         (0x20UL)       /*!< HSMC (Bitfield-Mask: 0x01)                            */
 #define R_I3C0_ICSSR_GCA_Pos          (0UL)          /*!< GCA (Bit 0)                                           */
 #define R_I3C0_ICSSR_GCA_Msk          (0x1UL)        /*!< GCA (Bitfield-Mask: 0x01)                             */
-/* =========================================================  WUST  ========================================================== */
-#define R_I3C0_WUST_WUASYNF_Pos       (0UL)          /*!< WUASYNF (Bit 0)                                       */
-#define R_I3C0_WUST_WUASYNF_Msk       (0x1UL)        /*!< WUASYNF (Bitfield-Mask: 0x01)                         */
-/* ========================================================  MRCCPT  ========================================================= */
+/* ========================================================  ICWUSR  ========================================================= */
+#define R_I3C0_ICWUSR_WUASYNF_Pos     (0UL)          /*!< WUASYNF (Bit 0)                                       */
+#define R_I3C0_ICWUSR_WUASYNF_Msk     (0x1UL)        /*!< WUASYNF (Bitfield-Mask: 0x01)                         */
+/* ========================================================  ICCSCCR  ======================================================== */
 /* ========================================================  ICTDATR  ======================================================== */
 #define R_I3C0_ICTDATR_TYPE_Pos       (31UL)         /*!< TYPE (Bit 31)                                         */
 #define R_I3C0_ICTDATR_TYPE_Msk       (0x80000000UL) /*!< TYPE (Bitfield-Mask: 0x01)                            */
@@ -511,22 +502,25 @@
 #define R_I3C0_ICEDATR_DADR_Msk       (0xff0000UL)   /*!< DADR (Bitfield-Mask: 0xff)                            */
 #define R_I3C0_ICEDATR_SADR_Pos       (0UL)          /*!< SADR (Bit 0)                                          */
 #define R_I3C0_ICEDATR_SADR_Msk       (0x7fUL)       /*!< SADR (Bitfield-Mask: 0x7f)                            */
-/* ========================================================  ICDAR   ========================================================= */
+/* =========================================================  ICDAR  ========================================================== */
 #define R_I3C0_ICDAR_DADR_Pos         (16UL)         /*!< DADR (Bit 16)                                         */
 #define R_I3C0_ICDAR_DADR_Msk         (0x7f0000UL)   /*!< DADR (Bitfield-Mask: 0x7f)                            */
 #define R_I3C0_ICDAR_IBIPL_Pos        (12UL)         /*!< IBIPL (Bit 12)                                        */
 #define R_I3C0_ICDAR_IBIPL_Msk        (0x1000UL)     /*!< IBIPL (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_ICDAR_FS_Pos           (10UL)         /*!< FS (Bit 10)                                           */
-#define R_I3C0_ICDAR_FS_Msk           (0x400UL)      /*!< FS (Bitfield-Mask: 0x01)                              */
 #define R_I3C0_ICDAR_SADR_Pos         (0UL)          /*!< SADR (Bit 0)                                          */
 #define R_I3C0_ICDAR_SADR_Msk         (0x3ffUL)      /*!< SADR (Bitfield-Mask: 0x3ff)                           */
+/* ==========================================================  SAR  ========================================================== */
+#define R_I3C0_SAR_FS_Pos             (10UL)         /*!< IBIPL (Bit 10)                                        */
+#define R_I3C0_SAR_FS_Msk             (0x400UL)      /*!< IBIPL (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_SAR_SVA_Pos            (0UL)          /*!< SADR (Bit 0)                                          */
+#define R_I3C0_SAR_SVA_Msk            (0x3ffUL)      /*!< SADR (Bitfield-Mask: 0x3ff)                           */
 /* ========================================================  ICTDCTR  ======================================================== */
 #define R_I3C0_ICTDCTR_ROLE_Pos       (14UL)         /*!< ROLE (Bit 14)                                         */
 #define R_I3C0_ICTDCTR_ROLE_Msk       (0xc000UL)     /*!< ROLE (Bitfield-Mask: 0x03)                            */
-#define R_I3C0_ICTDCTR_RBCR5_Pos      (13UL)         /*!< TBCR5 (Bit 13)                                        */
-#define R_I3C0_ICTDCTR_RBCR5_Msk      (0x2000UL)     /*!< TBCR5 (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_ICTDCTR_RBCR4_Pos      (12UL)         /*!< TBCR4 (Bit 12)                                        */
-#define R_I3C0_ICTDCTR_RBCR4_Msk      (0x1000UL)     /*!< TBCR4 (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICTDCTR_ADVCAP_Pos     (13UL)         /*!< ADVCAP (Bit 13)                                       */
+#define R_I3C0_ICTDCTR_ADVCAP_Msk     (0x2000UL)     /*!< ADVCAP (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICTDCTR_VTSUP_Pos      (12UL)         /*!< VTSUP (Bit 12)                                        */
+#define R_I3C0_ICTDCTR_VTSUP_Msk      (0x1000UL)     /*!< VTSUP (Bitfield-Mask: 0x01)                           */
 #define R_I3C0_ICTDCTR_OFLC_Pos       (11UL)         /*!< OFLC (Bit 11)                                         */
 #define R_I3C0_ICTDCTR_OFLC_Msk       (0x800UL)      /*!< OFLC (Bitfield-Mask: 0x01)                            */
 #define R_I3C0_ICTDCTR_IBIPL_Pos      (10UL)         /*!< IBIPL (Bit 10)                                        */
@@ -538,10 +532,10 @@
 /* ========================================================  ICDCTR  ========================================================= */
 #define R_I3C0_ICDCTR_ROLE_Pos        (14UL)         /*!< ROLE (Bit 14)                                         */
 #define R_I3C0_ICDCTR_ROLE_Msk        (0xc000UL)     /*!< ROLE (Bitfield-Mask: 0x03)                            */
-#define R_I3C0_ICDCTR_TBCR5_Pos       (13UL)         /*!< TBCR5 (Bit 13)                                        */
-#define R_I3C0_ICDCTR_TBCR5_Msk       (0x2000UL)     /*!< TBCR5 (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_ICDCTR_TBCR4_Pos       (12UL)         /*!< TBCR4 (Bit 12)                                        */
-#define R_I3C0_ICDCTR_TBCR4_Msk       (0x1000UL)     /*!< TBCR4 (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICDCTR_ADVCAP_Pos      (13UL)         /*!< ADVCAP (Bit 13)                                       */
+#define R_I3C0_ICDCTR_ADVCAP_Msk      (0x2000UL)     /*!< ADVCAP (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICDCTR_VTSUP_Pos       (12UL)         /*!< VTSUP (Bit 12)                                        */
+#define R_I3C0_ICDCTR_VTSUP_Msk       (0x1000UL)     /*!< VTSUP (Bitfield-Mask: 0x01)                           */
 #define R_I3C0_ICDCTR_OFLC_Pos        (11UL)         /*!< OFLC (Bit 11)                                         */
 #define R_I3C0_ICDCTR_OFLC_Msk        (0x800UL)      /*!< OFLC (Bitfield-Mask: 0x01)                            */
 #define R_I3C0_ICDCTR_IBIPL_Pos       (10UL)         /*!< IBIPL (Bit 10)                                        */
@@ -554,15 +548,20 @@
 #define R_I3C0_ICDCTR_DCR_Msk         (0xffUL)       /*!< DCR (Bitfield-Mask: 0xff)                             */
 /* ========================================================  ICPIDLR  ======================================================== */
 /* ========================================================  ICPIDHR  ======================================================== */
-/* ========================================================  ICDAMR  ========================================================= */
+/* ========================================================  ICDAMR   =========================================================*/
 #define R_I3C0_ICDAMR_DAV_Pos         (31UL)         /*!< DAV (Bit 31)                                          */
 #define R_I3C0_ICDAMR_DAV_Msk         (0x80000000UL) /*!< DAV (Bitfield-Mask: 0x01)                             */
 #define R_I3C0_ICDAMR_SAV_Pos         (30UL)         /*!< SAV (Bit 30)                                          */
 #define R_I3C0_ICDAMR_SAV_Msk         (0x40000000UL) /*!< SAV (Bitfield-Mask: 0x01)                             */
-#define R_I3C0_ICDAMR_FS_Pos          (27UL)         /*!< FS (Bit 27)                                           */
-#define R_I3C0_ICDAMR_FS_Msk          (0x8000000UL)  /*!< FS (Bitfield-Mask: 0x01)                              */
 #define R_I3C0_ICDAMR_TADR_Pos        (16UL)         /*!< TADR (Bit 16)                                         */
 #define R_I3C0_ICDAMR_TADR_Msk        (0x3ff0000UL)  /*!< TADR (Bitfield-Mask: 0x3ff)                           */
+/* =========================================================  SAMR  ========================================================== */
+#define R_I3C0_SAMR_SAV_Pos           (30UL)         /*!< SAV (Bit 30)                                          */
+#define R_I3C0_SAMR_SAV_Msk           (0x40000000UL) /*!< SAV (Bitfield-Mask: 0x01)                             */
+#define R_I3C0_SAMR_FS_Pos            (27UL)         /*!< FS (Bit 27)                                           */
+#define R_I3C0_SAMR_FS_Msk            (0x8000000UL)  /*!< FS (Bitfield-Mask: 0x01)                              */
+#define R_I3C0_SAMR_SVA_Pos           (16UL)         /*!< TADR (Bit 16)                                         */
+#define R_I3C0_SAMR_SVA_Msk           (0x3ff0000UL)  /*!< TADR (Bitfield-Mask: 0x3ff)                           */
 /* ========================================================  ICTEVR  ========================================================= */
 #define R_I3C0_ICTEVR_ENCR_Pos        (1UL)          /*!< ENCR (Bit 1)                                          */
 #define R_I3C0_ICTEVR_ENCR_Msk        (0x2UL)        /*!< ENCR (Bitfield-Mask: 0x01)                            */
@@ -615,26 +614,21 @@
 #define R_I3C0_ICTSIR_INAC_Msk        (0xff0000UL)   /*!< INAC (Bitfield-Mask: 0xff)                            */
 #define R_I3C0_ICTSIR_FREQ_Pos        (8UL)          /*!< FREQ (Bit 8)                                          */
 #define R_I3C0_ICTSIR_FREQ_Msk        (0xff00UL)     /*!< FREQ (Bitfield-Mask: 0xff)                            */
-#define R_I3C0_ICTSIR_SPTASYN1_Pos    (2UL)          /*!< SPTASYN1 (Bit 2)                                      */
-#define R_I3C0_ICTSIR_SPTASYN1_Msk    (0x4UL)        /*!< SPTASYN1 (Bitfield-Mask: 0x01)                        */
-#define R_I3C0_ICTSIR_SPTASYN0_Pos    (1UL)          /*!< SPTASYN0 (Bit 1)                                      */
-#define R_I3C0_ICTSIR_SPTASYN0_Msk    (0x2UL)        /*!< SPTASYN0 (Bitfield-Mask: 0x01)                        */
-#define R_I3C0_ICTSIR_SPTSYN_Pos      (0UL)          /*!< SPTSYN (Bit 0)                                        */
-#define R_I3C0_ICTSIR_SPTSYN_Msk      (0x1UL)        /*!< SPTSYN (Bitfield-Mask: 0x01)                          */
-/* =========================================================  CETSS  ========================================================= */
-#define R_I3C0_CETSS_ICOVF_Pos        (7UL)          /*!< ICOVF (Bit 7)                                         */
-#define R_I3C0_CETSS_ICOVF_Msk        (0x80UL)       /*!< ICOVF (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_CETSS_ASYNE_Pos        (1UL)          /*!< ASYNE (Bit 1)                                         */
-#define R_I3C0_CETSS_ASYNE_Msk        (0x6UL)        /*!< ASYNE (Bitfield-Mask: 0x03)                           */
-#define R_I3C0_CETSS_SYNE_Pos         (0UL)          /*!< SYNE (Bit 0)                                          */
-#define R_I3C0_CETSS_SYNE_Msk         (0x1UL)        /*!< SYNE (Bitfield-Mask: 0x01)                            */
-/* =======================================================  CGHDRCAP  ======================================================== */
-#define R_I3C0_CGHDRCAP_TSLEN_Pos     (2UL)          /*!< TSLEN (Bit 2)                                         */
-#define R_I3C0_CGHDRCAP_TSLEN_Msk     (0x4UL)        /*!< TSLEN (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_CGHDRCAP_TSPEN_Pos     (1UL)          /*!< TSPEN (Bit 1)                                         */
-#define R_I3C0_CGHDRCAP_TSPEN_Msk     (0x2UL)        /*!< TSPEN (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_CGHDRCAP_DDREN_Pos     (0UL)          /*!< DDREN (Bit 0)                                         */
-#define R_I3C0_CGHDRCAP_DDREN_Msk     (0x1UL)        /*!< DDREN (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICTSIR_SAM1_Pos        (2UL)          /*!< SAM1 (Bit 2)                                          */
+#define R_I3C0_ICTSIR_SAM1_Msk        (0x4UL)        /*!< SAM1 (Bitfield-Mask: 0x01)                            */
+#define R_I3C0_ICTSIR_SAM0_Pos        (1UL)          /*!< SAM0 (Bit 1)                                          */
+#define R_I3C0_ICTSIR_SAM0_Msk        (0x2UL)        /*!< SAM0 (Bitfield-Mask: 0x01)                            */
+#define R_I3C0_ICTSIR_SSM_Pos         (0UL)          /*!< SSM (Bit 0)                                           */
+#define R_I3C0_ICTSIR_SSM_Msk         (0x1UL)        /*!< SSM (Bitfield-Mask: 0x01)                             */
+/* ========================================================  ICTSIR2  ======================================================== */
+#define R_I3C0_ICTSIR2_OVF_Pos        (7UL)          /*!< OVF (Bit 7)                                           */
+#define R_I3C0_ICTSIR2_OVF_Msk        (0x80UL)       /*!< OVF (Bitfield-Mask: 0x01)                             */
+#define R_I3C0_ICTSIR2_AM1E_Pos       (2UL)          /*!< AM1E (Bit 2)                                          */
+#define R_I3C0_ICTSIR2_AM1E_Msk       (0x4UL)        /*!< AM1E (Bitfield-Mask: 0x01)                            */
+#define R_I3C0_ICTSIR2_AM0E_Pos       (1UL)          /*!< AM0E (Bit 1)                                          */
+#define R_I3C0_ICTSIR2_AM0E_Msk       (0x2UL)        /*!< AM0E (Bitfield-Mask: 0x01)                            */
+#define R_I3C0_ICTSIR2_SME_Pos        (0UL)          /*!< SME (Bit 0)                                           */
+#define R_I3C0_ICTSIR2_SME_Msk        (0x1UL)        /*!< SME (Bitfield-Mask: 0x01)                             */
 /* =========================================================  ICBCR  ========================================================= */
 #define R_I3C0_ICBCR_BC_Pos           (0UL)          /*!< BC (Bit 0)                                            */
 #define R_I3C0_ICBCR_BC_Msk           (0x1fUL)       /*!< BC (Bitfield-Mask: 0x1f)                              */
@@ -655,16 +649,16 @@
 /* ========================================================  ICSQSR  ========================================================= */
 #define R_I3C0_ICSQSR_SQFL_Pos        (0UL)          /*!< SQFL (Bit 0)                                          */
 #define R_I3C0_ICSQSR_SQFL_Msk        (0xffUL)       /*!< SQFL (Bitfield-Mask: 0xff)                            */
-/* ========================================================  HQSTLV  ========================================================= */
-#define R_I3C0_HQSTLV_RSPQLV_Pos      (8UL)          /*!< RSPQLV (Bit 8)                                        */
-#define R_I3C0_HQSTLV_RSPQLV_Msk      (0xff00UL)     /*!< RSPQLV (Bitfield-Mask: 0xff)                          */
-#define R_I3C0_HQSTLV_CMDQLV_Pos      (0UL)          /*!< CMDQLV (Bit 0)                                        */
-#define R_I3C0_HQSTLV_CMDQLV_Msk      (0xffUL)       /*!< CMDQLV (Bitfield-Mask: 0xff)                          */
-/* ========================================================  HDBSTLV  ======================================================== */
-#define R_I3C0_HDBSTLV_RDBLV_Pos      (8UL)          /*!< RDBLV (Bit 8)                                         */
-#define R_I3C0_HDBSTLV_RDBLV_Msk      (0xff00UL)     /*!< RDBLV (Bitfield-Mask: 0xff)                           */
-#define R_I3C0_HDBSTLV_TDBFLV_Pos     (0UL)          /*!< TDBFLV (Bit 0)                                        */
-#define R_I3C0_HDBSTLV_TDBFLV_Msk     (0xffUL)       /*!< TDBFLV (Bitfield-Mask: 0xff)                          */
+/* ========================================================  ICHQBSR  ======================================================== */
+#define R_I3C0_ICHQBSR_HRQFL_Pos      (8UL)          /*!< HRQFL (Bit 8)                                         */
+#define R_I3C0_ICHQBSR_HRQFL_Msk      (0xff00UL)     /*!< HRQFL (Bitfield-Mask: 0xff)                           */
+#define R_I3C0_ICHQBSR_HCQFL_Pos      (0UL)          /*!< HCQFL (Bit 0)                                         */
+#define R_I3C0_ICHQBSR_HCQFL_Msk      (0xffUL)       /*!< HCQFL (Bitfield-Mask: 0xff)                           */
+/* ========================================================  ICHDBSR  ======================================================== */
+#define R_I3C0_ICHDBSR_HRBFL_Pos      (8UL)          /*!< HRBFL (Bit 8)                                         */
+#define R_I3C0_ICHDBSR_HRBFL_Msk      (0xff00UL)     /*!< HRBFL (Bitfield-Mask: 0xff)                           */
+#define R_I3C0_ICHDBSR_HTBFL_Pos      (0UL)          /*!< HTBFL (Bit 0)                                         */
+#define R_I3C0_ICHDBSR_HTBFL_Msk      (0xffUL)       /*!< HTBFL (Bitfield-Mask: 0xff)                           */
 /* =========================================================  ICIMR  ========================================================= */
 #define R_I3C0_ICIMR_SDAO_Pos         (3UL)          /*!< SDAO (Bit 3)                                          */
 #define R_I3C0_ICIMR_SDAO_Msk         (0x8UL)        /*!< SDAO (Bitfield-Mask: 0x01)                            */
@@ -677,11 +671,11 @@
 /* ========================================================  ICCECR  ========================================================= */
 #define R_I3C0_ICCECR_CE2C_Pos        (0UL)          /*!< CE2C (Bit 0)                                          */
 #define R_I3C0_ICCECR_CE2C_Msk        (0xffUL)       /*!< CE2C (Bitfield-Mask: 0xff)                            */
-/* ========================================================  SC1CPT  ========================================================= */
-#define R_I3C0_SC1CPT_SC1C_Pos        (0UL)          /*!< SC1C (Bit 0)                                          */
-#define R_I3C0_SC1CPT_SC1C_Msk        (0xffffUL)     /*!< SC1C (Bitfield-Mask: 0xffff)                          */
-/* ========================================================  SC2CPT  ========================================================= */
-#define R_I3C0_SC2CPT_SC2C_Pos        (0UL)          /*!< SC2C (Bit 0)                                          */
-#define R_I3C0_SC2CPT_SC2C_Msk        (0xffffUL)     /*!< SC2C (Bitfield-Mask: 0xffff)                          */
+/* ========================================================  ICTC1CR  ======================================================== */
+#define R_I3C0_ICTC1CR_SC1C_Pos       (0UL)          /*!< SC1C (Bit 0)                                          */
+#define R_I3C0_ICTC1CR_SC1C_Msk       (0xffffUL)     /*!< SC1C (Bitfield-Mask: 0xffff)                          */
+/* ========================================================  ICTC2CR  ======================================================== */
+#define R_I3C0_ICTC2CR_SC2C_Pos       (0UL)          /*!< SC2C (Bit 0)                                          */
+#define R_I3C0_ICTC2CR_SC2C_Msk       (0xffffUL)     /*!< SC2C (Bitfield-Mask: 0xffff)                          */
 
 #endif /* R_I3C_POSMARK_H */

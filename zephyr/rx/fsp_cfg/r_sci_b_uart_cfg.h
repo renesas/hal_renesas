@@ -7,8 +7,8 @@
 #ifndef R_SCI_B_UART_CFG_H_
 #define R_SCI_B_UART_CFG_H_
 #ifdef __cplusplus
-            extern "C" {
-            #endif
+extern "C" {
+#endif
 
 #define SCI_B_UART_CFG_PARAM_CHECKING_ENABLE (BSP_CFG_PARAM_CHECKING_ENABLE)
 #define SCI_B_UART_CFG_FIFO_SUPPORT (CONFIG_UART_RA_SCI_B_UART_FIFO_ENABLE)
@@ -20,6 +20,6 @@
 #endif
 
 #ifdef __cplusplus
-            }
-            #endif
+}
+#endif
 #endif /* R_SCI_B_UART_CFG_H_ */
