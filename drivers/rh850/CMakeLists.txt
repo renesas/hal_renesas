@@ -60,4 +60,7 @@ zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_RLIN3_UART
  	fsp/src/r_rlin3_uart/r_rlin3_uart.c)
 
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_OSTM
- 	fsp/src/r_ostm/r_ostm.c)	
+ 	fsp/src/r_ostm/r_ostm.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_EXT_IRQ
+ 	fsp/src/r_icu/r_icu.c)

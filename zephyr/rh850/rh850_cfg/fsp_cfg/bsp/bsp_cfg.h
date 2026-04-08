@@ -23,4 +23,8 @@
  #include "bsp_cfg_u2c8.h"
 #endif
 
+#ifndef BSP_PE0_USED
+ #define BSP_PE0_USED                              (0x1)
+#endif
+
 #endif                                 /* BSP_CFG_H_ */
