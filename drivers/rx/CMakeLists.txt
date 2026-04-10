@@ -250,4 +250,10 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_GPT)
+		zephyr_library_sources(
+			fsp/src/r_gpt/r_gpt.c
+		)
+	endif()
+
 endif()
