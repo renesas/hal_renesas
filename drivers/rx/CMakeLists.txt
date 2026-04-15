@@ -207,6 +207,12 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_SCI_B_SPI)
+		zephyr_library_sources(
+			fsp/src/r_sci_b_spi/r_sci_b_spi.c
+		)
+	endif()
+
 	if(CONFIG_USE_RX_FSP_MRAM)
 		zephyr_library_sources(
 			fsp/src/r_mram/r_mram.c

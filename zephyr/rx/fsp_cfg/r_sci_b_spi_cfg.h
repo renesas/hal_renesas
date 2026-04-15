@@ -1,0 +1,18 @@
+/* generated configuration header file - do not edit */
+#ifndef R_SCI_B_SPI_CFG_H_
+#define R_SCI_B_SPI_CFG_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define SCI_B_SPI_CFG_DMA_SUPPORT_ENABLE (1)
+#define SCI_B_SPI_CFG_PARAM_CHECKING_ENABLE (BSP_CFG_PARAM_CHECKING_ENABLE)
+#define SCI_B_SPI_CFG_FIFO_SUPPORT (0)
+
+/* DEPRECATED: Use SCI_B_SPI_CFG_DMA_SUPPORT_ENABLE instead. */
+#define SCI_B_SPI_DTC_SUPPORT_ENABLE (SCI_B_SPI_CFG_DMA_SUPPORT_ENABLE)
+
+#ifdef __cplusplus
+}
+#endif
+#endif /* R_SCI_B_SPI_CFG_H_ */
