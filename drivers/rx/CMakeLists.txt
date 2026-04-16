@@ -262,4 +262,10 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_ADC_B)
+		zephyr_library_sources(
+			fsp/src/r_adc_b/r_adc_b.c
+		)
+	endif()
+
 endif()
