@@ -45,7 +45,7 @@ FSP_HEADER
                     "mov.l	%0, r7                          \n"                                   \
                     "mov.l	[r7], r10                       \n"                                   \
                     /* g_current_isr_number = num; */                                             \
-                    "mov.l	#"#num " , [r7]                 \n"                                   \
+                    "mov.l	%2 , [r7]                       \n"                                   \
                     /* isr() */                                                                   \
                     "mov.l	%1, r8                          \n"                                   \
                     "jsr    r8                              \n"                                   \
@@ -54,7 +54,8 @@ FSP_HEADER
                     /* Pop All register. */                                                       \
                     "popm   r1-r15                          \n":                                  \
                     : "i" (&g_current_isr_number),                                                \
-                    "i" (&isr));         
+                    "i" (&isr),                                                                   \
+                    "r" (num));
 
 #endif
 
