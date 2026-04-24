@@ -268,4 +268,10 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_TMR)
+		zephyr_library_sources(
+			fsp/src/r_tmr/r_tmr.c
+		)
+	endif()
+
 endif()
