@@ -43,6 +43,7 @@
 /** U2C8 */
 #define BSP_FEATURE_FLXA_IS_AVAILABLE                                         (0x01U)                      ///< FLXA module available
 #define BSP_FEATURE_ETND_IS_AVAILABLE                                         (0x01U)                      ///< ETND module available
+#define BSP_FEATURE_ETNF_IS_AVAILABLE                                         (0x01U)                      ///< ETNF module available
 #define BSP_FEATURE_MMCA_IS_AVAILABLE                                         (0x01U)                      ///< MMC-A module available
 #define BSP_FEATURE_PSI5S_IS_AVAILABLE                                        (0x01U)                      ///< PSI5S module available
 #define BSP_FEATURE_CANXL_CH1_IS_AVAILABLE                                    (0x01U)                      ///< CAN XL channel 1 available
