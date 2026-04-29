@@ -54,13 +54,19 @@ endif()
 
 # Optional build base on feature configuration
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_IOPORT
- 	fsp/src/r_ioport/r_ioport.c)
+	fsp/src/r_ioport/r_ioport.c)
 
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_RLIN3_UART
- 	fsp/src/r_rlin3_uart/r_rlin3_uart.c)
+	fsp/src/r_rlin3_uart/r_rlin3_uart.c)
 
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_OSTM
- 	fsp/src/r_ostm/r_ostm.c)
+	fsp/src/r_ostm/r_ostm.c)
 
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_EXT_IRQ
- 	fsp/src/r_icu/r_icu.c)
+	fsp/src/r_icu/r_icu.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_ETHER_ETNF
+	fsp/src/r_ether_phy/targets/CT25205_RTL/r_ether_phy_target_ct25205_rtl.c
+	fsp/src/r_ether_phy/r_ether_phy.c
+	fsp/src/r_ether_t1s/r_ether_t1s.c
+)	

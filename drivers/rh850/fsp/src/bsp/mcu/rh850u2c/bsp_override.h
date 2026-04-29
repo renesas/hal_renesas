@@ -788,11 +788,11 @@ typedef enum e_ether_event
 /** Phy LSI */
 typedef enum e_ether_phy_lsi_type
 {
-    ETHER_PHY_LSI_TYPE_DEFAULT            = 0,    ///< Select default configuration. This type dose not change Phy LSI default setting by strapping option.
-    ETHER_PHY_LSI_TYPE_LAN8700            = 1,    ///< Select configuration for LAN8700.
-    ETHER_PHY_LSI_TYPE_10BASE_T1S_LAN8680 = 2,    ///< Select configuration for LAN8680.
-    ETHER_PHY_LSI_TYPE_LAN88Q2112         = 4,    ///< Select configuration for LAN88Q2112.
-    ETHER_PHY_LSI_TYPE_CUSTOM             = 0xFFU ///< Select configuration for User custom.
+    ETHER_PHY_LSI_TYPE_DEFAULT     = 0,    ///< Select default configuration. This type dose not change Phy LSI default setting by strapping option.
+    ETHER_PHY_LSI_TYPE_LAN8700     = 1,    ///< Select configuration for LAN8700.
+    ETHER_PHY_LSI_TYPE_CT25205_RTL = 2,    ///< Select configuration for CT25205-RTL.
+    ETHER_PHY_LSI_TYPE_88E1112     = 3,    ///< Select configuration for 88E1112.
+    ETHER_PHY_LSI_TYPE_CUSTOM      = 0xFFU ///< Select configuration for User custom.
 } ether_phy_lsi_type_t;
 
 /***********************************************************************************************************************
