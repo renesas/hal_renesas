@@ -425,7 +425,7 @@ typedef struct st_ether_t1s_buf_handler_type
 /** Setting transmit buffer type structure */
 typedef struct st_ether_t1s_tx_buffer_type
 {
-    ether_t1s_buf_handler_type_t * p_buffer_hdr; ///< Pointer for buffer address.
+    volatile ether_t1s_buf_handler_type_t * p_buffer_hdr; ///< Pointer for buffer address.
     bool    tx_ongoing;                          ///< Transmit ongoing status.
     uint8_t dummy[3];                            ///< Dummy data.
 #if (ETH_GLOBAL_TIME_SUPPORT == STD_ON)
@@ -459,7 +459,7 @@ typedef struct st_ether_t1s_rx_frame_type
 /** Heap manager type structure */
 typedef struct st_ether_t1s_list_type
 {
-    uint32_t count;                             ///< Number of node.
+    volatile uint32_t count;                             ///< Number of node.
     ether_t1s_double_list_node_type_t * p_last; ///< Last node.
     ether_t1s_double_list_node_type_t * p_head; ///< Head node.
 } ether_t1s_list_type_t;

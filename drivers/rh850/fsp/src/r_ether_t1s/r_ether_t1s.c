@@ -336,9 +336,9 @@
  * Private global variables
  ***********************************************************************************************************************/
 ether_t1s_controller_status_type_t g_ether_t1s_ctrl_stat[ETHER_T1S_TOTAL_CTRL_CONFIG];
-ether_t1s_rx_frame_type_t          g_ether_t1s_rx_frame[ETHER_T1S_TOTAL_CTRL_CONFIG];
-ether_t1s_tx_buffer_type_t         gp_ether_t1s_tx_buffer_index[ETHER_T1S_TOTAL_CTRL_CONFIG][ETH_TX_DESC_MAX];
-ether_t1s_list_type_t              g_ether_t1s_buffer_lock[ETHER_T1S_TOTAL_CTRL_CONFIG][ETH_TXQ_NUM];
+volatile ether_t1s_rx_frame_type_t          g_ether_t1s_rx_frame[ETHER_T1S_TOTAL_CTRL_CONFIG];
+volatile ether_t1s_tx_buffer_type_t         gp_ether_t1s_tx_buffer_index[ETHER_T1S_TOTAL_CTRL_CONFIG][ETH_TX_DESC_MAX];
+volatile ether_t1s_list_type_t              g_ether_t1s_buffer_lock[ETHER_T1S_TOTAL_CTRL_CONFIG][ETH_TXQ_NUM];
 ether_t1s_avb_config_type_t        g_ether_t1s_avb_config[ETHER_T1S_TOTAL_CTRL_CONFIG];
 ether_t1s_rx_ch_config_type        g_ether_t1s_rx_config[ETH_RXQ_NUM];
 ether_t1s_queue_config_type        g_ether_t1s_queue_config[ETH_RXQ_NUM];
@@ -357,17 +357,17 @@ const ether_t1s_mac_address_type_t g_ether_t1s_broadcast_addr =
 {
     ETH_ETNF_BROADCAST_H32, ETH_ETNF_BROADCAST_L16
 };
-uint8_t g_ether_t1s_tx_confirmed[ETHER_T1S_TOTAL_CTRL_CONFIG];
-ether_t1s_rx_status_type_t g_ether_t1s_rx_status[ETHER_T1S_TOTAL_CTRL_CONFIG];
-uint8_t              g_ether_t1s_rx_eth_frame[ETHER_T1S_TOTAL_CTRL_CONFIG][ETHER_T1S_VLFRAME_SIZE];
+volatile uint8_t g_ether_t1s_tx_confirmed[ETHER_T1S_TOTAL_CTRL_CONFIG];
+volatile ether_t1s_rx_status_type_t g_ether_t1s_rx_status[ETHER_T1S_TOTAL_CTRL_CONFIG];
+volatile uint8_t              g_ether_t1s_rx_eth_frame[ETHER_T1S_TOTAL_CTRL_CONFIG][ETHER_T1S_VLFRAME_SIZE];
 uint16_t             g_ether_t1s_msg_length[ETHER_T1S_TOTAL_CTRL_CONFIG];
 uint8_t              g_ether_t1s_rx_src_addr[ETHER_T1S_TOTAL_CTRL_CONFIG][ETHER_T1S_SRC_MACADDR_LEN];
 ether_t1s_frame_type g_ether_t1s_rx_frame_type[ETHER_T1S_TOTAL_CTRL_CONFIG];
 uint16_t             g_ether_t1s_rx_frame_cnt[ETHER_T1S_TOTAL_CTRL_CONFIG];
-uint16_t             g_ether_t1s_rx_len_byte[ETHER_T1S_TOTAL_CTRL_CONFIG];
+volatile uint16_t             g_ether_t1s_rx_len_byte[ETHER_T1S_TOTAL_CTRL_CONFIG];
 uint32_t             g_ether_t1s_common_interrupt[ETHER_T1S_TOTAL_CTRL_CONFIG];
-uint32_t             g_ether_t1s_counter_value = ETH_ETNF_COUNTER_VALUE_INIT;
-uint32_t             g_ether_t1s_tx_buffer_addr;
+volatile uint32_t             g_ether_t1s_counter_value = ETH_ETNF_COUNTER_VALUE_INIT;
+volatile uint32_t             g_ether_t1s_tx_buffer_addr;
 
 #if (ETHER_T1S_CFG_GLOBAL_TIME_SUPPORT)
 ether_t1s_time_stamp_qual_type g_tx_time_qual;
@@ -1088,7 +1088,7 @@ static void r_ether_t1s_clear_all_address_filters (uint32_t ctrl_idx)
 static void r_ether_t1s_initialize_buffer (uint32_t ctrl_idx)
 {
     uint16_t cnt;
-    ether_t1s_tx_buffer_type_t * p_tx_buffer;
+    ether_t1s_tx_buffer_type_t * volatile p_tx_buffer;
 
     /* Initialize resource information */
     g_ether_rx_buffer_index[ctrl_idx]                     = 0UL;
@@ -3779,7 +3779,7 @@ static ether_t1s_buf_req_return_type_t r_ether_t1s_get_tx_buffer (ether_t1s_inst
     ether_t1s_buf_req_return_type_t return_value = ETHER_T1S_BUFREQ_OK;
     uint32_t                       cfg_idx       = 0U;
     ether_t1s_tx_ch_type           q_id          = ETHER_T1S_TX_BE;
-    ether_t1s_buf_handler_type_t * p_tx_buffer_node;
+    ether_t1s_buf_handler_type_t * volatile p_tx_buffer_node;
     uint32_t                       ring_idx        = 0U;
     uint32_t                       tx_alloc_cnt    = 0U;
     uint32_t                       header_custom   = ETH_HEADER_SIZE;
@@ -4357,8 +4357,8 @@ static void r_ether_t1s_ram_free (uint32_t ctrl_idx, const uint32_t mem_addr)
  ***********************************************************************************************************************/
 static void r_ether_t1s_release_tx_buffer (uint32_t ctrl_idx, const uint32_t buf_idx)
 {
-    ether_t1s_buf_handler_type_t * p_temp;
-
+    ether_t1s_buf_handler_type_t * volatile p_temp;
+ 
     /* Release tx buffer handler */
     p_temp = gp_ether_t1s_tx_buffer_index[ctrl_idx][buf_idx].p_buffer_hdr;
     (void) r_ether_t1s_util_remove_to_list(&g_ether_t1s_buffer_lock[ctrl_idx][p_temp->channel], (void **) &p_temp);
