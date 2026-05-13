@@ -50,9 +50,15 @@
 #endif
 #include "bsp_mcu_reset.h"
 #include "bsp_mpu.h"
+#include "bsp_icache.h"
 #include "bsp_spinlock.h"
 #if (BSP_CYCLICRUN_MODE_ENABLE)
  #include "bsp_mcu_standby_cyclicrun.h"
+#endif
+#include "bsp_opbt.h"
+
+#if (BSP_FEATURE_QOS_IS_AVAILABLE)
+ #include "bsp_qos.h"
 #endif
 
 /* Factory MCU information. */

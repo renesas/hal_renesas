@@ -19,30 +19,34 @@ extern "C" {
  #if defined(__CCRH__)
 
 /** Pragma to support for interrupt function */
-  #define BSP_INTERRUPT_ATTRIBUTE       ///< Interrupt attribute placeholder for CCRH
-  #define BSP_FEINT_INTERRUPT_ATTRIBUTE ///< FEINT interrupt attribute placeholder for CCRH
-  #define BSP_FENMI_INTERRUPT_ATTRIBUTE ///< FENMI interrupt attribute placeholder for CCRH
+  #define BSP_INTERRUPT_ATTRIBUTE        ///< Interrupt attribute placeholder for CCRH
+  #define BSP_FEINT_INTERRUPT_ATTRIBUTE  ///< FEINT interrupt attribute placeholder for CCRH
+  #define BSP_FENMI_INTERRUPT_ATTRIBUTE  ///< FENMI interrupt attribute placeholder for CCRH
+  #define BSP_DIRECT_INTERRUPT_ATTRIBUTE ///< Direct Vector Interrupt attribute placeholder for CCRH
 
  #elif defined(__ghs__)
 
 /** Pragma to support for interrupt function */
-  #define BSP_INTERRUPT_ATTRIBUTE          __interrupt ///< Interrupt attribute for GHS compiler
-  #define BSP_FEINT_INTERRUPT_ATTRIBUTE                ///< FEINT interrupt attribute placeholder for GHS
-  #define BSP_FENMI_INTERRUPT_ATTRIBUTE                ///< FENMI interrupt attribute placeholder for GHS
+  #define BSP_INTERRUPT_ATTRIBUTE           __interrupt ///< Interrupt attribute for GHS compiler
+  #define BSP_FEINT_INTERRUPT_ATTRIBUTE                 ///< FEINT interrupt attribute placeholder for GHS
+  #define BSP_FENMI_INTERRUPT_ATTRIBUTE                 ///< FENMI interrupt attribute placeholder for GHS
+  #define BSP_DIRECT_INTERRUPT_ATTRIBUTE                ///< Direct Vector Interrupt attribute placeholder for GHS
 
  #elif defined(__GNUC__)
 
 /** Pragma to support for interrupt function */
-  #define BSP_INTERRUPT_ATTRIBUTE          __attribute__((interrupt))          ///< General interrupt attribute for HighTec
-  #define BSP_FEINT_INTERRUPT_ATTRIBUTE    __attribute__((interrupt("FEINT"))) ///< FEINT interrupt attribute for HighTec
-  #define BSP_FENMI_INTERRUPT_ATTRIBUTE    __attribute__((interrupt("FEINT"))) ///< FENMI interrupt attribute for HighTec
+  #define BSP_INTERRUPT_ATTRIBUTE           __attribute__((interrupt))          ///< General interrupt attribute for HighTec
+  #define BSP_FEINT_INTERRUPT_ATTRIBUTE     __attribute__((interrupt("FEINT"))) ///< FEINT interrupt attribute for HighTec
+  #define BSP_FENMI_INTERRUPT_ATTRIBUTE     __attribute__((interrupt("FEINT"))) ///< FENMI interrupt attribute for HighTec
+  #define BSP_DIRECT_INTERRUPT_ATTRIBUTE                                        ///< Direct Vector Interrupt attribute placeholder for HighTec
 
-  #elif defined(__ICCRH850__)
+ #elif (__ICCRH850__)
 
 /** Pragma to support for interrupt function */
-  #define BSP_INTERRUPT_ATTRIBUTE          ///< General interrupt attribute for IAR
-  #define BSP_FEINT_INTERRUPT_ATTRIBUTE    ///< FEINT interrupt attribute for IAR
-  #define BSP_FENMI_INTERRUPT_ATTRIBUTE    ///< FENMI interrupt attribute for IAR
+  #define BSP_INTERRUPT_ATTRIBUTE                                ///< Interrupt attribute placeholder for IAR
+  #define BSP_DIRECT_INTERRUPT_ATTRIBUTE                         ///< Direct Vector Interrupt attribute placeholder for IAR
+  #define BSP_FEINT_INTERRUPT_ATTRIBUTE                          ///< FEINT interrupt attribute placeholder for IAR
+  #define BSP_FENMI_INTERRUPT_ATTRIBUTE                          ///< FENMI interrupt attribute placeholder for IAR
 
  #endif
 
