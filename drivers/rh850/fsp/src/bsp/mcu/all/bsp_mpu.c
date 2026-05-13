@@ -78,7 +78,7 @@ fsp_err_t R_BSP_MPUEnable (const bsp_mpu_config_t * const p_config)
     fsp_err_t          err                = FSP_SUCCESS;
     uint8_t            region_num         = 0U;
     bsp_mpu_region_t * mpu_regions        = (bsp_mpu_region_t *) (p_config->mpu_region);
-    uint8_t            max_num_of_regions = RH850_MPU_GetTotalNumberofRegion();
+    uint8_t            max_num_of_regions = RH850_MPU_NumberofRegionsGet();
 
     /* Check whether number of regions need to be configurated exceed max regions supported */
     FSP_ASSERT(p_config->num_of_regions <= max_num_of_regions);
@@ -93,10 +93,10 @@ fsp_err_t R_BSP_MPUEnable (const bsp_mpu_config_t * const p_config)
         FSP_ASSERT(mpu_regions->no_of_region < max_num_of_regions);
 
         /* Set lower address and upper address for region */
-        RH850_MPU_SetRegion(mpu_regions->no_of_region, mpu_regions->start_address, mpu_regions->size);
+        RH850_MPU_RegionSet(mpu_regions->no_of_region, mpu_regions->start_address, mpu_regions->size);
 
         /* Set attribute for region */
-        RH850_MPU_SetAttr(mpu_regions->no_of_region, mpu_regions->attribute);
+        RH850_MPU_AttrSet(mpu_regions->no_of_region, mpu_regions->region_attr.attribute);
 
         /* Process next region */
         mpu_regions++;
@@ -116,7 +116,7 @@ fsp_err_t R_BSP_MPUEnable (const bsp_mpu_config_t * const p_config)
 void R_BSP_MPUDisable (void)
 {
     uint8_t index;
-    uint8_t max_num_of_regions = RH850_MPU_GetTotalNumberofRegion();
+    uint8_t max_num_of_regions = RH850_MPU_NumberofRegionsGet();
 
     /* Disable the MPU */
     RH850_MPU_Disable();
@@ -130,8 +130,8 @@ void R_BSP_MPUDisable (void)
     /* Clear all regions */
     for (index = 0U; index < max_num_of_regions; index++)
     {
-        RH850_MPU_SetRegion(index, 0, 0);
-        RH850_MPU_SetAttr(index, 0);
+        RH850_MPU_RegionSet(index, 0, 0);
+        RH850_MPU_AttrSet(index, 0);
     }
 }
 
@@ -145,12 +145,12 @@ uint8_t R_BSP_MPURegionCountGet (void)
     uint8_t  region_num;
     uint8_t  region_count = 0U;
     uint32_t region_attr;
-    uint8_t  max_num_of_regions = RH850_MPU_GetTotalNumberofRegion();
+    uint8_t  max_num_of_regions = RH850_MPU_NumberofRegionsGet();
 
     for (region_num = 0U; region_num < max_num_of_regions; region_num++)
     {
         /* Get attribute for specific region */
-        region_attr = RH850_MPU_GetAttr(region_num);
+        region_attr = RH850_MPU_AttrGet(region_num);
         if (0U != (region_attr & BSP_MPU_REGION_ENABLE))
         {
             region_count++;
@@ -173,7 +173,7 @@ void R_BSP_MPUSetMPIDx (uint8_t no_of_reg, uint8_t value)
     value &= BSP_MPU_MPID_MASK;
 
     /* Set value for specific MPID register */
-    RH850_MPU_SetMPIDx(no_of_reg, value);
+    RH850_MPU_MpidSet(no_of_reg, value);
 }
 
 /*******************************************************************************************************************//**
@@ -188,21 +188,21 @@ fsp_err_t R_BSP_MPURegionEnable (bsp_mpu_region_t * const p_region)
 {
     fsp_err_t err = FSP_SUCCESS;
     uint32_t  attr_value;
-    uint8_t   max_num_of_regions = RH850_MPU_GetTotalNumberofRegion();
+    uint8_t   max_num_of_regions = RH850_MPU_NumberofRegionsGet();
 
     /* Check whether region's index exceed max regions supported */
     FSP_ASSERT(p_region->no_of_region < max_num_of_regions);
 
     /* Get attribute */
-    attr_value = RH850_MPU_GetAttr(p_region->no_of_region);
+    attr_value = RH850_MPU_AttrGet(p_region->no_of_region);
 
     /* Enable region (set bit 7 in attribute value to 1) */
     attr_value |= BSP_MPU_REGION_ENABLE;
 
     /* Set attribute value for region again */
-    RH850_MPU_SetAttr(p_region->no_of_region, attr_value);
+    RH850_MPU_AttrSet(p_region->no_of_region, attr_value);
 
-    p_region->attribute_b.region_enable = 1U;
+    p_region->region_attr.attribute_b.region_enable = 1U;
 
     return err;
 }
@@ -219,21 +219,21 @@ fsp_err_t R_BSP_MPURegionDisable (bsp_mpu_region_t * const p_region)
 {
     fsp_err_t err = FSP_SUCCESS;
     uint32_t  attr_value;
-    uint8_t   max_num_of_regions = RH850_MPU_GetTotalNumberofRegion();
+    uint8_t   max_num_of_regions = RH850_MPU_NumberofRegionsGet();
 
     /* Check whether region's index exceed max regions supported */
     FSP_ASSERT(p_region->no_of_region < max_num_of_regions);
 
     /* Get attribute */
-    attr_value = RH850_MPU_GetAttr(p_region->no_of_region);
+    attr_value = RH850_MPU_AttrGet(p_region->no_of_region);
 
     /* Disable region (clear bit 7 in attribute value) */
     attr_value &= (uint32_t) ~BSP_MPU_REGION_ENABLE;
 
     /* Set attribute value for region again */
-    RH850_MPU_SetAttr(p_region->no_of_region, attr_value);
+    RH850_MPU_AttrSet(p_region->no_of_region, attr_value);
 
-    p_region->attribute_b.region_enable = 0U;
+    p_region->region_attr.attribute_b.region_enable = 0U;
 
     return err;
 }
@@ -249,16 +249,16 @@ fsp_err_t R_BSP_MPURegionDisable (bsp_mpu_region_t * const p_region)
 fsp_err_t R_BSP_MPURegionSet (bsp_mpu_region_t * const p_region)
 {
     fsp_err_t err                = FSP_SUCCESS;
-    uint8_t   max_num_of_regions = RH850_MPU_GetTotalNumberofRegion();
+    uint8_t   max_num_of_regions = RH850_MPU_NumberofRegionsGet();
 
     /* Check whether region's index exceed max regions supported */
     FSP_ASSERT(p_region->no_of_region < max_num_of_regions);
 
     /* Set lower address and upper address for region */
-    RH850_MPU_SetRegion(p_region->no_of_region, p_region->start_address, p_region->size);
+    RH850_MPU_RegionSet(p_region->no_of_region, p_region->start_address, p_region->size);
 
     /* Set attribute for region */
-    RH850_MPU_SetAttr(p_region->no_of_region, (p_region->attribute));
+    RH850_MPU_AttrSet(p_region->no_of_region, (p_region->region_attr.attribute));
 
     return err;
 }
@@ -276,16 +276,16 @@ fsp_err_t R_BSP_MPURegionGet (bsp_mpu_region_t * const p_region_data, uint8_t r_
 {
     fsp_err_t err = FSP_SUCCESS;
     uint32_t  attr_value;
-    uint8_t   max_num_of_regions = RH850_MPU_GetTotalNumberofRegion();
+    uint8_t   max_num_of_regions = RH850_MPU_NumberofRegionsGet();
 
     /* Check whether region's index exceed max regions supported */
     FSP_ASSERT(r_index < max_num_of_regions);
 
-    p_region_data->start_address = RH850_MPU_GetLowerAddress(r_index);
-    p_region_data->size          = RH850_MPU_GetUpperAddress(r_index) - RH850_MPU_GetLowerAddress(r_index);
-    attr_value                  = RH850_MPU_GetAttr(r_index);
-    p_region_data->attribute    = attr_value;
-    p_region_data->no_of_region = r_index;
+    p_region_data->start_address = RH850_MPU_LowerAddressGet(r_index);
+    p_region_data->size          = RH850_MPU_UpperAddressGet(r_index) - RH850_MPU_LowerAddressGet(r_index);
+    attr_value = RH850_MPU_AttrGet(r_index);
+    p_region_data->region_attr.attribute = attr_value;
+    p_region_data->no_of_region          = r_index;
 
     return err;
 }
@@ -305,27 +305,8 @@ void R_BSP_MPUExecuteMemProtectionCheck (uint8_t                      spid,
                                          uint32_t                     size,
                                          bsp_mpu_mem_check_status_t * p_status)
 {
-    uint32_t res;
-    res = RH850_MPU_ExecuteMemProtectionCheck(spid, lower_add, size);
-    p_status->mem_check_status = res;
-}
+    rh850_mpu_mem_status_t mem_check_status;
 
-/*******************************************************************************************************************//**
- * Enable Instruction Cache.
- *
- * @retval None
- **********************************************************************************************************************/
-void R_BSP_InstructionCacheEnable (void)
-{
-    RH850_MPU_InstructionCacheEnable();
-}
-
-/*******************************************************************************************************************//**
- * Disable Instruction Cache.
- *
- * @retval None
- **********************************************************************************************************************/
-void R_BSP_InstructionCacheDisable (void)
-{
-    RH850_MPU_InstructionCacheDisable();
+    RH850_MPU_ExecMemProtectCheck(spid, lower_add, size, &mem_check_status);
+    p_status->mpu_status.mem_check_status = mem_check_status.mpu_status.status;
 }

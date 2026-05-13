@@ -624,6 +624,9 @@
 #define INTRI3C3HTX_IRQn                   ((IRQn_Type) 626) ///< EIC626 : INTRI3C3HTX
 #define INTRI3C3TEND_IRQn                  ((IRQn_Type) 627) ///< EIC627 : INTRI3C3TEND
 #define INTRI3C3EEI_IRQn                   ((IRQn_Type) 629) ///< EIC629 : INTRI3C3EEI
+#define SWDTFEINT_IRQn                     ((IRQn_Type) 630) ///< FEINT630 : SWDT_FEINT
+#define TPTMFEINT_IRQn                     ((IRQn_Type) 631) ///< FEINT631 : TPTM_PEx_FEINT
+#define ECMFEINT_IRQn                      ((IRQn_Type) 632) ///< FEINT632 : ECM_FEINT
 
 #define VECTOR_NUMBER_INTIPIR0             ((IRQn_Type) 0)   ///< EIC0 : INTIPIR0
 #define VECTOR_NUMBER_INTIPIR1             ((IRQn_Type) 1)   ///< EIC1 : INTIPIR1
@@ -1231,6 +1234,9 @@
 #define VECTOR_NUMBER_INTRI3C3HTX          ((IRQn_Type) 626) ///< EIC626 : INTRI3C3HTX
 #define VECTOR_NUMBER_INTRI3C3TEND         ((IRQn_Type) 627) ///< EIC627 : INTRI3C3TEND
 #define VECTOR_NUMBER_INTRI3C3EEI          ((IRQn_Type) 629) ///< EIC629 : INTRI3C3EEI
+#define VECTOR_NUMBER_SWDTFEINT            ((IRQn_Type) 630) ///< FEINT630 : SWDT_FEINT
+#define VECTOR_NUMBER_TPTMFEINT            ((IRQn_Type) 631) ///< FEINT631 : TPTM_PEx_FEINT
+#define VECTOR_NUMBER_ECMFEINT             ((IRQn_Type) 632) ///< FEINT632 : ECM_FEINT
 
 /** @} (end addtogroup BSP_MCU_RH850U2C8) */
 

@@ -122,7 +122,7 @@ typedef struct st_fsp_version
 /* Function-like macro used to wait for a condition to be met, most often used to wait for hardware register updates.
  * This macro can be redefined to add a timeout if necessary. */
 #ifndef FSP_HARDWARE_REGISTER_WAIT
- #define FSP_HARDWARE_REGISTER_WAIT(reg, required_value)    while ((reg) != (required_value)) {NOP(); /* Wait. */}
+ #define FSP_HARDWARE_REGISTER_WAIT(reg, required_value)    while ((reg) != (required_value)) {__NOP(); /* Wait. */}
 #endif
 
 /** Used to signify that the requested IRQ vector is not defined in this system. */
@@ -143,8 +143,8 @@ typedef struct st_fsp_version
 
 /* These macros abstract methods to save and restore the interrupt state for different architectures. */
 #if (0 == BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION)
- #define FSP_CRITICAL_SECTION_GET_CURRENT_STATE        __get_INTMASK
- #define FSP_CRITICAL_SECTION_SET_STATE                __set_INTMASK
+ #define FSP_CRITICAL_SECTION_GET_CURRENT_STATE        __RH850_IRQ_IntMaskGet
+ #define FSP_CRITICAL_SECTION_SET_STATE                __RH850_IRQ_IntMaskSet
  #define FSP_CRITICAL_SECTION_IRQ_MASK_SET             (1U)
 #endif
 
@@ -162,15 +162,15 @@ typedef struct st_fsp_version
 
 /** This macro for saving and restoring exception cause code in nested interrupt handling. */
 #if ((0 == BSP_CFG_RTOS) && (1 == BSP_NESTED_INTERRUPT))
- #define FSP_NESTED_SAVE                     \
-    volatile uint16_t eiic_val = STSR(EIWR); \
-    LDSR(EIWR, STSR(EIIC));                  \
-    EI();
+ #define FSP_NESTED_SAVE                                   \
+    volatile uint16_t eiic_val = __STSR(SR_EIWR, SL_EIWR); \
+    __LDSR(SR_EIWR, SL_EIWR, __STSR(SR_EIIC, SL_EIIC));    \
+    __EI();
 
- #define FSP_NESTED_RESTORE \
-    DI();                   \
-    LDSR(EIIC, eiic_val);   \
-    LDSR(EIWR, eiic_val);
+ #define FSP_NESTED_RESTORE             \
+    __DI();                             \
+    __LDSR(SR_EIIC, SL_EIIC, eiic_val); \
+    __LDSR(SR_EIWR, SL_EIWR, eiic_val);
 #endif
 
 /***********************************************************************************************************************

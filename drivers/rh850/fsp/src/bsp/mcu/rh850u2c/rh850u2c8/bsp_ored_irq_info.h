@@ -100,7 +100,7 @@
  **********************************************************************************************************************/
 
 /** Interrupt mask enumeration */
-typedef enum e_bsp_ored_t
+typedef enum e_bsp_ored_u2c8
 {
     BSP_MSPI_BLOCK(BSP_ORED_TRANSMIT, BSP_MSPI_OREDINT_TYPE_TRANSMIT)     ///< Interrupt mask for MSPI transmit
     BSP_MSPI_BLOCK(BSP_ORED_RECEIVE, BSP_MSPI_OREDINT_TYPE_RECEIVE)       ///< Interrupt mask for MSPI receive

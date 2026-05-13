@@ -47,7 +47,7 @@ static fsp_err_t r_ostm_open_param_checking(ostm_instance_ctrl_t * p_instance_ct
 #endif
 
 /* ISRs. */
-void ostm_int_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void ostm_int_isr(void);
 
 /***********************************************************************************************************************
  * Private global variables
@@ -610,7 +610,7 @@ static uint32_t r_ostm_clock_frequency_get (R_OSTMn_Type * p_ostm_regs)
 /***********************************************************************************************************************
  * Interrupt service routines
  **********************************************************************************************************************/
-void ostm_int_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void ostm_int_isr (void)
 {
     /* Save context if RTOS is used */
 

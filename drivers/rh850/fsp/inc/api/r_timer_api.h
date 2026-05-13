@@ -69,6 +69,8 @@ typedef enum e_timer_variant
     TIMER_VARIANT_16_BIT               ///< 16-bit timer
 } timer_variant_t;
 
+#ifndef BSP_OVERRIDE_TIMER_COMPARE_MATCH_T
+
 /** Options for storing compare match value */
 typedef enum e_timer_compare_match
 {
@@ -81,6 +83,8 @@ typedef enum e_timer_compare_match
     TIMER_COMPARE_MATCH_G = 6U,        ///< Compare match G value
     TIMER_COMPARE_MATCH_H = 7U,        ///< Compare match H value
 } timer_compare_match_t;
+
+#endif
 
 #ifndef BSP_OVERRIDE_CALLBACK_PARAMETER_T
 

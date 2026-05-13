@@ -20,7 +20,7 @@
  **********************************************************************************************************************/
 
 /** Trigger source event of DTSC */
-typedef enum dtsc_trigger_event
+typedef enum dtsc_trigger_event_u2c8
 {
     DTSC_TRIGGER_EVENT_ADCK_INTADCK1I0         = (0),    ///< INTADCK1I0
     DTSC_TRIGGER_EVENT_ADCK_INTADCK1I1         = (1),    ///< INTADCK1I1
@@ -148,8 +148,8 @@ typedef enum dtsc_trigger_event
     DTSC_TRIGGER_EVENT_TAUJ_INTTAUJ1I3         = (135),  ///< INTTAUJ1I3
     DTSC_TRIGGER_EVENT_TAUJ_INTTAUJ2I0         = (136),  ///< INTTAUJ2I0
     DTSC_TRIGGER_EVENT_TAUJ_INTTAUJ2I1         = (137),  ///< INTTAUJ2I1
-    DTSC_TRIGGER_EVENT_PSI50_INTPSI50RI        = (138),  ///< INTPSI50RI
-    DTSC_TRIGGER_EVENT_PSI51_INTPSI51RI        = (139),  ///< INTPSI51RI
+    DTSC_TRIGGER_EVENT_PSI5_INTPSI50RI         = (138),  ///< INTPSI50RI
+    DTSC_TRIGGER_EVENT_PSI5_INTPSI51RI         = (139),  ///< INTPSI51RI
     DTSC_TRIGGER_EVENT_TPTM_INTTPTMU00         = (140),  ///< INTTPTMU00
     DTSC_TRIGGER_EVENT_TPTM_INTTPTMU01         = (141),  ///< INTTPTMU01
     DTSC_TRIGGER_EVENT_FLASH_INTDMAFL0         = (142),  ///< INTDMAFL0

@@ -93,7 +93,8 @@ extern uint32_t r_bsp_cyclicrun_mode_wakeup_reg[];
  **********************************************************************************************************************/
 
 /* DATA SECTION */
-BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_CRUN_DATA, BSP_PRAGMA_SECTION_CRUN_CODE_DATA)
+BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_CRUN_DATA,
+                            BSP_PRAGMA_SECTION_CRUN_CODE_DATA BSP_PRAGMA_MEMORY_ATTRIBUTE_LARGE)
 
 R_PORT_Type * R_BSP_CyclicRun_PORT_TYPE[] =
 {
@@ -103,6 +104,7 @@ R_PORT_Type * R_BSP_CyclicRun_PORT_TYPE[] =
 };
 
 /** Array contains all functions' pointer used in CYCLIC Mode */
+
 void (* r_bsp_cyclicrun_mcu_standby_mode_funcs[BSP_MCU_STANDBY_MODE_INDEX_END])(void) =
 {
     [BSP_MCU_STANDBY_MODE_HALT]       = bsp_cyclicrun_halt,
@@ -113,7 +115,8 @@ void (* r_bsp_cyclicrun_mcu_standby_mode_funcs[BSP_MCU_STANDBY_MODE_INDEX_END])(
 BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_CRUN_DATA, BSP_PRAGMA_SECTION_DEFAULT)
 
 /* BSS SECTION */
-BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_CRUN_BSS, BSP_PRAGMA_SECTION_CRUN_CODE_BSS)
+BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_CRUN_BSS,
+                            BSP_PRAGMA_SECTION_CRUN_CODE_BSS BSP_PRAGMA_MEMORY_ATTRIBUTE_LARGE)
 
 /* Interrupt */
 /** This array holds callback functions. Used in Cyclic RUN Mode */
@@ -174,6 +177,7 @@ void R_BSP_CyclicRunSoftwareDelay (uint32_t delay, bsp_cyclicrun_delay_units_t u
  **********************************************************************************************************************/
 void * R_FSP_CyclicRunIsrContextGet (IRQn_Type const irq)
 {
+
     /* This provides access to the ISR context array defined in bsp_irq.c. This is an inline function instead of
      * being part of bsp_irq.c for performance considerations because it is used in interrupt service routines. */
     return gp_renesas_cyclicrun_isr_context[irq];
@@ -212,14 +216,12 @@ void R_BSP_CyclicRunIrqEnable (IRQn_Type const irq)
         R_INTC1_PE = (R_INTC1_PE0_Type *) (R_INTC1_PE0_BASE);
         R_INTC1_PE->EIC_b[irq].EIMK &= BSP_ENABLE_EIIC;
     }
-
     /* INTC2 */
     else if (irq < BSP_INTC_VECTOR_MAX_ENTRIES)
     {
         R_INTC2->EIC_b[irq].EIMK &= BSP_ENABLE_EIIC;
         R_INTC2->EIBD_b[irq].PEID = 0U;
     }
-
     /* FEINT */
     else if (irq < BSP_INT_VECTOR_MAX_ENTRIES)
     {
@@ -249,13 +251,11 @@ void R_BSP_CyclicRunIrqDisable (IRQn_Type const irq)
         R_INTC1_PE = (R_INTC1_PE0_Type *) (R_INTC1_PE0_BASE);
         R_INTC1_PE->EIC_b[irq].EIMK = BSP_DISABLE_EIIC;
     }
-
     /* INTC2 */
     else if (irq < BSP_INTC_VECTOR_MAX_ENTRIES)
     {
         R_INTC2->EIC_b[irq].EIMK = BSP_DISABLE_EIIC;
     }
-
     /* FEINT */
     else if (irq < BSP_INT_VECTOR_MAX_ENTRIES)
     {
@@ -288,13 +288,11 @@ void R_BSP_CyclicRunIrqCfg (IRQn_Type const irq, uint32_t priority, void * p_con
             R_INTC1_PE                 = (R_INTC1_PE0_Type *) (R_INTC1_PE0_BASE);
             R_INTC1_PE->EIC_b[irq].EIP = (uint16_t) (priority);
         }
-
         /* INTC2 */
         else if (irq < BSP_INTC_VECTOR_MAX_ENTRIES)
         {
             R_INTC2->EIC_b[irq].EIP = (uint16_t) (priority);
         }
-
         /* FEINT */
         else
         {
@@ -344,12 +342,12 @@ IRQn_Type R_FSP_CyclicRunCurrentIrqGet (void)
 
     if (*pfeintf != 0)                 /* FE interrupt */
     {
-        intid  = SCH1R(*pfeintf);
+        intid  = __SCH1R(*pfeintf);
         intid += BSP_INTC_VECTOR_MAX_ENTRIES;
     }
     else                               /* EI interrupt */
     {
-        intid = STSR(EIIC);
+        intid = __STSR(SR_EIIC, SL_EIIC);
         intid = intid & BSP_EIIC_MSK;
     }
 
@@ -360,7 +358,7 @@ IRQn_Type R_FSP_CyclicRunCurrentIrqGet (void)
 /*******************************************************************************************************************//**
  * FENMI function. Used in Cyclic RUN Mode
  **********************************************************************************************************************/
-void FENMI_CyclicRun (void)
+BSP_FENMI_INTERRUPT_ATTRIBUTE void BSP_PLACE_IN_SECTION (BSP_SECTION_CRUN_CODE_TEXT) FENMI_CyclicRun(void)
 {
     uint32_t   channel;
     uint32_t * p_fenmif;
@@ -369,7 +367,7 @@ void FENMI_CyclicRun (void)
     p_fenmif = (uint32_t *) (&R_FENC->FENMIF);
 
     /* Extract channel field via SCH1R */
-    channel = SCH1R(*p_fenmif) - 1;
+    channel = __SCH1R(*p_fenmif) - 1;
 
     /* Call the irq callback */
     bsp_cyclicrun_group_isr_call((bsp_grp_irq_t) channel);
@@ -378,7 +376,7 @@ void FENMI_CyclicRun (void)
 /*******************************************************************************************************************//**
  * FEINT function. Used in Cyclic RUN Mode
  **********************************************************************************************************************/
-void FEINT_CyclicRun (void)
+BSP_FEINT_INTERRUPT_ATTRIBUTE void BSP_PLACE_IN_SECTION (BSP_SECTION_CRUN_CODE_TEXT) FEINT_CyclicRun(void)
 {
     uint32_t   channel;
     uint32_t * pfeintf;
@@ -387,7 +385,7 @@ void FEINT_CyclicRun (void)
     pfeintf = (uint32_t *) (&R_FEINC->FEINTF);
 
     /* Extract channel field via SCH1R */
-    channel  = SCH1R(*pfeintf);
+    channel  = __SCH1R(*pfeintf);
     channel += BSP_FENMI_VECTOR_MAX_ENTRIES;
 
     /* call the irq callback */
@@ -725,9 +723,9 @@ bsp_wk_factor_t R_BSP_CyclicRunWakeUpFactorGetAndClear (void)
     /* Check whether it was waked up or not */
     if (0U != ((R_WUF->WUFMON) & BSP_WAKEUP_FACTOR_1_MONITOR_MASK))
     {
-        uint8_t bit_one_pos    = SCH1R(((R_WUF->WUFMON) & BSP_WAKEUP_FACTOR_1_MONITOR_MASK) >> 16U) - 1U;
+        uint8_t bit_one_pos    = __SCH1R(((R_WUF->WUFMON) & BSP_WAKEUP_FACTOR_1_MONITOR_MASK) >> 16U) - 1U;
         uint8_t wakeup_bit_pos =
-            SCH1R(*((volatile uint32_t *) r_bsp_cyclicrun_mode_wakeup_reg[bit_one_pos + BSP_WK_REG_WUF_A0])) - 1U;
+            __SCH1R(*((volatile uint32_t *) r_bsp_cyclicrun_mode_wakeup_reg[bit_one_pos + BSP_WK_REG_WUF_A0])) - 1U;
         factor =
             (bsp_wk_factor_t) (wakeup_bit_pos + (bit_one_pos * BSP_WAKEUP_FACTOR_WORD) +
                                BSP_STANDBY_WAKE_UP_FACTOR_A0_START);
@@ -802,7 +800,7 @@ void R_BSP_CyclicRunFPUInit (void)
         "stsr  6, r10, 1        \n"    /* r10 <- PID */
         "shl  21, r10           \n"
         "shr  30, r10           \n"
-        "bz  .exit_fpu_init     \n"    /* detecting FPU */
+        "bz  _exit_fpu_init     \n"    /* detecting FPU */
         "stsr  5, r10, 0        \n"    /* r10 <- PSW */
         "movhi  0x0001, r0, r11 \n"
         "or  r11, r10           \n"
@@ -810,7 +808,7 @@ void R_BSP_CyclicRunFPUInit (void)
         "movhi  0x0002, r0, r11 \n"
         "ldsr  r11, 6, 0        \n"
         "ldsr  r0, 7, 0         \n"    /* initialize FPEPC */
-        ".exit_fpu_init:        \n"
+        "_exit_fpu_init:        \n"
         );
 }
 
@@ -823,7 +821,7 @@ void R_BSP_CyclicRunFXUInit (void)
         "stsr  6, r10, 1            \n" /* r10 <- PID */
         "shl  20, r10               \n"
         "shr  31, r10               \n"
-        "bz  .exit_fxu_init         \n" /* detecting FXU */
+        "bz  _exit_fxu_init         \n" /* detecting FXU */
         "stsr  5, r10, 0            \n" /* r10 <- PSW */
         "movhi  0x0002, r0, r11     \n"
         "or  r11, r10               \n"
@@ -832,7 +830,7 @@ void R_BSP_CyclicRunFXUInit (void)
         "ldsr  r11, 6, 10           \n" /* initialize FXSR */
         "ldsr  r0, 8, 10            \n" /* initialize FXST */
         "ldsr  r0, 10, 10           \n" /* initialize FXCFG */
-        ".exit_fxu_init:            \n"
+        "_exit_fxu_init:            \n"
         );
 }
 
@@ -851,7 +849,7 @@ void R_BSP_CyclicRunMPUInstructionCacheEnable (void)
         "ldsr r10, 24, 4                    \n" /* Set value SR24, 4 ICCTRL */
         "synci                              \n"
     );
- #elif defined(__ghs__) || defined(__GNUC__)
+ #elif defined(__ghs__) || defined(__GNUC__) || defined(__ICCRH850__)
     __asm__ volatile (
         "mov 3, r10                         \n"
         "ldsr r10, 24, 4                    \n" /* Set value SR24, 4 ICCTRL */
@@ -874,7 +872,7 @@ void R_BSP_CyclicRunMPUInstructionCacheDisable (void)
         "ldsr r10, 24, 4                    \n" /* Set value SR24, 4 ICCTRL */
         "synci                              \n"
     );
- #elif defined(__ghs__) || defined(__GNUC__)
+ #elif defined(__ghs__) || defined(__GNUC__) || defined(__ICCRH850__)
     __asm__ volatile (
         "mov 0, r10                         \n"
         "ldsr r10, 24, 4                    \n" /* Set value SR24, 4 ICCTRL */
@@ -909,13 +907,11 @@ void bsp_cyclicrun_irq_cfg (void)
         {
             R_INTC1_PE->EIC_b[irq].EITB |= (uint16_t) (BSP_EIC_EITB_SET);
         }
-
         /* INTC2 */
         else if (irq < BSP_INTC_VECTOR_MAX_ENTRIES)
         {
             R_INTC2->EIC_b[irq].EITB |= (uint16_t) (BSP_EIC_EITB_SET);
         }
-
         /* FEINT */
         else
         {
@@ -924,13 +920,13 @@ void bsp_cyclicrun_irq_cfg (void)
     }
 
     /* Enable interrupt */
-    EI();
+    __EI();
 }
 
 /*******************************************************************************************************************//**
  * Dummy ISR. Used in Cyclic RUN Mode
  **********************************************************************************************************************/
-void DummyIsr_CyclicRun (void)
+BSP_INTERRUPT_ATTRIBUTE void BSP_PLACE_IN_SECTION (BSP_SECTION_CRUN_CODE_TEXT) DummyIsr_CyclicRun(void)
 {
     while (1)
     {
@@ -985,14 +981,14 @@ void bsp_cyclicrun_prv_software_delay_loop (uint32_t loop_cnt)
          "nop            \n"
          "loop r6, 0"
     );
- #elif defined(__ghs__) || defined(__GNUC__)
+ #elif defined(__ghs__) || defined(__GNUC__) || defined(__ICCRH850__)
     __asm__ volatile (
          "nop            \n"
          "nop            \n"
 #if defined(__ghs__)
          "loop_label%=: "
          "loop %0, loop_label%="
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) || defined(__ICCRH850__)
          "loop %0, 0"
 #endif
          : "+r" (loop_cnt)
@@ -1039,7 +1035,7 @@ static void bsp_cyclicrun_group_isr_call (bsp_grp_irq_t irq)
 static void bsp_cyclicrun_deep_stop_mode (void)
 {
     /* Disable Interrupt */
-    DI();
+    __DI();
 
     /* Reset Wake Up Factor Flag */
     R_SYS_RESET->RESFC = BSP_RESET_FLAG_MASK;
@@ -1059,7 +1055,7 @@ static void bsp_cyclicrun_deep_stop_mode (void)
 static void bsp_cyclicrun_stop_mode (void)
 {
     /* Disable Interrupt */
-    DI();
+    __DI();
 
     /* Reset Wake Up Factor Flag */
     R_SYS_RESET->RESFC = BSP_RESET_FLAG_MASK;
@@ -1077,7 +1073,7 @@ static void bsp_cyclicrun_stop_mode (void)
  **********************************************************************************************************************/
 static void bsp_cyclicrun_halt (void)
 {
-    HALT();
+    __HALT();
 }
 
 /*******************************************************************************************************************//**

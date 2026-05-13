@@ -62,7 +62,7 @@ FSP_HEADER
 #define BSP_CRG_CONTROL_CRAM0                    BSP_CRG_CONTROL_CRAM00                ///< Alias for CRAM0 Control definition
 
 /** Utility macro to get bit index (SCH1R encoding) */
-#define BSP_GUARD_GET_BIT(value)    (SCH1R(value) - 1)                                 ///< Search bit 1 from the LSB
+#define BSP_GUARD_GET_BIT(value)    (__SCH1R(value) - 1)                               ///< Search bit 1 from the LSB
 
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU_RH850U2CX
@@ -671,7 +671,7 @@ typedef struct st_bsp_guard_protection_setting
 
         /** sDMAC Guard settings */
         bsp_dmag_protection_setting_t dmagrd_setting;
-    };
+    } slave_guard_protection;
 } bsp_guard_protection_setting_t;
 
 /** Guard protection status error codes */

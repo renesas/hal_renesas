@@ -19,7 +19,7 @@
  **********************************************************************************************************************/
 
 /** Trigger source event of DTSC */
-typedef enum dtsc_trigger_event
+typedef enum dtsc_trigger_event_u2b10
 {
     DTSC_TRIGGER_EVENT_DFP_DFP_INT_OUT0         = (0),    ///< DFP_INT_OUT0
     DTSC_TRIGGER_EVENT_DFP_DFP_INT_OUT1         = (1),    ///< DFP_INT_OUT1

@@ -20,7 +20,7 @@
  **********************************************************************************************************************/
 
 /** DMA Trigger Factor */
-typedef enum e_dmac_trigger_event
+typedef enum e_dmac_trigger_event_u2c8
 {
     DMAC_TRIGGER_EVENT_PORT_IRQ0               = (0),     ///< IRQ0
     DMAC_TRIGGER_EVENT_PORT_IRQ1               = (1),     ///< IRQ1

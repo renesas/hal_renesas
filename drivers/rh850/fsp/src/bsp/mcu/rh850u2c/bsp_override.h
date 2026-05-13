@@ -28,12 +28,13 @@
 #define BSP_OVERRIDE_UART_PARITY_T
 
 /* Override for Timer */
-#define BSP_OVERRIDE_TIMER_EVENT_T           (1U)
-#define BSP_OVERRIDE_CALLBACK_PARAMETER_T    (1U)
+#define BSP_OVERRIDE_TIMER_EVENT_T            (1U)
+#define BSP_OVERRIDE_TIMER_COMPARE_MATCH_T    (1U)
+#define BSP_OVERRIDE_CALLBACK_PARAMETER_T     (1U)
 
 /* Override for WDT */
-#define BSP_OVERRIDE_WDT_TIMEOUT_T           (1U)
-#define BSP_OVERRIDE_WDT_CLOCK_DIVISION_T    (1U)
+#define BSP_OVERRIDE_WDT_TIMEOUT_T            (1U)
+#define BSP_OVERRIDE_WDT_CLOCK_DIVISION_T     (1U)
 
 /* Override for Transfer Module */
 #define BSP_OVERRIDE_TRANSFER_MODE_T
@@ -76,6 +77,24 @@
 
 /* Override for IOPORT */
 #define BSP_OVERRIDE_IOPORT_FILTER_SIGNAL_T
+
+/* Override for VMON */
+#define BSP_OVERRIDE_VMON_FACTOR_STATUS_T
+#define BSP_OVERRIDE_VMON_FACTOR_DETECTION_T
+
+/* Overrides for CAN */
+#define BSP_OVERRIDE_CAN_EVENT_T
+
+/* Override for CGC */
+#define BSP_OVERRIDE_CGC_CLOCK_T
+#define BSP_OVERRIDE_CGC_PLL_CFG_T
+#define BSP_OVERRIDE_CGC_CLOCK_CHANGE_T
+#define BSP_OVERRIDE_CGC_CLOCKS_CFG_T
+#define BSP_OVERRIDE_CGC_SYSTEM_CLOCK_CFG_T
+#define BSP_OVERRIDE_CGC_SYSTEM_CLOCK_BEHAVIOR_T
+
+/* Override for POSITION_SENSOR */
+#define BSP_OVERRIDE_POSITION_SENSOR_OUTPUT_CFG_T
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -291,13 +310,29 @@ typedef struct st_transfer_info
     {
         struct
         {
-            uint32_t : 13;
+            /** DMA source transaction size */
+            transfer_size_t src_trans_size : 4;
 
-            /** Configure DMA transfer speed: Normal or Specific Clock mode. */
-            transfer_mode_t transfer_mode : 5;
+            /** DMA destination transaction size */
+            transfer_size_t des_trans_size : 4;
+
+            /** Source address mode */
+            transfer_addr_mode_t src_addr_mode : 1;
+
+            uint32_t : 1;
+
+            /** Destination address mode */
+            transfer_addr_mode_t des_addr_mode : 1;
+
+            uint32_t : 1;
 
             /** Select transfer request type (Auto Software/Hardware). */
             transfer_request_t transfer_request_type : 1;
+
+            uint32_t : 7;
+
+            /** Configure DMA transfer speed: Normal or Specific Clock mode. */
+            transfer_mode_t transfer_mode : 4;
 
             /** Transfer completion interrupt enable  */
             uint32_t transfer_completion_irq : 1;
@@ -308,21 +343,11 @@ typedef struct st_transfer_info
             /** Channel address error interrupt enable  */
             uint32_t channel_address_error_irq : 1;
 
-            /** Destination address mode */
-            transfer_addr_mode_t des_addr_mode : 1;
-
-            /** Source address mode */
-            transfer_addr_mode_t src_addr_mode : 1;
-
-            /** DMA destination transaction size */
-            transfer_size_t des_trans_size : 4;
-
-            /** DMA source transaction size */
-            transfer_size_t src_trans_size : 4;
+            uint32_t : 5;
         } transfer_mode_b;
 
         uint32_t transfer_mode;        ///< Transfer mode register
-    };
+    } transfer_mode_cfg;
 
     /* Transfer Control Register settings*/
     union
@@ -347,8 +372,7 @@ typedef struct st_transfer_info
             /** Reload function 2 Setting  */
             transfer_reload_function_2_t reload_func_2 : 2;
 
-            /** Select whether to enable continuous transfer */
-            uint32_t continuous_transfer : 1;
+            uint32_t : 1;
 
             /** Transfer completion interrupt enable  */
             uint32_t transfer_completion_irq : 1;
@@ -375,7 +399,7 @@ typedef struct st_transfer_info
         } transfer_control_b;
 
         uint32_t transfer_control;     ///< Transfer control register
-    };
+    }               transfer_control_cfg;
     void * volatile p_reload_src_addr; ///< Source address for reload
     void * volatile p_reload_des_addr; ///< Destination address for reload
 } transfer_info_t;
@@ -420,10 +444,6 @@ typedef enum e_timer_event
 {
     TIMER_EVENT_CYCLE_END,             ///< Requested timer delay has expired or timer has wrapped around
     TIMER_EVENT_INPUT_CAPTURE,         ///< A capture has occurred on the input signal pin.
-    TIMER_EVENT_PWSD_QUEUE_FULL,       ///< PWSD queue full happened, applied only for PWM-Diag.
-    TIMER_EVENT_PWGC_INTF_0,           ///< PWGC interrupt factor group 0 happened, apply only for PWM-Diag.
-    TIMER_EVENT_PWGC_INTF_1,           ///< PWGC interrupt factor group 1 happened, apply only for PWM-Diag.
-    TIMER_EVENT_PWGC_INTF_2,           ///< PWGC interrupt factor group 2 happened, apply only for PWM-Diag.
     TIMER_EVENT_COMPARE_MATCH_0,       ///< A Period/Compare Match 0 interrupt event occurs
     TIMER_EVENT_COMPARE_MATCH_1,       ///< A Compare Match 1 interrupt event occurs
     TIMER_EVENT_COMPARE_MATCH_2,       ///< A Compare Match 2 interrupt event occurs
@@ -448,7 +468,20 @@ typedef enum e_timer_event
     TIMER_EVENT_CAPTURE_V,             ///< A capture has occurred on signal V
     TIMER_EVENT_CAPTURE_W,             ///< A capture has occurred on signal W
     TIMER_EVENT_PEAK_INTERRUPT,        ///< Peak interrupt request, apply only for TAPA
-    TIMER_EVENT_VALLEY_INTERRUPT       ///< Valley interrupt request, apply only for TAPA
+    TIMER_EVENT_VALLEY_INTERRUPT,      ///< Valley interrupt request, apply only for TAPA
+    TIMER_EVENT_PWSD_QUEUE_FULL,       ///< PWSD queue full happened, applied only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_00,          ///< PWGC interrupt factor 0 group 0 happened, apply only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_01,          ///< PWGC interrupt factor 0 group 1 happened, apply only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_02,          ///< PWGC interrupt factor 0 group 2 happened, apply only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_10,          ///< PWGC interrupt factor 1 group 0 happened, apply only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_11,          ///< PWGC interrupt factor 1 group 1 happened, apply only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_12,          ///< PWGC interrupt factor 1 group 2 happened, apply only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_20,          ///< PWGC interrupt factor 2 group 0 happened, apply only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_21,          ///< PWGC interrupt factor 2 group 1 happened, apply only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_22,          ///< PWGC interrupt factor 2 group 2 happened, apply only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_30,          ///< PWGC interrupt factor 3 group 0 happened, apply only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_31,          ///< PWGC interrupt factor 3 group 1 happened, apply only for PWM-Diag.
+    TIMER_EVENT_PWGC_INTF_32,          ///< PWGC interrupt factor 3 group 2 happened, apply only for PWM-Diag.
 } timer_event_t;
 
 /** Callback function parameter data */
@@ -461,6 +494,20 @@ typedef struct st_timer_callback_args
     /** Most recent capture, only valid if event is TIMER_EVENT_INPUT_CAPTURE. */
     uint64_t capture;
 } timer_callback_args_t;
+
+/** Options for storing compare match value */
+typedef enum e_timer_compare_match
+{
+    TIMER_COMPARE_MATCH_A   = 0U,      ///< Compare match A value
+    TIMER_COMPARE_MATCH_B   = 1U,      ///< Compare match B value
+    TIMER_COMPARE_MATCH_C   = 2U,      ///< Compare match C value
+    TIMER_COMPARE_MATCH_D   = 3U,      ///< Compare match D value
+    TIMER_COMPARE_MATCH_E   = 4U,      ///< Compare match E value
+    TIMER_COMPARE_MATCH_F   = 5U,      ///< Compare match F value
+    TIMER_COMPARE_MATCH_G   = 6U,      ///< Compare match G value
+    TIMER_COMPARE_MATCH_H   = 7U,      ///< Compare match H value
+    TIMER_COMPARE_MATCH_MAX = 0x1FFFU, ///< Sentinel to force 2-byte minimum enum size
+} timer_compare_match_t;
 
 /** MSPI data bit width */
 typedef enum e_spi_bit_width
@@ -705,16 +752,16 @@ typedef enum e_adc_channel
 /** UART Event codes */
 typedef enum e_uart_event
 {
-    UART_EVENT_ERR_BIT     = 0x01 << 0, ///< Bit error event
-    UART_EVENT_ERR_OVERRUN = 0x01 << 2, ///< Overrun error event
-    UART_EVENT_ERR_FRAMING = 0x01 << 3, ///< Frame error event
-    UART_EVENT_ERR_EXPAND  = 0x01 << 4, ///< Expansion bit error event
-    UART_EVENT_ERR_ID      = 0x01 << 5, ///< ID match error event
-    UART_EVENT_ERR_PARITY  = 0x01 << 6, ///< Parity error event
-    UART_EVENT_TX_COMPLETE = 0x00,      ///< Transmit complete event
-    UART_EVENT_RX_CHAR     = 0xFE,      ///< Character received
-    UART_EVENT_RX_COMPLETE = 0xFF,      ///< Receive complete event
-    UART_EVENT_ID_MATCH    = 0x30       ///< Receive data matched the ID value
+    UART_EVENT_ERR_BIT     = 0x01,     ///< Bit error event
+    UART_EVENT_ERR_OVERRUN = 0x04,     ///< Overrun error event
+    UART_EVENT_ERR_FRAMING = 0x08,     ///< Frame error event
+    UART_EVENT_ERR_EXPAND  = 0x10,     ///< Expansion bit error event
+    UART_EVENT_ERR_ID      = 0x20,     ///< ID match error event
+    UART_EVENT_ERR_PARITY  = 0x40,     ///< Parity error event
+    UART_EVENT_TX_COMPLETE = 0x00,     ///< Transmit complete event
+    UART_EVENT_RX_CHAR     = 0xFE,     ///< Character received
+    UART_EVENT_RX_COMPLETE = 0xFF,     ///< Receive complete event
+    UART_EVENT_ID_MATCH    = 0x30      ///< Receive data matched the ID value
 } uart_event_t;
 
 /** UART Data bit length definition */
@@ -785,6 +832,8 @@ typedef enum e_ether_event
  *                          ETHER_PHY
  **********************************************************************************************************************/
 
+#if (BSP_FEATURE_ETND_IS_AVAILABLE)
+
 /** Phy LSI */
 typedef enum e_ether_phy_lsi_type
 {
@@ -794,6 +843,7 @@ typedef enum e_ether_phy_lsi_type
     ETHER_PHY_LSI_TYPE_88E1112     = 3,    ///< Select configuration for 88E1112.
     ETHER_PHY_LSI_TYPE_CUSTOM      = 0xFFU ///< Select configuration for User custom.
 } ether_phy_lsi_type_t;
+#endif
 
 /***********************************************************************************************************************
  *                          CRC
@@ -999,6 +1049,117 @@ typedef enum e_ioport_filter_signal
     IOPORT_FILTER_SIGNAL_SSIF1RXD,             ///< Select Enable Noise Filter SSIF1RXD
     IOPORT_FILTER_SIGNAL_MAX                   ///< The number of element
 } ioport_filter_signal_t;
+
+/***********************************************************************************************************************
+ *                          VMON
+ **********************************************************************************************************************/
+
+/**Factor detection status. */
+typedef enum e_vmon_factor_detection
+{
+    VMON_FACTOR_DETECTION_NO_VIOLATION,   ///< No high voltage violation detected
+    VMON_FACTOR_DETECTION_LOW_VIOLATION,  ///< Low voltage violation detected
+    VMON_FACTOR_DETECTION_HIGH_VIOLATION, ///< High voltage violation detected
+} vmon_factor_detection_t;
+
+/** VMON factor status structure. */
+typedef struct st_vmon_factor_status
+{
+    vmon_factor_detection_t awovdd_status; ///< Voltage awovdd status
+    vmon_factor_detection_t isovdd_status; ///< Voltage isovdd status
+    vmon_factor_detection_t vcc_status;    ///< Voltage vcc status
+    vmon_factor_detection_t e0vcc_status;  ///< Voltage e0vcc status
+} vmon_factor_status_t;
+
+/***********************************************************************************************************************
+ *                          CANFD
+ **********************************************************************************************************************/
+
+/** CAN event codes */
+typedef enum e_can_event
+{
+    CAN_EVENT_ERR_WARNING          = 0x0002,  ///< Error Warning event.
+    CAN_EVENT_ERR_PASSIVE          = 0x0004,  ///< Error Passive event.
+    CAN_EVENT_ERR_BUS_OFF          = 0x0008,  ///< Bus Off event.
+    CAN_EVENT_BUS_RECOVERY         = 0x0010,  ///< Bus Off Recovery event.
+    CAN_EVENT_MAILBOX_MESSAGE_LOST = 0x0020,  ///< Mailbox has been overrun.
+    CAN_EVENT_ERR_BUS_LOCK         = 0x0080,  ///< Bus lock detected (32 consecutive dominant bits).
+    CAN_EVENT_ERR_CHANNEL          = 0x0100,  ///< Channel error has occurred.
+    CAN_EVENT_TX_ABORTED           = 0x0200,  ///< Transmit abort event.
+    CAN_EVENT_RX_COMPLETE          = 0x0400,  ///< Receive complete event.
+    CAN_EVENT_TX_COMPLETE          = 0x0800,  ///< Transmit complete event.
+    CAN_EVENT_ERR_GLOBAL           = 0x1000,  ///< Global error has occurred.
+    CAN_EVENT_TX_FIFO_EMPTY        = 0x2000,  ///< Transmit FIFO is empty.
+    CAN_EVENT_FIFO_MESSAGE_LOST    = 0x4000,  ///< Receive FIFO overrun.
+    CAN_EVENT_TX_QUEUE_EMPTY       = 0x8000,  ///< Transmit Queue is empty
+    CAN_EVENT_FIFO_THRESHOLD_REACH = 0x10000, ///< FIFO configured threshold is reached.
+    CAN_EVENT_TX_FILTER_REJECTED   = 0x20000, ///< Transmit Filter rejected frame.
+    CAN_EVENT_RX_FILTER_REJECTED   = 0x40000  ///< Receive Filter rejected frame.
+} can_event_t;
+
+/***********************************************************************************************************************
+ *                          CGC
+ **********************************************************************************************************************/
+
+/** System clock source identifiers */
+typedef enum e_cgc_clock
+{
+    CGC_CLOCK_MAIN_OSC = 0,            ///< The main oscillator
+    CGC_CLOCK_SUBCLOCK = 1,            ///< The subclock oscillator
+    CGC_CLOCK_PLL      = 2,            ///< The PLL oscillator
+    CGC_CLOCK_SSCG     = 3,            ///< The SSCG oscillator
+    CGC_CLOCK_HOCO     = 4,            ///< The high speed on chip oscillator
+    CGC_CLOCK_LOCO     = 5,            ///< The low speed on chip oscillator
+} cgc_clock_t;
+
+/** Clock configuration structure */
+typedef struct st_cgc_pll_cfg
+{
+    cgc_clock_t source_clock;          ///< PLL source clock
+} cgc_pll_cfg_t;
+
+/** Clock options */
+typedef enum e_cgc_clock_change
+{
+    CGC_CLOCK_CHANGE_STOP  = 0,        ///< Stop the clock
+    CGC_CLOCK_CHANGE_START = 1,        ///< Start the clock
+    CGC_CLOCK_CHANGE_NONE  = 2,        ///< No change to the clock
+} cgc_clock_change_t;
+
+/** Clock configuration */
+typedef struct st_cgc_clocks_cfg
+{
+    cgc_clock_change_t mainosc_state;  ///< State of Main oscillator
+    cgc_clock_change_t pll_sscg_state; ///< State of PLL/SSCG
+    cgc_clock_change_t subosc_state;   ///< State of Sub oscillator
+} cgc_clocks_cfg_t;
+
+/** System clock behaviors options */
+typedef enum e_cgc_system_clock_behavior
+{
+    CGC_SYSTEM_CLOCK_BEHAVIOR_GEAR_UP   = 0, ///< Shifting the System Clock Gear Up
+    CGC_SYSTEM_CLOCK_BEHAVIOR_GEAR_DOWN = 1, ///< Shifting the System Clock Gear Down
+    CGC_SYSTEM_CLOCK_BEHAVIOR_UNCHANGED = 2, ///< Do not change the System Clock gear
+} cgc_system_clock_behavior_t;
+
+/** Clock configuration structure */
+typedef struct st_cgc_system_clock_cfg
+{
+    cgc_system_clock_behavior_t clean_clock_gear; ///< Gear behavior for CLK_SYS_CLEAN
+    cgc_system_clock_behavior_t sscg_clock_gear;  ///< Gear behavior for CLK_SYS_SSCG
+} cgc_system_clock_cfg_t;
+
+/***********************************************************************************************************************
+ *                          POSITION SENSOR
+ **********************************************************************************************************************/
+
+typedef enum e_position_sensor_output_cfg
+{
+    POSITION_SENSOR_OUTPUT_CFG_AOUT = 0, ///< Analog out
+    POSITION_SENSOR_OUTPUT_CFG_PWM  = 1, ///< PWM output
+    POSITION_SENSOR_OUTPUT_CFG_SENT = 2, ///< SENT
+    POSITION_SENSOR_OUTPUT_CFG_I2C  = 6  ///< I2C
+} position_sensor_output_cfg_t;
 
 /***********************************************************************************************************************
  * Exported global variables

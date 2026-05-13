@@ -20,7 +20,7 @@
  **********************************************************************************************************************/
 
 /** Trigger source event of DTSC */
-typedef enum dtsc_trigger_event
+typedef enum dtsc_trigger_event_u2b6
 {
     DTSC_TRIGGER_EVENT_EMU_EMU0_INT0            = (0),    ///< EMU0_INT0
     DTSC_TRIGGER_EVENT_EMU_EMU0_INT1            = (1),    ///< EMU0_INT1

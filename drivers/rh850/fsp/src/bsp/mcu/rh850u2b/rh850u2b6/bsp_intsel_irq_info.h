@@ -97,7 +97,7 @@
     BSP_INTSEL_RSCANFD ## instance ## _MUX14 = BSP_INTSEL_CREATE(BSP_INTSEL_MOD_CANFD, 0, ((instance) + 1), 14)
 
 /** BSP Interrupt Select Enum */
-typedef enum e_bsp_intsel
+typedef enum e_bsp_intsel_u2b6
 {
     BSP_INTSEL_RLIN_MUX_DEFINE(6),                                                    ///< RLIN3 source 6
     BSP_INTSEL_RLIN_MUX_DEFINE(7),                                                    ///< RLIN3 source 7

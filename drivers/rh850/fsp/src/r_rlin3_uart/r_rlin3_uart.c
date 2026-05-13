@@ -86,9 +86,9 @@ static fsp_err_t r_rlin3_uart_read_write_param_check(rlin3_uart_instance_ctrl_t 
                                                      uint32_t const                           bytes);
 
 #endif
-void rlin3_uart_txi_isr(void);
-void rlin3_uart_rxi_isr(void);
-void rlin3_uart_eri_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void rlin3_uart_txi_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void rlin3_uart_rxi_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void rlin3_uart_eri_isr(void);
 
 /***********************************************************************************************************************
  * Private global variables
@@ -1188,7 +1188,7 @@ static fsp_err_t r_rlin3_uart_read_write_param_check (rlin3_uart_instance_ctrl_t
  * register transmit successfully, and the next data can be written. This interrupt writes the next data. In buffer
  * transmission, UART Buffer Transmission Flag has been clear after the last data byte is written
  **********************************************************************************************************************/
-void rlin3_uart_txi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void rlin3_uart_txi_isr (void)
 {
     FSP_CONTEXT_SAVE
 
@@ -1246,7 +1246,7 @@ void rlin3_uart_txi_isr (void)
  *    R_RLIN3_UART_Read() if a transfer instance is used for reception.
  *  - UART_EVENT_RX_CHAR: Data is received asynchronously (read has not been called).
  **********************************************************************************************************************/
-void rlin3_uart_rxi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void rlin3_uart_rxi_isr (void)
 {
     FSP_CONTEXT_SAVE
 
@@ -1291,7 +1291,7 @@ void rlin3_uart_rxi_isr (void)
  * ERI interrupt processing for UART mode. When an ERI interrupt fires, the user callback function is called if it is
  * registered in R_RLIN3_UART_Open() with the event code that triggered the interrupt.
  **********************************************************************************************************************/
-void rlin3_uart_eri_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void rlin3_uart_eri_isr (void)
 {
     FSP_CONTEXT_SAVE
 

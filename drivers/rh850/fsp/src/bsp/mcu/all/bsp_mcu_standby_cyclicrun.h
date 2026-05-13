@@ -43,8 +43,9 @@ typedef enum e_bsp_cyclicrun_delay_units
 /***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
-extern void        * gp_renesas_cyclicrun_isr_context[BSP_INT_VECTOR_MAX_ENTRIES];
-extern R_PORT_Type * R_BSP_CyclicRun_PORT_TYPE[];
+extern BSP_PRAGMA_MEMORY_ATTRIBUTE_LARGE void * gp_renesas_cyclicrun_isr_context[BSP_INT_VECTOR_MAX_ENTRIES];
+
+extern BSP_PRAGMA_MEMORY_ATTRIBUTE_LARGE R_PORT_Type * R_BSP_CyclicRun_PORT_TYPE[];
 
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
@@ -62,7 +63,8 @@ void      R_BSP_CyclicRunIrqCfg(IRQn_Type const irq, uint32_t priority, void * p
 void      R_BSP_CyclicRunIrqCfgEnable(IRQn_Type const irq, uint16_t priority, void * p_context);
 IRQn_Type R_FSP_CyclicRunCurrentIrqGet(void);
 void      bsp_cyclicrun_irq_cfg(void);
-void      DummyIsr_CyclicRun(void);
+
+BSP_INTERRUPT_ATTRIBUTE void DummyIsr_CyclicRun(void);
 
 /* Clock controller */
 void     R_BSP_CyclicRunInitClock(void);

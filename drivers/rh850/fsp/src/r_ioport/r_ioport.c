@@ -15,9 +15,6 @@
  * Macro definitions
  **********************************************************************************************************************/
 
-/* "PORT" in ASCII, used to determine if the module is open */
-#define IOPORT_OPEN               (0x504F5254U)
-#define IOPORT_CLOSED             (0x00000000U)
 #define IOPORT_DNF_ELEMENT(table)    ((unsigned) (sizeof(table) / sizeof((table)[0])))
 
 /* Shift to get port in bsp_io_port_t and bsp_io_port_pin_t enums. */
@@ -2197,11 +2194,25 @@ fsp_err_t R_IOPORT_NoiseFilterCfg (ioport_ctrl_t * const       p_ctrl,
     uint8_t fcla_ctrl_value = (uint8_t) ((bypass_mode << R_FCLACTL_TAPA_FCLACTL0_TAPA_BYPS_Pos) |
                                          (detection_mode << R_FCLACTL_TAPA_FCLACTL0_TAPA_INTR_Pos));
 
-    /* Configuration for Prescaler */
-    *(g_ioport_dnf_enable_table[filter_signal].p_reg_dnfa_ctrl) = dnfa_ctrl_value;
+    if (NULL != g_ioport_dnf_enable_table[filter_signal].p_reg_dnfa_ctrl)
+    {
+        /* Configuration for Prescaler */
+        *(g_ioport_dnf_enable_table[filter_signal].p_reg_dnfa_ctrl) = dnfa_ctrl_value;
+    }
+    else
+    {
+        /* Do nothing */
+    }
 
-    /* Configuration for Edge Detector */
-    *(g_ioport_dnf_enable_table[filter_signal].p_reg_fcla_ctrl) = fcla_ctrl_value;
+    if (NULL != g_ioport_dnf_enable_table[filter_signal].p_reg_fcla_ctrl)
+    {
+        /* Configuration for Edge Detector */
+        *(g_ioport_dnf_enable_table[filter_signal].p_reg_fcla_ctrl) = fcla_ctrl_value;
+    }
+    else
+    {
+        /* Do nothing */
+    }
 
     return err;
 }

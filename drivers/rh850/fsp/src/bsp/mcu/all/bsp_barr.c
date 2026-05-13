@@ -100,7 +100,7 @@ void R_BSP_BarrChannelStatusClear (bsp_barrier_sync_channel_t channel, uint8_t p
 uint8_t R_BSP_GetCoreID (void)
 {
     /* Return the unique core identifier: regID: SR0; selID: 2 */
-    return (uint8_t) STSR_REGSEL(0, 2);
+    return (uint8_t) __STSR(SR_PEID, SL_PEID);
 }
 
 /*******************************************************************************************************************//**
@@ -115,7 +115,7 @@ void R_BSP_PESyncCheck (bsp_barrier_sync_channel_t channel)
     /* Waiting until the barrier has been enabled */
     while (BSP_BARRIER_NOT_ENABLE_PE == R_BSP_BarrChannelEnableGet(channel))
     {
-        NOP();                         /* Wait. */
+        __NOP();                       /* Wait. */
     }
 }
 
@@ -149,7 +149,7 @@ void R_BSP_PESyncComplete (bsp_barrier_sync_channel_t channel, uint8_t peid)
     /* Waiting for barrier synchronization completion */
     while (BSP_BARRIER_SYNCHRONIZATION_COMPLETION != R_BSP_BarrChannelStatusGet(channel, peid))
     {
-        NOP();
+        __NOP();
     }
 
     /* Clear barrier synchronization completion flag */

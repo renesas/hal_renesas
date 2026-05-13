@@ -55,7 +55,7 @@ FSP_HEADER
 
 #define BSP_GUARD_DATAFLOW_WRITE_PROTECTION      BSP_GUARD_DFP_WRITE_PROTECTION ///< Dataflow write-protection alias
 
-#define BSP_GUARD_GET_BIT(value)    (SCH1R(value) - 1)                          ///< Search bit 1 from the LSB
+#define BSP_GUARD_GET_BIT(value)    (__SCH1R(value) - 1)                        ///< Search bit 1 from the LSB
 
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU_RH850U2BX
@@ -734,7 +734,7 @@ typedef struct st_bsp_guard_protection_setting
 
         /** DFP Guard settings */
         bsp_dataflowgrd_protection_setting_t dataflowgrd_setting;
-    };
+    } slave_guard_protection;
 } bsp_guard_protection_setting_t;
 
 /** Guard protection status error codes */

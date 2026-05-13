@@ -42,15 +42,19 @@ FSP_HEADER
                                         BSP_FEINT_VECTOR_MAX_ENTRIES + BSP_FENMI_VECTOR_MAX_ENTRIES)
 #endif
 
+#define BSP_FEINC_PE_OFFSET            (0x100U) ///< Offset applied for FEINC mapping per PE
+#define BSP_FEINT_PE_SRC_OFFSET        (2U)     ///< Offset shift for FEINT source per PE
+#define BSP_FEINT_NON_PE_SRC           (1U)     ///< FEINT source index for non-PE sources
+
 /**
  * @brief   Execute dummy read and syncp for EIC register
- * @details Dummy read on the register and SYNCP
+ * @details Dummy read on the register and __SYNCP
  * @param [in]    reg   Pointer to register address
  */
 #define BSP_INT_IOREG_DUMMY_READ_SYNCP(reg) \
     do {                                    \
         volatile uint32_t dummy = (reg);    \
-        SYNCP();                            \
+        __SYNCP();                          \
         (void) dummy;                       \
     } while (0)
 
@@ -106,6 +110,7 @@ __STATIC_INLINE void R_BSP_IrqEnable (IRQn_Type const irq)
 {
     uint8_t            coreID;
     R_INTC1_PE0_Type * R_INTC1_PE;
+    R_FEINC_Type     * R_FEINC_PE;
 
     /* Get the current coreID */
     coreID = R_BSP_GetCoreID();
@@ -133,7 +138,10 @@ __STATIC_INLINE void R_BSP_IrqEnable (IRQn_Type const irq)
     /* FEINT */
     else if (irq < BSP_INT_VECTOR_MAX_ENTRIES)
     {
-        R_FEINC->FEINTMSK &= (uint32_t) (~(1 << (irq - BSP_INTC_VECTOR_MAX_ENTRIES)));
+        /* Get FEINTMSK register address for this core */
+        R_FEINC_PE = (R_FEINC_Type *) (R_FEINC_BASE + coreID * BSP_FEINC_PE_OFFSET);
+
+        R_FEINC_PE->FEINTMSK &= (uint32_t) (~(1 << (irq - BSP_INTC_INTBP_MAX_ENTRIES)));
     }
     else
     {
@@ -153,12 +161,14 @@ __STATIC_INLINE void R_BSP_IrqDisable (IRQn_Type const irq)
 {
     uint8_t            coreID;
     R_INTC1_PE0_Type * R_INTC1_PE;
+    R_FEINC_Type     * R_FEINC_PE;
+
+    /* Get the current coreID */
+    coreID = R_BSP_GetCoreID();
 
     /* INTC1 */
     if (irq < BSP_INTC1_VECTOR_MAX_ENTRIES)
     {
-        /* Get the current coreID */
-        coreID     = R_BSP_GetCoreID();
         R_INTC1_PE = (R_INTC1_PE0_Type *) (R_INTC1_PE0_BASE + coreID * BSP_INT_INTC1_OFFSET);
         R_INTC1_PE->EEIC_b[irq].EIMK = BSP_DISABLE_EIIC;
 
@@ -178,7 +188,10 @@ __STATIC_INLINE void R_BSP_IrqDisable (IRQn_Type const irq)
     /* FEINT */
     else if (irq < BSP_INT_VECTOR_MAX_ENTRIES)
     {
-        R_FEINC->FEINTMSK |= (uint32_t) (1 << (irq - BSP_INTC_VECTOR_MAX_ENTRIES));
+        /* Get FEINTMSK register address for this core */
+        R_FEINC_PE = (R_FEINC_Type *) (R_FEINC_BASE + coreID * BSP_FEINC_PE_OFFSET);
+
+        R_FEINC_PE->FEINTMSK |= (uint32_t) (1 << (irq - BSP_INTC_INTBP_MAX_ENTRIES));
     }
     else
     {
@@ -271,12 +284,12 @@ __STATIC_INLINE IRQn_Type R_FSP_CurrentIrqGet (void)
 
     if (*pfeintf != 0)                 /* FE interrupt */
     {
-        intid  = SCH1R(*pfeintf);
+        intid  = __SCH1R(*pfeintf);
         intid += BSP_INTC_VECTOR_MAX_ENTRIES;
     }
     else                               /* EI interrupt */
     {
-        intid = STSR(EIIC);
+        intid = __STSR(SR_EIIC, SL_EIIC);
         intid = intid & BSP_EIIC_MSK;
     }
 
@@ -285,19 +298,56 @@ __STATIC_INLINE IRQn_Type R_FSP_CurrentIrqGet (void)
 }
 
 /*******************************************************************************************************************//**
- * Clear the interrupt status flag for a given interrupt. There is no processing to be performed by this function in
- * this BSP.
+ * Clear the interrupt status flag for a given interrupt.
  *
  * @param[in] irq            Interrupt for which to clear the status flag. Note that the enums listed for IRQn_Type are
  *                           only those for the EIC Processor Exceptions Numbers.
+ *
+ * @note The interrupt status flag (EIRF) can be cleared only for interrupts with edge detection.
+ *       Interrupts with level detection cannot be cleared by software.
  *
  * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
  **********************************************************************************************************************/
 __STATIC_INLINE void R_BSP_IrqStatusClear (IRQn_Type irq)
 {
-    FSP_PARAMETER_NOT_USED(irq);
+    uint8_t            coreID;
+    uint8_t            detectionType;
+    R_INTC1_PE0_Type * R_INTC1_PE;
 
-    /* Do nothing */
+    /* INTC1 */
+    if (irq < BSP_INTC1_VECTOR_MAX_ENTRIES)
+    {
+        /* Get the current coreID */
+        coreID        = R_BSP_GetCoreID();
+        R_INTC1_PE    = (R_INTC1_PE0_Type *) (R_INTC1_PE0_BASE + coreID * BSP_INT_INTC1_OFFSET);
+        detectionType = R_INTC1_PE->EEIC_b[irq].EICT;
+
+        if (0U == detectionType)
+        {
+            R_INTC1_PE->EEIC_b[irq].EIRF = 0U;
+
+            /* Dummy read and sync */
+            BSP_INT_IOREG_DUMMY_READ_SYNCP(R_INTC1_PE->EEIC[irq]);
+        }
+    }
+
+    /* INTC2 */
+    else if (irq < BSP_INTC_VECTOR_MAX_ENTRIES)
+    {
+        detectionType = R_INTC2->EEIC_b[irq].EICT;
+
+        if (0U == detectionType)
+        {
+            R_INTC2->EEIC_b[irq].EIRF = 0U;
+
+            /* Dummy read and syncp */
+            BSP_INT_IOREG_DUMMY_READ_SYNCP(R_INTC2->EEIC[irq]);
+        }
+    }
+    else
+    {
+        /* Nothing to do */
+    }
 }
 
 /*******************************************************************************************************************//**

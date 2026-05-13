@@ -16,9 +16,6 @@
 #define BSP_EEIC_EITB_SET            ((uint16_t) (BSP_INTERRUPT_TABLE_REFERENCE_METHOD)) ///< Value used to set EITB bit in EEIC
 #define BSP_PRV_INTERRUPTABLE_NUM    (15U)                                               ///< Number of interrupt table entries supported
 #define BSP_EIINT_MASK               (0x07FFU)                                           ///< Mask to extract EIINT source index
-#define BSP_FEINC_PE_OFFSET          (0x100U)                                            ///< Offset applied for FEINC mapping per PE
-#define BSP_FEINT_PE_SRC_OFFSET      (2U)                                                ///< Offset shift for FEINT source per PE
-#define BSP_FEINT_NON_PE_SRC         (1U)                                                ///< FEINT source index for non‑PE sources
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -52,13 +49,13 @@ static void bsp_feint_enable(void);
 #elif defined(__ghs__)
  #pragma ghs interrupt (FE)
 #endif
-void FENMI (void)
+BSP_FENMI_INTERRUPT_ATTRIBUTE void FENMI (void)
 {
     uint32_t            channel;
     volatile uint32_t * p_fenmif;
 
     p_fenmif = (uint32_t *) (&R_FENC->FENMIF);
-    channel  = SCH1R(*p_fenmif) - 1;   // Define macro for this Intrinsic functions in bsp_compiler_support.h
+    channel  = __SCH1R(*p_fenmif) - 1; // Define macro for this Intrinsic functions in bsp_compiler_support.h
 
     /* call the irq callback */
     bsp_group_isr_call((bsp_grp_irq_t) channel);
@@ -75,21 +72,23 @@ void FENMI (void)
 #elif defined(__ghs__)
  #pragma ghs interrupt (FE)
 #endif
-void FEINT (void)
+BSP_FEINT_INTERRUPT_ATTRIBUTE void FEINT (void)
 {
     uint8_t             coreID;
     uint32_t            channel;
     volatile uint32_t * pfeintf;
 
-    coreID  = (uint8_t) STSR_REGSEL(0, 2);
+    coreID  = (uint8_t) __STSR(SR_PEID, SL_PEID);
     pfeintf = (uint32_t *) &((R_FEINC_Type *) (R_FEINC_BASE + (coreID * BSP_FEINC_PE_OFFSET)))->FEINTF;
 
-    channel = SCH1R(*pfeintf);         // Define macro for this Intrinsic functions in bsp_compiler_support.h
+    channel = __SCH1R(*pfeintf);       // Define macro for this Intrinsic functions in bsp_compiler_support.h
 
+#if (BSP_CONFIG_USE_SMP_MODE)
     if (BSP_FEINT_NON_PE_SRC != channel)
     {
         channel += coreID * BSP_FEINT_PE_SRC_OFFSET;
     }
+#endif
 
     /* call the irq callback */
     bsp_group_isr_call((bsp_grp_irq_t) channel);
@@ -146,8 +145,11 @@ static void bsp_group_isr_call (bsp_grp_irq_t irq)
  **********************************************************************************************************************/
 
 /*******************************************************************************************************************//**
+ *
  * Register a callback function for supported interrupts. If NULL is passed for the callback argument then any
  * previously registered callbacks are unregistered.
+ *
+ * @note For FEINT, the callback is registered with the corresponding FEINT of the CPU.
  *
  * @param[in]  irq          Interrupt for which  to register a callback.
  * @param[in]  p_callback   Pointer to function to call when interrupt occurs.
@@ -157,14 +159,26 @@ static void bsp_group_isr_call (bsp_grp_irq_t irq)
  **********************************************************************************************************************/
 fsp_err_t R_BSP_GroupIrqWrite (bsp_grp_irq_t irq, void (* p_callback)(bsp_grp_irq_t irq))
 {
+    bsp_grp_irq_t irq_index = irq;
+
 #if BSP_CFG_PARAM_CHECKING_ENABLE
 
     /* Check pointer for NULL value. */
     FSP_ASSERT(p_callback);
 #endif
 
+#if (BSP_CONFIG_USE_SMP_MODE)
+    uint8_t coreID = R_BSP_GetCoreID();
+
+    /* Get FEINT index for this core */
+    if (BSP_FEINT_NON_PE_SRC < irq_index)
+    {
+        irq_index += (bsp_grp_irq_t) (coreID * BSP_FEINT_PE_SRC_OFFSET);
+    }
+#endif
+
     /* Register callback. */
-    g_bsp_group_isr_sources[irq] = p_callback;
+    g_bsp_group_isr_sources[irq_index] = p_callback;
 
     return FSP_SUCCESS;
 }
@@ -227,7 +241,7 @@ void bsp_irq_cfg (void)
     bsp_feint_enable();
 
     /* Enable interrupt */
-    EI();
+    __EI();
 }
 
 /*******************************************************************************************************************//**
@@ -239,7 +253,7 @@ static void bsp_feint_enable (void)
     uint8_t        feint_enable;
     R_FEINC_Type * R_FEINC_PE;
 
-    coreID = (uint8_t) STSR_REGSEL(0, 2);
+    coreID = (uint8_t) __STSR(SR_PEID, SL_PEID);
 
     /* Check if FEINT enabled for this core */
     feint_enable = (BSP_FE_LEVEL_MASKABLE_INTERRUPT & (1U << coreID));
@@ -257,7 +271,7 @@ static void bsp_feint_enable (void)
 /*******************************************************************************************************************//**
  * Dummy ISR.
  **********************************************************************************************************************/
-void DummyIsr (void)
+BSP_INTERRUPT_ATTRIBUTE void DummyIsr (void)
 {
     while (1)
     {
@@ -272,10 +286,10 @@ void DummyIsr (void)
 void INTP_Default_Handler (void)
 {
     /* Read interrupt channel number (EI Level exception cause)*/
-    uint16_t irq_number = (uint16_t) ((STSR_REGSEL(13, 0) & BSP_EIINT_MASK));
+    uint16_t irq_number = (uint16_t) ((__STSR(SR_EIIC, SL_EIIC) & BSP_EIINT_MASK));
 
     /* Read base address of the interrupt handler “address” table */
-    uint32_t intbp = STSR_REGSEL(4, 1);
+    uint32_t intbp = __STSR(SR_INTBP, SL_INTBP);
 
     /* Fetch handler address from vector table */
     uint32_t handler_addr = *(volatile uint32_t *) (intbp + (irq_number << 2));

@@ -19,7 +19,7 @@
  **********************************************************************************************************************/
 
 /** DMA Trigger Factor */
-typedef enum e_dmac_trigger_event
+typedef enum e_dmac_trigger_event_u2b10
 {
     DMAC_TRIGGER_EVENT_DFE_INTDFE0DOUTCND0        = (0U),    ///< INTDFE0DOUTCND0
     DMAC_TRIGGER_EVENT_DFE_INTDFE0DOUTCND1        = (1U),    ///< INTDFE0DOUTCND1

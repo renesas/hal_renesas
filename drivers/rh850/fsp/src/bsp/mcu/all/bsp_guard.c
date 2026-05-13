@@ -114,13 +114,28 @@ void R_BSP_GuardEnableAccessAll ()
     bool    initial_cfg_value;
 
     /* Initialize all protection configuration to all zeros */
-    bsp_guard_protection_setting_t pbg_setting    = {.pbusgrd_setting.group = BSP_PBG_GROUP_PBG00};
-    bsp_guard_protection_setting_t ibg_setting    = {.ibusgrd_setting.control = BSP_IBG_CONTROL_IPIR_Rn};
-    bsp_guard_protection_setting_t peg_setting    = {.pegrd_setting.control = BSP_PEG_CONTROL_PE0};
-    bsp_guard_protection_setting_t crg_setting    = {.cramgrd_setting.control = BSP_CRG_CONTROL_CRAM0};
-    bsp_guard_protection_setting_t intc2g_setting = {.intc2grd_setting.control = BSP_INTC2G_CONTROL_EIBD_I2EIBG};
-    bsp_guard_protection_setting_t dmag_setting   = {.dmagrd_setting.control = BSP_DMAG_CONTROL_GLOBAL_REG};
-    bsp_guard_protection_setting_t dtsg_setting   = {.dtsgrd_setting.control = BSP_DTSG_CONTROL_COMMON_REG};
+    bsp_guard_protection_setting_t pbg_setting = {.slave_guard_protection.pbusgrd_setting.group = BSP_PBG_GROUP_PBG00};
+    bsp_guard_protection_setting_t ibg_setting =
+    {
+        .slave_guard_protection.ibusgrd_setting.control = BSP_IBG_CONTROL_IPIR_Rn
+    };
+    bsp_guard_protection_setting_t peg_setting = {.slave_guard_protection.pegrd_setting.control = BSP_PEG_CONTROL_PE0};
+    bsp_guard_protection_setting_t crg_setting =
+    {
+        .slave_guard_protection.cramgrd_setting.control = BSP_CRG_CONTROL_CRAM0
+    };
+    bsp_guard_protection_setting_t intc2g_setting =
+    {
+        .slave_guard_protection.intc2grd_setting.control = BSP_INTC2G_CONTROL_EIBD_I2EIBG
+    };
+    bsp_guard_protection_setting_t dmag_setting =
+    {
+        .slave_guard_protection.dmagrd_setting.control = BSP_DMAG_CONTROL_GLOBAL_REG
+    };
+    bsp_guard_protection_setting_t dtsg_setting =
+    {
+        .slave_guard_protection.dtsgrd_setting.control = BSP_DTSG_CONTROL_COMMON_REG
+    };
 
     /* PBG (Peripheral Bus Guard) & HBG (H-Bus Guard) Initialization */
     for (module_count = 0; module_count < BSP_MODULE_PBG_TOTAL_INDEX_END; module_count++)
@@ -144,9 +159,9 @@ void R_BSP_GuardEnableAccessAll ()
                     /* Get the next channel to configure */
                     channel_num = (uint8_t) BSP_GUARD_GET_BIT(channels);
 
-                    pbg_setting.pbusgrd_setting.group           = pbg_grp;
-                    pbg_setting.pbusgrd_setting.channel         = (uint8_t) channel_num;
-                    pbg_setting.pbusgrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
+                    pbg_setting.slave_guard_protection.pbusgrd_setting.group           = pbg_grp;
+                    pbg_setting.slave_guard_protection.pbusgrd_setting.channel         = (uint8_t) channel_num;
+                    pbg_setting.slave_guard_protection.pbusgrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
 
                     bsp_pbg_protection_setting(&pbg_setting);
 
@@ -179,9 +194,9 @@ void R_BSP_GuardEnableAccessAll ()
                     /* Get the next channel to configure */
                     channel_num = (uint8_t) BSP_GUARD_GET_BIT(channels);
 
-                    ibg_setting.ibusgrd_setting.control         = ibg_target;
-                    ibg_setting.ibusgrd_setting.channel         = (uint8_t) channel_num;
-                    ibg_setting.ibusgrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
+                    ibg_setting.slave_guard_protection.ibusgrd_setting.control         = ibg_target;
+                    ibg_setting.slave_guard_protection.ibusgrd_setting.channel         = (uint8_t) channel_num;
+                    ibg_setting.slave_guard_protection.ibusgrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
 
                     bsp_ibg_protection_setting(&ibg_setting);
 
@@ -202,18 +217,18 @@ void R_BSP_GuardEnableAccessAll ()
             /* Get the PEG target for this Local RAM from configuration table */
             peg_target = g_bsp_intc1_lram_info_table[local_ram_count].lram_peg;
 
-            peg_setting.pegrd_setting.control = peg_target;
+            peg_setting.slave_guard_protection.pegrd_setting.control = peg_target;
 
             /* Set base address for Local RAM protection region */
-            peg_setting.pegrd_setting.base_address = g_peg_lram_baseaddress[local_ram_count];
+            peg_setting.slave_guard_protection.pegrd_setting.base_address = g_peg_lram_baseaddress[local_ram_count];
 
             /* Set protection size MAX to protect entire Local RAM and INTC1 area for this PE */
-            peg_setting.pegrd_setting.valid_address = BSP_PEG_REGION_SIZE_MAX;
+            peg_setting.slave_guard_protection.pegrd_setting.valid_address = BSP_PEG_REGION_SIZE_MAX;
 
-            peg_setting.pegrd_setting.channel = BSP_GUARD_CHANNEL_DEFAULT;
+            peg_setting.slave_guard_protection.pegrd_setting.channel = BSP_GUARD_CHANNEL_DEFAULT;
 
             /* Enable full read/write access */
-            peg_setting.pegrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
+            peg_setting.slave_guard_protection.pegrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
 
             /* Apply protection setting for INTC1 and Local RAM on region */
             bsp_peg_protection_setting(&peg_setting);
@@ -231,18 +246,18 @@ void R_BSP_GuardEnableAccessAll ()
 
         if (1U == initial_cfg_value)
         {
-            crg_setting.cramgrd_setting.control = crg_target;
+            crg_setting.slave_guard_protection.cramgrd_setting.control = crg_target;
 
             /* Set base address for Cluster RAM protection region */
-            crg_setting.cramgrd_setting.base_address = g_crg_cram_baseaddress[cluster_ram_count];
+            crg_setting.slave_guard_protection.cramgrd_setting.base_address = g_crg_cram_baseaddress[cluster_ram_count];
 
             /* Set protection size 512 KB to protect entire Cluster RAM region */
-            crg_setting.cramgrd_setting.valid_address = BSP_CRG_REGION_SIZE_512KB;
+            crg_setting.slave_guard_protection.cramgrd_setting.valid_address = BSP_CRG_REGION_SIZE_512KB;
 
-            crg_setting.cramgrd_setting.channel = BSP_GUARD_CHANNEL_DEFAULT;
+            crg_setting.slave_guard_protection.cramgrd_setting.channel = BSP_GUARD_CHANNEL_DEFAULT;
 
             /* Enable full read/write access */
-            crg_setting.cramgrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
+            crg_setting.slave_guard_protection.cramgrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
 
             /* Apply protection setting for Cluster RAM on region */
             bsp_crg_protection_setting(&crg_setting);
@@ -253,16 +268,16 @@ void R_BSP_GuardEnableAccessAll ()
     if (BSP_GUARD_DMA_WRITE_PROTECTION == 1)
     {
         /* Enable full read/write access */
-        dmag_setting.dmagrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
+        dmag_setting.slave_guard_protection.dmagrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
 
         for (dmac_unit = BSP_DMAG_UNIT_0; dmac_unit < BSP_DMAG_UNIT_NUM; dmac_unit++)
         {
-            dmag_setting.dmagrd_setting.unit = dmac_unit;
+            dmag_setting.slave_guard_protection.dmagrd_setting.unit = dmac_unit;
 
             /* Configure protect DMAC common registers */
             for (control_type = 0; control_type < BSP_DMAG_CONTROL_CHANNEL_REG; control_type++)
             {
-                dmag_setting.dmagrd_setting.control = (bsp_dmag_control_t) control_type;
+                dmag_setting.slave_guard_protection.dmagrd_setting.control = (bsp_dmag_control_t) control_type;
 
                 bsp_dmac_guard_protection_setting(&dmag_setting);
             }
@@ -270,8 +285,8 @@ void R_BSP_GuardEnableAccessAll ()
             /* Configure protect DMAC channel registers */
             for (channels = 0; channels < BSP_FEATURE_DMAC_GUARD_MAX_CHANNEL; channels++)
             {
-                dmag_setting.dmagrd_setting.control = BSP_DMAG_CONTROL_CHANNEL_REG;
-                dmag_setting.dmagrd_setting.channel = (uint16_t) channels;
+                dmag_setting.slave_guard_protection.dmagrd_setting.control = BSP_DMAG_CONTROL_CHANNEL_REG;
+                dmag_setting.slave_guard_protection.dmagrd_setting.channel = (uint16_t) channels;
 
                 bsp_dmac_guard_protection_setting(&dmag_setting);
             }
@@ -281,10 +296,10 @@ void R_BSP_GuardEnableAccessAll ()
     /* Check if DTS write protection is enabled in configuration */
     if (BSP_GUARD_DTS_WRITE_PROTECTION == 1)
     {
-        dtsg_setting.dtsgrd_setting.control = BSP_DTSG_CONTROL_COMMON_REG;
+        dtsg_setting.slave_guard_protection.dtsgrd_setting.control = BSP_DTSG_CONTROL_COMMON_REG;
 
         /* Enable full read/write access for DTS */
-        dtsg_setting.dtsgrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
+        dtsg_setting.slave_guard_protection.dtsgrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
 
         /* Configure protect DTS common registers */
         bsp_dts_guard_protection_setting(&dtsg_setting);
@@ -292,8 +307,8 @@ void R_BSP_GuardEnableAccessAll ()
         /* Configure protect DTS all channel registers */
         for (channels = 0; channels < BSP_FEATURE_DTS_GUARD_MAX_CHANNEL; channels++)
         {
-            dtsg_setting.dtsgrd_setting.control = BSP_DTSG_CONTROL_CHANNEL_REG;
-            dtsg_setting.dtsgrd_setting.channel = (uint16_t) channels;
+            dtsg_setting.slave_guard_protection.dtsgrd_setting.control = BSP_DTSG_CONTROL_CHANNEL_REG;
+            dtsg_setting.slave_guard_protection.dtsgrd_setting.channel = (uint16_t) channels;
 
             bsp_dts_guard_protection_setting(&dtsg_setting);
         }
@@ -304,18 +319,18 @@ void R_BSP_GuardEnableAccessAll ()
     /* Check if Data Flow Processor/Architecture) write protection is enabled in configuration */
     if (BSP_GUARD_DATAFLOW_WRITE_PROTECTION == 1)
     {
-        bsp_guard_protection_setting_t dataflow_setting = {.dataflowgrd_setting = {0}};
+        bsp_guard_protection_setting_t dataflow_setting = {.slave_guard_protection.dataflowgrd_setting = {0}};
 
-        dataflow_setting.dataflowgrd_setting.channel = BSP_GUARD_CHANNEL_DEFAULT;
+        dataflow_setting.slave_guard_protection.dataflowgrd_setting.channel = BSP_GUARD_CHANNEL_DEFAULT;
 
         /* Set base address for Data Flow protection region */
-        dataflow_setting.dataflowgrd_setting.base_address = BSP_GUARD_DATAFLOW_BASE_ADDRESS;;
+        dataflow_setting.slave_guard_protection.dataflowgrd_setting.base_address = BSP_GUARD_DATAFLOW_BASE_ADDRESS;;
 
         /* Set valid bit mask to 0 to protect entire Data Flow region */
-        dataflow_setting.dataflowgrd_setting.valid_address = BSP_PEG_REGION_SIZE_MAX;
+        dataflow_setting.slave_guard_protection.dataflowgrd_setting.valid_address = BSP_PEG_REGION_SIZE_MAX;
 
         /* Set protection control to enable access for all bus masters to Data Flow resources */
-        dataflow_setting.dataflowgrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
+        dataflow_setting.slave_guard_protection.dataflowgrd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
 
         /* Apply protection setting to Data Flow Guard region to control read/write access */
         bsp_dataflow_guard_protection_setting(&dataflow_setting);
@@ -326,20 +341,20 @@ void R_BSP_GuardEnableAccessAll ()
     if (BSP_GUARD_INTC2_WRITE_PROTECTION == 1)
     {
         /* Enable full read/write access */
-        intc2g_setting.intc2grd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
+        intc2g_setting.slave_guard_protection.intc2grd_setting.protect_setting = BSP_GUARD_READ_WRITE_ACCESS;
 
         /* Configure INTC2 common registers (EIBG/I2EIBG/IMR) */
         for (control_type = 0; control_type < BSP_INTC2G_CONTROL_EIC_EEIC; control_type++)
         {
-            intc2g_setting.intc2grd_setting.control = (bsp_intc2g_control_t) control_type;
+            intc2g_setting.slave_guard_protection.intc2grd_setting.control = (bsp_intc2g_control_t) control_type;
             bsp_intc2_guard_protection_setting(&intc2g_setting);
         }
 
         /* Configure INTC2 channel registers (EIC/EEIC) */
         for (channels = BSP_FEATURE_INTC2_GUARD_MIN_CHANNEL; channels < BSP_FEATURE_INTC2_GUARD_MAX_CHANNEL; channels++)
         {
-            intc2g_setting.intc2grd_setting.control = BSP_INTC2G_CONTROL_EIC_EEIC;
-            intc2g_setting.intc2grd_setting.channel = (uint16_t) channels;
+            intc2g_setting.slave_guard_protection.intc2grd_setting.control = BSP_INTC2G_CONTROL_EIC_EEIC;
+            intc2g_setting.slave_guard_protection.intc2grd_setting.channel = (uint16_t) channels;
             bsp_intc2_guard_protection_setting(&intc2g_setting);
         }
     }
@@ -417,7 +432,7 @@ void R_BSP_GuardProtectionSetting (const bsp_guard_type_t                 guard_
     }
 
     /** Sync to ensure protection setting is effective */
-    SYNCP();
+    __SYNCP();
 }
 
 /*******************************************************************************************************************//**
@@ -489,7 +504,7 @@ static void bsp_peg_protection_setting (const bsp_guard_protection_setting_t * p
     R_GUARD_PE0_Type * p_peg_protect_setting;
 
     /* Get pointer to PEG-specific settings from the guard configuration */
-    p_peg_setting = (bsp_peg_protection_setting_t *) (&p_setting->pegrd_setting);
+    p_peg_setting = (bsp_peg_protection_setting_t *) (&p_setting->slave_guard_protection.pegrd_setting);
 
     /* Get PE target and channel number from protection settings */
     peg_control = p_peg_setting->control;
@@ -571,7 +586,7 @@ static void bsp_crg_protection_setting (const bsp_guard_protection_setting_t * p
     R_GUARD_CRAMCRG0_Type              * p_crg_protect_setting;
 
     /* Get pointer to CRG-specific settings from the guard configuration */
-    p_crg_setting = (bsp_crg_protection_setting_t *) (&p_setting->cramgrd_setting);
+    p_crg_setting = (bsp_crg_protection_setting_t *) (&p_setting->slave_guard_protection.cramgrd_setting);
 
     /* Get Cluster RAM target and channel number from settings */
     crg_control = p_crg_setting->control;
@@ -649,7 +664,7 @@ static void bsp_intc2_guard_protection_setting (const bsp_guard_protection_setti
     R_GUARD_INTC2_Type * p_intc2_guard_protect_setting;
 
     /* Get pointer to INTC2 Guard-specific settings from the guard configuration */
-    p_intc2_guard_setting = (bsp_intc2g_protection_setting_t *) (&p_setting->intc2grd_setting);
+    p_intc2_guard_setting = (bsp_intc2g_protection_setting_t *) (&p_setting->slave_guard_protection.intc2grd_setting);
 
     /* Get the base address of the INTC2 protection control register */
     p_intc2_guard_protect_setting = (R_GUARD_INTC2_Type *) R_GUARD_INTC2_BASE;
@@ -723,7 +738,7 @@ static void bsp_dts_guard_protection_setting (const bsp_guard_protection_setting
     R_GUARD_DTS_Type * p_dtsg_protect_setting;
 
     /* Get pointer to DTS Guard-specific settings from the guard configuration */
-    p_dts_guard_setting = (bsp_dtsg_protection_setting_t *) (&p_setting->dtsgrd_setting);
+    p_dts_guard_setting = (bsp_dtsg_protection_setting_t *) (&p_setting->slave_guard_protection.dtsgrd_setting);
 
     /* Get the base address of the DTS guard protection control register */
     p_dtsg_protect_setting = (R_GUARD_DTS_Type *) R_GUARD_DTS_BASE;
@@ -798,7 +813,7 @@ static void bsp_dmac_guard_protection_setting (const bsp_guard_protection_settin
     R_GUARD_DMAC0_Type * dmacg_protect_setting;
 
     /* Get pointer to DMAC Guard-specific settings from the guard configuration */
-    p_dmac_guard_setting = (bsp_dmag_protection_setting_t *) (&p_setting->dmagrd_setting);
+    p_dmac_guard_setting = (bsp_dmag_protection_setting_t *) (&p_setting->slave_guard_protection.dmagrd_setting);
 
     /* Get DTM Unit ,Group register target and channel number for CH specific register (if have) protection from settings */
     dma_guard_unit    = p_dmac_guard_setting->unit;
@@ -882,7 +897,7 @@ static void bsp_ibg_protection_setting (const bsp_guard_protection_setting_t * p
     uint8_t             prot_channel_offset;
 
     /* Get pointer to IBus Guard-specific settings from the guard configuration */
-    p_ibg_setting = (bsp_ibg_protection_setting_t *) (&p_setting->ibusgrd_setting);
+    p_ibg_setting = (bsp_ibg_protection_setting_t *) (&p_setting->slave_guard_protection.ibusgrd_setting);
 
     /* Get IBUS module Group register target protection from settings */
     ibg_control = p_ibg_setting->control;
@@ -969,7 +984,7 @@ static void bsp_pbg_protection_setting (const bsp_guard_protection_setting_t * p
     uint8_t             channels;
 
     /* Get pointer to PBG Guard-specific settings from the guard configuration */
-    p_pbg_setting = (bsp_pbg_protection_setting_t *) (&p_setting->pbusgrd_setting);
+    p_pbg_setting = (bsp_pbg_protection_setting_t *) (&p_setting->slave_guard_protection.pbusgrd_setting);
 
     /* Get PBus Group register target and channel number for protection from settings */
     pbg_group = p_pbg_setting->group;
@@ -1042,7 +1057,8 @@ static void bsp_dataflow_guard_protection_setting (const bsp_guard_protection_se
     R_DFPGRD_Type * dataflowgrd_protect_setting;
 
     /* Get pointer to DFP Guard-specific settings from the guard configuration */
-    p_dataflow_guard_setting = (bsp_dataflowgrd_protection_setting_t *) (&p_setting->dataflowgrd_setting);
+    p_dataflow_guard_setting =
+        (bsp_dataflowgrd_protection_setting_t *) (&p_setting->slave_guard_protection.dataflowgrd_setting);
 
     /* Specifies the channel number used for region protection */
     channel = p_dataflow_guard_setting->channel;

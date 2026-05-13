@@ -46,6 +46,8 @@ FSP_HEADER
 
 /** UART Event codes */
 #ifndef BSP_OVERRIDE_UART_EVENT_T
+
+/** UART Event codes */
 typedef enum e_sf_event
 {
     UART_EVENT_RX_COMPLETE   = (1UL << 0), ///< Receive complete event
@@ -57,6 +59,7 @@ typedef enum e_sf_event
     UART_EVENT_BREAK_DETECT  = (1UL << 6), ///< Break detect error event
     UART_EVENT_TX_DATA_EMPTY = (1UL << 7), ///< Last byte is transmitting, ready for more data
 } uart_event_t;
+
 #endif
 #ifndef BSP_OVERRIDE_UART_DATA_BITS_T
 

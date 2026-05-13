@@ -20,7 +20,7 @@
  **********************************************************************************************************************/
 
 /** ECM Error Factor */
-typedef enum e_ecm_error_source
+typedef enum e_ecm_error_source_u2c8
 {
     ECM_ERROR_SOURCE_ERROR_OUTPUT_MONITOR = (0),                                  ///< Error output monitor
     ECM_ERROR_SOURCE_ECMMESET_MONITOR     = (2),                                  ///< ECMmESET monitor

@@ -120,17 +120,12 @@ typedef enum e_fsp_err
     FSP_ERR_OVERRUN          = 304,                         ///< Overrun error.
 
     /* Start of CGC Specific */
-    FSP_ERR_CLOCK_INACTIVE        = 400,                    ///< Inactive clock specified as system clock.
-    FSP_ERR_CLOCK_ACTIVE          = 401,                    ///< Active clock source cannot be modified without stopping first.
-    FSP_ERR_NOT_STABILIZED        = 403,                    ///< Clock has not stabilized after its been turned on/off
-    FSP_ERR_PLL_SRC_INACTIVE      = 404,                    ///< PLL initialization attempted when PLL source is turned off
-    FSP_ERR_OSC_STOP_DET_ENABLED  = 405,                    ///< Illegal attempt to stop LOCO when Oscillation stop is enabled
-    FSP_ERR_OSC_STOP_DETECTED     = 406,                    ///< The Oscillation stop detection status flag is set
-    FSP_ERR_OSC_STOP_CLOCK_ACTIVE = 407,                    ///< Attempt to clear Oscillation Stop Detect Status with PLL/MAIN_OSC active
-    FSP_ERR_CLKOUT_EXCEEDED       = 408,                    ///< Output on target output clock pin exceeds maximum supported limit
-    FSP_ERR_USB_MODULE_ENABLED    = 409,                    ///< USB clock configure request with USB Module enabled
-    FSP_ERR_HARDWARE_TIMEOUT      = 410,                    ///< A register read or write timed out
-    FSP_ERR_LOW_VOLTAGE_MODE      = 411,                    ///< Invalid clock setting attempted in low voltage mode
+    FSP_ERR_CGC_CLOCK_INACTIVE            = 400,            ///< Inactive clock specified as system clock.
+    FSP_ERR_CGC_NOT_STABILIZED            = 401,            ///< Clock has not stabilized after its been turned on/off
+    FSP_ERR_CGC_INVALID_CLOCK_SOURCE      = 402,            ///< Invalid clock source
+    FSP_ERR_CGC_CLOCK_IN_USE              = 403,            ///< Clock source has been started
+    FSP_ERR_CGC_INVALID_DIVIDER_GEAR_DOWN = 404,            ///< Invalid division ratio of clock source used for gear down
+    FSP_ERR_CGC_INVALID_GEAR_OPERATION    = 405,            ///< Invalid gear operation for current system clock
 
     /* Start of FLASH Specific */
     FSP_ERR_PE_FAILURE             = 500,                   ///< Unable to enter Programming mode.
@@ -385,6 +380,25 @@ typedef enum e_fsp_err
     FSP_ERR_SG_DIAG_DISABLED            = 0x30004,     ///< Use ADCK scan group x when it is disabled.
     FSP_ERR_SG_AD_TIMER_ACTIVE          = 0x30005,     ///< Request to enable/disable T&H when any scan group or AD timer is active.
     FSP_ERR_TH_STOP = 0x30006,                         ///< Try to use T&H group A for T&H group B when it is stopped.
+
+    /* OTS Diagnosis */
+    FSP_ERR_OTS_DIAG_MONITOR_FAIL = 0x40002,           ///< OTS diagnostic monitor fail.
+
+    /* Start of VMON specific */
+    FSP_ERR_VMON_DIAGNOSTIC_RESET_FAIL      = 0x30007, ///< VMON diagnostic reset behavior is incorrect.
+    FSP_ERR_VMON_DIAGNOSTIC_VMONOUT_FAIL    = 0x30008, ///< VMON diagnostic vmonout behavior is incorrect.
+    FSP_ERR_VMON_DIAGNOSTIC_FAIL            = 0x30009, ///< VMON diagnostic result does not match the expected value.
+    FSP_ERR_VMON_DIAGNOSTIC_CLEAR_FLAG_FAIL = 0x30010, ///< Failed to clear VMONF and VMONOUTF flags during VMON diagnostic.
+
+    /* Start of Clock monitor specific */
+    FSP_ERR_CLOCK_MONITOR_SELFTEST_FAIL = 0x30011,     ///< CLMA selftest fail.
+
+    /* Start of FLEXRAY specific */
+    FSP_ERR_RECEIVE_MESSAGE_BUFFER      = 0x50001,     ///< FLEXRAY has error for receive message buffer.
+    FSP_ERR_NOT_TRANSMITTED             = 0x50002,     ///< FLEXRAY has not been transmitted.
+    FSP_ERR_TRANSMIT_VIOLATION_CHANNELS = 0x50003,     ///< FLEXRAY has error transmitted in channel A or/and Channel B.
+    FSP_ERR_CMD_NOT_ACCEPTED            = 0x50004,     ///< FLEXRAY has error send cmd.
+    FSP_ERR_RAM_OVERRUN                 = 0x50005,     ///< FLEXRAY has error configuration data section in RAM.
 } fsp_err_t;
 
 /** @} */

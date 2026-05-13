@@ -226,19 +226,21 @@ void bsp_clock_driver_init (void)
 
     /* CLK_RLIN3 divider setting and CLK_RLIN3_CH23 divider setting */
     R_SYS0_CLOCK->CKS_RLINC = ((BSP_CFG_CLOCK_CLK_CH23_RLIN3_SRC << 16) | (BSP_CFG_CLOCK_CLK_RLIN3_SRC));
-    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_RLINS, R_SYS0_CLOCK->CKS_RLINC);
+    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_RLINS,
+                               (BSP_CFG_CLOCK_CLK_CH23_RLIN3_SRC << 16) | (BSP_CFG_CLOCK_CLK_RLIN3_SRC));
 
     /* CLK_CANDF_C selector setting */
     R_SYS0_CLOCK->CKS_RCANC = ((BSP_CFG_CLOCK_CLK_CANFD_C_SRC << 16) | (BSP_CFG_CLOCK_CLK_CANFD_XIN_SRC));
-    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_RCANS, R_SYS0_CLOCK->CKS_RCANC);
+    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_RCANS,
+                               (BSP_CFG_CLOCK_CLK_CANFD_C_SRC << 16) | (BSP_CFG_CLOCK_CLK_CANFD_XIN_SRC));
 
     /* CLK_MSPI selector setting */
     R_SYS0_CLOCK->CKS_MSPIC = BSP_CFG_CLOCK_CLK_MSPI_SRC;
-    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_MSPIS, R_SYS0_CLOCK->CKS_MSPIC);
+    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_MSPIS, BSP_CFG_CLOCK_CLK_MSPI_SRC);
 
     /* CLK_SWDT selector setting */
     R_SYS0_CLOCK->CKS_SWDTC = BSP_CFG_CLOCK_CLKC_SWDT_SRC;
-    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_SWDTS, R_SYS0_CLOCK->CKS_SWDTC);
+    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_SWDTS, BSP_CFG_CLOCK_CLKC_SWDT_SRC);
 
 #if BSP_CFG_CLOCK_EXTCLK0O_DIV > 0
 
@@ -248,7 +250,7 @@ void bsp_clock_driver_init (void)
 
     /* EXTCLK0 selector and divider setting */
     R_SYS0_A_CLOCK->CKS_EXTCLK0C = BSP_CFG_CLOCK_EXTCLK0O_SRC;
-    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK0S, R_SYS0_A_CLOCK->CKS_EXTCLK0C);
+    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK0S, BSP_CFG_CLOCK_EXTCLK0O_SRC);
 
     /* Confirm clock divider is stable */
     FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S_b.EXTCLK0SYNC, R_SYS0_A_CLOCK_CKD_EXTCLK0S_EXTCLK0SYNC_Msk);
@@ -266,7 +268,7 @@ void bsp_clock_driver_init (void)
 
     /* EXTCLK1 selector and divider setting */
     R_SYS0_A_CLOCK->CKS_EXTCLK1C = BSP_CFG_CLOCK_EXTCLK1O_SRC;
-    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK1S, R_SYS0_A_CLOCK->CKS_EXTCLK1C);
+    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK1S, BSP_CFG_CLOCK_EXTCLK1O_SRC);
 
     /* Confirm clock divider is stable */
     FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S_b.EXTCLK1SYNC, R_SYS0_A_CLOCK_CKD_EXTCLK1S_EXTCLK1SYNC_Msk);
@@ -278,7 +280,7 @@ void bsp_clock_driver_init (void)
 
     /* CLK_WDTB selector setting */
     R_SYS0_A_CLOCK->CKS_WDTC = BSP_CFG_CLOCK_CLK_WDTB_SRC;
-    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_WDTS, R_SYS0_A_CLOCK->CKS_WDTC);
+    FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_WDTS, BSP_CFG_CLOCK_CLK_WDTB_SRC);
 
     /* If the PLL is not used */
     if (0UL == BSP_CFG_CLOCK_CLK_PLL_HZ)
@@ -298,7 +300,7 @@ void bsp_clock_driver_init (void)
     R_SYS0_CLOCK->CLKKCPROT1 = BSP_PRV_KEYCODE_DISABLE;
 
     bsp_clock_freq_var_init();
-    SYNCP();
+    __SYNCP();
 }
 
 /*******************************************************************************************************************//**
@@ -354,7 +356,7 @@ static void bsp_gear_up_down_pllo (bool gear_up_down_select, uint32_t pll_clock_
             R_SYS0_CLOCK->CKS_CLEANC = BSP_CFG_CLOCK_CKS_CLEANC_SRC;
 
             /* Confirm that CLK_IOSC have been selected */
-            FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_CLEANS, R_SYS0_CLOCK->CKS_CLEANC);
+            FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_CLEANS, BSP_CFG_CLOCK_CKS_CLEANC_SRC);
         }
     }
     else
@@ -380,7 +382,7 @@ static void bsp_gear_up_down_pllo (bool gear_up_down_select, uint32_t pll_clock_
         R_SYS0_CLOCK->CKS_CLEANC = BSP_CFG_CLOCK_CKS_CLEANC_SRC;
 
         /* Confirm that PLLO have been selected */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_CLEANS, R_SYS0_CLOCK->CKS_CLEANC);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_CLEANS, BSP_CFG_CLOCK_CKS_CLEANC_SRC);
 
         /* Start the repetitions 5 repetitions (800/640MHz)/ 4 repetitions (480MHz) */
         if (BSP_CLOCK_SYSTEM_480MHz != pll_clock_hz)

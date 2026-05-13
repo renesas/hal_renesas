@@ -27,11 +27,15 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
+/* "PORT" in ASCII, used to determine if the module is open */
+#define IOPORT_OPEN                   (0x504F5254U)
+#define IOPORT_CLOSED                 (0x00000000U)
+
 #define IOPORT_PINCFG_PSFTS_MASK      (1U << 13UL)
 #define IOPORT_PINCFG_PSFTSE_MASK     (1U << 14UL)
 #define IOPORT_PINCFG_PSFTSAE_MASK    (1U << 15UL)
 #define IOPORT_PINCFG_PSFC_MASK       (1U << 21UL)
-#define IOPORT_PINCFG_PEIODC_MASK    (1U << 23UL)
+#define IOPORT_PINCFG_PEIODC_MASK     (1U << 23UL)
 
 /***********************************************************************************************************************
  * Typedef definitions

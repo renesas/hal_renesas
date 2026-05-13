@@ -25,6 +25,10 @@
  * Macro definitions
  **********************************************************************************************************************/
 
+#define BSP_PACKAGE_PINS_BGA468                                               (468U)                               ///< Package pin count: BGA468
+#define BSP_PACKAGE_PINS_BGA373                                               (373U)                               ///< Package pin count: BGA373
+#define BSP_PACKAGE_PINS_BGA292                                               (292U)                               ///< Package pin count: BGA292
+
 /** Barrier Synchronization */
 /** PE mask bit that is used in R_BSP_PESyncEnable */
 #define BSP_BARRIER_SYNC_CPU0                                                 (1U << 0U)                           ///< PE mask bit for CPU0 in R_BSP_PESyncEnable
@@ -48,22 +52,71 @@
 #define BSP_FEATURE_DSMIF_IS_AVAILABLE                                        (0x01U)                              ///< DSMIF feature availability (1 = available)
 #define BSP_FEATURE_RDC3AS_IS_AVAILABLE                                       (0x01U)                              ///< RDC3AS feature availability (1 = available)
 #define BSP_FEATURE_RDC3AL_IS_AVAILABLE                                       (0x00U)                              ///< RDC3AL feature availability (0 = not available)
+#define BSP_FEATURE_ETND_IS_AVAILABLE                                         (0x01U)                              ///< ETND module available
 
 #define BSP_FEATURE_FEINT_CPU0                                                (1U)                                 ///< FEINT interrupt feature for CPU0
 #define BSP_FEATURE_FEINT_CPU1                                                (1U)                                 ///< FEINT interrupt feature for CPU1
 #define BSP_FEATURE_FEINT_CPU2                                                (1U)                                 ///< FEINT interrupt feature for CPU2
 #define BSP_FEATURE_FEINT_CPU3                                                (1U)                                 ///< FEINT interrupt feature for CPU3
+#define BSP_FEATURE_CLMA_STOP_DETECTION_IS_AVAILABLE                          (1U)                                 ///< Clock Stop Detection Mode support
 
 /** MODULE RESET */
 #define BSP_RESET_SOURCE_POWER_OFF_STANDBY_IS_AVAILABLE                       (0x01U)                              ///< Power-off standby reset source support
+#define BSP_RESET_ECM_SELECT_RESET_SOURCE_IS_AVAILABLE                        (0x01U)                              ///< ECM-select reset source supported
+#define BSP_RESET_MODULE_RSCFD                                                RSCFD                                ///< Module reset name: RSCFD
+#define BSP_RESET_MODULE_FLXA                                                 FLXA                                 ///< Module reset name: FLXA
+#define BSP_RESET_MODULE_GTM                                                  GTM                                  ///< Module reset name: GTM
+#define BSP_RESET_MODULE_ETN                                                  ETN                                  ///< Module reset name: ETN
+#define BSP_RESET_MODULE_RSENT                                                RSENT                                ///< Module reset name: RSENT
+#define BSP_RESET_MODULE_MSPI                                                 MSPI                                 ///< Module reset name: MSPI
+#define BSP_RESET_MODULE_RLIN3                                                RLIN3                                ///< Module reset name: RLIN3
+#define BSP_RESET_MODULE_ADCK_ISO                                             ADCK_ISO                             ///< Module reset name: ADCK_ISO
+#define BSP_RESET_MODULE_MMCA                                                 MMCA                                 ///< Module reset name: MMCA
+#define BSP_RESET_MODULE_ENCA                                                 ENCA                                 ///< Module reset name: ENCA
+#define BSP_RESET_MODULE_PSI5                                                 PSI5                                 ///< Module reset name: PSI5
+#define BSP_RESET_MODULE_PSI5S                                                PSI5S                                ///< Module reset name: PSI5S
+#define BSP_RESET_MODULE_RHSIF                                                RHSIF                                ///< Module reset name: RHSIF
+#define BSP_RESET_MODULE_RIIC                                                 RIIC                                 ///< Module reset name: RIIC
+#define BSP_RESET_MODULE_SFMA                                                 SFMA                                 ///< Module reset name: SFMA
+#define BSP_RESET_MODULE_TAPA                                                 TAPA                                 ///< Module reset name: TAPA
+#define BSP_RESET_MODULE_TAUD                                                 TAUD                                 ///< Module reset name: TAUD
+#define BSP_RESET_MODULE_TPBA                                                 TPBA                                 ///< Module reset name: TPBA
+#define BSP_RESET_MODULE_TSG3                                                 TSG3                                 ///< Module reset name: TSG3
+#define BSP_RESET_MODULE_OSTM                                                 OSTM                                 ///< Module reset name: OSTM
+#define BSP_RESET_MODULE_DSADC_CADC                                           DSADC_CADC                           ///< Module reset name: DSADC_CADC
+#define BSP_RESET_MODULE_RHSB                                                 RHSB                                 ///< Module reset name: RHSB
+#define BSP_RESET_MODULE_ATU                                                  ATU                                  ///< Module reset name: ATU
+#define BSP_RESET_MODULE_PE                                                   PE                                   ///< Module reset name: PE
+#define BSP_RESET_MODULE_FCOMP                                                FCOMP                                ///< Module reset name: FCOMP
+#define BSP_RESET_MODULE_RDC                                                  RDC                                  ///< Module reset name: RDC
+#define BSP_RESET_MODULE_DFP                                                  DFP                                  ///< Module reset name: DFP
+#define BSP_RESET_MODULE_DFE                                                  DFE                                  ///< Module reset name: DFE
+#define BSP_RESET_MODULE_WDTB_ISO                                             WDTB_ISO                             ///< Module reset name: WDTB_ISO
+#define BSP_RESET_MODULE_HRPWM                                                HRPWM                                ///< Module reset name: HRPWM
+#define BSP_RESET_MODULE_DSMIF                                                DSMIF                                ///< Module reset name: DSMIF
 
 /** STANDBY MODE */
 #define BSP_FEATURE_CHIP_STANDBY_DEEPSTOP_IS_AVAILABLE                        (0x00U)                              ///< DeepStop mode availability (0 = not supported)
 #define BSP_FEATURE_CHIP_STANDBY_DEEPSTOP_NUM_OF_WAKEUP_SOURCE                (0x07U)                              ///< Number of DeepStop wake-up sources
 #define BSP_FEATURE_CHIP_STANDBY_IOHOLD_REG_NAME                              (0x01U)                              ///< IOHOLD register index for standby state retention
 
-/** GTM */
-#define BSP_FEATURE_GTM_VALID_CHANNEL_MASK                                    (0x1FU)                              ///< Mask of available GTM channels
+/** OPBT */
+#define BSP_FEATURE_OPBT_BVA1_AREA_IS_AVAILABLE                               (0x00U)                              ///< BVA1 Area is not available
+#define BSP_FEATURE_OPBT_SWITCHING_CLUSTER_1_AVAILABLE                        (0x01U)                              ///< OPBT Cluster 1 switching is available
+#define BSP_FEATURE_OPBT_SWITCHING_CLUSTER_2_AVAILABLE                        (0x00U)                              ///< OPBT Cluster 2 switching is not available
+#define BSP_FEATURE_OPBT_SWITCHING_CLUSTER_3_AVAILABLE                        (0x00U)                              ///< OPBT Cluster 3 switching is not available
+
+/** QOS */
+#define BSP_FEATURE_QOS_IS_AVAILABLE                                          (1U)                                 ///< QoS feature is available on this device
+#define BSP_FEATURE_QOS_PE0CL2_UNIT_AVAILABLE                                 (0U)                                 ///< QoS feature for CPU4 is not available
+#define BSP_FEATURE_QOS_PE1CL2_UNIT_AVAILABLE                                 (0U)                                 ///< QoS feature for CPU5 is not available
+#define BSP_FEATURE_QOS_ACEU0_UNIT_AVAILABLE                                  (0U)                                 ///< QoS feature for ACU0 is not available
+#define BSP_FEATURE_QOS_ACEU1_UNIT_AVAILABLE                                  (0U)                                 ///< QoS feature for ACU1 is not available
+#define BSP_FEATURE_QOS_RHSIF0_UNIT_AVAILABLE                                 (1U)                                 ///< QoS feature for RHSIF0 is available
+#define BSP_FEATURE_QOS_RHSIF1_UNIT_AVAILABLE                                 (0U)                                 ///< QoS feature for RHSIF1 is not available
+#define BSP_FEATURE_QOS_ETHER0_UNIT_AVAILABLE                                 (1U)                                 ///< QoS feature for ETHER0 is available
+#define BSP_FEATURE_QOS_ETHER1_UNIT_AVAILABLE                                 (0U)                                 ///< QoS feature for ETHER1 is not available
+#define BSP_FEATURE_QOS_R_SWITCH_UNIT_AVAILABLE                               (0U)                                 ///< QoS feature for R_SWITCH is not available
 
 /** OSTM */
 #define BSP_FEATURE_OSTM_VALID_CHANNEL_MASK                                   (0x0FU)                              ///< Mask of available OSTM channels
@@ -139,6 +192,7 @@
 #define BSP_FEATURE_TAUD_MAX_UNIT                                             (4U)                                 ///< Maximum TAUD units
 
 /** CANFD */
+#define BSP_FEATURE_CANFD_NUM_UNIT                                            (1UL)                                ///< Number of CANFD units
 #define BSP_FEATURE_CANFD_NUM_CHANNELS                                        (8UL)                                ///< Number of CANFD channels
 #define BSP_FEATURE_CANFD_NUM_CFIFO_CHANNEL                                   (3UL)                                ///< Number of CFIFO channels
 #define BSP_FEATURE_CANFD_NUM_RXFIFO                                          (8UL)                                ///< Number of CANFD RX FIFOs
@@ -149,6 +203,10 @@
 #define BSP_FEATURE_CANFD_CLKC_SRC                                            (FSP_PRIV_CLOCK_CLK_CANFD_C)         ///< CANFD CLKC source
 #define BSP_FEATURE_CANFD_PN_MODE                                             (1U)                                 ///< Pretended Network Mode supported
 #define BSP_FEATURE_CANFD_FFI_MODE                                            (1U)                                 ///< FFI Mode supported
+#define BSP_FEATURE_CANFD_AFLMRAM_MAX_PAGE                                    (305UL)                              ///< Number of AFL MRAM page
+#define BSP_FEATURE_CANFD_AFLMRAM_PER_CHANNEL                                 (9760UL)                             ///< Number of AFL MRAM area size
+#define BSP_FEATURE_CANFD_PFLRAM_MAX_PAGE                                     (22UL)                               ///< Number of PFL page
+#define BSP_FEATURE_CANFD_PFLRAM_PER_CHANNEL                                  (720UL)                              ///< Number of PFL MRAM area size
 
 /** RIIC */
 #define BSP_FEATURE_IIC_HAS_SYS_CLK                                           (0U)                                 ///< IIC system-clock support unavailable
@@ -176,12 +234,14 @@
 #define BSP_FEATURE_PIC_ADTCFG_NUMBER                                         (10U)                                ///< ADTCFG count
 
 #define BSP_FEATURE_PIC_DSADTCFG_NUMBER                                       (14U)                                ///< DSADTCFG entries
+#define BSP_FEATURE_PIC_DSADTCFG_NUMBER_REG                                   (4U)                                 ///< DSADTCFG register
 #define BSP_FEATURE_PIC_DFETSEN_NUMBER                                        (22U)                                ///< DFETSEN entries
 #define BSP_FEATURE_PIC_FCMPISEN_NUMBER_REG                                   (8U)                                 ///< FCMPISEN registers
 #define BSP_FEATURE_PIC_GTMSEN_NUMBER_REG                                     (8U)                                 ///< GTMSEN registers
 #define BSP_FEATURE_PIC_PSI5S_NUMBER_UNIT                                     (2U)                                 ///< PSI5S units
 #define BSP_FEATURE_PIC_PSI5SEN_NUMBER                                        (7U)                                 ///< PSI5SEN entries
 #define BSP_FEATURE_PIC_PSI5EN_NUMBER                                         (6U)                                 ///< PSI5EN entries
+#define BSP_FEATURE_PIC_PSI5EN_NUMBER_UNIT                                    (4U)                                 ///< PSI5EN units
 #define BSP_FEATURE_PIC_GTMINEN_NUMBER_GROUP                                  (7U)                                 ///< GTMINEN groups
 #define BSP_FEATURE_PIC_CANIOSEN_NUMBER                                       (3U)                                 ///< CANIOSEN entries
 #define BSP_FEATURE_PIC_GTMINTIOEN_NUMBER_GROUP                               (8U)                                 ///< GTM INTIO enable groups
@@ -448,6 +508,23 @@
 #define BSP_FEATURE_PIC_ENCA_TRIG_SEL_ENCATCFG_PIC24                          (1U)                                 ///< ENCATCFG via PIC24 supported
 #define BSP_FEATURE_PIC_ENCA_TRIG_SEL_ENCATSEL_PIC21                          (0U)                                 ///< ENCATSEL via PIC21 unsupported
 #define BSP_FEATURE_PIC_ENCA_TRIG_SEL_ENCATCFG_PIC22                          (0U)                                 ///< ENCATCFG via PIC22 unsupported
+#define BSP_FEATURE_PIC_DSADC_TRIG_SEL                                        (1U)                                 ///< DSADC trigger select supported
+#define BSP_FEATURE_PIC_DSADC_TRIG_SEL_ATU                                    (1U)                                 ///< DSADC trigger via ATU supported
+#define BSP_FEATURE_PIC_DSADC_READ_GATE                                       (1U)                                 ///< DSADC read gate supported
+#define BSP_FEATURE_PIC_CADC_TRIG_SEL                                         (1U)                                 ///< CADC trigger select supported
+#define BSP_FEATURE_PIC_CADC_TRIG_SEL_ATU                                     (1U)                                 ///< CADC trigger via ATU supported
+#define BSP_FEATURE_PIC_DFE_TRIG_SEL                                          (1U)                                 ///< DFE input selection supported
+#define BSP_FEATURE_PIC_PSI5_TRIG_SEL                                         (1U)                                 ///< PSI5 trigger selection supported
+#define BSP_FEATURE_PIC_PSI5_TRIG_SEL_GTM_PIC24                               (1U)                                 ///< PSI5 trigger via GTM PIC24 supported
+#define BSP_FEATURE_PIC_PSI5_TRIG_SEL_GTM_PIC2_SELB                           (0U)                                 ///< PSI5 trigger via GTM PIC2 SELB unsupported
+#define BSP_FEATURE_PIC_PSI5S_TRIG_SEL_GTM_PIC24                              (1U)                                 ///< PSI5S trigger via GTM PIC24 supported
+#define BSP_FEATURE_PIC_PSI5S_TRIG_SEL_GTM_PIC2_SELB                          (0U)                                 ///< PSI5S trigger via GTM PIC2 SELB unsupported
+#define BSP_FEATURE_PIC_PSI5S_TRIG_SEL_GTM_PIC22                              (0U)                                 ///< PSI5S trigger via GTM PIC22 unsupported
+#define BSP_FEATURE_PIC_PSI5S_TRIG_SEL                                        (1U)                                 ///< PSI5S trigger selection supported
+#define BSP_FEATURE_PIC_GTM_TIO_INPUT_SEL                                     (1U)                                 ///< GTM TIO input selection supported
+#define BSP_FEATURE_PIC_GTM_TIO_IN_PIC24                                      (1U)                                 ///< GTM TIO input via PIC24 supported
+#define BSP_FEATURE_PIC_GTM_TIO_IN_PIC2_SELB                                  (0U)                                 ///< GTM TIO input via PIC2 SELB unsupported
+#define BSP_FEATURE_PIC_GTM_TIO_IN_PIC22                                      (0U)                                 ///< GTM TIO input via PIC22 unsupported
 #define BSP_FEATURE_PIC_GTM_TIM_IN_PIC24                                      (1U)                                 ///< GTM TIM input via PIC24 supported
 #define BSP_FEATURE_PIC_GTM_TIM_IN_PIC2_SELB                                  (0U)                                 ///< GTM TIM input via PIC2 SELB unsupported
 #define BSP_FEATURE_PIC_GTM_TIM_IN_PIC22                                      (0U)                                 ///< GTM TIM input via PIC22 unsupported
@@ -473,11 +550,32 @@
 #define BSP_FEATURE_PIC_FEATURE_U2BX                                          (1U)                                 ///< PIC U2Bx feature set supported
 
 /** GTM */
+#define BSP_FEATURE_GTM_VALID_CHANNEL_MASK                                    (0x1FU)                              ///< Valid GTM channels bitmask
+
+#define BSP_FEATURE_GTM_ARU_NUMBER_INSTANCE                                   (1U)                                 ///< Number of GTM ARU instances
+#define BSP_FEATURE_GTM_BRC_NUMBER_INSTANCE                                   (1U)                                 ///< Number of GTM BRC instances
+#define BSP_FEATURE_GTM_PSM_NUMBER_INSTANCE                                   (3U)                                 ///< Number of GTM PSM instances
+#define BSP_FEATURE_GTM_CMU_NUMBER_INSTANCE                                   (1U)                                 ///< Number of GTM CMU instances
+#define BSP_FEATURE_GTM_CCM_NUMBER_INSTANCE                                   (8U)                                 ///< Number of GTM CCM instances
+#define BSP_FEATURE_GTM_TBU_NUMBER_INSTANCE                                   (1U)                                 ///< Number of GTM TBU instances
+#define BSP_FEATURE_GTM_TIM_NUMBER_INSTANCE                                   (7U)                                 ///< Number of GTM TIM instances
+#define BSP_FEATURE_GTM_TOM_NUMBER_INSTANCE                                   (4U)                                 ///< Number of GTM TOM instances
+#define BSP_FEATURE_GTM_ATOM_NUMBER_INSTANCE                                  (8U)                                 ///< Number of GTM ATOM instances
+#define BSP_FEATURE_GTM_DTM_NUMBER_INSTANCE                                   (20U)                                ///< Number of GTM DTM instances
 #define BSP_FEATURE_GTM_MCS_NUMBER_INSTANCE                                   (7U)                                 ///< Number of GTM MCS instances
-#define BSP_FEATURE_GTM_MCS_NUMBER_CHANNEL                                    (8U)                                 ///< Channels per MCS instance
-#define BSP_FEATURE_GTM_MCS_NUMBER_SINT                                       (8U)                                 ///< Number of SINT outputs
-#define BSP_FEATURE_GTM_MCS_NUMBER_HBP                                        (2U)                                 ///< Number of HBP outputs
-#define BSP_FEATURE_GTM_MCS_NUMBER_TRIGGER                                    (24U)                                ///< Number of GTM trigger sources
+#define BSP_FEATURE_GTM_MCFG_NUMBER_INSTANCE                                  (0U)                                 ///< Number of GTM MCFG instances
+#define BSP_FEATURE_GTM_MAP_NUMBER_INSTANCE                                   (1U)                                 ///< Number of GTM MAP instances
+#define BSP_FEATURE_GTM_DPLL_NUMBER_INSTANCE                                  (1U)                                 ///< Number of GTM DPLL instances
+#define BSP_FEATURE_GTM_SPE_NUMBER_INSTANCE                                   (3U)                                 ///< Number of GTM SPE instances
+#define BSP_FEATURE_GTM_ICM_NUMBER_INSTANCE                                   (1U)                                 ///< Number of GTM ICM instances
+#define BSP_FEATURE_GTM_CMP_NUMBER_INSTANCE                                   (1U)                                 ///< Number of GTM CMP instances
+#define BSP_FEATURE_GTM_MON_NUMBER_INSTANCE                                   (1U)                                 ///< Number of GTM MON instances
+#define BSP_FEATURE_GTM_TIO_NUMBER_INSTANCE                                   (4U)                                 ///< Number of GTM TIO instances
+
+#define BSP_FEATURE_GTM_MCS_NUMBER_CHANNEL                                    (8U)                                 ///< Number of GTM MCS channels per instance
+#define BSP_FEATURE_GTM_MCS_NUMBER_TRIGGER                                    (24U)                                ///< Number of GTM MCS trigger sources
+#define BSP_FEATURE_GTM_MCS_NUMBER_SINT                                       (8U)                                 ///< Number of GTM MCS SINT sources
+#define BSP_FEATURE_GTM_MCS_NUMBER_HBP                                        (2U)                                 ///< Number of GTM MCS HBP units
 
 /** TAUD */
 #define BSP_FEATURE_TAUD_MAX_UNIT                                             (4U)                                 ///< Maximum TAUD units
@@ -486,8 +584,12 @@
 #define BSP_FEATURE_CLMA_MAX_CHANNEL                                          (18U)                                ///< Maximum CLMA channels supported
 
 /** VMON */
-#define BSP_FEATURE_VMON_VDD2_GROUP                                           (0U)                                 ///< Group index for VDD2 voltage monitoring
-#define BSP_FEATURE_VMON_AWOVDD_GROUP                                         (0U)                                 ///< Group index for AWOVDD voltage monitoring
+#define BSP_FEATURE_VMON_VDD2_AVAILABLE                                       (0U)                                 ///< Group index for VDD2 voltage monitoring
+#define BSP_FEATURE_VMON_AWOVDD_AVAILABLE                                     (0U)
+#define BSP_FEATURE_VMON_FC_ENABLE                                            (0xFCU)                              ///< Bit positions for enabling VMON functionality
+#define BSP_FEATURE_VMON_DMASK_ENABLE                                         (0xEEU)                              ///< Enable/disable VMONDMASK functionality
+#define BSP_FEATURE_VMON_OUT_DMASK_ENABLE                                     (0xE0U)                              ///< Enable/disable VMON_OUT_DMASK functionality
+#define BSP_FEATURE_VMON_RESET_DMASK_ENABLE                                   (0x0EU)                              ///< Enable/disable VMON_RESET_DMASK functionality                                 ///< Group index for AWOVDD voltage monitoring
 
 /** RLIN3 */
 #define BSP_FEATURE_RLIN3_LIN_CHANNELS_MASK                                   (0x80003FUL)                         ///< Bitmask of supported RLIN3 channels
@@ -495,7 +597,6 @@
 
 /** DMAC */
 #define BSP_FEATURE_DMAC_SWITCHABLE_REDUNDANT_OPERATION                       (1U)                                 ///< DMAC redundant operation supported
-#define BSP_FEATURE_DMAC_DESCRIPTOR_START_BIT                                 (1U)                                 ///< DMAC descriptor start bit supported
 
 /** DTSC */
 #define BSP_FEATURE_DTSC_TRANSFER_RQ_OVERFLOW_FLAG                            (1U)                                 ///< Transfer request overflow flag supported
@@ -505,6 +606,50 @@
 
 /** ICU */
 #define BSP_FEATURE_FCLA5_IS_AVAILABLE                                        (1U)                                 ///< FCLA5 register availability (1 = available)
+#define BSP_FEATURE_ICU_SIGNAL_INTP                                           (0U)
+
+/** RHSIF */
+#define BSP_FEATURE_RHSIF_UNIT_SUPPORTED                                      (1U)                                 ///< Maximum RHSIF channel supported
+
+/** CLMA */
+#define BSP_FEATURE_CLMA_BACKUP_CLOCK_IS_AVAILABLE                            (1U)                                 ///< Backup Clock support
+#define BSP_FEATURE_CLMA_CHANNEL_CONFIG_U2B                                   (1U)                                 ///< Clock monitor channel config
+
+/** ECM */
+#define BSP_FEATURE_ECM_INSTANCE                                              (10U)                                ///< ECM feature instance
+
+/** PSI5 */
+#define BSP_FEATURE_PSI5_MAX_CHANNEL                                          (4U)                                 ///< Maximum PSI5 unit supported
+#define BSP_FEATURE_PSI5_NUM_SLOTS_EACH_UNIT                                  (8U)                                 ///< Maximum PSI5 slot per unit supported
+#define BSP_FEATURE_PSI5_WP_IS_AVAILABLE                                      (1U)                                 /* Indicates the wrapper function is available in PSI5 */
+
+/** PSI5S */
+#define BSP_FEATURE_PSI5S_NUM_UNIT                                            (2U)                                 ///< Maximum PSI5S unit supported
+
+/** Motor Control Resolver */
+#define BSP_FEATURE_MOTOR_CONTROL_RESOLVER_WITHOUT_EMU3S                      (0U)                                 ///< Motor Control Resolver without EMU3S is not available
+
+/** CGC */
+#define BSP_FEATURE_CGC_NUM_OF_SYSTEM_CLOCK                                   (3U)                                 ///< Number of CPU system clock domains supported
+#define BSP_FEATURE_CGC_HAS_CLK_SYS                                           (0U)                                 ///< System clock CLK_SYS is not available
+#define BSP_FEATURE_CGC_HAS_CLK_SYS_CLEAN                                     (1U)                                 ///< System clock CLK_SYS_CLEAN is available
+#define BSP_FEATURE_CGC_HAS_CLK_SYS_SSCG                                      (1U)                                 ///< System clock CLK_SYS_SSCG is available
+#define BSP_FEATURE_CGC_HAS_CLK_SYS_SSCG1                                     (1U)                                 ///< System clock CLK_SYS_SSCG1 is available
+#define BSP_FEATURE_CGC_EXTENDED_PERIPHERAL_CLK_SELECTORS                     (1U)                                 ///< Peripheral input clock source selectors
+#define BSP_FEATURE_CGC_SUB_OSC_IS_AVAILABLE                                  (0U)                                 ///< Sub Oscillator is not available
+#define BSP_FEATURE_CGC_HVIOSC_IS_AVAILABLE                                   (1U)                                 ///< High Voltage Internal Oscillator is available
+#define BSP_FEATURE_CGC_NUM_OF_GEAR_SHIFT_REPETITION_CASE                     (2U)                                 ///< Number of repetition cases for System Clock gear up/down shifting
+
+/** ADCK */
+#if (BSP_PACKAGE_PINS_BGA292 == BSP_PACKAGE_PINS)
+ #define BSP_FEATURE_ADCK_NUM_OF_UNIT                                         (3U)                                 /* ADCK support on this MCU */
+#else
+ #define BSP_FEATURE_ADCK_NUM_OF_UNIT                                         (4U)                                 /* ADCK support on this MCU */
+#endif
+
+/** ECM ERRORIN NF */
+#define BSP_FEATURE_ECM_ERRORIN_NF_MAX                                        IOPORT_FILTER_SIGNAL_ERRORIN7        ///< ECM ERRORIN NF Max
+#define BSP_FEATURE_ECM_ERRORIN_NF_0                                          IOPORT_FILTER_SIGNAL_ERRORIN0        ///< ECM ERRORIN NF0
 
 /***********************************************************************************************************************
  * Exported global variables (to be accessed by other files)

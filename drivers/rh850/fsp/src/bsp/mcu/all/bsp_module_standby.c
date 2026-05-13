@@ -277,10 +277,10 @@ bsp_wk_factor_t R_BSP_WakeUpFactorGetAndClear (void)
     /* Check whether it was waked up or not */
     if (0U != ((R_WUF->WUFMON) & BSP_WAKEUP_FACTOR_0_MONITOR_MASK))
     {
-        uint8_t bit_one_pos    = (uint8_t) (SCH1R((R_WUF->WUFMON) & BSP_WAKEUP_FACTOR_0_MONITOR_MASK) - 1U);
+        uint8_t bit_one_pos    = (uint8_t) (__SCH1R((R_WUF->WUFMON) & BSP_WAKEUP_FACTOR_0_MONITOR_MASK) - 1U);
         uint8_t wakeup_bit_pos = (uint8_t)
-                                 (SCH1R(*((volatile uint32_t *) r_bsp_run_mode_wakeup_reg[bit_one_pos +
-                                                                                          BSP_WK_REG_WUF_A0])) - 1U);
+                                 (__SCH1R(*((volatile uint32_t *) r_bsp_run_mode_wakeup_reg[bit_one_pos +
+                                                                                            BSP_WK_REG_WUF_A0])) - 1U);
         factor =
             (bsp_wk_factor_t) (wakeup_bit_pos + (bit_one_pos * BSP_WAKEUP_FACTOR_WORD) +
                                BSP_STANDBY_WAKE_UP_FACTOR_A0_START);
@@ -471,7 +471,7 @@ static void bsp_stbc_write_with_protection (volatile uint32_t * p_msr_address, u
 static void bsp_stop_mode (void)
 {
     /* Disable Interrupt */
-    DI();
+    __DI();
 
     /* Gear down clock */
     bsp_clock_gear_down();
@@ -492,7 +492,7 @@ static void bsp_stop_mode (void)
  **********************************************************************************************************************/
 static void bsp_halt (void)
 {
-    HALT();
+    __HALT();
 }
 
 #if (BSP_FEATURE_CHIP_STANDBY_DEEPSTOP_IS_AVAILABLE)
@@ -505,7 +505,7 @@ static void bsp_halt (void)
 static void bsp_deep_stop_mode (void)
 {
     /* Disable Interrupt */
-    DI();
+    __DI();
 
     /* Gear down clock */
     bsp_clock_gear_down();

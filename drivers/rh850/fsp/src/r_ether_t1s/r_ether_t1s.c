@@ -1,4 +1,8 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/*
+* Copyright (c) 2025 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /***********************************************************************************************************************
  * Includes
@@ -2015,6 +2019,7 @@ static ether_t1s_type r_ether_t1s_hw_init (ether_t1s_instance_ctrl_t * p_ctrl, u
             /* No action required */
         }
     }
+
     return result;
 }
 
@@ -2499,7 +2504,6 @@ static ether_t1s_type r_ether_t1s_enable_ram_area (ether_t1s_instance_ctrl_t * p
                          ctrl_idx,
                          (uint32_t) p_extend->p_mem_pool_buffer_table,
                          (uint32_t) p_extend->ether_t1s_ram_size);
-
 
     /* Enable the DMAC and MAC of Controller */
     /* configure message handler */
@@ -3319,6 +3323,7 @@ static ether_t1s_type r_ether_t1s_set_controller_mode (ether_t1s_instance_ctrl_t
             r_ether_t1s_initialize_buffer(ctrl_idx);
         }
     }
+
     return return_value;
 }
 
@@ -4358,7 +4363,7 @@ static void r_ether_t1s_ram_free (uint32_t ctrl_idx, const uint32_t mem_addr)
 static void r_ether_t1s_release_tx_buffer (uint32_t ctrl_idx, const uint32_t buf_idx)
 {
     ether_t1s_buf_handler_type_t * volatile p_temp;
- 
+
     /* Release tx buffer handler */
     p_temp = gp_ether_t1s_tx_buffer_index[ctrl_idx][buf_idx].p_buffer_hdr;
     (void) r_ether_t1s_util_remove_to_list(&g_ether_t1s_buffer_lock[ctrl_idx][p_temp->channel], (void **) &p_temp);

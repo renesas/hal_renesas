@@ -15,29 +15,7 @@
  **********************************************************************************************************************/
 
 /** "ICU" in ASCII, used to determine if channel is open. */
-#define ICU_OPEN                 (0x00494355U)
-
-#define FCLACTLm_nGAP            (0x00000004UL)
-
-#define FCLACTL_0_MAX_ENTRIES    (8U)
-#define FCLACTL_1_MAX_ENTRIES    (16U)
-#define FCLACTL_2_MAX_ENTRIES    (24U)
-#define FCLACTL_3_MAX_ENTRIES    (32U)
-#define FCLACTL_4_MAX_ENTRIES    (40U)
-#define FCLACTL_5_MAX_ENTRIES    (46U)
-
-#if defined(R_FCLA_IRQ0_BASE)
-
-/* IRQ-based interrupt configuration */
- #define FCLACTL                 FCLACTL0_IRQ_0
- #define R_FCLA_BASE(n)    R_FCLA_IRQ ## n ## _BASE
- #define R_FCLA_NMI_BASE         R_FCLA_IRQ5_BASE // NMI maps to R_FCLA_IRQ5_BASE
-#else
-
-/* INTP-based interrupt configuration */
- #define FCLACTL                 FCLACTL0_INTP_0
- #define R_FCLA_BASE(n)    R_FCLA_INTP ## n ## _BASE
-#endif
+#define ICU_OPEN    (0x00494355U)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -46,8 +24,9 @@
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void r_icu_isr(void);
-static void                  r_icu_nmi(bsp_grp_irq_t irq);
+BSP_INTERRUPT_ATTRIBUTE void                          r_icu_isr(void);
+static void                   r_icu_nmi(bsp_grp_irq_t irq);
+static ioport_filter_signal_t r_icu_mapping_signal(e_icu_channel_t channel);
 
 /***********************************************************************************************************************
  * Private global variables
@@ -103,11 +82,20 @@ fsp_err_t R_ICU_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, externa
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ERROR_RETURN(ICU_OPEN != p_ctrl->open, FSP_ERR_ALREADY_OPEN);
     FSP_ASSERT(NULL != p_cfg);
+    FSP_ASSERT(NULL != p_cfg->p_extend);
+    icu_extended_cfg_t const * p_icu_extend_cfg = (icu_extended_cfg_t const *) p_cfg->p_extend;
+    FSP_ASSERT(NULL != p_icu_extend_cfg->p_ioport_instance);
+    ioport_instance_t const * p_ioport_instance = (ioport_instance_t *) p_icu_extend_cfg->p_ioport_instance;
 
     /* Callback must be used with a valid interrupt priority otherwise it will never be called. */
     FSP_ASSERT(p_cfg->p_callback);
     FSP_ERROR_RETURN(BSP_IRQ_DISABLED != p_cfg->ipl, FSP_ERR_INVALID_ARGUMENT);
+#else
+    icu_extended_cfg_t const * p_icu_extend_cfg  = (icu_extended_cfg_t const *) p_cfg->p_extend;
+    ioport_instance_t const  * p_ioport_instance = (ioport_instance_t *) p_icu_extend_cfg->p_ioport_instance;
 #endif
+
+    static ioport_filter_cfg_t noisefilter_cfg;
 
     p_ctrl->channel = (e_icu_channel_t) p_cfg->channel;
     p_ctrl->irq     = p_cfg->irq;
@@ -117,40 +105,8 @@ fsp_err_t R_ICU_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, externa
     p_ctrl->p_context         = p_cfg->p_context;
     p_ctrl->p_callback_memory = NULL;
 
-    /**
-     * Determine FCLACTL register base address based on channel number
-     * FCLACTL channels are grouped into blocks, each block contains up to 8 channels
-     */
-    if (FCLACTL_0_MAX_ENTRIES > p_ctrl->channel)
-    {
-        p_ctrl->p_reg = ((R_FCLA_Type *) (R_FCLA_BASE(0) + (p_ctrl->channel % 8U) * FCLACTLm_nGAP));
-    }
-    else if (FCLACTL_1_MAX_ENTRIES > p_ctrl->channel)
-    {
-        p_ctrl->p_reg = ((R_FCLA_Type *) (R_FCLA_BASE(1) + (p_ctrl->channel % 8U) * FCLACTLm_nGAP));
-    }
-    else if (FCLACTL_2_MAX_ENTRIES > p_ctrl->channel)
-    {
-        p_ctrl->p_reg = ((R_FCLA_Type *) (R_FCLA_BASE(2) + (p_ctrl->channel % 8U) * FCLACTLm_nGAP));
-    }
-    else if (FCLACTL_3_MAX_ENTRIES > p_ctrl->channel)
-    {
-        p_ctrl->p_reg = ((R_FCLA_Type *) (R_FCLA_BASE(3) + (p_ctrl->channel % 8U) * FCLACTLm_nGAP));
-    }
-    else if (FCLACTL_4_MAX_ENTRIES > p_ctrl->channel)
-    {
-        p_ctrl->p_reg = ((R_FCLA_Type *) (R_FCLA_BASE(4) + (p_ctrl->channel % 8U) * FCLACTLm_nGAP));
-    }
-
-#if (1 == BSP_FEATURE_FCLA5_IS_AVAILABLE)
-    else if (FCLACTL_5_MAX_ENTRIES > p_ctrl->channel)
-    {
-        p_ctrl->p_reg = ((R_FCLA_Type *) (R_FCLA_BASE(5) + ((p_ctrl->channel % 8U) + 1) * FCLACTLm_nGAP));
-    }
-#endif
-
     /* Setting detection mode for NMI external pin */
-    else if (ICU_CHANNEL_NMI == p_ctrl->channel)
+    if (ICU_CHANNEL_NMI == p_ctrl->channel)
     {
         /* Initialize global pointer to ICU for NMI callback use.  */
         gp_icu_ctrl = (icu_instance_ctrl_t *) p_ctrl;
@@ -160,9 +116,6 @@ fsp_err_t R_ICU_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, externa
 
         /* Set NMI callback function */
         R_BSP_GroupIrqWrite(BSP_GRP_IRQ_EXTERNAL_NMI, r_icu_nmi);
-
-        /* Get the NMI base address */
-        p_ctrl->p_reg = ((R_FCLA_Type *) R_FCLA_NMI_BASE);
     }
     else
     {
@@ -176,11 +129,14 @@ fsp_err_t R_ICU_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, externa
         R_BSP_IrqCfg(p_ctrl->irq, p_cfg->ipl, p_ctrl);
     }
 
-    /* Configure trigger detection mode */
-    p_ctrl->p_reg->FCLACTL = p_cfg->trigger;
+    /* Map the selected ICU channel to its corresponding IOPORT filter signal.
+     * If the channel is not found in the mapping table, the function returns
+     * IOPORT_FILTER_SIGNAL_MAX to indicate an invalid or unsupported signal. */
+    ioport_filter_signal_t signal = r_icu_mapping_signal(p_ctrl->channel);
 
-    /* Dummy read */
-    p_ctrl->p_reg->FCLACTL;
+    /* Call noise filter configure of IOPORT */
+    noisefilter_cfg.detection_mode = (ioport_filter_detection_t) p_cfg->trigger;
+    p_ioport_instance->p_api->noiseFilterCfg(p_ioport_instance->p_ctrl, signal, &noisefilter_cfg);
 
     /* Synchronization after setting registers */
     SYNCP();
@@ -398,4 +354,34 @@ static void r_icu_nmi (bsp_grp_irq_t irq)
         /* Restore callback memory in case this is a nested interrupt. */
         *gp_icu_ctrl->p_callback_memory = args;
     }
+}
+
+/*******************************************************************************************************************//**
+ * ICU mapping signals.
+ **********************************************************************************************************************/
+static ioport_filter_signal_t r_icu_mapping_signal (e_icu_channel_t channel)
+{
+    ioport_filter_signal_t signal;
+#if BSP_FEATURE_ICU_SIGNAL_INTP
+    if (channel == ICU_CHANNEL_NMI)
+    {
+        signal = IOPORT_FILTER_SIGNAL_INTP_NMI;
+    }
+    else
+    {
+        signal = (ioport_filter_signal_t) ((uint32_t) IOPORT_FILTER_SIGNAL_INTP0 + (uint32_t) channel);
+    }
+
+#else
+    if (channel == ICU_CHANNEL_NMI)
+    {
+        signal = IOPORT_FILTER_SIGNAL_NMI;
+    }
+    else
+    {
+        signal = (ioport_filter_signal_t) ((uint32_t) IOPORT_FILTER_SIGNAL_IRQ0 + (uint32_t) channel);
+    }
+#endif
+
+    return signal;
 }

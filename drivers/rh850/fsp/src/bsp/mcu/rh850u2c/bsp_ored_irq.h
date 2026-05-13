@@ -234,7 +234,7 @@ __STATIC_INLINE IRQn_Type R_FSP_ORed_CurrentIrqGet (void)
     uint8_t             ored_channel;
 
     /* Get EIIC value */
-    intid = STSR(EIIC);
+    intid = __STSR(SR_EIIC, SL_EIIC);
     intid = intid & BSP_EIIC_MSK;
 
     /* Return if not in the range of ored EIC */
@@ -250,7 +250,7 @@ __STATIC_INLINE IRQn_Type R_FSP_ORed_CurrentIrqGet (void)
     p_ored_reg = (volatile uint32_t *) BSP_READ_MASK_ADDR(intid, ored_channel);
 
     /* Get channel number */
-    channel = (SCH1R(*p_ored_reg) - 1);
+    channel = (__SCH1R(*p_ored_reg) - 1);
 
     /* Convert and return the value as IRQn_Type for the corresponding Interrupt Slot */
     return (IRQn_Type) BSP_ORED_IRQ_CONVERT(intid, channel);

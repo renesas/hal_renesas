@@ -145,20 +145,18 @@ void bsp_prv_software_delay_loop (uint32_t loop_cnt)
 {
 #if defined(__CCRH__)
     __asm__ volatile (
-         "nop            \n"
-         "nop            \n"
-         "loop r6, 0"
+        "   .local loop_label    \n"
+        "loop_label:             \n"
+        "    nop                 \n"
+        "    nop                 \n"
+        "    loop r6, loop_label   "
     );
-#elif defined(__ghs__) || defined(__GNUC__)
+#elif defined(__ghs__) || defined(__GNUC__) || defined(__ICCRH850__)
     __asm__ volatile (
-         "nop            \n"
-         "nop            \n"
-#if defined(__ghs__)
-         "loop_label%=: "
-         "loop %0, loop_label%="
-#elif defined(__GNUC__)
-         "loop %0, 0"
-#endif
+        "loop_label:             \n"
+        "    nop                 \n"
+        "    nop                 \n"
+        "loop %0, loop_label       "
          : "+r" (loop_cnt)
          :
          : "memory"

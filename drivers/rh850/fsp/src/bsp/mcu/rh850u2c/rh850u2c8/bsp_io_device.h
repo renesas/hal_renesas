@@ -54,7 +54,7 @@ FSP_HEADER
 
 /** Superset list of all possible IO ports. */
 /** BSP_IO_PORT_[TYPE][GROUP] = [PWE] << 24U | [TYPE] << 16U | [GROUP] << 8U | [PORT] */
-typedef enum e_bsp_io_port
+typedef enum e_bsp_io_port_u2c8
 {
     BSP_IO_PORT_P02  = ((BSP_IO_PORT_P02_PWE << 24U) | (0 << 16U) | (2 << 8U) | 0),  ///< IO port P02
     BSP_IO_PORT_P03  = ((BSP_IO_PORT_P03_PWE << 24U) | (0 << 16U) | (3 << 8U) | 0),  ///< IO port P03
@@ -78,7 +78,7 @@ typedef enum e_bsp_io_port
 } bsp_io_port_t;
 
 /** Superset list of all possible IO port pins. */
-typedef enum e_bsp_io_port_pin_t
+typedef enum e_bsp_io_port_pin_u2c8
 {
     BSP_IO_PORT_P02_PIN_0  = (BSP_IO_PORT_P02 | 0x0),   ///< IO port P02 pin 0
     BSP_IO_PORT_P02_PIN_1  = (BSP_IO_PORT_P02 | 0x1),   ///< IO port P02 pin 1

@@ -90,8 +90,10 @@ typedef enum e_bsp_cyclicrun_module_standby
 /***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
-extern uint32_t g_clock_cyclicrun_freq[FSP_PRIV_CLOCK_CYCLICRUN_NUM];
-extern const bsp_module_standby_info_t g_cyclicrun_msr_info_table[BSP_CYCLICRUN_MODULE_STANDBY_TOTAL_INDEX_END];
+extern BSP_PRAGMA_MEMORY_ATTRIBUTE_LARGE uint32_t g_clock_cyclicrun_freq[FSP_PRIV_CLOCK_CYCLICRUN_NUM];
+
+extern BSP_PRAGMA_MEMORY_ATTRIBUTE_LARGE const bsp_module_standby_info_t g_cyclicrun_msr_info_table[
+    BSP_CYCLICRUN_MODULE_STANDBY_TOTAL_INDEX_END];
 
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)

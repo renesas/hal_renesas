@@ -178,16 +178,16 @@ typedef enum e_ostm_counter_select_taud0_channel
 /** Channel control block. DO NOT INITIALIZE.  Initialization occurs when @ref timer_api_t::open is called. */
 typedef struct st_ostm_instance_ctrl
 {
-    uint32_t            open;                           // Whether or not channel is open
-    const timer_cfg_t * p_cfg;                          // Pointer to initial configurations
-    R_OSTMn_Type      * p_reg;                          // Base register for this channel
+    uint32_t            open;                     // Whether or not channel is open
+    const timer_cfg_t * p_cfg;                    // Pointer to initial configurations
+    R_OSTMn_Type      * p_reg;                    // Base register for this channel
 #ifdef BSP_MCU_GROUP_RH850U2Ax
-    R_IC0CKSEL8_Type * p_reg_cksel;                     // Base clock select register for this channel
+    R_IC0CKSEL8_Type * p_reg_cksel;               // Base clock select register for this channel
 #endif
-    uint32_t period;                                    // Current timer period (counts)
-    void (* p_callback)(timer_callback_args_t * p_arg); // Pointer to callback
-    timer_callback_args_t * p_callback_memory;          // Pointer to pre-allocated callback argument
-    void const            * p_context;                  // Pointer to context to be passed into callback function
+    uint32_t period;                              // Current timer period (counts)
+    void (* p_callback)(timer_callback_args_t *); // Pointer to callback
+    timer_callback_args_t * p_callback_memory;    // Pointer to pre-allocated callback argument
+    void const            * p_context;            // Pointer to context to be passed into callback function
 } ostm_instance_ctrl_t;
 
 /** Optional OSTM extension data structure.*/
@@ -229,7 +229,7 @@ fsp_err_t R_OSTM_StatusGet(timer_ctrl_t * const p_ctrl, timer_status_t * const p
 fsp_err_t R_OSTM_Stop(timer_ctrl_t * const p_ctrl);
 fsp_err_t R_OSTM_Open(timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_cfg);
 fsp_err_t R_OSTM_CallbackSet(timer_ctrl_t * const          p_api_ctrl,
-                             void (                      * p_callback)(timer_callback_args_t * p_arg),
+                             void (                      * p_callback)(timer_callback_args_t *),
                              void * const                  p_context,
                              timer_callback_args_t * const p_callback_memory);
 fsp_err_t R_OSTM_OutputControl(timer_ctrl_t * const p_ctrl, ostm_output_level_t output_level);
