@@ -53,20 +53,89 @@ endif()
 
 
 # Optional build base on feature configuration
-zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_IOPORT
-	fsp/src/r_ioport/r_ioport.c)
 
-zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_RLIN3_UART
-	fsp/src/r_rlin3_uart/r_rlin3_uart.c)
+# ADCJ
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_ADCJ
+	fsp/src/r_adcj/r_adcj.c)
 
-zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_OSTM
-	fsp/src/r_ostm/r_ostm.c)
+# ADCK
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_ADCJ
+	fsp/src/r_adck/r_adck.c)
 
-zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_EXT_IRQ
-	fsp/src/r_icu/r_icu.c)
+# CANFD
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_CANFD
+	fsp/src/r_canfd/r_canfd.c)
 
+# CGC
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_CGC
+	fsp/src/r_cgc/r_cgc.c)
+
+# CRC
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_CRC
+	fsp/src/r_crc/r_crc.c)
+
+# DMAC
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_DMAC
+	fsp/src/r_dmac/r_dmac.c)
+
+# DTSC
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_DTSC
+	fsp/src/r_dtsc/r_dtsc.c)
+
+# ETHER_T1S
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_ETHER_ETNF
 	fsp/src/r_ether_phy/targets/CT25205_RTL/r_ether_phy_target_ct25205_rtl.c
 	fsp/src/r_ether_phy/r_ether_phy.c
 	fsp/src/r_ether_t1s/r_ether_t1s.c
-)	
+)
+
+# ICU
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_EXT_IRQ
+	fsp/src/r_icu/r_icu.c)
+
+# IIC_B
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_IIC_B
+	fsp/src/r_iic_b_master/r_iic_b_master.c
+	fsp/src/r_iic_b_slave/r_iic_b_slave.c
+)
+
+# IIC
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_IIC
+	fsp/src/r_iic_master/r_iic_master.c
+	fsp/src/r_iic_slave/r_iic_slave.c
+)
+
+# IOPORT
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_IOPORT
+	fsp/src/r_ioport/r_ioport.c)
+
+# MSPI
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_MSPI
+	fsp/src/r_mspi/r_mspi.c
+)
+
+# OSPI
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_OSPI
+	fsp/src/r_ospi/r_ospi.c
+)
+
+# OSTM
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_OSTM
+	fsp/src/r_ostm/r_ostm.c)
+
+# PIC
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_PIC
+	fsp/src/r_pic/r_pic.c
+)
+
+# RLIN3_UART
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_RLIN3_UART
+	fsp/src/r_rlin3_uart/r_rlin3_uart.c)
+
+# TAUD
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_TAUD
+	fsp/src/r_taud/r_taud.c)
+
+# WDT
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_WDT
+	fsp/src/r_wdt/r_wdt.c)
