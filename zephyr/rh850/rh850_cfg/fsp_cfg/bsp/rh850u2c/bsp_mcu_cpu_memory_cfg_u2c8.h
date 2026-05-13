@@ -51,7 +51,7 @@
 #endif
 
 #ifndef BSP_REGION11_ENABLE
- #define BSP_REGION11_ENABLE    0U
+ #define BSP_REGION11_ENABLE    1U
 #endif
 
 #ifndef BSP_REGION12_ENABLE
@@ -108,14 +108,14 @@
  #endif
 
 #else
- #define BSP_REGION00_CONFIG                                                                                 \
-    {                                                                                                        \
-        .name          = "CODE_FLASH",                                                                       \
-        .start_address = 0x00000000,                                                                         \
-        .size          = 0x800000,                                                                           \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | (((BSP_MPU_SR_EN) | (BSP_MPU_UR_EN))) | \
-                         ((BSP_MPU_UX_EN | BSP_MPU_SX_EN)),                                                  \
-        .no_of_region = 0U                                                                                   \
+ #define BSP_REGION00_CONFIG                                                                                         \
+    {                                                                                                                \
+        .name                  = "CODE_FLASH",                                                                       \
+        .start_address         = 0x00000000,                                                                         \
+        .size                  = 0x800000,                                                                           \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | (((BSP_MPU_SR_EN) | (BSP_MPU_UR_EN))) | \
+                                 ((BSP_MPU_UX_EN | BSP_MPU_SX_EN)),                                                  \
+        .no_of_region = 0U                                                                                           \
     },
 #endif
 
@@ -125,14 +125,14 @@
  #endif
 
 #else
- #define BSP_REGION01_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "LOCAL_RAM_0",                                                              \
-        .start_address = 0xFDC00000,                                                                 \
-        .size          = 0x20000,                                                                    \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 1U                                                                           \
+ #define BSP_REGION01_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "LOCAL_RAM_0",                                                              \
+        .start_address         = 0xFDC00000,                                                                 \
+        .size                  = 0x20000,                                                                    \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 1U                                                                                   \
     },
 #endif
 
@@ -142,14 +142,14 @@
  #endif
 
 #else
- #define BSP_REGION02_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "LOCAL_RAM_1",                                                              \
-        .start_address = 0xFDA00000,                                                                 \
-        .size          = 0x20000,                                                                    \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 2U                                                                           \
+ #define BSP_REGION02_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "LOCAL_RAM_1",                                                              \
+        .start_address         = 0xFDA00000,                                                                 \
+        .size                  = 0x20000,                                                                    \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 2U                                                                                   \
     },
 #endif
 
@@ -159,14 +159,14 @@
  #endif
 
 #else
- #define BSP_REGION03_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "CLUSTER_RAM_0",                                                            \
-        .start_address = 0xFE000000,                                                                 \
-        .size          = 0x130000,                                                                   \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 3U                                                                           \
+ #define BSP_REGION03_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "CLUSTER_RAM_0",                                                            \
+        .start_address         = 0xFE000000,                                                                 \
+        .size                  = 0x130000,                                                                   \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 3U                                                                                   \
     },
 #endif
 
@@ -176,15 +176,15 @@
  #endif
 
 #else
- #define BSP_REGION04_CONFIG                                                                   \
-    {                                                                                          \
-        .name          = "RETENTION_RAM",                                                      \
-        .start_address = 0x12000000,                                                           \
-        .size          = 0x8000,                                                               \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) |                           \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | \
-                         ((BSP_MPU_UX_EN | BSP_MPU_SX_EN)),                                    \
-        .no_of_region = 4U                                                                     \
+ #define BSP_REGION04_CONFIG                                                                           \
+    {                                                                                                  \
+        .name                  = "RETENTION_RAM",                                                      \
+        .start_address         = 0x12000000,                                                           \
+        .size                  = 0x8000,                                                               \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) |                           \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | \
+                                 ((BSP_MPU_UX_EN | BSP_MPU_SX_EN)),                                    \
+        .no_of_region = 4U                                                                             \
     },
 #endif
 
@@ -194,13 +194,13 @@
  #endif
 
 #else
- #define BSP_REGION05_CONFIG                                                                                   \
-    {                                                                                                          \
-        .name          = "P_Bus_Area",                                                                         \
-        .start_address = 0xFF000000,                                                                           \
-        .size          = 0xFB8000,                                                                             \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN | BSP_MPU_SW_EN)) | (0U), \
-        .no_of_region  = 5U                                                                                    \
+ #define BSP_REGION05_CONFIG                                                                                           \
+    {                                                                                                                  \
+        .name                  = "P_Bus_Area",                                                                         \
+        .start_address         = 0xFF000000,                                                                           \
+        .size                  = 0xFB8000,                                                                             \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN | BSP_MPU_SW_EN)) | (0U), \
+        .no_of_region          = 5U                                                                                    \
     },
 #endif
 
@@ -210,13 +210,13 @@
  #endif
 
 #else
- #define BSP_REGION06_CONFIG                                                                                   \
-    {                                                                                                          \
-        .name          = "I_Bus_Area",                                                                         \
-        .start_address = 0xFFFB8000,                                                                           \
-        .size          = 0x8000,                                                                               \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN | BSP_MPU_SW_EN)) | (0U), \
-        .no_of_region  = 6U                                                                                    \
+ #define BSP_REGION06_CONFIG                                                                                           \
+    {                                                                                                                  \
+        .name                  = "I_Bus_Area",                                                                         \
+        .start_address         = 0xFFFB8000,                                                                           \
+        .size                  = 0x8000,                                                                               \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN | BSP_MPU_SW_EN)) | (0U), \
+        .no_of_region          = 6U                                                                                    \
     },
 #endif
 
@@ -226,13 +226,13 @@
  #endif
 
 #else
- #define BSP_REGION07_CONFIG                                                                                   \
-    {                                                                                                          \
-        .name          = "PERIPHERAL",                                                                         \
-        .start_address = 0xFFFC4000,                                                                           \
-        .size          = 0x8000,                                                                               \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN | BSP_MPU_SW_EN)) | (0U), \
-        .no_of_region  = 7U                                                                                    \
+ #define BSP_REGION07_CONFIG                                                                                           \
+    {                                                                                                                  \
+        .name                  = "PERIPHERAL",                                                                         \
+        .start_address         = 0xFFFC4000,                                                                           \
+        .size                  = 0x8000,                                                                               \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN | BSP_MPU_SW_EN)) | (0U), \
+        .no_of_region          = 7U                                                                                    \
     },
 #endif
 
@@ -242,13 +242,13 @@
  #endif
 
 #else
- #define BSP_REGION08_CONFIG                                                                   \
-    {                                                                                          \
-        .name          = "OPBT",                                                               \
-        .start_address = 0xFF321300,                                                           \
-        .size          = 0x150,                                                                \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN)) | (0U), \
-        .no_of_region  = 8U                                                                    \
+ #define BSP_REGION08_CONFIG                                                                           \
+    {                                                                                                  \
+        .name                  = "OPBT",                                                               \
+        .start_address         = 0xFF321300,                                                           \
+        .size                  = 0x150,                                                                \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN)) | (0U), \
+        .no_of_region          = 8U                                                                    \
     },
 #endif
 
@@ -258,13 +258,13 @@
  #endif
 
 #else
- #define BSP_REGION09_CONFIG                                                                                   \
-    {                                                                                                          \
-        .name          = "H_Bus_Area_1",                                                                       \
-        .start_address = 0x10000000,                                                                           \
-        .size          = 0x1FFFFFC,                                                                            \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN | BSP_MPU_SW_EN)) | (0U), \
-        .no_of_region  = 9U                                                                                    \
+ #define BSP_REGION09_CONFIG                                                                                           \
+    {                                                                                                                  \
+        .name                  = "H_Bus_Area_1",                                                                       \
+        .start_address         = 0x10000000,                                                                           \
+        .size                  = 0x1FFFFFC,                                                                            \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN | BSP_MPU_SW_EN)) | (0U), \
+        .no_of_region          = 9U                                                                                    \
     },
 #endif
 
@@ -274,13 +274,13 @@
  #endif
 
 #else
- #define BSP_REGION10_CONFIG                                                                                   \
-    {                                                                                                          \
-        .name          = "H_Bus_Area_2",                                                                       \
-        .start_address = 0x12008000,                                                                           \
-        .size          = 0x2DFF8000,                                                                           \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN | BSP_MPU_SW_EN)) | (0U), \
-        .no_of_region  = 10U                                                                                   \
+ #define BSP_REGION10_CONFIG                                                                                           \
+    {                                                                                                                  \
+        .name                  = "H_Bus_Area_2",                                                                       \
+        .start_address         = 0x12008000,                                                                           \
+        .size                  = 0x2DFF8000,                                                                           \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) | ((BSP_MPU_SR_EN | BSP_MPU_SW_EN)) | (0U), \
+        .no_of_region          = 10U                                                                                   \
     },
 #endif
 
@@ -290,14 +290,14 @@
  #endif
 
 #else
- #define BSP_REGION11_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 11U                                                                          \
+ #define BSP_REGION11_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "LOCAL_RAM_SELF",                                                           \
+        .start_address         = 0xFDE00000,                                                                 \
+        .size                  = 0x20000,                                                                    \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (1U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 11U                                                                                  \
     },
 #endif
 
@@ -307,14 +307,14 @@
  #endif
 
 #else
- #define BSP_REGION12_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 12U                                                                          \
+ #define BSP_REGION12_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 12U                                                                                  \
     },
 #endif
 
@@ -324,14 +324,14 @@
  #endif
 
 #else
- #define BSP_REGION13_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 13U                                                                          \
+ #define BSP_REGION13_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 13U                                                                                  \
     },
 #endif
 
@@ -341,14 +341,14 @@
  #endif
 
 #else
- #define BSP_REGION14_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 14U                                                                          \
+ #define BSP_REGION14_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 14U                                                                                  \
     },
 #endif
 
@@ -358,14 +358,14 @@
  #endif
 
 #else
- #define BSP_REGION15_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 15U                                                                          \
+ #define BSP_REGION15_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 15U                                                                                  \
     },
 #endif
 
@@ -375,14 +375,14 @@
  #endif
 
 #else
- #define BSP_REGION16_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 16U                                                                          \
+ #define BSP_REGION16_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 16U                                                                                  \
     },
 #endif
 
@@ -392,14 +392,14 @@
  #endif
 
 #else
- #define BSP_REGION17_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 17U                                                                          \
+ #define BSP_REGION17_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 17U                                                                                  \
     },
 #endif
 
@@ -409,14 +409,14 @@
  #endif
 
 #else
- #define BSP_REGION18_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 18U                                                                          \
+ #define BSP_REGION18_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 18U                                                                                  \
     },
 #endif
 
@@ -426,14 +426,14 @@
  #endif
 
 #else
- #define BSP_REGION19_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 19U                                                                          \
+ #define BSP_REGION19_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 19U                                                                                  \
     },
 #endif
 
@@ -443,14 +443,14 @@
  #endif
 
 #else
- #define BSP_REGION20_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 20U                                                                          \
+ #define BSP_REGION20_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 20U                                                                                  \
     },
 #endif
 
@@ -460,14 +460,14 @@
  #endif
 
 #else
- #define BSP_REGION21_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 21U                                                                          \
+ #define BSP_REGION21_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 21U                                                                                  \
     },
 #endif
 
@@ -477,14 +477,14 @@
  #endif
 
 #else
- #define BSP_REGION22_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 22U                                                                          \
+ #define BSP_REGION22_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 22U                                                                                  \
     },
 #endif
 
@@ -494,14 +494,14 @@
  #endif
 
 #else
- #define BSP_REGION23_CONFIG                                                                         \
-    {                                                                                                \
-        .name          = "Not_Used",                                                                 \
-        .start_address = 0x00000000,                                                                 \
-        .size          = 0x00000000,                                                                 \
-        .attribute     = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
-                         ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
-        .no_of_region = 23U                                                                          \
+ #define BSP_REGION23_CONFIG                                                                                 \
+    {                                                                                                        \
+        .name                  = "Not_Used",                                                                 \
+        .start_address         = 0x00000000,                                                                 \
+        .size                  = 0x00000000,                                                                 \
+        .region_attr.attribute = BSP_MPU_RG_EN | BSP_MPU_WG_EN | (0U << 7) |                                 \
+                                 ((BSP_MPU_SR_EN | BSP_MPU_SW_EN) | (BSP_MPU_UR_EN | BSP_MPU_UW_EN)) | (0U), \
+        .no_of_region = 23U                                                                                  \
     },
 #endif
 

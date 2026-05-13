@@ -11,6 +11,11 @@
  #define BSP_OPBT_CFG_SETTING_ENABLE             (0)
 #endif
 
+/* BSP OPBT enable Erase/Program/Verify API */
+#ifndef BSP_OPBT_API_USED_ENABLE
+ #define BSP_OPBT_API_USED_ENABLE                (0)
+#endif
+
 /* BSP Interrupt Vector Reference Method */
 #ifndef BSP_INTERRUPT_TABLE_REFERENCE_METHOD
  #define BSP_INTERRUPT_TABLE_REFERENCE_METHOD    (1)

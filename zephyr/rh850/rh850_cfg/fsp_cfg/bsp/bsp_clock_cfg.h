@@ -3,11 +3,12 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
 #ifndef BSP_CLOCK_CFG_H_
 #define BSP_CLOCK_CFG_H_
 
-#if defined(CONFIG_SOC_R7F70255xFABB_C) || \
+#if defined(CONFIG_SOC_R7F702300BEBBC_C)
+ #include "bsp_clock_cfg_u2a16.h"
+#elif defined(CONFIG_SOC_R7F70255xFABB_C) || \
     defined(CONFIG_SOC_R7F70255xAFABB_C) || \
     defined(CONFIG_SOC_R7F70255xBFABB_C)
  #include "bsp_clock_cfg_u2b6.h"

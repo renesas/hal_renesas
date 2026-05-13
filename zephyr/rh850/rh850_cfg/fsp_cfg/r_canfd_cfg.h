@@ -3,7 +3,7 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-#ifndef R_ETHER_T1S_CFG_H_
-#define R_ETHER_T1S_CFG_H_
+#ifndef R_CANFD_CFG_H_
+#define R_CANFD_CFG_H_
 
-#endif                                 /* R_ETHER_T1S_CFG_H_ */
+#endif                                 /* R_CANFD_CFG_H_ */

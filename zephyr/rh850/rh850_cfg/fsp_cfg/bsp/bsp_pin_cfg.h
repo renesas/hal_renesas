@@ -3,7 +3,6 @@
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
-
 #ifndef BSP_PIN_CFG_H_
 #define BSP_PIN_CFG_H_
 #include "r_ioport.h"
