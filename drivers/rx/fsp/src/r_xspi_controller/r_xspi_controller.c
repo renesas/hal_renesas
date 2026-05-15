@@ -36,7 +36,7 @@
 extern rsip_instance_t const * const gp_rsip_instance;
  #else
   #include "hw_sce_trng_private.h"
-  #include "hw_sce_ra_private.h"
+  #include "hw_sce_rx_private.h"
  #endif
 #endif
 
@@ -273,6 +273,11 @@ fsp_err_t R_XSPI_CONTROLLER_Open (spi_flash_ctrl_t * const p_ctrl, spi_flash_cfg
     FSP_ASSERT(NULL != p_cfg);
     FSP_ASSERT(NULL != p_cfg->p_extend);
     FSP_ERROR_RETURN(XSPI_CONTROLLER_PRV_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
+    if (((xspi_controller_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend)->memory_type ==
+        XSPI_CONTROLLER_DEVICE_TYPE_RAM)
+    {
+        FSP_ERROR_RETURN(SPI_FLASH_PROTOCOL_DOPI == p_cfg->spi_protocol, FSP_ERR_INVALID_ARGUMENT);
+    }
 #endif
 
     const xspi_controller_extended_cfg_t * const p_cfg_extend = (xspi_controller_extended_cfg_t *) (p_cfg->p_extend);
@@ -374,15 +379,13 @@ fsp_err_t R_XSPI_CONTROLLER_Open (spi_flash_ctrl_t * const p_ctrl, spi_flash_cfg
     liocfg |= ((uint32_t) p_cfg_extend->p_timing_settings->ddr_sampling_extension << R_XSPI0_LIOCFGCS_DDRSMPEX_Pos) &
               R_XSPI0_LIOCFGCS_DDRSMPEX_Msk;
 
-    liocfg |= ((uint32_t) p_cfg_extend->p_timing_settings->write_data_mask_enable << R_XSPI0_LIOCFGCS_WRMSKMD_Pos) &
-              R_XSPI0_LIOCFGCS_WRMSKMD_Msk;
-
     /* Set xSPI CSn signal timings. */
     p_reg->LIOCFGCS[p_cfg_extend->channel] = liocfg;
 
     /* Set output enable assertion extension in cycles. */
-    p_reg->COMCFG = ((uint32_t) p_cfg_extend->p_timing_settings->output_assert_delay << R_XSPI0_COMCFG_OEASTEX_Pos) &
-                    R_XSPI0_COMCFG_OEASTEX_Msk;
+    uint32_t comcfg = ((uint32_t) p_cfg_extend->p_timing_settings->output_assert_delay << R_XSPI0_COMCFG_OEASTEX_Pos) &
+                      R_XSPI0_COMCFG_OEASTEX_Msk;
+    p_reg->COMCFG = comcfg;
 
     /* Set xSPI memory-mapping operation. */
     ret = r_xspi_controller_protocol_specific_settings(p_instance_ctrl);
@@ -516,6 +519,11 @@ fsp_err_t R_XSPI_CONTROLLER_XipEnter (spi_flash_ctrl_t * p_ctrl)
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ERROR_RETURN(XSPI_CONTROLLER_PRV_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    if (((xspi_controller_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend)->memory_type ==
+        XSPI_CONTROLLER_DEVICE_TYPE_RAM)
+    {
+        return FSP_ERR_UNSUPPORTED;
+    }
  #endif
 
     r_xspi_controller_xip(p_instance_ctrl, true);
@@ -547,6 +555,11 @@ fsp_err_t R_XSPI_CONTROLLER_XipExit (spi_flash_ctrl_t * p_ctrl)
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ERROR_RETURN(XSPI_CONTROLLER_PRV_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    if (((xspi_controller_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend)->memory_type ==
+        XSPI_CONTROLLER_DEVICE_TYPE_RAM)
+    {
+        return FSP_ERR_UNSUPPORTED;
+    }
  #endif
 
     r_xspi_controller_xip(p_instance_ctrl, false);
@@ -591,6 +604,11 @@ fsp_err_t R_XSPI_CONTROLLER_Write (spi_flash_ctrl_t    * p_ctrl,
     uint32_t page_size   = p_instance_ctrl->p_cfg->page_size_bytes;
     uint32_t page_offset = (uint32_t) p_dest & (page_size - 1);
     FSP_ERROR_RETURN((page_size - page_offset) >= byte_count, FSP_ERR_INVALID_SIZE);
+    if (((xspi_controller_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend)->memory_type ==
+        XSPI_CONTROLLER_DEVICE_TYPE_RAM)
+    {
+        return FSP_ERR_UNSUPPORTED;
+    }
 
  #if !XSPI_CONTROLLER_CFG_DMAC_SUPPORT_ENABLE
     FSP_ERROR_RETURN((byte_count & (XSPI_CONTROLLER_PRV_CPU_ACCESS_LENGTH - 1)) == 0, FSP_ERR_INVALID_SIZE);
@@ -709,17 +727,31 @@ fsp_err_t R_XSPI_CONTROLLER_Erase (spi_flash_ctrl_t * p_ctrl, uint8_t * const p_
     FSP_ASSERT(NULL != p_device_address);
     FSP_ASSERT(0 != byte_count);
     FSP_ERROR_RETURN(XSPI_CONTROLLER_PRV_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    if (((xspi_controller_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend)->memory_type ==
+        XSPI_CONTROLLER_DEVICE_TYPE_RAM)
+    {
+        return FSP_ERR_UNSUPPORTED;
+    }
 #endif
 
-    spi_flash_cfg_t const * p_cfg             = p_instance_ctrl->p_cfg;
-    uint16_t                erase_command     = 0;
-    const uint32_t          chip_address_base = p_instance_ctrl->channel ?
-                                                BSP_FEATURE_XSPI_CONTROLLER_DEVICE_1_START_ADDRESS :
-                                                BSP_FEATURE_XSPI_CONTROLLER_DEVICE_0_START_ADDRESS;
-    uint32_t chip_address = (uint32_t) p_device_address - chip_address_base;
-    bool     send_address = true;
+    spi_flash_cfg_t const * p_cfg         = p_instance_ctrl->p_cfg;
+    uint16_t                erase_command = 0;
+    bool send_address = true;
 
     xspi_controller_command_set_t const * p_cmd_set = p_instance_ctrl->p_cmd_set;
+
+    /* Use the address bytes and MSB mask to convert from system address to chip addresses.
+     * This is better than using pointer subtraction because some devices (i.e., SiP) have different start addresses.
+     * This method better mimics how memory-mapped addresses are converted in the hardware. */
+
+    /* Start with a full 32-bit mask with the address MSB mask in the lower byte. */
+    uint32_t addr_mask = (uint32_t) (~UINT8_MAX | p_cmd_set->address_msb_mask);
+
+    /* Shift the MSB to the correct position. */
+    addr_mask <<= 8U * (XSPI_CONTROLLER_PRV_ADDR_BYTES_TO_LENGTH(p_cmd_set->address_bytes) - 1U);
+
+    /* Mask off the address bits that aren't needed. */
+    uint32_t chip_address = (uint32_t) ((uint32_t) p_device_address & ~addr_mask);
 
     FSP_ERROR_RETURN(false == r_xspi_controller_status_sub(p_instance_ctrl, p_cfg->write_status_bit),
                      FSP_ERR_DEVICE_BUSY);
@@ -790,6 +822,11 @@ fsp_err_t R_XSPI_CONTROLLER_StatusGet (spi_flash_ctrl_t * p_ctrl, spi_flash_stat
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ASSERT(NULL != p_status);
     FSP_ERROR_RETURN(XSPI_CONTROLLER_PRV_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    if (((xspi_controller_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend)->memory_type ==
+        XSPI_CONTROLLER_DEVICE_TYPE_RAM)
+    {
+        return FSP_ERR_UNSUPPORTED;
+    }
 #endif
 
     /* Read device status. */
@@ -833,6 +870,11 @@ fsp_err_t R_XSPI_CONTROLLER_SpiProtocolSet (spi_flash_ctrl_t * p_ctrl, spi_flash
 #if XSPI_CONTROLLER_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ERROR_RETURN(XSPI_CONTROLLER_PRV_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    xspi_controller_extended_cfg_t * p_cfg_extend = (xspi_controller_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    if (p_cfg_extend->memory_type == XSPI_CONTROLLER_DEVICE_TYPE_RAM)
+    {
+        FSP_ERROR_RETURN(SPI_FLASH_PROTOCOL_DOPI == spi_protocol, FSP_ERR_INVALID_ARGUMENT);
+    }
 #endif
 
     /* Save the old protocol in case of an undefined command set. */
@@ -1078,6 +1120,8 @@ static fsp_err_t r_xspi_controller_protocol_specific_settings (xspi_controller_i
                       ~(R_XSPI0_LIOCFGCS_LATEMD_Msk | R_XSPI0_LIOCFGCS_PRTMD_Msk);
     liocfg |= (((uint32_t) p_instance_ctrl->spi_protocol << R_XSPI0_LIOCFGCS_PRTMD_Pos) & R_XSPI0_LIOCFGCS_PRTMD_Msk);
     liocfg |= (((uint32_t) p_cmd_set->latency_mode << R_XSPI0_LIOCFGCS_LATEMD_Pos) & R_XSPI0_LIOCFGCS_LATEMD_Msk);
+    liocfg |=
+        (((uint32_t) p_cmd_set->write_data_mask << R_XSPI0_LIOCFGCS_WRMSKMD_Pos) & R_XSPI0_LIOCFGCS_WRMSKMD_Msk);
     p_reg->LIOCFGCS[p_instance_ctrl->channel] = liocfg;
 
     /* Specifies the read/write commands and Read dummy clocks for Device
@@ -1085,8 +1129,9 @@ static fsp_err_t r_xspi_controller_protocol_specific_settings (xspi_controller_i
     uint32_t cmcfg0 = ((uint32_t) (p_cmd_set->address_msb_mask << R_XSPI0_CMCFGCS_CMCFG0_ADDRPEN_Pos)) |
                       ((uint32_t) (p_cmd_set->frame_format << R_XSPI0_CMCFGCS_CMCFG0_FFMT_Pos)) |
                       (((uint32_t) p_cmd_set->address_bytes << R_XSPI0_CMCFGCS_CMCFG0_ADDSIZE_Pos) &
-                       R_XSPI0_CMCFGCS_CMCFG0_ADDSIZE_Msk)  |
-                       p_cmd_set->address_mode << R_XSPI0_CMCFGCS_CMCFG0_ARYAMD_Pos;
+                       R_XSPI0_CMCFGCS_CMCFG0_ADDSIZE_Msk) |
+                      (p_cmd_set->address_mode << R_XSPI0_CMCFGCS_CMCFG0_ARYAMD_Pos) |
+                      (1 << R_XSPI0_CMCFGCS_CMCFG0_WPBSTMD_Pos);
 
     /* When using 4-byte addressing, always mask off the most-significant nybble to remove the system bus offset from
      * the transmitted addresses. Ex. CS1 starts at 0x9000_0000 so it needs to mask off bits [31:28]. */
@@ -1414,8 +1459,9 @@ static void r_xspi_controller_xip (xspi_controller_instance_ctrl_t * p_instance_
     volatile uint8_t      * p_dummy_read_address = (volatile uint8_t *)
                                                    (uintptr_t) ((XSPI_CONTROLLER_DEVICE_NUMBER_0 ==
                                                                  p_instance_ctrl->channel) ?
-                                                                BSP_FEATURE_XSPI_CONTROLLER_DEVICE_0_START_ADDRESS :
-                                                                BSP_FEATURE_XSPI_CONTROLLER_DEVICE_1_START_ADDRESS);
+                                                                BSP_FEATURE_XSPI_CONTROLLER_UNIT_0_DEVICE_0_START_ADDRESS
+                                                                :
+                                                                BSP_FEATURE_XSPI_CONTROLLER_UNIT_0_DEVICE_1_START_ADDRESS);
     volatile uint8_t dummy_read = 0;
 
     FSP_PARAMETER_NOT_USED(dummy_read); // Suppress variable not used error.
@@ -1577,7 +1623,7 @@ static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xsp
     uint32_t  seed[2] = {0};
     FSP_PARAMETER_NOT_USED(xspi_controller_unit);
 
-    if (xspi_controller_dOTF_KEY_FORMAT_WRAPPED != p_dotf_cfg->format)
+    if (XSPI_CONTROLLER_DOTF_KEY_FORMAT_WRAPPED != p_dotf_cfg->format)
     {
         return FSP_ERR_INVALID_ARGUMENT;
     }
@@ -1586,16 +1632,16 @@ static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xsp
     static rsip_wrapped_key_t s_wrapped_key = {.p_value = wrapped_key_value};
     rsip_wrapped_key_t      * p_wrapped_key = &s_wrapped_key;
 
-    if (xspi_controller_dOTF_AES_KEY_TYPE_128 == p_dotf_cfg->key_type)
+    if (XSPI_CONTROLLER_DOTF_AES_KEY_TYPE_128 == p_dotf_cfg->key_type)
     {
         p_wrapped_key->type = RSIP_KEY_TYPE_AES_128;
         memcpy(p_wrapped_key->p_value, p_dotf_cfg->p_key, RSIP_BYTE_SIZE_WRAPPED_KEY_AES_128);
     }
-    else if (xspi_controller_dOTF_AES_KEY_TYPE_192 == p_dotf_cfg->key_type)
+    else if (XSPI_CONTROLLER_DOTF_AES_KEY_TYPE_192 == p_dotf_cfg->key_type)
     {
         return FSP_ERR_INVALID_ARGUMENT;
     }
-    else if (xspi_controller_dOTF_AES_KEY_TYPE_256 == p_dotf_cfg->key_type)
+    else if (XSPI_CONTROLLER_DOTF_AES_KEY_TYPE_256 == p_dotf_cfg->key_type)
     {
         p_wrapped_key->type = RSIP_KEY_TYPE_AES_256;
         memcpy(p_wrapped_key->p_value, p_dotf_cfg->p_key, RSIP_BYTE_SIZE_WRAPPED_KEY_AES_256);
@@ -1645,7 +1691,7 @@ static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xsp
 
     /* Set the end and start area for DOTF conversion in that order to
      * ensure that end address is always higher than start address. */
-    R_DOTF->CONVAREAD  = (uint32_t) p_dotf_cfg->p_end_addr;
+    R_DOTF->CONVAREAED = (uint32_t) p_dotf_cfg->p_end_addr;
     R_DOTF->CONVAREAST = (uint32_t) p_dotf_cfg->p_start_addr;
 
     return sce_ret;
@@ -1674,15 +1720,15 @@ static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xsp
         return FSP_ERR_INVALID_ARGUMENT;
     }
 
-    if (xspi_controller_dOTF_AES_KEY_TYPE_128 == p_dotf_cfg->key_type)
+    if (XSPI_CONTROLLER_DOTF_AES_KEY_TYPE_128 == p_dotf_cfg->key_type)
     {
         key_cmd = SCE_OEM_CMD_AES128;
     }
-    else if (xspi_controller_dOTF_AES_KEY_TYPE_192 == p_dotf_cfg->key_type)
+    else if (XSPI_CONTROLLER_DOTF_AES_KEY_TYPE_192 == p_dotf_cfg->key_type)
     {
         key_cmd = SCE_OEM_CMD_AES192;
     }
-    else if (xspi_controller_dOTF_AES_KEY_TYPE_256 == p_dotf_cfg->key_type)
+    else if (XSPI_CONTROLLER_DOTF_AES_KEY_TYPE_256 == p_dotf_cfg->key_type)
     {
         key_cmd = SCE_OEM_CMD_AES256;
     }
@@ -1694,7 +1740,7 @@ static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xsp
     /* Initialize the crypto engine. */
     HW_SCE_McuSpecificInit();
 
-    if (xspi_controller_dOTF_KEY_FORMAT_PLAINTEXT == p_dotf_cfg->format)
+    if (XSPI_CONTROLLER_DOTF_KEY_FORMAT_PLAINTEXT == p_dotf_cfg->format)
     {
         /* Convert plaintext key to wrapped form. */
         sce_ret =
@@ -1711,15 +1757,15 @@ static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xsp
     }
     else
     {
-        if (xspi_controller_dOTF_AES_KEY_TYPE_128 == p_dotf_cfg->key_type)
+        if (XSPI_CONTROLLER_DOTF_AES_KEY_TYPE_128 == p_dotf_cfg->key_type)
         {
             memcpy(wrapped_key, p_dotf_cfg->p_key, HW_SCE_AES128_KEY_INDEX_WORD_SIZE * 4);
         }
-        else if (xspi_controller_dOTF_AES_KEY_TYPE_192 == p_dotf_cfg->key_type)
+        else if (XSPI_CONTROLLER_DOTF_AES_KEY_TYPE_192 == p_dotf_cfg->key_type)
         {
             memcpy(wrapped_key, p_dotf_cfg->p_key, HW_SCE_AES192_KEY_INDEX_WORD_SIZE * 4);
         }
-        else if (xspi_controller_dOTF_AES_KEY_TYPE_256 == p_dotf_cfg->key_type)
+        else if (XSPI_CONTROLLER_DOTF_AES_KEY_TYPE_256 == p_dotf_cfg->key_type)
         {
             memcpy(wrapped_key, p_dotf_cfg->p_key, HW_SCE_AES256_KEY_INDEX_WORD_SIZE * 4);
         }
@@ -1762,7 +1808,7 @@ static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xsp
 
     /* Set the end and start area for DOTF conversion in that order to
      * ensure that end address is always higher than start address. */
-    R_DOTF->CONVAREAD  = (uint32_t) p_dotf_cfg->p_end_addr;
+    R_DOTF->CONVAREAED = (uint32_t) p_dotf_cfg->p_end_addr;
     R_DOTF->CONVAREAST = (uint32_t) p_dotf_cfg->p_start_addr;
 
     return sce_ret;

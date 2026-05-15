@@ -61,6 +61,13 @@ typedef enum e_xspi_controller_chip_select
     XSPI_CONTROLLER_DEVICE_NUMBER_1,      ///< Device connected to Chip-Select 1
 } xspi_controller_device_number_t;
 
+/* OSPI Memory device type select */
+typedef enum e_xspi_controller_device_type
+{
+    XSPI_CONTROLLER_DEVICE_TYPE_FLASH = 0U, ///< Device Memory type OctaFlash
+    XSPI_CONTROLLER_DEVICE_TYPE_RAM,        ///< Device Memory type OctaRAM
+} xspi_controller_device_type_t;
+
 /** XSPI flash number of command code bytes. */
 typedef enum e_xspi_controller_command_bytes
 {
@@ -106,85 +113,85 @@ typedef enum e_xspi_controller_cs_pulldown_clocks
 /** XSPI data strobe delay. */
 typedef enum e_xspi_controller_ds_timing_delay
 {
-    XSPI_CONTROLLER_DS_TIMING_DELAY_NONE = 0,  ///< Sample without delay.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_1    = 1,  ///< Delay sampling by 1 clock cell.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_2    = 2,  ///< Delay sampling by 2 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_3    = 3,  ///< Delay sampling by 3 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_4    = 4,  ///< Delay sampling by 4 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_5    = 5,  ///< Delay sampling by 5 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_6    = 6,  ///< Delay sampling by 6 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_7    = 7,  ///< Delay sampling by 7 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_8    = 8,  ///< Delay sampling by 8 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_9    = 9,  ///< Delay sampling by 9 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_10   = 10, ///< Delay sampling by 10 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_11   = 11, ///< Delay sampling by 11 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_12   = 12, ///< Delay sampling by 12 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_13   = 13, ///< Delay sampling by 13 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_14   = 14, ///< Delay sampling by 14 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_15   = 15, ///< Delay sampling by 15 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_16   = 16, ///< Delay sampling by 16 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_17   = 17, ///< Delay sampling by 17 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_18   = 18, ///< Delay sampling by 18 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_19   = 19, ///< Delay sampling by 19 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_20   = 20, ///< Delay sampling by 20 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_21   = 21, ///< Delay sampling by 21 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_22   = 22, ///< Delay sampling by 22 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_23   = 23, ///< Delay sampling by 23 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_24   = 24, ///< Delay sampling by 24 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_25   = 25, ///< Delay sampling by 25 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_26   = 26, ///< Delay sampling by 26 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_27   = 27, ///< Delay sampling by 27 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_28   = 28, ///< Delay sampling by 28 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_29   = 29, ///< Delay sampling by 29 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_30   = 30, ///< Delay sampling by 30 clock cells.
-    XSPI_CONTROLLER_DS_TIMING_DELAY_31   = 31, ///< Delay sampling by 31 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_NONE = 0U,  ///< Sample without delay.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_1    = 1U,  ///< Delay sampling by 1 clock cell.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_2    = 2U,  ///< Delay sampling by 2 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_3    = 3U,  ///< Delay sampling by 3 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_4    = 4U,  ///< Delay sampling by 4 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_5    = 5U,  ///< Delay sampling by 5 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_6    = 6U,  ///< Delay sampling by 6 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_7    = 7U,  ///< Delay sampling by 7 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_8    = 8U,  ///< Delay sampling by 8 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_9    = 9U,  ///< Delay sampling by 9 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_10   = 10U, ///< Delay sampling by 10 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_11   = 11U, ///< Delay sampling by 11 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_12   = 12U, ///< Delay sampling by 12 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_13   = 13U, ///< Delay sampling by 13 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_14   = 14U, ///< Delay sampling by 14 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_15   = 15U, ///< Delay sampling by 15 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_16   = 16U, ///< Delay sampling by 16 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_17   = 17U, ///< Delay sampling by 17 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_18   = 18U, ///< Delay sampling by 18 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_19   = 19U, ///< Delay sampling by 19 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_20   = 20U, ///< Delay sampling by 20 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_21   = 21U, ///< Delay sampling by 21 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_22   = 22U, ///< Delay sampling by 22 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_23   = 23U, ///< Delay sampling by 23 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_24   = 24U, ///< Delay sampling by 24 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_25   = 25U, ///< Delay sampling by 25 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_26   = 26U, ///< Delay sampling by 26 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_27   = 27U, ///< Delay sampling by 27 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_28   = 28U, ///< Delay sampling by 28 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_29   = 29U, ///< Delay sampling by 29 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_30   = 30U, ///< Delay sampling by 30 clock cells.
+    XSPI_CONTROLLER_DS_TIMING_DELAY_31   = 31U, ///< Delay sampling by 31 clock cells.
 } xspi_controller_ds_timing_delay_t;
 
 /** XSPI SDR signal drive timing. */
 typedef enum e_xspi_controller_sdr_drive_timing
 {
-    XSPI_CONTROLLER_SDR_DRIVE_TIMING_BEFORE_CK = 0, ///< SDR is asserted 1/2 cycle before the rising-edge of CK.
-    XSPI_CONTROLLER_SDR_DRIVE_TIMING_AT_CK     = 1, ///< SDR is asserted at the rising-edge of CK.
+    XSPI_CONTROLLER_SDR_DRIVE_TIMING_BEFORE_CK = 0U, ///< SDR is asserted 1/2 cycle before the rising-edge of CK.
+    XSPI_CONTROLLER_SDR_DRIVE_TIMING_AT_CK     = 1U, ///< SDR is asserted at the rising-edge of CK.
 } xspi_controller_sdr_drive_timing_t;
 
 /** Clock edge useed to sample data in SDR mode. */
 typedef enum e_xspi_controller_ck_edge
 {
-    XSPI_CONTROLLER_CK_EDGE_FALLING = 0, ///< Falling-edge of CK signal.
-    XSPI_CONTROLLER_CK_EDGE_RISING  = 1, ///< Rising-edge of CK signal.
+    XSPI_CONTROLLER_CK_EDGE_FALLING = 0U, ///< Falling-edge of CK signal.
+    XSPI_CONTROLLER_CK_EDGE_RISING  = 1U, ///< Rising-edge of CK signal.
 } xspi_controller_ck_edge_t;
 
 /** SDR sampling window delay. */
 typedef enum e_xspi_controller_sdr_sampling_delay
 {
-    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_NONE = 0, ///< No sampling delay.
-    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_1    = 1, ///< Delay sampling by 1 cycle.
-    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_2    = 2, ///< Delay sampling by 2 cycles.
-    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_3    = 3, ///< Delay sampling by 3 cycles.
-    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_4    = 4, ///< Delay sampling by 4 cycles.
-    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_5    = 5, ///< Delay sampling by 5 cycles.
-    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_6    = 6, ///< Delay sampling by 6 cycles.
-    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_7    = 7, ///< Delay sampling by 7 cycles.
+    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_NONE = 0U, ///< No sampling delay.
+    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_1    = 1U, ///< Delay sampling by 1 cycle.
+    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_2    = 2U, ///< Delay sampling by 2 cycles.
+    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_3    = 3U, ///< Delay sampling by 3 cycles.
+    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_4    = 4U, ///< Delay sampling by 4 cycles.
+    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_5    = 5U, ///< Delay sampling by 5 cycles.
+    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_6    = 6U, ///< Delay sampling by 6 cycles.
+    XSPI_CONTROLLER_SDR_SAMPLING_DELAY_7    = 7U, ///< Delay sampling by 7 cycles.
 } xspi_controller_sdr_sampling_delay_t;
 
 /** DDR sampling window extension. */
 typedef enum e_xspi_controller_ddr_sampling_extension
 {
-    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_NONE = 0, ///< No sampling extension.
-    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_1    = 1, ///< Sampling extended by 1 cycle.
-    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_2    = 2, ///< Sampling extended by 2 cycles.
-    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_3    = 3, ///< Sampling extended by 3 cycles.
-    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_4    = 4, ///< Sampling extended by 4 cycles.
-    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_5    = 5, ///< Sampling extended by 5 cycles.
-    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_6    = 6, ///< Sampling extended by 6 cycles.
-    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_7    = 7, ///< Sampling extended by 7 cycles.
+    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_NONE = 0U, ///< No sampling extension.
+    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_1    = 1U, ///< Sampling extended by 1 cycle.
+    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_2    = 2U, ///< Sampling extended by 2 cycles.
+    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_3    = 3U, ///< Sampling extended by 3 cycles.
+    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_4    = 4U, ///< Sampling extended by 4 cycles.
+    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_5    = 5U, ///< Sampling extended by 5 cycles.
+    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_6    = 6U, ///< Sampling extended by 6 cycles.
+    XSPI_CONTROLLER_DDR_SAMPLING_EXTENSION_7    = 7U, ///< Sampling extended by 7 cycles.
 } xspi_controller_ddr_sampling_extension_t;
 
 /** Output enable delay settings. */
 typedef enum e_xspi_controller_output_assert_delay
 {
-    XSPI_CONTROLLER_ASSERTION_DELAY_DISABLED = 0, ///< Assertion delay disable
-    XSPI_CONTROLLER_ASSERTION_DELAY_ENABLED  = 1, ///< Assertion delay enable
+    XSPI_CONTROLLER_ASSERTION_DELAY_DISABLED = 0U, ///< Assertion delay disable
+    XSPI_CONTROLLER_ASSERTION_DELAY_ENABLED  = 1U, ///< Assertion delay enable
 } xspi_controller_output_assert_delay_t;
 
 /** Format of data frames used for communicating with the target device. */
@@ -196,11 +203,18 @@ typedef enum e_xspi_controller_frame_format
     XSPI_CONTROLLER_FRAME_FORMAT_XSPI_PROFILE_2_EXTENDED = 0x3, ///< JEDEC XSPI 8D-8D-8D Profile 2.0 extended 6-byte command-address frame, used with HyperRAM.
 } xspi_controller_frame_format_t;
 
+/** Mode address setting. */
+typedef enum e_xspi_controller_address_mode
+{
+    XSPI_CONTROLLER_ADDRESS_MODE_NORMAL = 0U, ///< Address is fixed to the number of address bytes for the command.
+    XSPI_CONTROLLER_ADDRESS_MODE_ARRAY  = 1U, ///< The flash target signifies additional address bytes by asserting the DQS line during the address phase.
+} xspi_controller_address_mode_t;
+
 /** Variable or fixed latency selection for flash devices which can notify the host of requiring additional time. */
 typedef enum e_xspi_controller_latency_mode
 {
-    XSPI_CONTROLLER_LATENCY_MODE_FIXED = 0, ///< Latency is fixed to the number of dummy cycles for the command.
-    XSPI_CONTROLLER_LATENCY_MODE_VARIABLE,  ///< The flash target signifies additional latency (2x dummy cycles) by asserting the DQS line during the address phase.
+    XSPI_CONTROLLER_LATENCY_MODE_FIXED = 0U, ///< Latency is fixed to the number of dummy cycles for the command.
+    XSPI_CONTROLLER_LATENCY_MODE_VARIABLE,   ///< The flash target signifies additional latency (2x dummy cycles) by asserting the DQS line during the address phase.
 } xspi_controller_latency_mode_t;
 
 /** Prefetch function settings */
@@ -209,6 +223,13 @@ typedef enum e_xspi_controller_prefetch_function
     XSPI_CONTROLLER_PREFETCH_FUNCTION_DISABLE = 0x00, ///< Prefetch function disable
     XSPI_CONTROLLER_PREFETCH_FUNCTION_ENABLE  = 0x01, ///< Prefetch function enable
 } xspi_controller_prefetch_function_t;
+
+/** Write data mask settings */
+typedef enum e_xspi_controller_write_data_mask
+{
+    XSPI_CONTROLLER_WRITE_DATA_MASK_DISABLE = 0U, ///< Write data mask disable
+    XSPI_CONTROLLER_WRITE_DATA_MASK_ENABLE,       ///< Write data mask enable
+} xspi_controller_write_data_mask_t;
 
 /** Combination function settings */
 typedef enum e_xspi_controller_combination_function
@@ -233,12 +254,6 @@ typedef enum e_xspi_controller_combination_function
     XSPI_CONTROLLER_COMBINATION_FUNCTION_2BYTE   = 0x1FF, ///< Combine up to 2 bytes
 } xspi_controller_combination_function_t;
 
-typedef enum e_xspi_controller_address_mode
-{
-    XSPI_CONTROLLER_NORMAL_ADDRESS_MODE = 0,
-    XSPI_CONTROLLER_ARRAY_ADDRESS_MODE = 1,
-} xspi_controller_address_mode_t;
-
 /** Simple array length table structure. */
 typedef struct st_xspi_controller_table
 {
@@ -257,39 +272,39 @@ typedef struct st_xspi_controller_timing_setting
     xspi_controller_sdr_sampling_delay_t     sdr_sampling_delay;              ///< Number of cycles to delay before sampling the data signal.
     xspi_controller_ddr_sampling_extension_t ddr_sampling_extension;          ///< Number of cycles to extending the data sampling window in DDR mode.
     xspi_controller_output_assert_delay_t    output_assert_delay;             ///< Delays the assertion timing of IO[7:0] and DS signals by one cycle.
-    bool                                     write_data_mask_enable;          ///< Use the XSPIn_DS signal as a mask signal for each byte in the write data
 } xspi_controller_timing_setting_t;
 
 /** Command set used for a protocol mode. */
 typedef struct st_xspi_controller_command_set
 {
-    spi_flash_protocol_t            protocol;         ///< Protocol mode associated with this command set.
-    xspi_controller_frame_format_t  frame_format;     ///< Frame format to use for this command set.
-    xspi_controller_latency_mode_t  latency_mode;     ///< Configurable or variable latency, only valid for XSPI_CONTROLLER_FRAME_FORMAT_XSPI_PROFILE_2 and XSPI_CONTROLLER_FRAME_FORMAT_XSPI_PROFILE_2_EXTENDED.
-    xspi_controller_command_bytes_t command_bytes;    ///< Number of command bytes for each command code.
-    spi_flash_address_bytes_t       address_bytes;    ///< Number of bytes used during the address phase.
-    xspi_controller_address_mode_t     address_mode;
+    spi_flash_protocol_t              protocol;        ///< Protocol mode associated with this command set.
+    xspi_controller_frame_format_t    frame_format;    ///< Frame format to use for this command set.
+    xspi_controller_latency_mode_t    latency_mode;    ///< Configurable or variable latency, only valid for XSPI_CONTROLLER_FRAME_FORMAT_XSPI_PROFILE_2 and XSPI_CONTROLLER_FRAME_FORMAT_XSPI_PROFILE_2_EXTENDED.
+    xspi_controller_address_mode_t    address_mode;    ///< Address mode to use for external device.
+    xspi_controller_command_bytes_t   command_bytes;   ///< Number of command bytes for each command code.
+    spi_flash_address_bytes_t         address_bytes;   ///< Number of bytes used during the address phase.
+    xspi_controller_write_data_mask_t write_data_mask; ///< Mask signal for each byte in the write data.
 
-    uint16_t read_command;                            ///< Read command.
-    uint16_t program_command;                         ///< Memory program/write command.
-    uint16_t write_enable_command;                    ///< Command to enable write or erase, set to 0x00 to ignore.
-    uint16_t status_command;                          ///< Command to read the write status, set to 0x00 to ignore.
-    uint16_t row_load_command;                        ///< Load a page into the device's internal buffer, set to 0x00 to ignore.
-    uint16_t row_store_command;                       ///< Stores the device's internal buffer to the memory page, set to 0x00 to ignore.
+    uint16_t read_command;                             ///< Read command.
+    uint16_t program_command;                          ///< Memory program/write command.
+    uint16_t write_enable_command;                     ///< Command to enable write or erase, set to 0x00 to ignore.
+    uint16_t status_command;                           ///< Command to read the write status, set to 0x00 to ignore.
+    uint16_t row_load_command;                         ///< Load a page into the device's internal buffer, set to 0x00 to ignore.
+    uint16_t row_store_command;                        ///< Stores the device's internal buffer to the memory page, set to 0x00 to ignore.
 
-    uint8_t read_dummy_cycles;                        ///< Dummy cycles to be inserted for read commands.
-    uint8_t program_dummy_cycles;                     ///< Dummy cycles to be inserted for page program commands.
-    uint8_t status_dummy_cycles;                      ///< Dummy cycles to be inserted for status read commands.
-    uint8_t row_load_dummy_cycles;                    ///< Dummy cycles to be inserted for the page load command.
-    uint8_t row_store_dummy_cycles;                   ///< Dummy cycles to be inserted for the page store command.
+    uint8_t read_dummy_cycles;                         ///< Dummy cycles to be inserted for read commands.
+    uint8_t program_dummy_cycles;                      ///< Dummy cycles to be inserted for page program commands.
+    uint8_t status_dummy_cycles;                       ///< Dummy cycles to be inserted for status read commands.
+    uint8_t row_load_dummy_cycles;                     ///< Dummy cycles to be inserted for the page load command.
+    uint8_t row_store_dummy_cycles;                    ///< Dummy cycles to be inserted for the page store command.
 
-    uint8_t address_msb_mask;                         ///< Mask of bits to zero when using memory-mapped operations; only applies to the most-significant byte.
+    uint8_t address_msb_mask;                          ///< Mask of bits to zero when using memory-mapped operations; only applies to the most-significant byte.
 
-    bool     status_needs_address;                    ///< Indicates that reading the status register requires an address stage.
-    uint32_t status_address;                          ///< Address to use for reading the status register with "busy" and "write-enable" flags.
-    spi_flash_address_bytes_t status_address_bytes;   ///< Number of bytes used for status register addressing.
+    bool     status_needs_address;                     ///< Indicates that reading the status register requires an address stage.
+    uint32_t status_address;                           ///< Address to use for reading the status register with "busy" and "write-enable" flags.
+    spi_flash_address_bytes_t status_address_bytes;    ///< Number of bytes used for status register addressing.
 
-    xspi_controller_table_t const * p_erase_commands; ///< List of all erase commands and associated sizes
+    xspi_controller_table_t const * p_erase_commands;  ///< List of all erase commands and associated sizes
 } xspi_controller_command_set_t;
 
 /** XSPI DOTF AES Key Lengths. */
@@ -331,6 +346,7 @@ typedef struct st_xspi_controller_extended_cfg
 {
     uint8_t xspi_controller_unit;                                     ///< The XSPI_CONTROLLER unit corresponding to the selected channel.
     xspi_controller_device_number_t          channel;                 ///< Device number to be used for memory device.
+    xspi_controller_device_type_t            memory_type;             ///< Type of memory device.
     xspi_controller_timing_setting_t const * p_timing_settings;       ///< Fixed protocol timing settings.
     xspi_controller_table_t const          * p_xspi_command_set;      ///< Additional protocol command sets; if additional protocol commands set are not used set this to NULL.
     xspi_controller_ds_timing_delay_t        data_latch_delay_clocks; ///< Delay after assertion of the DS signal where data should be latched.
