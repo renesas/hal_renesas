@@ -1130,8 +1130,7 @@ static fsp_err_t r_xspi_controller_protocol_specific_settings (xspi_controller_i
                       ((uint32_t) (p_cmd_set->frame_format << R_XSPI0_CMCFGCS_CMCFG0_FFMT_Pos)) |
                       (((uint32_t) p_cmd_set->address_bytes << R_XSPI0_CMCFGCS_CMCFG0_ADDSIZE_Pos) &
                        R_XSPI0_CMCFGCS_CMCFG0_ADDSIZE_Msk) |
-                      (p_cmd_set->address_mode << R_XSPI0_CMCFGCS_CMCFG0_ARYAMD_Pos) |
-                      (1 << R_XSPI0_CMCFGCS_CMCFG0_WPBSTMD_Pos);
+                      ((uint32_t) p_cmd_set->address_mode << R_XSPI0_CMCFGCS_CMCFG0_ARYAMD_Pos);
 
     /* When using 4-byte addressing, always mask off the most-significant nybble to remove the system bus offset from
      * the transmitted addresses. Ex. CS1 starts at 0x9000_0000 so it needs to mask off bits [31:28]. */
