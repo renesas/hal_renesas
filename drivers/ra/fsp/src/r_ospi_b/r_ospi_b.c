@@ -11,6 +11,21 @@
 #include "r_ospi_b.h"
 #include <string.h>
 
+/* All functions in this file must execute from SRAM when the OSPI flash is
+ * being reinitialized, erased, or written.  During those windows the flash
+ * device is busy or its controller is offline, so XIP instruction fetches
+ * from OSPI flash fault.  BSP_PLACE_IN_SECTION(".ramfunc") together with
+ * __attribute__((noinline)) tells the linker to copy the code to SRAM at
+ * startup and prevents the compiler from inlining these functions into
+ * callers that are still in flash.
+ */
+#if defined(CONFIG_FLASH_RENESAS_RA_OSPI_B_XIP)
+#define OSPI_B_PRV_PLACE_IN_RAM \
+    BSP_PLACE_IN_SECTION(".ramfunc") __attribute__((noinline))
+#else
+#define OSPI_B_PRV_PLACE_IN_RAM
+#endif
+
 #if OSPI_B_CFG_DMAC_SUPPORT_ENABLE
  #include "r_transfer_api.h"
  #include "r_dmac.h"
@@ -181,32 +196,37 @@ extern rsip_instance_t const * const gp_rsip_instance;
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
-static bool      r_ospi_b_status_sub(ospi_b_instance_ctrl_t * p_instance_ctrl, uint8_t bit_pos);
-static fsp_err_t r_ospi_b_protocol_specific_settings(ospi_b_instance_ctrl_t * p_instance_ctrl);
-static fsp_err_t r_ospi_b_write_enable(ospi_b_instance_ctrl_t * p_instance_ctrl);
+static bool      r_ospi_b_status_sub(ospi_b_instance_ctrl_t * p_instance_ctrl,
+                                     uint8_t                  bit_pos) OSPI_B_PRV_PLACE_IN_RAM;
+static fsp_err_t r_ospi_b_protocol_specific_settings(ospi_b_instance_ctrl_t * p_instance_ctrl)
+OSPI_B_PRV_PLACE_IN_RAM;
+static fsp_err_t r_ospi_b_write_enable(ospi_b_instance_ctrl_t * p_instance_ctrl) OSPI_B_PRV_PLACE_IN_RAM;
 static void      r_ospi_b_direct_transfer(ospi_b_instance_ctrl_t            * p_instance_ctrl,
                                           spi_flash_direct_transfer_t * const p_transfer,
-                                          spi_flash_direct_transfer_dir_t     direction);
-static ospi_b_xspi_command_set_t const * r_ospi_b_command_set_get(ospi_b_instance_ctrl_t * p_instance_ctrl);
+                                          spi_flash_direct_transfer_dir_t     direction) OSPI_B_PRV_PLACE_IN_RAM;
+static ospi_b_xspi_command_set_t const * r_ospi_b_command_set_get(ospi_b_instance_ctrl_t * p_instance_ctrl)
+OSPI_B_PRV_PLACE_IN_RAM;
 
 #if OSPI_B_CFG_AUTOCALIBRATION_SUPPORT_ENABLE
-static fsp_err_t r_ospi_b_automatic_calibration_seq(ospi_b_instance_ctrl_t * p_instance_ctrl);
+static fsp_err_t r_ospi_b_automatic_calibration_seq(ospi_b_instance_ctrl_t * p_instance_ctrl)
+OSPI_B_PRV_PLACE_IN_RAM;
 
 #endif
 
 #if OSPI_B_CFG_ROW_ADDRESSING_SUPPORT_ENABLE
-static void r_ospi_b_row_load_store(ospi_b_instance_ctrl_t * const p_ctrl, uint32_t row_index, bool store_row);
+static void r_ospi_b_row_load_store(ospi_b_instance_ctrl_t * const p_ctrl, uint32_t row_index,
+                                    bool store_row) OSPI_B_PRV_PLACE_IN_RAM;
 
 #endif
 
 #if OSPI_B_CFG_XIP_SUPPORT_ENABLE
-static void r_ospi_b_dummy_read(uint32_t * p_read_address);
-static void r_ospi_b_xip(ospi_b_instance_ctrl_t * p_instance_ctrl, bool is_entering);
+static void r_ospi_b_dummy_read(uint32_t * p_read_address) OSPI_B_PRV_PLACE_IN_RAM;
+static void r_ospi_b_xip(ospi_b_instance_ctrl_t * p_instance_ctrl, bool is_entering) OSPI_B_PRV_PLACE_IN_RAM;
 
 #endif
 
 #if OSPI_B_CFG_DOTF_SUPPORT_ENABLE
-static fsp_err_t r_ospi_b_dotf_setup(uint8_t ospi_b_unit, ospi_b_dotf_cfg_t * p_dotf_cfg);
+static fsp_err_t r_ospi_b_dotf_setup(uint8_t ospi_b_unit, ospi_b_dotf_cfg_t * p_dotf_cfg) OSPI_B_PRV_PLACE_IN_RAM;
 
 #endif
 
@@ -257,7 +277,7 @@ const spi_flash_api_t g_ospi_b_on_spi_flash =
  * @retval FSP_ERR_ALREADY_OPEN     Driver has already been opened with the same p_ctrl.
  * @retval FSP_ERR_CALIBRATE_FAILED Failed to perform auto-calibrate.
  **********************************************************************************************************************/
-fsp_err_t R_OSPI_B_Open (spi_flash_ctrl_t * const p_ctrl, spi_flash_cfg_t const * const p_cfg)
+OSPI_B_PRV_PLACE_IN_RAM fsp_err_t R_OSPI_B_Open (spi_flash_ctrl_t * const p_ctrl, spi_flash_cfg_t const * const p_cfg)
 {
     ospi_b_instance_ctrl_t * p_instance_ctrl = (ospi_b_instance_ctrl_t *) p_ctrl;
     fsp_err_t                ret             = FSP_SUCCESS;
@@ -449,7 +469,7 @@ fsp_err_t R_OSPI_B_DirectRead (spi_flash_ctrl_t * p_ctrl, uint8_t * const p_dest
  * @retval FSP_ERR_ASSERTION           A required pointer is NULL.
  * @retval FSP_ERR_NOT_OPEN            Driver is not opened.
  **********************************************************************************************************************/
-fsp_err_t R_OSPI_B_DirectTransfer (spi_flash_ctrl_t                  * p_ctrl,
+OSPI_B_PRV_PLACE_IN_RAM fsp_err_t R_OSPI_B_DirectTransfer (spi_flash_ctrl_t                  * p_ctrl,
                                    spi_flash_direct_transfer_t * const p_transfer,
                                    spi_flash_direct_transfer_dir_t     direction)
 {
@@ -477,7 +497,7 @@ fsp_err_t R_OSPI_B_DirectTransfer (spi_flash_ctrl_t                  * p_ctrl,
  * @retval FSP_ERR_NOT_OPEN            Driver is not opened.
  * @retval FSP_ERR_UNSUPPORTED         XiP support is not enabled.
  **********************************************************************************************************************/
-fsp_err_t R_OSPI_B_XipEnter (spi_flash_ctrl_t * p_ctrl)
+OSPI_B_PRV_PLACE_IN_RAM fsp_err_t R_OSPI_B_XipEnter (spi_flash_ctrl_t * p_ctrl)
 {
 #if OSPI_B_CFG_XIP_SUPPORT_ENABLE
     ospi_b_instance_ctrl_t * p_instance_ctrl = (ospi_b_instance_ctrl_t *) p_ctrl;
@@ -508,7 +528,7 @@ fsp_err_t R_OSPI_B_XipEnter (spi_flash_ctrl_t * p_ctrl)
  * @retval FSP_ERR_NOT_OPEN            Driver is not opened.
  * @retval FSP_ERR_UNSUPPORTED         XiP support is not enabled.
  **********************************************************************************************************************/
-fsp_err_t R_OSPI_B_XipExit (spi_flash_ctrl_t * p_ctrl)
+OSPI_B_PRV_PLACE_IN_RAM fsp_err_t R_OSPI_B_XipExit (spi_flash_ctrl_t * p_ctrl)
 {
 #if OSPI_B_CFG_XIP_SUPPORT_ENABLE
     ospi_b_instance_ctrl_t * p_instance_ctrl = (ospi_b_instance_ctrl_t *) p_ctrl;
@@ -542,7 +562,7 @@ fsp_err_t R_OSPI_B_XipExit (spi_flash_ctrl_t * p_ctrl)
  * @retval FSP_ERR_WRITE_FAILED        Write operation failed.
  * @retval FSP_ERR_INVALID_ADDRESS     Destination or source is not aligned to CPU access alignment when not using the DMAC.
  **********************************************************************************************************************/
-fsp_err_t R_OSPI_B_Write (spi_flash_ctrl_t    * p_ctrl,
+OSPI_B_PRV_PLACE_IN_RAM fsp_err_t R_OSPI_B_Write (spi_flash_ctrl_t    * p_ctrl,
                           uint8_t const * const p_src,
                           uint8_t * const       p_dest,
                           uint32_t              byte_count)
@@ -668,7 +688,7 @@ fsp_err_t R_OSPI_B_Write (spi_flash_ctrl_t    * p_ctrl,
  * @retval FSP_ERR_DEVICE_BUSY         The device is busy.
  * @retval FSP_ERR_WRITE_FAILED        Write operation failed.
  **********************************************************************************************************************/
-fsp_err_t R_OSPI_B_Erase (spi_flash_ctrl_t * p_ctrl, uint8_t * const p_device_address, uint32_t byte_count)
+OSPI_B_PRV_PLACE_IN_RAM fsp_err_t R_OSPI_B_Erase (spi_flash_ctrl_t * p_ctrl, uint8_t * const p_device_address, uint32_t byte_count)
 {
     ospi_b_instance_ctrl_t * p_instance_ctrl = (ospi_b_instance_ctrl_t *) p_ctrl;
 
@@ -751,7 +771,7 @@ fsp_err_t R_OSPI_B_Erase (spi_flash_ctrl_t * p_ctrl, uint8_t * const p_device_ad
  * @retval FSP_ERR_ASSERTION           p_instance_ctrl or p_status is NULL.
  * @retval FSP_ERR_NOT_OPEN            Driver is not opened.
  **********************************************************************************************************************/
-fsp_err_t R_OSPI_B_StatusGet (spi_flash_ctrl_t * p_ctrl, spi_flash_status_t * const p_status)
+OSPI_B_PRV_PLACE_IN_RAM fsp_err_t R_OSPI_B_StatusGet (spi_flash_ctrl_t * p_ctrl, spi_flash_status_t * const p_status)
 {
     ospi_b_instance_ctrl_t * p_instance_ctrl = (ospi_b_instance_ctrl_t *) p_ctrl;
 
@@ -792,7 +812,7 @@ fsp_err_t R_OSPI_B_BankSet (spi_flash_ctrl_t * p_ctrl, uint32_t bank)
  * @retval FSP_ERR_NOT_OPEN           Driver is not opened.
  * @retval FSP_ERR_CALIBRATE_FAILED   Failed to perform auto-calibrate.
  **********************************************************************************************************************/
-fsp_err_t R_OSPI_B_SpiProtocolSet (spi_flash_ctrl_t * p_ctrl, spi_flash_protocol_t spi_protocol)
+OSPI_B_PRV_PLACE_IN_RAM fsp_err_t R_OSPI_B_SpiProtocolSet (spi_flash_ctrl_t * p_ctrl, spi_flash_protocol_t spi_protocol)
 {
     ospi_b_instance_ctrl_t * p_instance_ctrl = (ospi_b_instance_ctrl_t *) p_ctrl;
 
@@ -826,7 +846,7 @@ fsp_err_t R_OSPI_B_SpiProtocolSet (spi_flash_ctrl_t * p_ctrl, spi_flash_protocol
  * @retval FSP_ERR_ASSERTION       p_instance_ctrl is NULL.
  * @retval FSP_ERR_NOT_OPEN        Driver is not opened.
  **********************************************************************************************************************/
-fsp_err_t R_OSPI_B_Close (spi_flash_ctrl_t * p_ctrl)
+OSPI_B_PRV_PLACE_IN_RAM fsp_err_t R_OSPI_B_Close (spi_flash_ctrl_t * p_ctrl)
 {
     ospi_b_instance_ctrl_t * p_instance_ctrl = (ospi_b_instance_ctrl_t *) p_ctrl;
     fsp_err_t                err             = FSP_SUCCESS;
@@ -870,7 +890,7 @@ fsp_err_t R_OSPI_B_Close (spi_flash_ctrl_t * p_ctrl)
  * @retval FSP_ERR_UNSUPPORTED         Autocalibration support is not enabled.
  * @retval FSP_ERR_CALIBRATE_FAILED    Failed to perform auto-calibrate.
  **********************************************************************************************************************/
-fsp_err_t R_OSPI_B_AutoCalibrate (spi_flash_ctrl_t * const p_ctrl)
+OSPI_B_PRV_PLACE_IN_RAM fsp_err_t R_OSPI_B_AutoCalibrate (spi_flash_ctrl_t * const p_ctrl)
 {
 #if OSPI_B_CFG_AUTOCALIBRATION_SUPPORT_ENABLE
     ospi_b_instance_ctrl_t * p_instance_ctrl = (ospi_b_instance_ctrl_t *) p_ctrl;
