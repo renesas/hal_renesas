@@ -279,4 +279,9 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_SDRAM)
+		zephyr_library_sources(
+			fsp/src/bsp/mcu/all/bsp_sdram.c
+		)
+	endif()
 endif()

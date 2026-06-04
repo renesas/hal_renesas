@@ -63,13 +63,17 @@ Patch List:
       drivers/rx/fsp/src/r_xspi_controller/r_xspi_controller.c
       driver/rx/fsp/inc/instances/r_xspi_controller.h
 
+   * Fix case handling for RX package lost in r_rmac driver
+   Impacted files:
+      drivers/rx/fsp/inc/instances/r_rmac.h
+      drivers/rx/fsp/src/r_rmac/r_rmac.c
+
    * Add phy link configure skip for RMAC and ESWM module, phylink configure is done in Zephyr side
       drivers/rx/fsp/src/r_rmac/r_rmac.c
       drivers/rx/fsp/src/r_layer3_switch/r_layer3_switch.c
       zephyr/rx/fsp_cfg/r_rmac_cfg.h
       zephyr/rx/fsp_cfg/r_layer3_switch_cfg.h
 
-   * Fix case handling for RX package lost in r_rmac driver
+   * Reflect OFS setting for sdram from Zephyr device-tree value
    Impacted files:
-      drivers/rx/fsp/inc/instances/r_rmac.h
-      drivers/rx/fsp/src/r_rmac/r_rmac.c
+      zephyr/ra/ra_cfg/fsp_cfg/bsp/**/bsp_mcu_family_cfg.h
