@@ -36,17 +36,17 @@
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
-static void     taud_common_open(taud_instance_ctrl_t * const p_instance_ctrl, timer_cfg_t const * const p_cfg);
-static void     taud_hardware_initialize(taud_instance_ctrl_t * const p_instance_ctrl, timer_cfg_t const * const p_cfg);
-static uint32_t taud_clock_frequency_get(taud_instance_ctrl_t * const p_instance_ctrl);
-static void     taud_update_cdr_master(taud_instance_ctrl_t * const p_instance_ctrl);
-static void     taud_update_cdr_independent(taud_instance_ctrl_t * const p_instance_ctrl);
-static void     taud_update_cdr_slave(taud_instance_ctrl_t * const p_instance_ctrl);
-static void     taud_update_cdr_slave_even(taud_instance_ctrl_t * const p_instance_ctrl);
-static void     taud_update_cdr_slave_odd(taud_instance_ctrl_t * const p_instance_ctrl);
+static void     r_taud_common_open(taud_instance_ctrl_t * const p_instance_ctrl, timer_cfg_t const * const p_cfg);
+static void     r_taud_hardware_initialize(taud_instance_ctrl_t * const p_instance_ctrl);
+static uint32_t r_taud_clock_frequency_get(taud_instance_ctrl_t * const p_instance_ctrl);
+static void     r_taud_update_cdr_master(taud_instance_ctrl_t * const p_instance_ctrl);
+static void     r_taud_update_cdr_independent(taud_instance_ctrl_t * const p_instance_ctrl);
+static void     r_taud_update_cdr_slave(taud_instance_ctrl_t * const p_instance_ctrl);
+static void     r_taud_update_cdr_slave_even(taud_instance_ctrl_t * const p_instance_ctrl);
+static void     r_taud_update_cdr_slave_odd(taud_instance_ctrl_t * const p_instance_ctrl);
 
 #if defined(BSP_MCU_GROUP_RH850U2Ax)
-static void taud_init_dnf(taud_instance_ctrl_t * const p_instance_ctrl);
+static void r_taud_init_dnf(taud_instance_ctrl_t * const p_instance_ctrl);
 
 #endif
 
@@ -102,30 +102,29 @@ const timer_api_t g_timer_on_taud =
  **********************************************************************************************************************/
 fsp_err_t R_TAUD_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_cfg)
 {
-    fsp_err_t err = FSP_SUCCESS;
-
+    fsp_err_t              err             = FSP_SUCCESS;
     taud_instance_ctrl_t * p_instance_ctrl = (taud_instance_ctrl_t *) p_ctrl;
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ASSERT(NULL != p_cfg);
     FSP_ASSERT(NULL != p_cfg->p_extend);
+    FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ERROR_RETURN(TAUD_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
 #endif
 
-    /* Initializes control structure. */
-    taud_common_open(p_instance_ctrl, p_cfg);
+    taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_cfg->p_extend;
 
-    taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    /* Initializes control structure. */
+    r_taud_common_open(p_instance_ctrl, p_cfg);
 
 #if defined(BSP_MCU_GROUP_RH850U2Ax)
 
     /* Initialize the digital noise filters for U2A device. */
-    taud_init_dnf(p_instance_ctrl);
+    r_taud_init_dnf(p_instance_ctrl);
 #endif
 
     /* Performs hardware initialization of the TAUD. */
-    taud_hardware_initialize(p_instance_ctrl, p_cfg);
+    r_taud_hardware_initialize(p_instance_ctrl);
 
     /* Enable interrupts. */
     if (p_cfg->cycle_end_irq >= 0)
@@ -146,33 +145,38 @@ fsp_err_t R_TAUD_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_
     }
 #endif
 
-    p_instance_ctrl->open = TAUD_OPEN;
-
+    /* Initialize Slave Channel instances only for a Master Channel. */
     if (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)
     {
-#if (0 == TAUD_CFG_MULTI_SLAVE_ENABLE)
-        const uint16_t index = 0;
-#else
-        for (uint16_t index = 0; index < TAUD_MAX_NUM_SLAVE_CHANNELS; index++)
-#endif
+        /* Iterate through the Slave Channel instance list and process configured instances only. */
+        for (uint8_t index = 0; index < TAUD_MAX_NUM_SLAVE_CHANNELS; index++)
         {
+            /* Check whether the Slave Channel instance is configured. */
             if (NULL != p_extend->p_slave_channel_instances[index])
             {
-                /* Initialize control structure */
-                taud_instance_ctrl_t * slave_channel_instance_ctrl[TAUD_MAX_NUM_SLAVE_CHANNELS];
-                slave_channel_instance_ctrl[index] =
+                /* Get the control structure for the current Slave Channel instance. */
+                taud_instance_ctrl_t * p_slave_channel_instance_ctrl =
                     (taud_instance_ctrl_t *) p_extend->p_slave_channel_instances[index]->p_ctrl;
 
-                slave_channel_instance_ctrl[index]->p_cfg = p_extend->p_slave_channel_instances[index]->p_cfg;
+                /* Get the configuration structure for the current Slave Channel instance. */
+                timer_cfg_t * p_slave_channel_instance_cfg =
+                    (timer_cfg_t *) p_extend->p_slave_channel_instances[index]->p_cfg;
 
-                R_TAUD_Open(slave_channel_instance_ctrl[index], slave_channel_instance_ctrl[index]->p_cfg);
+                /* Open the current Slave Channel instance. */
+                err = R_TAUD_Open(p_slave_channel_instance_ctrl, p_slave_channel_instance_cfg);
+
+                /* Return immediately if opening the current Slave Channel instance fails. */
+                FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
             }
         }
     }
     else
     {
-        /* Do nothing. */
+        /* No operation is required for non-Master Channel. */
     }
+
+    /* Set open flag. */
+    p_instance_ctrl->open = TAUD_OPEN;
 
     return err;
 }
@@ -180,11 +184,15 @@ fsp_err_t R_TAUD_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_
 /*******************************************************************************************************************//**
  * Stops timer.
  *
+ * @note For Synchronous Operation Functions,
+ *       only the Master Channel can be used to stop the Master Channel and its Slave Channels simultaneously.
+ *
  * Implements @ref timer_api_t::stop.
  *
  * @retval FSP_SUCCESS                   Timer successfully stopped.
  * @retval FSP_ERR_ASSERTION             p_ctrl or p_extend is NULL.
  * @retval FSP_ERR_NOT_OPEN              The instance is not opened.
+ * @retval FSP_ERR_UNSUPPORTED           The setting is not supported.
  **********************************************************************************************************************/
 fsp_err_t R_TAUD_Stop (timer_ctrl_t * const p_ctrl)
 {
@@ -192,36 +200,39 @@ fsp_err_t R_TAUD_Stop (timer_ctrl_t * const p_ctrl)
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 #endif
 
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
+    /* Stop Synchronous Operation for the Master Channel and its Slave Channels. */
     if (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)
     {
-        /* Stop current channel's counter operation. */
+        /* Stop counter operations for the Master Channel and its Slave Channels. */
         p_instance_ctrl->p_reg->TAUDnTT = p_instance_ctrl->channels_mask;
 
-        /* Disable channel output. */
+        /* Disable output for the Master Channel and its Slave Channels. */
         p_instance_ctrl->p_reg->TAUDnTOE &= (uint16_t) ~(p_instance_ctrl->output_mask);
     }
+    /* Stop Independent Channel Operation. */
     else if ((TAUD_CHANNEL_TYPE_INDEPENDENT == p_extend->channel_type) ||
              (TAUD_FUNCTION_ONE_PHASE_PWM_OUTPUT == p_extend->taud_function))
     {
-        /* Stop current channel's counter operation. */
+        /* Stop counter operation for the current channel. */
         p_instance_ctrl->p_reg->TAUDnTT = (1U << p_instance_ctrl->p_cfg->channel);
 
         if (TAUD_OUTPUT_ENABLE == p_extend->output_enable)
         {
-            /* Disable channel output. */
+            /* Disable output for the current channel. */
             p_instance_ctrl->p_reg->TAUDnTOE &= (uint16_t) ~(1U << p_instance_ctrl->p_cfg->channel);
         }
     }
     else
     {
 
-        /* Stop with slave channel is unsupported. */
+        /* Stopping a single Slave Channel is not supported. */
         return FSP_ERR_UNSUPPORTED;
     }
 
@@ -230,6 +241,9 @@ fsp_err_t R_TAUD_Stop (timer_ctrl_t * const p_ctrl)
 
 /*******************************************************************************************************************//**
  * Starts timer.
+ *
+ * @note For Synchronous Operation Functions,
+ *       only the Master Channel can be used to start the Master Channel and its Slave Channels simultaneously.
  *
  * Implements @ref timer_api_t::start.
  *
@@ -244,6 +258,7 @@ fsp_err_t R_TAUD_Start (timer_ctrl_t * const p_ctrl)
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 
@@ -259,36 +274,38 @@ fsp_err_t R_TAUD_Start (timer_ctrl_t * const p_ctrl)
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 #endif
 
+    /* Start Synchronous Operation for the Master Channel and its Slave Channels. */
     if (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)
     {
-        /* Enable channel output. */
+        /* Enable outputs for the Master Channel and its Slave Channels. */
         p_instance_ctrl->p_reg->TAUDnTOE |= p_instance_ctrl->output_mask;
 
-        /* Set channel output to Low level. */
+        /* Set the outputs of the Master Channel and its Slave Channels to the Low level. */
         p_instance_ctrl->p_reg->TAUDnTO &= (uint16_t) ~(p_instance_ctrl->output_mask);
 
-        /* Start current channel's counter operation. */
+        /* Start counter operations for the Master Channel and its Slave Channels. */
         p_instance_ctrl->p_reg->TAUDnTS = p_instance_ctrl->channels_mask;
     }
+    /* Start Independent Channel Operation. */
     else if ((TAUD_CHANNEL_TYPE_INDEPENDENT == p_extend->channel_type) ||
              (TAUD_FUNCTION_ONE_PHASE_PWM_OUTPUT == p_extend->taud_function))
     {
         if (TAUD_OUTPUT_ENABLE == p_extend->output_enable)
         {
-            /* Enable channel output. */
+            /* Enable output for the current channel. */
             p_instance_ctrl->p_reg->TAUDnTOE |= (1U << p_instance_ctrl->p_cfg->channel);
 
-            /* Set channel output to Low level. */
+            /* Set the output of the current channel to the Low level. */
             p_instance_ctrl->p_reg->TAUDnTO &= (uint16_t) ~(1U << p_instance_ctrl->p_cfg->channel);
         }
 
-        /* Start current channel's counter operation. */
+        /* Start counter operation for the current channel. */
         p_instance_ctrl->p_reg->TAUDnTS = (1U << (p_instance_ctrl->p_cfg->channel));
     }
     else
     {
 
-        /* Start with slave channel is unsupported. */
+        /* Starting a single Slave Channel is not supported. */
         return FSP_ERR_UNSUPPORTED;
     }
 
@@ -298,7 +315,9 @@ fsp_err_t R_TAUD_Start (timer_ctrl_t * const p_ctrl)
 /*******************************************************************************************************************//**
  * Resets the counter value to the current period, duty cycle.
  *
- * @note This function can not reset the counter when counter is stopped.
+ * @note For Synchronous Operation Functions,
+ *       only the Master Channel can be used to reset the Master Channel and its Slave Channels simultaneously.
+ *       This function can not reset the counter when counter is stopped.
  *
  * Implements @ref timer_api_t::reset.
  *
@@ -313,12 +332,13 @@ fsp_err_t R_TAUD_Reset (timer_ctrl_t * const p_ctrl)
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
-    /* This function cannot be forcibly restarted. */
+    /* These functions cannot be forcibly restarted. */
     FSP_ERROR_RETURN(((TAUD_FUNCTION_INPUT_SIGNAL_WIDTH_MEASUREMENT != p_extend->taud_function) &&
                       (TAUD_FUNCTION_SIMULTANEOUS_REWRITE_TRIGGER_GENERATION_TYPE_1 != p_extend->taud_function) &&
                       (TAUD_FUNCTION_SIMULTANEOUS_REWRITE_TRIGGER_GENERATION_TYPE_2 != p_extend->taud_function) &&
@@ -333,9 +353,10 @@ fsp_err_t R_TAUD_Reset (timer_ctrl_t * const p_ctrl)
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 #endif
 
-    /* Get the channel status */
+    /* Check whether the target channel operation is currently active. */
     bool channel_in_use = false;
 
+    /* Reset Synchronous Operation for the Master Channel and its Slave Channels. */
     if (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)
     {
         channel_in_use =
@@ -343,13 +364,14 @@ fsp_err_t R_TAUD_Reset (timer_ctrl_t * const p_ctrl)
 
         if (true == channel_in_use)
         {
-            /* Stop timer. */
+            /* Stop counter operations for all synchronous channels. */
             p_instance_ctrl->p_reg->TAUDnTT = p_instance_ctrl->channels_mask;
 
-            /* Restart timer. */
+            /* Restart counter operations for all synchronous channels. */
             p_instance_ctrl->p_reg->TAUDnTS = p_instance_ctrl->channels_mask;
         }
     }
+    /* Reset Independent Channel Operation. */
     else if ((TAUD_CHANNEL_TYPE_INDEPENDENT == p_extend->channel_type) ||
              (TAUD_FUNCTION_ONE_PHASE_PWM_OUTPUT == p_extend->taud_function))
     {
@@ -359,17 +381,17 @@ fsp_err_t R_TAUD_Reset (timer_ctrl_t * const p_ctrl)
 
         if (true == channel_in_use)
         {
-            /* Stop timer. */
+            /* Stop counter operation for the current channel. */
             p_instance_ctrl->p_reg->TAUDnTT = (1U << p_instance_ctrl->p_cfg->channel);
 
-            /* Restart timer. */
+            /* Restart counter operation for the current channel. */
             p_instance_ctrl->p_reg->TAUDnTS = (1U << p_instance_ctrl->p_cfg->channel);
         }
     }
     else
     {
 
-        /* Start with slave channel is unsupported. */
+        /* Resetting a single Slave Channel is not supported. */
         return FSP_ERR_UNSUPPORTED;
     }
 
@@ -436,27 +458,45 @@ fsp_err_t R_TAUD_CallbackSet (timer_ctrl_t * const          p_api_ctrl,
  * Sets period value provided. If the timer is running, the period will be updated after the next counter overflow.
  * If the timer is stopped, this function resets the counter and updates the period.
  *
- * R_TAUD_PeriodSet support features: PWM Output (Master channel), Interval Timer, Input Interval Timer,
- *                                    Delay Pulse Output (Master channel), External Event Count, Delay Count,
- *                                    Interrupt Request Signals Culling, Trigger Start PWM Output (Master channel),
- *                                    One-Phase PWM Output (Lower channel - Slave Odd),
- *                                    Real-Time Output Type 1 (Channel that generates real-time output trigger),
- *                                    Input Pulse Interval Judgment,
- *                                    Complementary Modulation Output (Slave channel 1).
+ * R_TAUD_PeriodSet only support for the following features:
+ *         PWM Output Function (Master Channel),
+ *         A/D Conversion Trigger Output Function Type 1 (Master Channel),
+ *         Delay Pulse Output Function (Master Channel),
+ *         Trigger Start PWM Output Function (Master Channel),
+ *         External Event Count Function,
+ *         Interrupt Request Signals Culling Function,
+ *         Delay Count Function,
+ *         Input Signal Width Judgment Function,
+ *         One-Phase PWM Output Function (Lower Channel - Slave Odd),
+ *         Real-Time Output Function Type 1 (Upper Channel - Channel that generates real-time output trigger),
+ *         Input Pulse Interval Judgment Function,
+ *         Simultaneous Rewrite Trigger Generation Function Type 1,
+ *         Interval Timer Function,
+ *         Input Interval Timer Function,
+ *         Triangle PWM Output Function (Master Channel),
+ *         Triangle PWM Output Function with Dead Time (Master Channel),
+ *         A/D Conversion Trigger Output Function Type 2 (Master Channel),
+ *         Complementary Modulation Output Function (Master Channel),
+ *         Non-Complementary Modulation Output Function Type 2 (Master Channel).
  *
- * For External Event Count feature: This function is used to set the number of event count.
+ * For External Event Count Function: This function is used to set the number of event count.
  *
- * For Non-Complementary Modulation Output Type 2 feature: Applied only for slave 1
+ * For Input Signal Width Judgment Function: This function set value of TAUDnCDRm register.
  *
- * For Input Signal Width Judgment feature: This function set value of TAUDnCDRm register.
- *
- * For Complementary Modulation Output feature: This function is used to set the CDR value for Slave channel 1.
+ * For Interval Timer Function,
+ *     Input Interval Timer Function,
+ *     Triangle PWM Output Function,
+ *     Triangle PWM Output Function with Dead Time,
+ *     A/D Conversion Trigger Output Function Type 2,
+ *     Complementary Modulation Output Function,
+ *     Non-Complementary Modulation Output Function Type 2: The valid range of period count is 0 to 131072.
+ * The Other Functions: The valid range of period count is 0 to 65536.
  *
  * Implements @ref timer_api_t::periodSet.
  *
  * @retval FSP_SUCCESS                   Period value written successfully.
  * @retval FSP_ERR_ASSERTION             p_ctrl or p_extend is NULL.
- * @retval FSP_ERR_INVALID_ARGUMENT      The period counts is out of range.
+ * @retval FSP_ERR_INVALID_ARGUMENT      The period count values was outside the range 0...65536.
  * @retval FSP_ERR_NOT_OPEN              The instance is not opened.
  * @retval FSP_ERR_UNSUPPORTED           The setting is not supported.
  * @retval FSP_ERR_INVALID_HW_CONDITION  The simultaneous rewrite status (RSF flag) had not yet completed.
@@ -475,49 +515,39 @@ fsp_err_t R_TAUD_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period)
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
-    FSP_ERROR_RETURN(((TAUD_FUNCTION_PWM_OUTPUT == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_PWM_OUTPUT)) ||
-                     ((TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_1 == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_1)) ||
-                     ((TAUD_FUNCTION_INTERVAL_TIMER == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_INTERVAL_TIMER)) ||
-                     ((TAUD_FUNCTION_INPUT_INTERVAL_TIMER == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_INPUT_INTERVAL_TIMER)) ||
-                     ((TAUD_FUNCTION_DELAY_PULSE_OUTPUT == p_extend->taud_function) &&
-                      (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)) ||
-                     ((TAUD_FUNCTION_EXTERNAL_EVENT_COUNT == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_EXTERNAL_EVENT_COUNT)) ||
-                     ((TAUD_FUNCTION_ONE_PHASE_PWM_OUTPUT == p_extend->taud_function) &&
-                      (period <= TAUD_DEADTIME_COUNT_MAX_FUNCTION_ONE_PHASE_PWM_OUTPUT)) ||
-                     ((TAUD_FUNCTION_INTERRUPT_REQUEST_SIGNAL_CULLING == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_INTERRUPT_REQUEST_SIGNAL_CULLING)) ||
-                     ((TAUD_FUNCTION_DELAY_COUNT == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_DELAY_COUNT)) ||
-                     ((TAUD_FUNCTION_TRIGGER_START_PWM_OUTPUT == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_TRIGGER_START_PWM_OUTPUT)) ||
-                     ((TAUD_FUNCTION_REAL_TIME_OUTPUT_TYPE_1 == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_REAL_TIME_OUTPUT_TYPE_1)) ||
-                     ((TAUD_FUNCTION_SIMULTANEOUS_REWRITE_TRIGGER_GENERATION_TYPE_1 == p_extend->taud_function) &&
-                      (period <= TAUD_CDR_MAX)) ||
-                     ((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_TYPE_2)) ||
-                     ((TAUD_FUNCTION_INPUT_PULSE_INTERVAL_JUDGMENT == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_INPUT_PULSE_INTERVAL)) ||
-                     ((TAUD_FUNCTION_INPUT_SIGNAL_WIDTH_JUDGMENT == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_INPUT_SIGNAL_WIDTH)) ||
-                     ((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) &&
-                      (period <= TAUD_PERIOD_COUNT_MAX_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT)),
+    FSP_ERROR_RETURN(((period <= TAUD_PERIOD_COUNT_MAX_CDR_X2) &&
+                      ((TAUD_FUNCTION_INTERVAL_TIMER == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_INPUT_INTERVAL_TIMER == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT_DEADTIME == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_2 == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 == p_extend->taud_function))) ||
+                     ((period <= TAUD_PERIOD_COUNT_MAX_CDR_X1) &&
+                      ((TAUD_FUNCTION_PWM_OUTPUT == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_1 == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_DELAY_PULSE_OUTPUT == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_TRIGGER_START_PWM_OUTPUT == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_EXTERNAL_EVENT_COUNT == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_INTERRUPT_REQUEST_SIGNAL_CULLING == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_DELAY_COUNT == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_INPUT_SIGNAL_WIDTH_JUDGMENT == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_ONE_PHASE_PWM_OUTPUT == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_REAL_TIME_OUTPUT_TYPE_1 == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_INPUT_PULSE_INTERVAL_JUDGMENT == p_extend->taud_function) ||
+                       (TAUD_FUNCTION_SIMULTANEOUS_REWRITE_TRIGGER_GENERATION_TYPE_1 == p_extend->taud_function))),
                      FSP_ERR_INVALID_ARGUMENT);
 #else
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 #endif
 
-    /* TAUDnCDRm value */
+    /* TAUDnCDRm value. */
     uint32_t taud_cdr = (0U);
 
     if ((TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type) &&
@@ -550,17 +580,23 @@ fsp_err_t R_TAUD_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period)
     {
         taud_cdr = period - 1U;
     }
-    else if (((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) ||
-              (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 == p_extend->taud_function)) &&
-             (1U == p_extend->slave_ordinal_number))
+    else if ((TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type) &&
+             ((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT == p_extend->taud_function) ||
+              (TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT_DEADTIME == p_extend->taud_function) ||
+              (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_2 == p_extend->taud_function) ||
+              (TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) ||
+              (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 == p_extend->taud_function)))
     {
-        taud_cdr = period;
+        taud_cdr = (period >> 1U) - 1U;
     }
     else
     {
+
+        /* The current feature or channel type configuration is not supported. */
         return FSP_ERR_UNSUPPORTED;
     }
 
+    /* Triggers a rewrite simultaneously. */
     if (TAUD_SIMULTANEOUS_REWRITE_ENABLE == p_extend->simultaneous_rewrite)
     {
         /* Update current status of simultaneous rewrite. */
@@ -592,21 +628,58 @@ fsp_err_t R_TAUD_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period)
 /*******************************************************************************************************************//**
  * Sets duty cycle for the timer.
  *
- * R_TAUD_DutyCycleSet support features: PWM Output (Slave channel), Triangle PWM Output (Slave channel),
- *                                       Triangle PWM Output With Dead Time (Slave even channel),
- *                                       Delay Pulse Output (Slave channel 1 and Slave channel 3),
- *                                       Trigger Start PWM Output (Slave channel),
- *                                       Non-Complementary modulatiton output function type 2(Slave 2 to slave 7),
- *                                       Clock Divide, Complementary Modulation Output (Slave channel 2, 4, 6).
+ * R_TAUD_DutyCycleSet only support for the following features:
+ *         PWM Output Function (Slave Channel),
+ *         Non-Complementary Modulation Output Function Type 1 (Slave 2 Channel to Slave Channel 7),
+ *         A/D Conversion Trigger Output Function Type 1 (Slave Channel),
+ *         Delay Pulse Output Function (Slave Channel 1 and Slave Channel 3),
+ *         Trigger Start PWM Output Function (Slave Channel),
+ *         Clock Divide Function (Independent Channel),
+ *         Triangle PWM Output Function (Slave Channel),
+ *         Triangle PWM Output Function With Dead Time (Slave Even Channel),
+ *         A/D Conversion Trigger Output Function Type 2 (Slave Channel),
+ *         Complementary Modulation Output Function (Slave Channel 2, 4, 6 for changing duty cycle;
+ *                                                   Slave Channel 3, 5, 7 for changing the dead time),
+ *         Non-Complementary Modulation Output Function Type 2 (Slave 2 Channel to Slave Channel 7).
  *
- * @note pin (Param in): Specifies which Slave channel will be updated the duty cycle.
+ * For the following functions:
+ *         PWM Output Function,
+ *         Non-Complementary Modulation Output Function Type 1,
+ *         A/D Conversion Trigger Output Function Type 1,
+ *         Delay Pulse Output Function,
+ *         Trigger Start PWM Output Function;
+ * the Slave Channel instance must be used as the p_ctrl input,
+ *     and the valid range of duty cycle count is 0 to 65535.
+ *
+ * For the following functions:
+ *         Triangle PWM Output Function,
+ *         Triangle PWM Output Function with Dead Time,
+ *         A/D Conversion Trigger Output Function Type 2,
+ *         Complementary Modulation Output Function,
+ *         Non-Complementary Modulation Output Function Type 2;
+ * the Master Channel instance must be used as the p_ctrl input,
+ *     and the pin parameter specifies the Slave Channel number.
+ *
+ * For Clock Divide Function:
+ * The valid range of duty cycle count is 0 to 131072 when using the rising edge or falling edge.
+ * The valid range of duty cycle count is 0 to 65536 when using both edges (selects low width measurement).
+ *
+ * For Complementary Modulation Output Function and Non-Complementary Modulation Output Function Type 2:
+ * This function is also used to set the CDR value for Slave Channel 1.
+ * However, the valid range of duty cycle count is 0 to 65535.
+ *
+ * For Complementary Modulation Output Function:
+ * This function is also used to set the CDR value for Slave Channel 3, 5, 7 (Dead time setting).
+ *
+ * @note pin (Param in): Specifies the Slave Channel whose duty cycle will be updated.
+ *                       The pin value represents the Slave Channel.
  *
  * Implements @ref timer_api_t::dutyCycleSet.
  *
  * @retval FSP_SUCCESS                   Duty cycle updated successfully.
  * @retval FSP_ERR_ASSERTION             p_ctrl or p_extend is NULL.
  * @retval FSP_ERR_NOT_OPEN              The instance is not opened.
- * @retval FSP_ERR_INVALID_ARGUMENT      Duty cycle count values was outside the range 0...65536.
+ * @retval FSP_ERR_INVALID_ARGUMENT      The duty cycle count values was outside the range 0...65536.
  * @retval FSP_ERR_UNSUPPORTED           The setting is not supported.
  * @retval FSP_ERR_INVALID_HW_CONDITION  The simultaneous rewrite status (RSF flag) had not yet completed.
  **********************************************************************************************************************/
@@ -624,74 +697,99 @@ fsp_err_t R_TAUD_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
-    FSP_ERROR_RETURN((((TAUD_FUNCTION_PWM_OUTPUT == p_extend->taud_function) ||
-                       (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_1 == p_extend->taud_function) ||
-                       (TAUD_FUNCTION_TRIGGER_START_PWM_OUTPUT == p_extend->taud_function)) &&
-                      (TAUD_CHANNEL_TYPE_SLAVE == p_extend->channel_type)) ||
-                     (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_2 == p_extend->taud_function) ||
-                     ((TAUD_FUNCTION_DELAY_PULSE_OUTPUT == p_extend->taud_function) &&
-                      (TAUD_CHANNEL_TYPE_SLAVE == p_extend->channel_type) &&
-                      ((1U == p_extend->slave_ordinal_number) || (3U == p_extend->slave_ordinal_number))) ||
-                     (TAUD_FUNCTION_CLOCK_DIVIDE == p_extend->taud_function) ||
-                     (((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_1 ==
-                        p_extend->taud_function)) &&
-                      (TAUD_CHANNEL_TYPE_SLAVE == p_extend->channel_type) &&
-                      ((2U <= p_extend->slave_ordinal_number) && (7U >= p_extend->slave_ordinal_number))) ||
-                     ((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT == p_extend->taud_function) &&
-                      (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)) ||
-                     ((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT_DEADTIME == p_extend->taud_function) &&
-                      (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)) ||
-                     ((TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_2 == p_extend->taud_function) &&
-                      (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)) ||
-                     ((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) &&
-                      (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)) ||
-                     ((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 == p_extend->taud_function) &&
-                      (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)),
-                     FSP_ERR_UNSUPPORTED);
-
-    FSP_ERROR_RETURN(duty_cycle_counts <= TAUD_CDR_MAX, FSP_ERR_INVALID_ARGUMENT);
-
-    /* Do not select the pin of master channel. */
-    FSP_ERROR_RETURN(pin != p_instance_ctrl->p_cfg->channel, FSP_ERR_UNSUPPORTED);
-
- #if (0 == TAUD_CFG_MULTI_SLAVE_ENABLE)
-    const uint16_t index = 0;
- #else
-    for (uint16_t index = 0; index < TAUD_MAX_NUM_SLAVE_CHANNELS; index++)
- #endif
+    /* If the current instance is a Slave Channel or Clock Divide Function (Independent Channel). */
+    if ((TAUD_CHANNEL_TYPE_SLAVE == p_extend->channel_type) ||
+        (TAUD_FUNCTION_CLOCK_DIVIDE == p_extend->taud_function))
     {
-        if (NULL != p_extend->p_slave_channel_instances[index])
+        /* Check whether the current instance and feature combination is supported. */
+        FSP_ERROR_RETURN(((TAUD_FUNCTION_PWM_OUTPUT == p_extend->taud_function) ||
+                          ((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_1 ==
+                            p_extend->taud_function) &&
+                           (2U <= p_extend->slave_ordinal_number)) ||
+                          (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_1 == p_extend->taud_function) ||
+                          ((TAUD_FUNCTION_DELAY_PULSE_OUTPUT == p_extend->taud_function) &&
+                           ((1U == p_extend->slave_ordinal_number) ||
+                            (3U == p_extend->slave_ordinal_number))) ||
+                          (TAUD_FUNCTION_TRIGGER_START_PWM_OUTPUT == p_extend->taud_function)) ||
+                         (TAUD_FUNCTION_CLOCK_DIVIDE == p_extend->taud_function),
+                         FSP_ERR_UNSUPPORTED);
+
+        /* Check whether duty_cycle_counts is within the valid range. */
+        FSP_ERROR_RETURN((((TAUD_FUNCTION_PWM_OUTPUT == p_extend->taud_function) ||
+                           ((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_1 ==
+                             p_extend->taud_function) &&
+                            (2U <= p_extend->slave_ordinal_number)) ||
+                           (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_1 == p_extend->taud_function) ||
+                           ((TAUD_FUNCTION_DELAY_PULSE_OUTPUT == p_extend->taud_function) &&
+                            ((1U == p_extend->slave_ordinal_number) ||
+                             (3U == p_extend->slave_ordinal_number))) ||
+                           (TAUD_FUNCTION_TRIGGER_START_PWM_OUTPUT == p_extend->taud_function)) &&
+                          (duty_cycle_counts < TAUD_CDR_MAX)) ||
+                         ((TAUD_FUNCTION_CLOCK_DIVIDE == p_extend->taud_function) &&
+                          ((((TAUD_INPUT_EDGE_RISING == p_extend->edge_type) ||
+                             (TAUD_INPUT_EDGE_FALLING == p_extend->edge_type)) &&
+                            (duty_cycle_counts <= (TAUD_CDR_MAX * 2U))) ||
+                           ((TAUD_INPUT_EDGE_BOTH_MEASURE_LOW == p_extend->edge_type) &&
+                            (duty_cycle_counts <= TAUD_CDR_MAX)))),
+                         FSP_ERR_INVALID_ARGUMENT);
+    }
+    /* If the current instance is a Master Channel or Triangle PWM Output Function With Dead Time (Slave Even Channel). */
+    else if (((TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type) &&
+              ((TAUD_FUNCTION_PWM_OUTPUT != p_extend->taud_function) &&
+               (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_1 != p_extend->taud_function) &&
+               (TAUD_FUNCTION_DELAY_PULSE_OUTPUT != p_extend->taud_function) &&
+               (TAUD_FUNCTION_TRIGGER_START_PWM_OUTPUT != p_extend->taud_function))) ||
+             (TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT_DEADTIME == p_extend->taud_function))
+    {
+        /* Return an error if the selected pin is the Master Channel. */
+        FSP_ERROR_RETURN(pin != p_instance_ctrl->p_cfg->channel, FSP_ERR_UNSUPPORTED);
+
+        /* Iterate through the Slave Channel instance list and process configured instances only. */
+        for (uint8_t index = 0; index < TAUD_MAX_NUM_SLAVE_CHANNELS; index++)
         {
-            uint16_t slave_channel = p_extend->p_slave_channel_instances[index]->p_cfg->channel;
-            if (slave_channel == pin)
+            /* Check whether the Slave Channel instance is configured. */
+            if (NULL != p_extend->p_slave_channel_instances[index])
             {
-                taud_extended_cfg_t * slave_channel_extend =
-                    (taud_extended_cfg_t *) p_extend->p_slave_channel_instances[index]->p_cfg->p_extend;
+                /* Get the channel number of the current Slave instance. */
+                uint16_t slave_channel = p_extend->p_slave_channel_instances[index]->p_cfg->channel;
 
-                FSP_ERROR_RETURN(p_extend->taud_function == slave_channel_extend->taud_function, FSP_ERR_UNSUPPORTED);
+                if (slave_channel == pin)
+                {
+                    /* Get the extension data structure for the current Slave Channel instance. */
+                    taud_extended_cfg_t * p_slave_channel_instance_extend =
+                        (taud_extended_cfg_t *) p_extend->p_slave_channel_instances[index]->p_cfg->p_extend;
 
-                FSP_ERROR_RETURN((((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT == slave_channel_extend->taud_function)) &&
-                                  (TAUD_CHANNEL_TYPE_SLAVE == slave_channel_extend->channel_type)) ||
-                                 ((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT_DEADTIME == slave_channel_extend->taud_function) &&
-                                  (TAUD_CHANNEL_TYPE_SLAVE_EVEN == slave_channel_extend->channel_type)) ||
-                                 ((TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_2 == slave_channel_extend->taud_function) &&
-                                  (TAUD_CHANNEL_TYPE_SLAVE == slave_channel_extend->channel_type)) ||
-                                 (((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 ==
-                                    slave_channel_extend->taud_function)) &&
-                                  (TAUD_CHANNEL_TYPE_SLAVE == slave_channel_extend->channel_type) &&
-                                  ((2U <= slave_channel_extend->slave_ordinal_number) &&
-                                   (7U >= slave_channel_extend->slave_ordinal_number))) ||
-                                 ((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT ==
-                                   slave_channel_extend->taud_function) &&
-                                  ((2U == slave_channel_extend->slave_ordinal_number) ||
-                                   (4U == slave_channel_extend->slave_ordinal_number) ||
-                                   (6U == slave_channel_extend->slave_ordinal_number))),
-                                 FSP_ERR_UNSUPPORTED);
+                    /* Check whether the current instance and feature combination is supported. */
+                    FSP_ERROR_RETURN(((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT_DEADTIME == p_extend->taud_function) &&
+                                      (TAUD_CHANNEL_TYPE_SLAVE_EVEN == p_slave_channel_instance_extend->channel_type)) ||
+                                     (((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) ||
+                                       (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 ==
+                                        p_extend->taud_function)) &&
+                                      ((1U <= p_slave_channel_instance_extend->slave_ordinal_number) &&
+                                       (7U >= p_slave_channel_instance_extend->slave_ordinal_number))) ||
+                                     (TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT == p_extend->taud_function) ||
+                                     (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_2 == p_extend->taud_function),
+                                     FSP_ERR_UNSUPPORTED);
+
+                    /* Check whether duty_cycle_counts is within the valid range. */
+                    FSP_ERROR_RETURN(((duty_cycle_counts <= TAUD_CDR_MAX) &&
+                                      (((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT != p_extend->taud_function) &&
+                                        (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 !=
+                                         p_extend->taud_function)) ||
+                                       (1U != p_slave_channel_instance_extend->slave_ordinal_number))) ||
+                                     ((duty_cycle_counts < TAUD_CDR_MAX) &&
+                                      ((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) ||
+                                       (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 ==
+                                        p_extend->taud_function)) &&
+                                      (1U == p_slave_channel_instance_extend->slave_ordinal_number)),
+                                     FSP_ERR_INVALID_ARGUMENT);
+                }
             }
         }
     }
@@ -700,210 +798,56 @@ fsp_err_t R_TAUD_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 #endif
 
-    if ((TAUD_FUNCTION_PWM_OUTPUT == p_extend->taud_function) ||
-        ((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_1 == p_extend->taud_function) &&
-         (TAUD_CHANNEL_TYPE_SLAVE == p_extend->channel_type) && (2U <= p_extend->slave_ordinal_number)) ||
-        (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_1 == p_extend->taud_function))
+    /* If the current instance is a Slave Channel or Clock Divide Function (Independent Channel). */
+    if ((TAUD_CHANNEL_TYPE_SLAVE == p_extend->channel_type) ||
+        (TAUD_FUNCTION_CLOCK_DIVIDE == p_extend->taud_function))
     {
-        p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR = (uint16_t) duty_cycle_counts;
-    }
-    else if (TAUD_FUNCTION_DELAY_PULSE_OUTPUT == p_extend->taud_function)
-    {
-        /* Set pulse width counts for reference signal or delay signal. */
-        p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR = (uint16_t) duty_cycle_counts;
-    }
-    else if (TAUD_FUNCTION_TRIGGER_START_PWM_OUTPUT == p_extend->taud_function)
-    {
-        /* Set the duty cycle value for the Slave channel of Trigger Start PWM Output function. */
-        p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR = (uint16_t) duty_cycle_counts;
-    }
-    else if (TAUD_FUNCTION_CLOCK_DIVIDE == p_extend->taud_function)
-    {
-        /* TAUDmCDR value */
-        uint32_t cdr_value = (0U);
+        /* The pin parameter is not used when the current instance is a Slave Channel. */
+        FSP_PARAMETER_NOT_USED(pin);
 
-        if ((TAUD_INPUT_EDGE_RISING == p_extend->edge_type) || (TAUD_INPUT_EDGE_FALLING == p_extend->edge_type))
+        if ((TAUD_FUNCTION_PWM_OUTPUT == p_extend->taud_function) ||
+            ((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_1 == p_extend->taud_function) &&
+             (2U <= p_extend->slave_ordinal_number)) ||
+            (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_1 == p_extend->taud_function))
         {
-            cdr_value = (duty_cycle_counts >> 1U) - 1U;
+            p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR = (uint16_t) duty_cycle_counts;
         }
-        else if (TAUD_INPUT_EDGE_BOTH_MEASURE_LOW == p_extend->edge_type)
+        else if ((TAUD_FUNCTION_DELAY_PULSE_OUTPUT == p_extend->taud_function) &&
+                 ((1U == p_extend->slave_ordinal_number) || (3U == p_extend->slave_ordinal_number)))
         {
-            cdr_value = duty_cycle_counts - 1U;
+            /* Set pulse width counts for reference signal or delay signal. */
+            p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR = (uint16_t) duty_cycle_counts;
         }
-
-        /* Write TAUDmCDR value to TAUDnCDR register */
-        p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR = (uint16_t) cdr_value;
-    }
-    else
-    {
-        /* Do nothing. */
-    }
-
-#if (0 == TAUD_CFG_MULTI_SLAVE_ENABLE)
-    const uint16_t index = 0;
-#else
-    for (uint16_t index = 0; index < TAUD_MAX_NUM_SLAVE_CHANNELS; index++)
-#endif
-    {
-        if (NULL != p_extend->p_slave_channel_instances[index])
+        else if (TAUD_FUNCTION_TRIGGER_START_PWM_OUTPUT == p_extend->taud_function)
         {
-            uint16_t slave_channel = p_extend->p_slave_channel_instances[index]->p_cfg->channel;
+            /* Set the duty cycle value for the Slave channel of Trigger Start PWM Output function. */
+            p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR = (uint16_t) duty_cycle_counts;
+        }
+        else if (TAUD_FUNCTION_CLOCK_DIVIDE == p_extend->taud_function)
+        {
+            /* TAUDmCDR value. */
+            uint32_t cdr_value = (0U);
 
-            if (slave_channel == pin)
+            if ((TAUD_INPUT_EDGE_RISING == p_extend->edge_type) || (TAUD_INPUT_EDGE_FALLING == p_extend->edge_type))
             {
-                taud_instance_ctrl_t * slave_channel_instance_ctrl[TAUD_MAX_NUM_SLAVE_CHANNELS];
-                slave_channel_instance_ctrl[index] =
-                    (taud_instance_ctrl_t *) p_extend->p_slave_channel_instances[index]->p_ctrl;
-                slave_channel_instance_ctrl[index]->p_cfg = p_extend->p_slave_channel_instances[index]->p_cfg;
-                taud_extended_cfg_t * slave_channel_extend =
-                    (taud_extended_cfg_t *) p_extend->p_slave_channel_instances[index]->p_cfg->p_extend;
-
-                uint16_t master_cdr = p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR;
-
-                if ((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT_DEADTIME == p_extend->taud_function) ||
-                    ((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) &&
-                     ((2U == slave_channel_extend->slave_ordinal_number) ||
-                      (4U == slave_channel_extend->slave_ordinal_number) ||
-                      (6U == slave_channel_extend->slave_ordinal_number))))
-                {
-                    uint16_t slave_deadtime_channel = pin + 1;
-                    uint16_t slave_deadtime_cdr     = p_instance_ctrl->p_reg->TAUDnCDR[slave_deadtime_channel].TAUDnCDR;
-                    uint32_t period_counts          = (master_cdr + 1) << 1;
-                    uint16_t deadtime_value         = slave_deadtime_cdr + 1;
-
-                    /* TAUDmCDR value. */
-                    uint32_t cdr_value = (0U);
-
-                    /* Update TAUDmCDR value. */
-                    if (0U == duty_cycle_counts)
-                    {
-                        cdr_value = period_counts >> 1U;
-                    }
-                    else if (duty_cycle_counts >= period_counts)
-                    {
-                        cdr_value = (0U);
-                    }
-                    else
-                    {
-                        cdr_value = (period_counts - duty_cycle_counts - deadtime_value) >> 1U;
-                    }
-
-                    /* Write TAUDmCDR value to TAUDnCDR register.TAUDn */
-                    p_instance_ctrl->p_reg->TAUDnCDR[slave_channel_instance_ctrl[index]->p_cfg->channel].TAUDnCDR =
-                        (uint16_t) cdr_value;
-                }
-                else if ((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT == p_extend->taud_function) ||
-                         (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_2 == p_extend->taud_function))
-                {
-                    uint32_t period_counts = (master_cdr + 1) << 1;
-
-                    /* TAUDmCDR value */
-                    uint32_t cdr_value = (0U);
-
-                    /* Set CDRm value based on duty cycle counts */
-                    if ((0U) == duty_cycle_counts)
-                    {
-                        cdr_value = period_counts >> 1U; // Duty cycle = 0%
-                    }
-                    else if (duty_cycle_counts >= period_counts)
-                    {
-                        cdr_value = 0U;                  // Duty cycle = 100%
-                    }
-                    else
-                    {
-                        cdr_value = (period_counts - duty_cycle_counts) >> 1U;
-                    }
-
-                    /* Write TAUDmCDR value to TAUDnCDR register */
-                    p_instance_ctrl->p_reg->TAUDnCDR[slave_channel_instance_ctrl[index]->p_cfg->channel].TAUDnCDR =
-                        (uint16_t) cdr_value;
-                }
-                else if ((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 ==
-                          p_extend->taud_function) &&
-                         (((2U) == slave_channel_extend->slave_ordinal_number) ||
-                          ((3U) == slave_channel_extend->slave_ordinal_number) ||
-                          ((4U) == slave_channel_extend->slave_ordinal_number) ||
-                          ((5U) == slave_channel_extend->slave_ordinal_number) ||
-                          ((6U) == slave_channel_extend->slave_ordinal_number) ||
-                          ((7U) == slave_channel_extend->slave_ordinal_number)))
-                {
-                    uint32_t period_counts = (master_cdr + 1) << 1;
-
-                    /* TAUDmCDR value */
-                    uint32_t cdr_value = (0U);
-
-                    /* Set CDRm value based on duty cycle counts */
-                    if ((0U) == duty_cycle_counts)
-                    {
-                        cdr_value = period_counts >> 1U; // Duty cycle = 0%
-                    }
-                    else if (duty_cycle_counts >= period_counts)
-                    {
-                        cdr_value = 0U;                  // Duty cycle = 100%
-                    }
-                    else
-                    {
-                        cdr_value = (period_counts - duty_cycle_counts) >> 1U;
-                    }
-
-                    /* Write TAUDmCDR value to TAUDnCDR register */
-                    p_instance_ctrl->p_reg->TAUDnCDR[slave_channel_instance_ctrl[index]->p_cfg->channel].TAUDnCDR =
-                        (uint16_t) cdr_value;
-                }
+                cdr_value = (duty_cycle_counts >> 1U) - 1U;
             }
-        }
-    }
-
-    /* Triggers a rewrite simultaneously. */
-    if ((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT_DEADTIME == p_extend->taud_function) ||
-        (TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) ||
-        (TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT == p_extend->taud_function) ||
-        (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_2 == p_extend->taud_function) ||
-        (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 == p_extend->taud_function))
-    {
-#if (0 == TAUD_CFG_MULTI_SLAVE_ENABLE)
-        const uint16_t index = 0;
-#else
-        for (uint16_t index = 0; index < TAUD_MAX_NUM_SLAVE_CHANNELS; index++)
-#endif
-        {
-            if (NULL != p_extend->p_slave_channel_instances[index])
+            else if (TAUD_INPUT_EDGE_BOTH_MEASURE_LOW == p_extend->edge_type)
             {
-                uint16_t slave_channel = p_extend->p_slave_channel_instances[index]->p_cfg->channel;
-
-                if (slave_channel == pin)
-                {
-                    /* Initialize control structure */
-                    taud_instance_ctrl_t * slave_channel_instance_ctrl[TAUD_MAX_NUM_SLAVE_CHANNELS];
-                    slave_channel_instance_ctrl[index] =
-                        (taud_instance_ctrl_t *) p_extend->p_slave_channel_instances[index]->p_ctrl;
-
-                    slave_channel_instance_ctrl[index]->p_cfg = p_extend->p_slave_channel_instances[index]->p_cfg;
-
-                    if (slave_channel_instance_ctrl[index]->p_reg->TAUDnTE &
-                        (1U << slave_channel_instance_ctrl[index]->p_cfg->channel))
-                    {
-                        /* Update current status of simultaneous rewrite. */
-                        R_TAUD_StatusGet(slave_channel_instance_ctrl[index], &current_status);
-
-                        /* Check if simultaneous rewrite enabling flag is not set. */
-                        if (false == current_status.is_rsf_active)
-                        {
-                            /* Trigger simultaneous rewrite enabling state. */
-                            slave_channel_instance_ctrl[index]->p_reg->TAUDnRDT =
-                                (uint16_t) (1U << slave_channel_instance_ctrl[index]->p_cfg->channel);
-                        }
-                        else
-                        {
-                            return FSP_ERR_INVALID_HW_CONDITION;
-                        }
-                    }
-                }
+                cdr_value = duty_cycle_counts - 1U;
             }
+
+            /* Write TAUDmCDR value to TAUDnCDR register. */
+            p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR = (uint16_t) cdr_value;
         }
-    }
-    else
-    {
+        else
+        {
+
+            /* The combination of the current instance and feature is not supported. */
+            return FSP_ERR_UNSUPPORTED;
+        }
+
+        /* Triggers a rewrite simultaneously. */
         if (p_instance_ctrl->p_reg->TAUDnTE & (1U << p_instance_ctrl->p_cfg->channel))
         {
             /* Update current status of simultaneous rewrite. */
@@ -921,6 +865,191 @@ fsp_err_t R_TAUD_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
             }
         }
     }
+    /* If the current instance is a Master Channel or Triangle PWM Output Function With Dead Time (Slave Even Channel). */
+    else if (((TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type) &&
+              ((TAUD_FUNCTION_PWM_OUTPUT != p_extend->taud_function) &&
+               (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_1 != p_extend->taud_function) &&
+               (TAUD_FUNCTION_DELAY_PULSE_OUTPUT != p_extend->taud_function) &&
+               (TAUD_FUNCTION_TRIGGER_START_PWM_OUTPUT != p_extend->taud_function))) ||
+             (TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT_DEADTIME == p_extend->taud_function))
+    {
+        /* Iterate through the Slave Channel instance list and process configured instances only. */
+        for (uint8_t index = 0; index < TAUD_MAX_NUM_SLAVE_CHANNELS; index++)
+        {
+            /* Check whether the Slave Channel instance is configured. */
+            if (NULL != p_extend->p_slave_channel_instances[index])
+            {
+                /* Get the channel number of the current Slave instance. */
+                uint16_t slave_channel = p_extend->p_slave_channel_instances[index]->p_cfg->channel;
+
+                if (slave_channel == pin)
+                {
+                    /* Get the control structure for the current Slave Channel instance. */
+                    taud_instance_ctrl_t * p_slave_channel_instance_ctrl =
+                        (taud_instance_ctrl_t *) p_extend->p_slave_channel_instances[index]->p_ctrl;
+
+                    /* Get the extension data structure for the current Slave Channel instance. */
+                    taud_extended_cfg_t * p_slave_channel_instance_extend =
+                        (taud_extended_cfg_t *) p_extend->p_slave_channel_instances[index]->p_cfg->p_extend;
+
+                    /* Get the CDR value of Master Channel. */
+                    uint16_t master_cdr = p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR;
+
+                    if (((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT_DEADTIME == p_extend->taud_function) &&
+                         (TAUD_CHANNEL_TYPE_SLAVE_EVEN == p_slave_channel_instance_extend->channel_type)) ||
+                        ((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) &&
+                         ((2U == p_slave_channel_instance_extend->slave_ordinal_number) ||
+                          (4U == p_slave_channel_instance_extend->slave_ordinal_number) ||
+                          (6U == p_slave_channel_instance_extend->slave_ordinal_number))))
+                    {
+                        uint16_t slave_deadtime_channel = pin + 1U;
+                        uint16_t slave_deadtime_cdr     =
+                            p_instance_ctrl->p_reg->TAUDnCDR[slave_deadtime_channel].TAUDnCDR;
+                        uint32_t period_counts  = (master_cdr + 1U) << 1U;
+                        uint16_t deadtime_value = slave_deadtime_cdr + 1U;
+
+                        /* TAUDmCDR value. */
+                        uint32_t cdr_value = (0U);
+
+                        /* Update TAUDmCDR value. */
+                        if (0U == duty_cycle_counts)
+                        {
+                            cdr_value = period_counts >> 1U;
+                        }
+                        else if (duty_cycle_counts >= period_counts)
+                        {
+                            cdr_value = (0U);
+                        }
+                        else
+                        {
+                            cdr_value = (period_counts - duty_cycle_counts - deadtime_value) >> 1U;
+                        }
+
+                        /* Write TAUDmCDR value to TAUDnCDR register. */
+                        p_instance_ctrl->p_reg->TAUDnCDR[slave_channel].TAUDnCDR = (uint16_t) cdr_value;
+                    }
+                    else if ((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) &&
+                             ((3U == p_slave_channel_instance_extend->slave_ordinal_number) ||
+                              (5U == p_slave_channel_instance_extend->slave_ordinal_number) ||
+                              (7U == p_slave_channel_instance_extend->slave_ordinal_number)))
+                    {
+                        /* TAUDmCDR value. */
+                        uint32_t cdr_value = (0U);
+
+                        if (1U > duty_cycle_counts)
+                        {
+                            cdr_value = (1U);
+                        }
+                        else
+                        {
+                            cdr_value = (duty_cycle_counts - 1U);
+                        }
+
+                        /* Write TAUDmCDR value to TAUDnCDR register - Set the dead time. */
+                        p_instance_ctrl->p_reg->TAUDnCDR[slave_channel].TAUDnCDR = (uint16_t) cdr_value;
+                    }
+                    else if ((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT == p_extend->taud_function) ||
+                             (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_2 == p_extend->taud_function))
+                    {
+                        uint32_t period_counts = (master_cdr + 1U) << 1U;
+
+                        /* TAUDmCDR value. */
+                        uint32_t cdr_value = (0U);
+
+                        /* Set CDRm value based on duty cycle counts. */
+                        if ((0U) == duty_cycle_counts)
+                        {
+                            cdr_value = period_counts >> 1U; // Duty cycle = 0%
+                        }
+                        else if (duty_cycle_counts >= period_counts)
+                        {
+                            cdr_value = 0U;                  // Duty cycle = 100%
+                        }
+                        else
+                        {
+                            cdr_value = (period_counts - duty_cycle_counts) >> 1U;
+                        }
+
+                        /* Write TAUDmCDR value to TAUDnCDR register. */
+                        p_instance_ctrl->p_reg->TAUDnCDR[slave_channel].TAUDnCDR = (uint16_t) cdr_value;
+                    }
+                    else if ((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 ==
+                              p_extend->taud_function) &&
+                             ((2U == p_slave_channel_instance_extend->slave_ordinal_number) ||
+                              (3U == p_slave_channel_instance_extend->slave_ordinal_number) ||
+                              (4U == p_slave_channel_instance_extend->slave_ordinal_number) ||
+                              (5U == p_slave_channel_instance_extend->slave_ordinal_number) ||
+                              (6U == p_slave_channel_instance_extend->slave_ordinal_number) ||
+                              (7U == p_slave_channel_instance_extend->slave_ordinal_number)))
+                    {
+                        uint32_t period_counts = (master_cdr + 1U) << 1U;
+
+                        /* TAUDmCDR value. */
+                        uint32_t cdr_value = (0U);
+
+                        /* Set CDRm value based on duty cycle counts. */
+                        if ((0U) == duty_cycle_counts)
+                        {
+                            cdr_value = period_counts >> 1U; // Duty cycle = 0%
+                        }
+                        else if (duty_cycle_counts >= period_counts)
+                        {
+                            cdr_value = 0U;                  // Duty cycle = 100%
+                        }
+                        else
+                        {
+                            cdr_value = (period_counts - duty_cycle_counts) >> 1U;
+                        }
+
+                        /* Write TAUDmCDR value to TAUDnCDR register. */
+                        p_instance_ctrl->p_reg->TAUDnCDR[slave_channel].TAUDnCDR = (uint16_t) cdr_value;
+                    }
+                    else if (((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) ||
+                              (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 ==
+                               p_extend->taud_function)) &&
+                             (1U == p_slave_channel_instance_extend->slave_ordinal_number))
+                    {
+                        /* Write TAUDmCDR value to TAUDnCDR register. */
+                        p_instance_ctrl->p_reg->TAUDnCDR[slave_channel].TAUDnCDR = (uint16_t) duty_cycle_counts;
+                    }
+                    else
+                    {
+
+                        /* The combination of the current instance and feature is not supported. */
+                        return FSP_ERR_UNSUPPORTED;
+                    }
+
+                    /* Triggers a rewrite simultaneously. */
+                    if (p_slave_channel_instance_ctrl->p_reg->TAUDnTE & (1U << slave_channel))
+                    {
+                        /* Update current status of simultaneous rewrite. */
+                        R_TAUD_StatusGet(p_slave_channel_instance_ctrl, &current_status);
+
+                        /* Check if simultaneous rewrite enabling flag is not set. */
+                        if (false == current_status.is_rsf_active)
+                        {
+                            /* Trigger simultaneous rewrite enabling state. */
+                            p_slave_channel_instance_ctrl->p_reg->TAUDnRDT = (uint16_t) (1U << slave_channel);
+                        }
+                        else
+                        {
+                            return FSP_ERR_INVALID_HW_CONDITION;
+                        }
+                    }
+                }
+                else
+                {
+                    /* Skip if the Slave Channel does not match the pin parameter. */
+                }
+            }
+        }
+    }
+    else
+    {
+
+        /* The current channel type configuration is not supported. */
+        return FSP_ERR_UNSUPPORTED;
+    }
 
     return FSP_SUCCESS;
 }
@@ -928,15 +1057,26 @@ fsp_err_t R_TAUD_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
 /*******************************************************************************************************************//**
  * Get timer information and store it in provided pointer p_info.
  *
- * R_TAUD_InfoGet support features: Interval Timer, Input Interval Timer, Clock Divide,
- *                                  PWM Output (Master channel), Triangle PWM Output (Master channel),
- *                                  External Event Count, Delay Count, Delay Pulse Output,
- *                                  Interrupt Request Signals Culling, Trigger Start PWM Output (Master channel),
- *                                  Offset Trigger Output, Simultaneous Rewrite Trigger Generation Type 1,
- *                                  Non-Complementary modulatiton output function type 2 (Master channel and
- *                                  Slave channel 1), Input Pulse Interval Judgment,
- *                                  One-Phase PWM Output (Lower channel - Slave Odd),
- *                                  Complementary Modulation Output (Master channel and Slave channel 1).
+ * R_TAUD_InfoGet only support for the following features:
+ *         PWM Output Function (Master Channel),
+ *         A/D Conversion Trigger Output Function Type 1 (Master Channel),
+ *         Trigger Start PWM Output Function (Master Channel),
+ *         Interval Timer Function,
+ *         Input Interval Timer Function,
+ *         Clock Divide Function,
+ *         External Event Count Function,
+ *         Interrupt Request Signals Culling Function,
+ *         One-Phase PWM Output Function (Lower Channel - Slave Odd),
+ *         Delay Count Function,
+ *         Non-Complementary Modulation Output Function Type 2 (Master Channel, Slave Channel 1),
+ *         Input Pulse Interval Judgment Function,
+ *         Input Signal Width Judgment Function,
+ *         Delay Pulse Output Function,
+ *         Triangle PWM Output Function (Master Channel),
+ *         Complementary Modulation Output Function (Master Channel, Slave Channel 1),
+ *         A/D Conversion Trigger Output Function Type 2 (Master Channel),
+ *         Offset Trigger Output Function (Master Channel),
+ *         Simultaneous Rewrite Trigger Generation Function Type 1.
  *
  * Implements @ref timer_api_t::infoGet.
  *
@@ -950,9 +1090,10 @@ fsp_err_t R_TAUD_InfoGet (timer_ctrl_t * const p_ctrl, timer_info_t * const p_in
     taud_instance_ctrl_t * p_instance_ctrl = (taud_instance_ctrl_t *) p_ctrl;
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(NULL != p_info);
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
+    FSP_ASSERT(NULL != p_info);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 #endif
 
@@ -997,8 +1138,6 @@ fsp_err_t R_TAUD_InfoGet (timer_ctrl_t * const p_ctrl, timer_info_t * const p_in
              ((TAUD_FUNCTION_ONE_PHASE_PWM_OUTPUT == p_extend->taud_function) &&
               (TAUD_CHANNEL_TYPE_SLAVE_ODD == p_extend->channel_type)) ||
              (TAUD_FUNCTION_DELAY_COUNT == p_extend->taud_function) ||
-             ((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 == p_extend->taud_function) &&
-              ((1U) == p_extend->slave_ordinal_number)) ||
              (TAUD_FUNCTION_INPUT_PULSE_INTERVAL_JUDGMENT == p_extend->taud_function) ||
              (TAUD_FUNCTION_INPUT_SIGNAL_WIDTH_JUDGMENT == p_extend->taud_function))
     {
@@ -1027,7 +1166,8 @@ fsp_err_t R_TAUD_InfoGet (timer_ctrl_t * const p_ctrl, timer_info_t * const p_in
         period_counts   = (taud_cdr + 1U) << 1U;
         count_direction = TIMER_DIRECTION_DOWN;
     }
-    else if ((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) &&
+    else if (((TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) ||
+              (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 == p_extend->taud_function)) &&
              ((1U) == p_extend->slave_ordinal_number))
     {
         period_counts   = taud_cdr;
@@ -1062,7 +1202,7 @@ fsp_err_t R_TAUD_InfoGet (timer_ctrl_t * const p_ctrl, timer_info_t * const p_in
     p_info->count_direction = count_direction;
 
     /* Store clock frequency. */
-    p_info->clock_frequency = taud_clock_frequency_get(p_instance_ctrl);
+    p_info->clock_frequency = r_taud_clock_frequency_get(p_instance_ctrl);
 
     return FSP_SUCCESS;
 }
@@ -1081,8 +1221,9 @@ fsp_err_t R_TAUD_StatusGet (timer_ctrl_t * const p_ctrl, timer_status_t * const 
     taud_instance_ctrl_t * p_instance_ctrl = (taud_instance_ctrl_t *) p_ctrl;
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(NULL != p_status);
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
+    FSP_ASSERT(NULL != p_status);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 #endif
 
@@ -1117,6 +1258,7 @@ fsp_err_t R_TAUD_Close (timer_ctrl_t * const p_ctrl)
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 #endif
@@ -1182,38 +1324,44 @@ fsp_err_t R_TAUD_Close (timer_ctrl_t * const p_ctrl)
         R_BSP_IrqDisable(p_instance_ctrl->p_cfg->cycle_end_irq);
     }
 
-    /* Clear open flag. */
-    p_instance_ctrl->open = 0U;
-
+    /* Deinitialize Slave Channel instances only for a Master Channel. */
     if (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)
     {
-#if (0 == TAUD_CFG_MULTI_SLAVE_ENABLE)
-        const uint16_t index = 0;
-#else
+        /* Iterate through the Slave Channel instance list and process configured instances only. */
         for (uint16_t index = 0; index < TAUD_MAX_NUM_SLAVE_CHANNELS; index++)
-#endif
         {
+            /* Check whether the Slave Channel instance is configured. */
             if (NULL != p_extend->p_slave_channel_instances[index])
             {
-                taud_instance_ctrl_t * slave_channel_instance_ctrl[TAUD_MAX_NUM_SLAVE_CHANNELS];
-                slave_channel_instance_ctrl[index] =
+                /* Get the control structure for the current Slave Channel instance. */
+                taud_instance_ctrl_t * p_slave_channel_instance_ctrl =
                     (taud_instance_ctrl_t *) p_extend->p_slave_channel_instances[index]->p_ctrl;
-                R_TAUD_Close(slave_channel_instance_ctrl[index]);
+
+                /* Close the current Slave Channel instance. */
+                err = R_TAUD_Close(p_slave_channel_instance_ctrl);
+
+                /* Return immediately if closing the current Slave Channel instance fails. */
+                FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
             }
         }
     }
     else
     {
-        /* Do nothing. */
+        /* No operation is required for non-Master Channel. */
     }
+
+    /* Clear open flag. */
+    p_instance_ctrl->open = 0U;
 
     return err;
 }
 
-/***********************************************************************************************************************
+/*******************************************************************************************************************//**
  * Set the pulse delay for the output pin signal.
  *
- * R_TAUD_PulseOutputDelay support features: One-Shot Pulse Output, Delay Pulse Output (Slave channel 2).
+ * R_TAUD_PulseOutputDelay only support for the following features:
+ *         One-Shot Pulse Output Function,
+ *         Delay Pulse Output Function (Slave Channel 2).
  *
  * @retval FSP_SUCCESS                   Set the pulse delay successfully.
  * @retval FSP_ERR_ASSERTION             p_ctrl or p_extend is NULL.
@@ -1237,6 +1385,7 @@ fsp_err_t R_TAUD_PulseOutputDelay (timer_ctrl_t * const p_ctrl, uint32_t const d
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 
@@ -1247,6 +1396,7 @@ fsp_err_t R_TAUD_PulseOutputDelay (timer_ctrl_t * const p_ctrl, uint32_t const d
                       (TAUD_CHANNEL_TYPE_SLAVE == p_extend->channel_type) &&
                       (2U == p_extend->slave_ordinal_number)),
                      FSP_ERR_UNSUPPORTED);
+
     FSP_ERROR_RETURN(((delay_counts > TAUD_CDR_MIN) && (delay_counts < TAUD_CDR_MAX)) ||
                      ((TAUD_FUNCTION_DELAY_PULSE_OUTPUT == p_extend->taud_function) &&
                       (TAUD_CDR_MIN < delay_counts) && (delay_counts < p_instance_ctrl->p_cfg->period_counts)),
@@ -1291,10 +1441,13 @@ fsp_err_t R_TAUD_PulseOutputDelay (timer_ctrl_t * const p_ctrl, uint32_t const d
     return err;
 }
 
-/***********************************************************************************************************************
+/*******************************************************************************************************************//**
  * Set the pulse width for the output signal.
  *
- * R_TAUD_PulseWidthSet support features: One-Shot Pulse Output, One-Pulse Output.
+ * R_TAUD_PulseWidthSet only support for the following features:
+ *         One-Shot Pulse Output Function,
+ *         One-Pulse Output Function,
+ *         Offset Trigger Output Function (Slave Channel).
  *
  * @retval FSP_SUCCESS                   Set the pulse width successfully.
  * @retval FSP_ERR_ASSERTION             p_ctrl or p_extend is NULL.
@@ -1318,6 +1471,7 @@ fsp_err_t R_TAUD_PulseWidthSet (timer_ctrl_t * const p_ctrl, uint32_t const widt
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 
@@ -1372,6 +1526,11 @@ fsp_err_t R_TAUD_PulseWidthSet (timer_ctrl_t * const p_ctrl, uint32_t const widt
 /*******************************************************************************************************************//**
  * This function is used to clear counter overflow occurrence flag.
  *
+ * R_TAUD_Clear only support for the following features:
+ *         Input Signal Width Measurement Function,
+ *         Input Pulse Interval Measurement Function,
+ *         Offset Trigger Output Function (Master Channel).
+ *
  * @retval FSP_SUCCESS                   Counter overflow occurrence flag is updated successfully.
  * @retval FSP_ERR_UNSUPPORTED           Function not supported in this implementation.
  * @retval FSP_ERR_ASSERTION             p_ctrl or p_extend is NULL.
@@ -1383,6 +1542,7 @@ fsp_err_t R_TAUD_Clear (timer_ctrl_t * const p_ctrl)
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 
@@ -1419,8 +1579,11 @@ fsp_err_t R_TAUD_Clear (timer_ctrl_t * const p_ctrl)
 /*******************************************************************************************************************//**
  * Set input edge of TAUDnTTINm input signal
  *
- * R_TAUD_InputEdgeSet support features: Input Pulse Interval Measurement,
- *                                       Real-Time Output Function Type 2 (Upper Channel).
+ * R_TAUD_InputEdgeSet only support for the following features:
+ *         Input Position Detection Function,
+ *         Input Interval Timer Function,
+ *         Input Pulse Interval Measurement Function,
+ *         Real-Time Output Function Type 2 (Upper Channel - Channel that generates real-time output trigger).
  *
  * @retval FSP_SUCCESS                   Input edge is set successfully.
  * @retval FSP_ERR_NOT_OPEN              The instance is not opened.
@@ -1434,6 +1597,7 @@ fsp_err_t R_TAUD_InputEdgeSet (timer_ctrl_t * const p_ctrl, taud_input_edge_t co
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 
@@ -1463,8 +1627,10 @@ fsp_err_t R_TAUD_InputEdgeSet (timer_ctrl_t * const p_ctrl, taud_input_edge_t co
 /*******************************************************************************************************************//**
  * Set the real-time output level to TAUDnTTOUTm (TRO register setting).
  *
- * R_TAUD_OutputLevelSet support features: Real-Time Output Type 1,
- *                                         Complementary Modulation Output (Slave channel 2 to Slave channel 7).
+ * R_TAUD_OutputLevelSet only support for the following features:
+ *         Real-Time Output Function Type 2,
+ *         Real-Time Output Function Type 1,
+ *         Complementary Modulation Output Function (Slave Channel 2 to Slave Channel 7).
  *
  * @retval FSP_SUCCESS                   Real-time output level is set successfully.
  * @retval FSP_ERR_NOT_OPEN              The instance is not opened.
@@ -1479,6 +1645,7 @@ fsp_err_t R_TAUD_OutputLevelSet (timer_ctrl_t * const                p_ctrl,
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 
@@ -1500,7 +1667,8 @@ fsp_err_t R_TAUD_OutputLevelSet (timer_ctrl_t * const                p_ctrl,
 /*******************************************************************************************************************//**
  * Enables/disables modulation output for timer output and real-time output of channel m (TME register setting).
  *
- * R_TAUD_ModulationSet support features: Complementary Modulation Output (Slave channel 2 to Slave channel 7).
+ * R_TAUD_ModulationSet only support for the following features:
+ *         Complementary Modulation Output Function (Slave Channel 2 to Slave Channel 7).
  *
  * @retval FSP_SUCCESS                   Modulation output is set successfully.
  * @retval FSP_ERR_NOT_OPEN              The instance is not opened.
@@ -1514,6 +1682,7 @@ fsp_err_t R_TAUD_ModulationSet (timer_ctrl_t * const p_ctrl, taud_modulation_t c
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 
@@ -1523,6 +1692,7 @@ fsp_err_t R_TAUD_ModulationSet (timer_ctrl_t * const p_ctrl, taud_modulation_t c
     FSP_ERROR_RETURN((TAUD_OUTPUT_ENABLE == p_extend->output_enable) &&
                      (TAUD_REAL_TIME_OUTPUT_ENABLE == p_extend->real_time_output),
                      FSP_ERR_UNSUPPORTED);
+
     FSP_ERROR_RETURN(TAUD_MODULATION_ENABLE >= modulation, FSP_ERR_INVALID_ARGUMENT);
 #endif
 
@@ -1537,8 +1707,8 @@ fsp_err_t R_TAUD_ModulationSet (timer_ctrl_t * const p_ctrl, taud_modulation_t c
 /*******************************************************************************************************************//**
  * Set the dead time output level (TDL register setting).
  *
- * R_TAUD_DeadTimeOutputLevelSet support features: Complementary Modulation Output
- *                                                 (Slave channel 2 to Slave channel 7).
+ * R_TAUD_DeadTimeOutputLevelSet only support for the following features:
+ *         Complementary Modulation Output Function (Slave Channel 2 to Slave Channel 7).
  *
  * @retval FSP_SUCCESS                   Dead time output level is set successfully.
  * @retval FSP_ERR_NOT_OPEN              The instance is not opened.
@@ -1552,6 +1722,7 @@ fsp_err_t R_TAUD_DeadTimeOutputLevelSet (timer_ctrl_t * const p_ctrl, taud_add_d
 
 #if TAUD_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
     FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
     FSP_ERROR_RETURN(TAUD_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
 
@@ -1563,6 +1734,7 @@ fsp_err_t R_TAUD_DeadTimeOutputLevelSet (timer_ctrl_t * const p_ctrl, taud_add_d
                      (TAUD_OUTPUT_OPERATING_MODE_2 == p_extend->output_operating) &&
                      (TAUD_DEADTIME_OPERATION_ENABLED == p_extend->deadtime_operation),
                      FSP_ERR_UNSUPPORTED);
+
     FSP_ERROR_RETURN(TAUD_ADD_DEADTIME_REVERSE_PHASE >= add_deadtime_phase, FSP_ERR_INVALID_ARGUMENT);
 #endif
 
@@ -1584,7 +1756,7 @@ fsp_err_t R_TAUD_DeadTimeOutputLevelSet (timer_ctrl_t * const p_ctrl, taud_add_d
  * @param[in]  p_instance_ctrl         Instance control block.
  * @param[in]  p_cfg                   Pointer to timer configuration.
  **********************************************************************************************************************/
-static void taud_common_open (taud_instance_ctrl_t * const p_instance_ctrl, timer_cfg_t const * const p_cfg)
+static void r_taud_common_open (taud_instance_ctrl_t * const p_instance_ctrl, timer_cfg_t const * const p_cfg)
 {
     /* Initialize control structure. */
     p_instance_ctrl->p_cfg = p_cfg;
@@ -1637,14 +1809,16 @@ static void taud_common_open (taud_instance_ctrl_t * const p_instance_ctrl, time
  * Performs hardware initialization of the TAUD.
  *
  * @param[in]  p_instance_ctrl        Instance control block.
- * @param[in]  p_cfg                  Pointer to timer configuration.
  **********************************************************************************************************************/
-static void taud_hardware_initialize (taud_instance_ctrl_t * const p_instance_ctrl, timer_cfg_t const * const p_cfg)
+static void r_taud_hardware_initialize (taud_instance_ctrl_t * const p_instance_ctrl)
 {
+    /* Save pointer to configuration structure. */
+    timer_cfg_t * p_cfg = (timer_cfg_t *) p_instance_ctrl->p_cfg;
+
     /* Save pointer to extended configuration structure. */
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_cfg->p_extend;
 
-    /* TAUDnCMORm value.TAUDn */
+    /* TAUDnCMORm value. */
     uint16_t cmor_value = (0U);
 
     /* Set Prescaler Clock. */
@@ -1698,7 +1872,7 @@ static void taud_hardware_initialize (taud_instance_ctrl_t * const p_instance_ct
     /* Set operating mode. */
     cmor_value |= (p_extend->operating_mode | p_extend->mode_config);
 
-    /* Write setting data to TAUDnCMORm register.TAUDn */
+    /* Write setting data to TAUDnCMORm register. */
     p_instance_ctrl->p_reg->TAUDnCMOR[p_cfg->channel].TAUDnCMOR = cmor_value;
 
     /* Set Channel Data Register value. */
@@ -1707,32 +1881,32 @@ static void taud_hardware_initialize (taud_instance_ctrl_t * const p_instance_ct
         /* Set Channel Data Register value. */
         case TAUD_CHANNEL_TYPE_MASTER:
         {
-            taud_update_cdr_master(p_instance_ctrl);
+            r_taud_update_cdr_master(p_instance_ctrl);
             break;
         }
 
         case TAUD_CHANNEL_TYPE_SLAVE:
         {
-            taud_update_cdr_slave(p_instance_ctrl);
+            r_taud_update_cdr_slave(p_instance_ctrl);
             break;
         }
 
         case TAUD_CHANNEL_TYPE_SLAVE_EVEN:
         {
-            taud_update_cdr_slave_even(p_instance_ctrl);
+            r_taud_update_cdr_slave_even(p_instance_ctrl);
             break;
         }
 
         case TAUD_CHANNEL_TYPE_SLAVE_ODD:
         {
-            taud_update_cdr_slave_odd(p_instance_ctrl);
+            r_taud_update_cdr_slave_odd(p_instance_ctrl);
             break;
         }
 
         /* Case of TAUD_CHANNEL_TYPE_INDEPENDENT. */
         default:
         {
-            taud_update_cdr_independent(p_instance_ctrl);
+            r_taud_update_cdr_independent(p_instance_ctrl);
             break;
         }
     }
@@ -1743,155 +1917,157 @@ static void taud_hardware_initialize (taud_instance_ctrl_t * const p_instance_ct
     /* Set Channel Output Mode register. */
     if (TAUD_OUTPUT_ENABLE == p_extend->output_enable)
     {
+        /* Configure the Synchronous Operation output_mask for Master Channel. */
         if (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)
         {
-            /*Set output masks channel for synchronous operation. */
+            /* Add the current Master Channel output to the Synchronous Operation output_mask. */
             p_instance_ctrl->output_mask |= (uint16_t) (1U << (p_cfg->channel));
         }
+        else
+        {
+            /* No Synchronous Operation output_mask configuration is required for non-Master Channel. */
+        }
 
-        /*Set enables/disables independent channel output mode. */
-        p_instance_ctrl->p_reg->TAUDnTOE |= (1U << p_instance_ctrl->p_cfg->channel);
+        /* Set enables/disables independent channel output mode. */
+        p_instance_ctrl->p_reg->TAUDnTOE |= (1U << p_cfg->channel);
 
         /* Specifies Channel Output Mode. */
         if (TAUD_OUTPUT_MODE_INDEPENDENT == p_extend->output_mode)
         {
-            p_instance_ctrl->p_reg->TAUDnTOM &= (uint16_t) ~(1U << p_instance_ctrl->p_cfg->channel);
+            p_instance_ctrl->p_reg->TAUDnTOM &= (uint16_t) ~(1U << p_cfg->channel);
         }
         else
         {
-            p_instance_ctrl->p_reg->TAUDnTOM |= (1U << p_instance_ctrl->p_cfg->channel);
+            p_instance_ctrl->p_reg->TAUDnTOM |= (1U << p_cfg->channel);
         }
 
         /* Specifies Channel Output Configuration. */
-        p_instance_ctrl->p_reg->TAUDnTOC |= (p_extend->output_operating << p_instance_ctrl->p_cfg->channel);
+        p_instance_ctrl->p_reg->TAUDnTOC |= (p_extend->output_operating << p_cfg->channel);
 
         /* Specifies an output logic. */
         if (TAUD_OUTPUT_LOGIC_DISABLED != p_extend->output_logic)
         {
-            p_instance_ctrl->p_reg->TAUDnTOL |= (p_extend->output_logic << p_instance_ctrl->p_cfg->channel);
+            p_instance_ctrl->p_reg->TAUDnTOL |= (p_extend->output_logic << p_cfg->channel);
         }
 
         /* Clear target TDE bit then write target value. */
         p_instance_ctrl->p_reg->TAUDnTDE =
-            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTDE & ~(1U << p_instance_ctrl->p_cfg->channel)) |
-                        (p_extend->deadtime_operation << p_instance_ctrl->p_cfg->channel));
+            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTDE & ~(1U << p_cfg->channel)) |
+                        (p_extend->deadtime_operation << p_cfg->channel));
 
         /* Specifies the timing to add dead time during dead time output. */
         if (p_extend->taud_function == TAUD_FUNCTION_ONE_PHASE_PWM_OUTPUT)
         {
             p_instance_ctrl->p_reg->TAUDnTDM =
-                (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTDM & ~(1U << p_instance_ctrl->p_cfg->channel)) |
-                            (1U << p_instance_ctrl->p_cfg->channel));
+                (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTDM & ~(1U << p_cfg->channel)) |
+                            (1U << p_cfg->channel));
         }
         else
         {
-            p_instance_ctrl->p_reg->TAUDnTDM &= (uint16_t) ~(1U << p_instance_ctrl->p_cfg->channel);
+            p_instance_ctrl->p_reg->TAUDnTDM &= (uint16_t) ~(1U << p_cfg->channel);
         }
 
         /* Clear target TDL bit then write target value. */
         p_instance_ctrl->p_reg->TAUDnTDL =
-            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTDL & ~(1U << p_instance_ctrl->p_cfg->channel)) |
-                        (p_extend->add_deadtime_phase << p_instance_ctrl->p_cfg->channel));
+            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTDL & ~(1U << p_cfg->channel)) |
+                        (p_extend->add_deadtime_phase << p_cfg->channel));
 
         /* Specifies a channel on which the real-time output trigger for channel m is generated. */
         p_instance_ctrl->p_reg->TAUDnTRE =
-            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTRE & ~(1U << p_instance_ctrl->p_cfg->channel)) |
-                        (p_extend->real_time_output << p_instance_ctrl->p_cfg->channel));
+            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTRE & ~(1U << p_cfg->channel)) |
+                        (p_extend->real_time_output << p_cfg->channel));
 
         /* Sets a value which is output to TAUDTTOUTm. */
         p_instance_ctrl->p_reg->TAUDnTRO =
-            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTRO & ~(1U << p_instance_ctrl->p_cfg->channel)) |
-                        (p_extend->real_time_output_level << p_instance_ctrl->p_cfg->channel));
+            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTRO & ~(1U << p_cfg->channel)) |
+                        (p_extend->real_time_output_level << p_cfg->channel));
 
         /* Enables/disables modulation output for timer output and real-time output of channel m. */
         p_instance_ctrl->p_reg->TAUDnTME =
-            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTME & ~(1U << p_instance_ctrl->p_cfg->channel)) |
-                        (p_extend->modulation << p_instance_ctrl->p_cfg->channel));
+            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTME & ~(1U << p_cfg->channel)) |
+                        (p_extend->modulation << p_cfg->channel));
     }
     else
     {
         /* Set enables/disables independent channel output mode. */
-        p_instance_ctrl->p_reg->TAUDnTOE &= (uint16_t) ~(1U << p_instance_ctrl->p_cfg->channel);
+        p_instance_ctrl->p_reg->TAUDnTOE &= (uint16_t) ~(1U << p_cfg->channel);
     }
 
     /* Specifies a channel on which the real-time output trigger for channel m is generated. */
     p_instance_ctrl->p_reg->TAUDnTRC =
-        (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTRC & ~(1U << p_instance_ctrl->p_cfg->channel)) |
-                    (p_extend->real_time_output_trigger << p_instance_ctrl->p_cfg->channel));
+        (uint16_t) ((p_instance_ctrl->p_reg->TAUDnTRC & ~(1U << p_cfg->channel)) |
+                    (p_extend->real_time_output_trigger << p_cfg->channel));
 
     /* Set Simultaneous Rewrite registers. */
     if (TAUD_SIMULTANEOUS_REWRITE_ENABLE == p_extend->simultaneous_rewrite)
     {
         /* Enables simultaneous rewrite. */
-        p_instance_ctrl->p_reg->TAUDnRDE |= (1U << p_instance_ctrl->p_cfg->channel);
+        p_instance_ctrl->p_reg->TAUDnRDE |= (1U << p_cfg->channel);
 
         /* Set a channel that controls a simultaneous rewrite trigger. */
-        p_instance_ctrl->p_reg->TAUDnRDS &= (uint16_t) ~(1U << p_instance_ctrl->p_cfg->channel);
+        p_instance_ctrl->p_reg->TAUDnRDS &= (uint16_t) ~(1U << p_cfg->channel);
         p_instance_ctrl->p_reg->TAUDnRDS |=
-            (uint16_t) (p_extend->simultaneous_rewrite_channel << p_instance_ctrl->p_cfg->channel);
+            (uint16_t) (p_extend->simultaneous_rewrite_channel << p_cfg->channel);
 
         /* Set the timing for generating a simultaneous rewrite control signal. */
         p_instance_ctrl->p_reg->TAUDnRDM =
-            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnRDM & ~(1U << p_instance_ctrl->p_cfg->channel)) |
-                        (p_extend->simultaneous_rewrite_trigger << p_instance_ctrl->p_cfg->channel));
+            (uint16_t) ((p_instance_ctrl->p_reg->TAUDnRDM & ~(1U << p_cfg->channel)) |
+                        (p_extend->simultaneous_rewrite_trigger << p_cfg->channel));
 
         /* Specifies whether the channel generates a simultaneous rewrite trigger signal or not. */
         if ((TAUD_FUNCTION_SIMULTANEOUS_REWRITE_TRIGGER_GENERATION_TYPE_1 == p_extend->taud_function) ||
             (TAUD_FUNCTION_SIMULTANEOUS_REWRITE_TRIGGER_GENERATION_TYPE_2 == p_extend->taud_function))
         {
-            p_instance_ctrl->p_reg->TAUDnRDC |= (uint16_t) (1U << p_instance_ctrl->p_cfg->channel);
+            p_instance_ctrl->p_reg->TAUDnRDC |= (uint16_t) (1U << p_cfg->channel);
         }
         else
         {
-            p_instance_ctrl->p_reg->TAUDnRDC &= (uint16_t) ~(1U << p_instance_ctrl->p_cfg->channel);
+            p_instance_ctrl->p_reg->TAUDnRDC &= (uint16_t) ~(1U << p_cfg->channel);
         }
     }
     else
     {
         /* Disables simultaneous rewrite. */
-        p_instance_ctrl->p_reg->TAUDnRDE &= (uint16_t) ~(1U << p_instance_ctrl->p_cfg->channel);
+        p_instance_ctrl->p_reg->TAUDnRDE &= (uint16_t) ~(1U << p_cfg->channel);
     }
 
+    /* Configure Synchronous Operation masks for the current Master Channel. */
     if (TAUD_CHANNEL_TYPE_MASTER == p_extend->channel_type)
     {
-        /* Update master channel mask in instance control block. */
+        /* Add the Master Channel to the Synchronous Operation master_channel_mask. */
         p_instance_ctrl->master_channel_mask = (uint16_t) (1U << (p_cfg->channel));
 
-#if (0 == TAUD_CFG_MULTI_SLAVE_ENABLE)
-        const uint16_t index = 0;
-#else
         for (uint16_t index = 0; index < TAUD_MAX_NUM_SLAVE_CHANNELS; index++)
-#endif
         {
+            /* Check whether the Slave Channel instance is configured. */
             if (NULL != p_extend->p_slave_channel_instances[index])
             {
-                uint16_t slave_channel      = p_extend->p_slave_channel_instances[index]->p_cfg->channel;
-                uint16_t slave_channel_mask = (uint16_t) (1U << slave_channel);
-                p_instance_ctrl->slave_channels_mask |= slave_channel_mask;
-                taud_extended_cfg_t * slave_channel_extend =
+                /* Get the configuration structure for the current Slave Channel instance. */
+                timer_cfg_t * p_slave_channel_instance_cfg =
+                    (timer_cfg_t *) p_extend->p_slave_channel_instances[index]->p_cfg;
+
+                /* Get the extension data structure for the current Slave Channel instance. */
+                taud_extended_cfg_t * p_slave_channel_instance_extend =
                     (taud_extended_cfg_t *) p_extend->p_slave_channel_instances[index]->p_cfg->p_extend;
 
-                /* Set Channel Output Mode register. */
-                if (TAUD_OUTPUT_ENABLE == slave_channel_extend->output_enable)
+                /* Add the Slave Channel to the Synchronous Operation slave_channels_mask. */
+                p_instance_ctrl->slave_channels_mask |= (uint16_t) (1U << (p_slave_channel_instance_cfg->channel));
+
+                /* Check whether output is enabled for the current Slave Channel. */
+                if (TAUD_OUTPUT_ENABLE == p_slave_channel_instance_extend->output_enable)
                 {
-                    /*Set output masks channel for synchronous operation. */
-                    p_instance_ctrl->output_mask |= (uint16_t) (1U << (slave_channel));
+                    /* Add the current Slave Channel output to the Synchronous Operation output_mask. */
+                    p_instance_ctrl->output_mask |= (uint16_t) (1U << (p_slave_channel_instance_cfg->channel));
                 }
             }
         }
 
-        /* Update channels mask in instance control block. */
+        /* Add the Master Channel and Slave Channels to the Synchronous Operation channels_mask. */
         p_instance_ctrl->channels_mask = p_instance_ctrl->master_channel_mask | p_instance_ctrl->slave_channels_mask;
-    }
-    else if ((TAUD_CHANNEL_TYPE_INDEPENDENT != p_extend->channel_type) &&
-             (TAUD_FUNCTION_ONE_PHASE_PWM_OUTPUT != p_extend->taud_function))
-    {
-        /* Update slave channels mask in instance control block. */
-        p_instance_ctrl->slave_channels_mask |= (uint16_t) (1U << (p_cfg->channel));
     }
     else
     {
-        /* Do nothing. */
+        /* No operation is required for non-Master Channel. */
     }
 }
 
@@ -1902,7 +2078,7 @@ static void taud_hardware_initialize (taud_instance_ctrl_t * const p_instance_ct
  *
  * @return     Clock frequency of the TAUD counter.
  **********************************************************************************************************************/
-uint32_t taud_clock_frequency_get (taud_instance_ctrl_t * const p_instance_ctrl)
+uint32_t r_taud_clock_frequency_get (taud_instance_ctrl_t * const p_instance_ctrl)
 {
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
@@ -1958,7 +2134,7 @@ uint32_t taud_clock_frequency_get (taud_instance_ctrl_t * const p_instance_ctrl)
  *
  * @param[in]  p_instance_ctrl           Instance control block
  **********************************************************************************************************************/
-static void taud_update_cdr_master (taud_instance_ctrl_t * const p_instance_ctrl)
+static void r_taud_update_cdr_master (taud_instance_ctrl_t * const p_instance_ctrl)
 {
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
@@ -2040,7 +2216,7 @@ static void taud_update_cdr_master (taud_instance_ctrl_t * const p_instance_ctrl
         {
             /* Set period count. */
             p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR =
-                (uint16_t) ((p_instance_ctrl->p_cfg->period_counts >> 1) - 1U);
+                (uint16_t) ((p_instance_ctrl->p_cfg->period_counts >> 1U) - 1U);
             break;
         }
 
@@ -2048,7 +2224,7 @@ static void taud_update_cdr_master (taud_instance_ctrl_t * const p_instance_ctrl
         {
             /* Set period count. */
             p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR =
-                (uint16_t) ((p_instance_ctrl->p_cfg->period_counts >> 1) - 1U);
+                (uint16_t) ((p_instance_ctrl->p_cfg->period_counts >> 1U) - 1U);
             break;
         }
 
@@ -2068,7 +2244,7 @@ static void taud_update_cdr_master (taud_instance_ctrl_t * const p_instance_ctrl
  *
  * @param[in]  p_instance_ctrl           Instance control block
  **********************************************************************************************************************/
-static void taud_update_cdr_independent (taud_instance_ctrl_t * const p_instance_ctrl)
+static void r_taud_update_cdr_independent (taud_instance_ctrl_t * const p_instance_ctrl)
 {
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
@@ -2178,7 +2354,7 @@ static void taud_update_cdr_independent (taud_instance_ctrl_t * const p_instance
  *
  * @param[in]  p_instance_ctrl           Instance control block
  **********************************************************************************************************************/
-static void taud_update_cdr_slave (taud_instance_ctrl_t * const p_instance_ctrl)
+static void r_taud_update_cdr_slave (taud_instance_ctrl_t * const p_instance_ctrl)
 {
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
@@ -2253,9 +2429,10 @@ static void taud_update_cdr_slave (taud_instance_ctrl_t * const p_instance_ctrl)
     else if ((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 == p_extend->taud_function) &&
              ((1U) == p_extend->slave_ordinal_number))
     {
-        /* Set the number of interrupts of the Master Channel to be ignored in each interrupt of Slave Channel 1 is generated. */
+        /* Set the number of interrupts of the Master Channel to be ignored
+         * in each interrupt of Slave Channel 1 is generated. */
         p_instance_ctrl->p_reg->TAUDnCDR[p_instance_ctrl->p_cfg->channel].TAUDnCDR =
-            (uint16_t) ((p_instance_ctrl->p_cfg->period_counts) - 1U);
+            (uint16_t) p_instance_ctrl->p_cfg->period_counts;
     }
     else if ((TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 == p_extend->taud_function) &&
              (((2U) == p_extend->slave_ordinal_number) || ((3U) == p_extend->slave_ordinal_number) ||
@@ -2349,7 +2526,7 @@ static void taud_update_cdr_slave (taud_instance_ctrl_t * const p_instance_ctrl)
  *
  * @param[in]  p_instance_ctrl           Instance control block
  **********************************************************************************************************************/
-static void taud_update_cdr_slave_even (taud_instance_ctrl_t * const p_instance_ctrl)
+static void r_taud_update_cdr_slave_even (taud_instance_ctrl_t * const p_instance_ctrl)
 {
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
@@ -2380,7 +2557,7 @@ static void taud_update_cdr_slave_even (taud_instance_ctrl_t * const p_instance_
  *
  * @param[in]  p_instance_ctrl           Instance control block
  **********************************************************************************************************************/
-static void taud_update_cdr_slave_odd (taud_instance_ctrl_t * const p_instance_ctrl)
+static void r_taud_update_cdr_slave_odd (taud_instance_ctrl_t * const p_instance_ctrl)
 {
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
@@ -2413,7 +2590,7 @@ static void taud_update_cdr_slave_odd (taud_instance_ctrl_t * const p_instance_c
  * Initialize the digital noise filters for U2A device.
  **********************************************************************************************************************/
 #if defined(BSP_MCU_GROUP_RH850U2Ax)
-static void taud_init_dnf (taud_instance_ctrl_t * const p_instance_ctrl)
+static void r_taud_init_dnf (taud_instance_ctrl_t * const p_instance_ctrl)
 {
     /* Save pointer to extended configuration structure. */
     taud_extended_cfg_t * p_extend = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;

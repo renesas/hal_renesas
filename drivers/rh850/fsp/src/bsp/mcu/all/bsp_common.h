@@ -22,8 +22,13 @@
 #include <assert.h>
 #include <string.h>
 
-#include "bsp_cfg.h"
+/* Different compiler support. */
+#include "fsp_common_api.h"
 #include "bsp_compiler_support.h"
+#include "bsp_cfg.h"
+
+/** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
+FSP_HEADER
 
 /*******************************************************************************************************************//**
  * @addtogroup BSP_COMMON
@@ -173,8 +178,15 @@ typedef struct st_fsp_version
     __LDSR(SR_EIWR, SL_EIWR, eiic_val);
 #endif
 
+/* Put certain BSP variables in uninitialized RAM when initializing BSP early. */
+#if BSP_CFG_EARLY_INIT
+ #define BSP_SECTION_EARLY_INIT    BSP_PLACE_IN_SECTION(BSP_SECTION_NOINIT)
+#else
+ #define BSP_SECTION_EARLY_INIT
+#endif
+
 /***********************************************************************************************************************
- * Type definitions
+ * Typedef definitions
  **********************************************************************************************************************/
 
 /** Different warm start entry locations in the BSP. */
@@ -186,11 +198,18 @@ typedef enum e_bsp_warm_start_event
 } bsp_warm_start_event_t;
 
 /***********************************************************************************************************************
- * Global variables (defined in other files)
+ * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
+#if ((1 == BSP_CFG_ERROR_LOG) || (1 == BSP_CFG_ASSERT))
 
-/*******************************************************************************************************************//**
- * @} (end addtogroup BSP_COMMON)
- **********************************************************************************************************************/
+/** Prototype of default function called before errors are returned in FSP code if BSP_CFG_LOG_ERRORS is set to 1. */
+void fsp_error_log(fsp_err_t err, const char * file, int32_t line);
 
-#endif                                 /* FSP_SRC_BSP_MCU_ALL_BSP_COMMON_H_ */
+#endif
+
+/** @} (end addtogroup BSP_MCU) */
+
+/** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
+FSP_FOOTER
+
+#endif

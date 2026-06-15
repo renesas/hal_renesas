@@ -25,6 +25,8 @@ FSP_HEADER
 
 #define BSP_ORED_MASK                  0xFFU                                                              ///< Mask for extracting 8-bit ORed fields
 
+#define BSP_MAX_NUMBER_OF_IRQ          (BSP_INTC_VECTOR_MAX_ENTRIES + BSP_FEINT_VECTOR_MAX_ENTRIES)       ///< Max number of IRQ
+
 /** Extract fields from compact ID */
 #define BSP_OREDINT_SHIFT_MODULE_ID    (24U)                                                              ///< Bit shift for module ID
 #define BSP_OREDINT_SHIFT_EIC          (16U)                                                              ///< Bit shift for EIC index
@@ -104,7 +106,7 @@ FSP_HEADER
 #define BSP_ORED_IRQ_CONVERT(eic, channel) \
     ((IRQn_Type) ((!channel) * eic) +      \
      ((!!channel) *                        \
-      (BSP_INTC2_VECTOR_MAX_ENTRIES + channel + (eic - BSP_ORED_MSPI_EIC_START) * BSP_ORED_MAX_OFFSET_CHANNEL)))
+      (BSP_MAX_NUMBER_OF_IRQ + channel + (eic - BSP_ORED_MSPI_EIC_START) * BSP_ORED_MAX_OFFSET_CHANNEL)))
 
 /** Mask address = base + offset + per-channel increment */
 #define BSP_MASK_ADDR(eic, ored) \

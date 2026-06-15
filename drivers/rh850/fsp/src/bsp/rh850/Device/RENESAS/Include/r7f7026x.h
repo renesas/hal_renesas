@@ -1,5 +1,7 @@
 /*
- * ${REA_DISCLAIMER_SVD}
+ * Copyright (c) 2025 - 2026 Renesas Electronics Corporation and/or its affiliates
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
  *
  * @file     r7f7026x.h
  * @brief    RH850 HeaderFile

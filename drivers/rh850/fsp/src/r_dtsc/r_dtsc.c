@@ -100,6 +100,7 @@ static void r_dtsc_clear_all_transfer_status(dtsc_instance_ctrl_t * p_ctrl);
 static void r_dtsc_config_reliability_func(dtsc_instance_ctrl_t * p_ctrl);
 static void r_dtsc_set_hardware_request(dtsc_instance_ctrl_t * p_ctrl);
 static void r_dtsc_prv_select_group_for_act_src(dtsc_instance_ctrl_t * p_ctrl);
+static void r_dtsc_enable_isr_still_open(dtsc_instance_ctrl_t * p_ctrl);
 
 #if DTSC_CFG_PARAM_CHECKING_ENABLE
 static fsp_err_t r_dtsc_open_parameter_checking(dtsc_instance_ctrl_t * const p_ctrl,
@@ -200,7 +201,7 @@ fsp_err_t R_DTSC_Open (transfer_ctrl_t * const p_api_ctrl, transfer_cfg_t const 
         R_BSP_IrqCfgEnable(p_extend->count_match_irq, p_extend->transfer_count_match_ipl, p_ctrl);
     }
 
-    /* Store the p_ctrl of channel to context*/
+    /* Store the p_ctrl of channel to context */
     gp_dtsc_isr_context[channel] = p_ctrl;
 
     /* Clear all DTSC transfer status */
@@ -523,6 +524,8 @@ fsp_err_t R_DTSC_Close (transfer_ctrl_t * const p_api_ctrl)
     FSP_ASSERT(NULL != p_extend);
 #endif
 
+    bool isr_flag_enable = false;
+
     uint8_t channel = p_extend->channel;
 
     r_dtsc_prv_disable(p_ctrl);
@@ -562,6 +565,7 @@ fsp_err_t R_DTSC_Close (transfer_ctrl_t * const p_api_ctrl)
         /* Disable DTSC error in transfer interrupt */
         R_BSP_IrqDisable(p_extend->error_irq);
         R_FSP_IsrContextSet(p_extend->error_irq, NULL);
+        isr_flag_enable |= true;
     }
 
     if (FSP_INVALID_VECTOR != p_extend->complete_irq)
@@ -569,6 +573,7 @@ fsp_err_t R_DTSC_Close (transfer_ctrl_t * const p_api_ctrl)
         /* Disable DTSC transfer complete channel interrupt */
         R_BSP_IrqDisable(p_extend->complete_irq);
         R_FSP_IsrContextSet(p_extend->complete_irq, NULL);
+        isr_flag_enable |= true;
     }
 
     if (FSP_INVALID_VECTOR != p_extend->count_match_irq)
@@ -576,6 +581,16 @@ fsp_err_t R_DTSC_Close (transfer_ctrl_t * const p_api_ctrl)
         /* Disable DTSC transfer count match interrupt */
         R_BSP_IrqDisable(p_extend->count_match_irq);
         R_FSP_IsrContextSet(p_extend->count_match_irq, NULL);
+        isr_flag_enable |= true;
+    }
+
+    /* Restore the p_ctrl of channel to context */
+    gp_dtsc_isr_context[channel] = NULL;
+
+    /* Check if the channel has an ISR if still open. */
+    if (true == isr_flag_enable)
+    {
+        r_dtsc_enable_isr_still_open(p_ctrl);
     }
 
     /* Clear ID so control block can be reused. */
@@ -869,40 +884,47 @@ BSP_INTERRUPT_ATTRIBUTE void dtsc_transfer_isr (void)
     {
         channel = ((SCH1R(transfer_complete_irq) - 1U) + (registers * 32U));
 
+        /* Get p_ctrl for the detected channel. */
+        p_ctrl = (dtsc_instance_ctrl_t *) gp_dtsc_isr_context[channel];
+        event  = TRANSFER_EVENT_TRANS_COMPLETION;
+
+        /* Call user callback */
+        r_dtsc_callback(p_ctrl, event);
+
         /* Clear Peripheral Interrupt Status */
         p_dtsc_irq->PINTCLR[registers] = transfer_complete_irq;
 
         /* Dummy read PINT0 register */
         transfer_complete_irq = p_dtsc_irq->PINT[registers];
+
+        /* Clear transfer completion flag. */
+        p_ctrl->p_reg->CH[channel].DTFSC_b.TCC = 1U;
     }
     /* Check if transfer count mach interrupt present in this channel  */
     else if (0U != transfer_count_match_irq)
     {
         channel = ((SCH1R(transfer_count_match_irq) - 1U) + (registers * 32U));
 
+        /* Get p_ctrl for the detected channel. */
+        p_ctrl = (dtsc_instance_ctrl_t *) gp_dtsc_isr_context[channel];
+        event  = TRANSFER_EVENT_TRANS_COUNT_MATCH;
+
+        /* Call user callback */
+        r_dtsc_callback(p_ctrl, event);
+
         /* Clear Peripheral Interrupt Status */
         p_dtsc_irq->PINTCLR4[registers] = transfer_count_match_irq;
 
         /* Dummy read PINT4 register */
         transfer_count_match_irq = p_dtsc_irq->PINT4[registers];
+
+        /* Clear transfer count match flag */
+        p_ctrl->p_reg->CH[channel].DTFSC_b.CCC = 1U;
     }
     else
     {
         /* Do Nothing */
     }
-
-    /* Get p_ctrl for the detected channel. */
-    p_ctrl = (dtsc_instance_ctrl_t *) gp_dtsc_isr_context[channel];
-    event  = (transfer_event_t) (p_ctrl->p_reg->CH[channel].DTFST);
-
-    /* Clear transfer completion and count match flags. */
-    p_ctrl->p_reg->CH[channel].DTFSC_b.TCC = 1U;
-
-    /* Clear transfer count match flag */
-    p_ctrl->p_reg->CH[channel].DTFSC_b.CCC = 1U;
-
-    /* Call user callback */
-    r_dtsc_callback(p_ctrl, event);
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE
@@ -921,11 +943,13 @@ BSP_INTERRUPT_ATTRIBUTE void dtsc_transfer_error_isr (void)
     /* Recover ISR context saved in open. */
     dtsc_instance_ctrl_t * p_ctrl = (dtsc_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
 
-    /* Assign unit, channel */
-    dtsc_extended_cfg_t * p_extend = (dtsc_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
-    uint8_t               channel  = p_extend->channel;
-    transfer_event_t      event    = TRANSFER_EVENT_ERR_TRANS_READ_CYCLE;
-    uint32_t              dtfst    = p_ctrl->p_reg->CH[channel].DTFST;
+    /* Assign channel */
+    uint8_t          channel = p_ctrl->p_reg->DTSER_b.DTSERCH;
+    transfer_event_t event   = TRANSFER_EVENT_ERR_TRANS_READ_CYCLE;
+
+    /* Get p_ctrl for the detected channel. */
+    p_ctrl = (dtsc_instance_ctrl_t *) gp_dtsc_isr_context[channel];
+    uint32_t dtfst = p_ctrl->p_reg->CH[channel].DTFST;
 
     /* DTS transfer error occurred in the write cycle. Bit ERWR of DTFST resgister is 1 */
     if (DTSC_PRV_DISABLE_BIT != (dtfst & R_DTS0_CH_DTFST_ERWR_Msk))
@@ -939,6 +963,9 @@ BSP_INTERRUPT_ATTRIBUTE void dtsc_transfer_error_isr (void)
 
     /* Call user callback */
     r_dtsc_callback(p_ctrl, event);
+
+    /* Clear transfer error flag */
+    p_ctrl->p_reg->CH[channel].DTFSC_b.ERC = 1U;
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE
@@ -1020,5 +1047,65 @@ static void r_dtsc_prv_select_group_for_act_src (dtsc_instance_ctrl_t * p_ctrl)
 
         /* Clear the corresponding bit */
         sel_registers[sel_register] |= ((uint32_t) (request_group << sel_register_bit));
+    }
+}
+
+/*******************************************************************************************************************//**
+ * Check if the channel has an ISR still open.
+ *
+ **********************************************************************************************************************/
+static void r_dtsc_enable_isr_still_open (dtsc_instance_ctrl_t * p_ctrl)
+{
+    /* Initialization */
+    dtsc_extended_cfg_t * p_extend      = (dtsc_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    uint8_t               group_channel = p_extend->channel / 32;
+    uint8_t               channel_start = 0U;
+    uint8_t               channel_stop  = 0U;
+
+    channel_start = 32 * group_channel;
+    channel_stop  = 32 * group_channel + 31U;
+
+    for ( ; channel_start < channel_stop; channel_start++)
+    {
+        bool isr_enable = false;
+        if (gp_dtsc_isr_context[channel_start] != NULL)
+        {
+            dtsc_instance_ctrl_t * p_ctrl_restore = (dtsc_instance_ctrl_t *) gp_dtsc_isr_context[channel_start];
+
+            dtsc_extended_cfg_t * p_extend_restore = (dtsc_extended_cfg_t *) p_ctrl_restore->p_cfg->p_extend;
+
+            if ((FSP_INVALID_VECTOR != p_extend_restore->error_irq) &&
+                (BSP_IRQ_DISABLED != p_extend_restore->transfer_error_ipl))
+            {
+                /* Enable DTSC error in transfer interrupt */
+                R_BSP_IrqCfgEnable(p_extend_restore->error_irq, p_extend_restore->transfer_error_ipl, p_ctrl_restore);
+                isr_enable |= true;
+            }
+
+            if ((FSP_INVALID_VECTOR != p_extend_restore->complete_irq) &&
+                (BSP_IRQ_DISABLED != p_extend_restore->transfer_complete_ipl))
+            {
+                /* Enable DTSC transfer complete channel interrupt */
+                R_BSP_IrqCfgEnable(p_extend_restore->complete_irq,
+                                   p_extend_restore->transfer_complete_ipl,
+                                   p_ctrl_restore);
+                isr_enable |= true;
+            }
+
+            if ((FSP_INVALID_VECTOR != p_extend_restore->count_match_irq) &&
+                (BSP_IRQ_DISABLED != p_extend_restore->transfer_count_match_ipl))
+            {
+                /* Enable DTSC transfer count match interrupt */
+                R_BSP_IrqCfgEnable(p_extend_restore->count_match_irq,
+                                   p_extend_restore->transfer_count_match_ipl,
+                                   p_ctrl_restore);
+                isr_enable |= true;
+            }
+        }
+
+        if (true == isr_enable)
+        {
+            break;
+        }
     }
 }

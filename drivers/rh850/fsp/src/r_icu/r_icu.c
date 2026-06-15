@@ -24,7 +24,7 @@
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void                          r_icu_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void  r_icu_isr(void);
 static void                   r_icu_nmi(bsp_grp_irq_t irq);
 static ioport_filter_signal_t r_icu_mapping_signal(e_icu_channel_t channel);
 
@@ -95,7 +95,7 @@ fsp_err_t R_ICU_ExternalIrqOpen (external_irq_ctrl_t * const p_api_ctrl, externa
     ioport_instance_t const  * p_ioport_instance = (ioport_instance_t *) p_icu_extend_cfg->p_ioport_instance;
 #endif
 
-    static ioport_filter_cfg_t noisefilter_cfg;
+    ioport_filter_cfg_t noisefilter_cfg;
 
     p_ctrl->channel = (e_icu_channel_t) p_cfg->channel;
     p_ctrl->irq     = p_cfg->irq;

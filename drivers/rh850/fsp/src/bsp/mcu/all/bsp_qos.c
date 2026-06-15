@@ -272,6 +272,9 @@ fsp_err_t R_BSP_QoSLatencyMonitorEnable (const bsp_latency_monitor_cfg_t * p_cfg
     p_qos_reg->LM_CNTCLR = (R_QOSCNT_FL_PE0CL0_LM_CNTCLR_CLRW_Msk | R_QOSCNT_FL_PE0CL0_LM_CNTCLR_CLRR_Msk);
     p_qos_reg->LM_INTCLR = R_QOSCNT_FL_PE0CL0_LM_INTCLR_CLR_Msk;
 
+    /* Wait for completion of the instruction, then refetch the subsequent instructions*/
+    __SYNCI();
+
     return err;
 }
 
@@ -326,6 +329,9 @@ void R_BSP_QoSLatencyMonitorDisable (bsp_qos_unit_t unit, uint8_t channel)
 
     p_qos_reg->LM_CNTCLR = (R_QOSCNT_FL_PE0CL0_LM_CNTCLR_CLRW_Msk | R_QOSCNT_FL_PE0CL0_LM_CNTCLR_CLRR_Msk);
     p_qos_reg->LM_INTCLR = R_QOSCNT_FL_PE0CL0_LM_INTCLR_CLR_Msk;
+
+    /* Wait for completion of the instruction, then refetch the subsequent instructions*/
+    __SYNCI();
 }
 
 /*******************************************************************************************************************//**
@@ -373,7 +379,10 @@ void R_BSP_QoSLatencyMonitorCountClear (bsp_qos_unit_t unit)
 {
     volatile R_QOSCNT_FL_PE0CL0_Type * p_qos_reg = g_qos_info_table[(uint8_t) (unit)];
 
-    p_qos_reg->LM_CNTCLR |= (R_QOSCNT_FL_PE0CL0_LM_CNTCLR_CLRR_Msk | R_QOSCNT_FL_PE0CL0_LM_CNTCLR_CLRW_Msk);
+    p_qos_reg->LM_CNTCLR = (R_QOSCNT_FL_PE0CL0_LM_CNTCLR_CLRR_Msk | R_QOSCNT_FL_PE0CL0_LM_CNTCLR_CLRW_Msk);
+
+    /* Wait for completion of the instruction, then refetch the subsequent instructions*/
+    __SYNCI();
 }
 
 /*******************************************************************************************************************//**

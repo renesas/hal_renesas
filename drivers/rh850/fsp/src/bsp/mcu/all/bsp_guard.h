@@ -18,6 +18,8 @@ FSP_HEADER
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU
  * @defgroup BSP_GUARD BSP Guard Protection
+ * @brief This section provides protection support for guarded resources.
+ *
  * @{
  **********************************************************************************************************************/
 

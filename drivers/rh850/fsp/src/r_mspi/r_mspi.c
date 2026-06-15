@@ -149,10 +149,10 @@ static uint8_t r_mspi_dts_alternative(mspi_instance_ctrl_t * p_instance_ctrl);
 
 #endif
 
-void mspi_txi_isr(void);
-void mspi_rxi_isr(void);
-void mspi_err_isr(void);
-void mspi_fe_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void mspi_txi_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void mspi_rxi_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void mspi_err_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void mspi_fe_isr(void);
 
 /***********************************************************************************************************************
  * Private global variables
@@ -172,7 +172,7 @@ const spi_api_t g_spi_on_mspi =
 };
 
 /*******************************************************************************************************************//**
- * @addtogroup MSPI
+ * @addtogroup SPI
  * @{
  **********************************************************************************************************************/
 
@@ -457,7 +457,7 @@ fsp_err_t R_MSPI_CallbackSet (spi_ctrl_t * const          p_ctrl,
 }
 
 /*******************************************************************************************************************//**
- * @} (end addtogroup MSPI)
+ * @} (end addtogroup SPI)
  **********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -853,8 +853,10 @@ static fsp_err_t r_mspi_start_read_write (spi_ctrl_t * const    p_ctrl,
     volatile uint32_t * p_addr_32 = (volatile uint32_t *) (ram_init + rastad);
     volatile uint64_t * p_addr_64 = (volatile uint64_t *) (ram_init + rastad);
 
-    uint32_t align     = 0U;
-    uint32_t num_count = (bit_width + SPI_BIT_WIDTH_31_BITS) / SPI_BIT_WIDTH_32_BITS;
+    uint32_t        align         = 0U;
+    uint32_t        num_count     = (bit_width + SPI_BIT_WIDTH_31_BITS) / SPI_BIT_WIDTH_32_BITS;
+    static uint32_t dummy_tx_data = 0U;
+    static uint32_t dummy_rx_data;
 #endif
 
     /* Initialize control parameters */
@@ -1104,7 +1106,23 @@ static fsp_err_t r_mspi_start_read_write (spi_ctrl_t * const    p_ctrl,
         p_mspi_regs[channel].CFG0_b.ITXE = MSPI_INTERRUPT_OUT_ENABLE;
 
         /* Update data for transmission transfer*/
-        p_transfer_tx->p_cfg->p_info->p_src = (void const *) p_src;
+        if (NULL == p_src)
+        {
+            p_transfer_tx->p_cfg->p_info->p_src = (void const *) &dummy_tx_data;
+            p_transfer_tx->p_cfg->p_info->transfer_mode_cfg.transfer_mode_b.src_addr_mode =
+                TRANSFER_ADDR_MODE_FIXED;
+            p_transfer_tx->p_cfg->p_info->transfer_control_cfg.transfer_control_b.src_addr_direction =
+                TRANSFER_DTSC_ADDR_MODE_FIXED;
+        }
+        else
+        {
+            p_transfer_tx->p_cfg->p_info->p_src = (void const *) p_src;
+            p_transfer_tx->p_cfg->p_info->transfer_mode_cfg.transfer_mode_b.src_addr_mode =
+                TRANSFER_ADDR_MODE_INCREMENTED;
+            p_transfer_tx->p_cfg->p_info->transfer_control_cfg.transfer_control_b.src_addr_direction =
+                TRANSFER_DTSC_ADDR_MODE_INCREMENTED;
+        }
+
         p_transfer_tx->p_cfg->p_info->transfer_control_cfg.transfer_control_b.transfer_data_size = transfer_des_size;
         p_transfer_tx->p_cfg->p_info->transfer_mode_cfg.transfer_mode_b.src_trans_size           = transfer_src_size;
         p_transfer_tx->p_cfg->p_info->transfer_mode_cfg.transfer_mode_b.des_trans_size           = transfer_des_size;
@@ -1208,7 +1226,23 @@ static fsp_err_t r_mspi_start_read_write (spi_ctrl_t * const    p_ctrl,
         }
 
         /* Update data for reception transfer */
-        p_transfer_rx->p_cfg->p_info->p_dest = (void *) p_dest;
+        if (NULL == p_dest)
+        {
+            p_transfer_rx->p_cfg->p_info->p_dest = (void *) &dummy_rx_data;
+            p_transfer_rx->p_cfg->p_info->transfer_mode_cfg.transfer_mode_b.des_addr_mode =
+                TRANSFER_ADDR_MODE_FIXED;
+            p_transfer_rx->p_cfg->p_info->transfer_control_cfg.transfer_control_b.des_addr_direction =
+                TRANSFER_DTSC_ADDR_MODE_FIXED;
+        }
+        else
+        {
+            p_transfer_rx->p_cfg->p_info->p_dest = (void *) p_dest;
+            p_transfer_rx->p_cfg->p_info->transfer_mode_cfg.transfer_mode_b.des_addr_mode =
+                TRANSFER_ADDR_MODE_INCREMENTED;
+            p_transfer_rx->p_cfg->p_info->transfer_control_cfg.transfer_control_b.des_addr_direction =
+                TRANSFER_DTSC_ADDR_MODE_INCREMENTED;
+        }
+
         p_transfer_rx->p_cfg->p_info->transfer_control_cfg.transfer_control_b.transfer_data_size = transfer_src_size;
         p_transfer_rx->p_cfg->p_info->transfer_mode_cfg.transfer_mode_b.src_trans_size           = transfer_src_size;
         p_transfer_rx->p_cfg->p_info->transfer_mode_cfg.transfer_mode_b.des_trans_size           = transfer_des_size;
@@ -1707,7 +1741,7 @@ static void r_mspi_direct_write (mspi_instance_ctrl_t * p_instance_ctrl)
     }
 
     /* Check if transmit request flag is set and transmission buffer is valid */
-    if (((p_mspi_regs[channel].CSTR & R_MSPI0_MSPI0_CH_CSTR_TXRQF_Msk) != 0U) && p_instance_ctrl->p_tx_data)
+    if (((p_mspi_regs[channel].CSTR & R_MSPI0_MSPI0_CH_CSTR_TXRQF_Msk) != 0U))
     {
         /* Copy data from buffer to the register */
         r_mspi_write_register(p_instance_ctrl);
@@ -1747,38 +1781,33 @@ static void r_mspi_direct_read (mspi_instance_ctrl_t * p_instance_ctrl)
  **********************************************************************************************************************/
 static void r_mspi_read_register (mspi_instance_ctrl_t * p_instance_ctrl)
 {
-    R_MSPI0_MSPI0_CH_Type * p_mspi_regs = (R_MSPI0_MSPI0_CH_Type *) p_instance_ctrl->p_regs->MSPI0_CH;
-    uint32_t                rx_count    = p_instance_ctrl->rx_count;
-    uint32_t                chip_select = p_instance_ctrl->p_cfg->channel;
+    R_MSPI0_MSPI0_CH_Type * p_mspi_regs =
+        (R_MSPI0_MSPI0_CH_Type *) p_instance_ctrl->p_regs->MSPI0_CH;
+
+    uint32_t const rx_count    = p_instance_ctrl->rx_count;
+    uint32_t const chip_select = p_instance_ctrl->p_cfg->channel;
+    uint32_t const rx_data     = p_mspi_regs[chip_select].RXDA0;
+
     if (NULL == p_instance_ctrl->p_rx_data)
     {
-        (void) p_mspi_regs[chip_select].RXDA0;
-
         return;
     }
 
-    /* Read data from RXDA register */
+    /* Store RX data into the user buffer according to the configured bit width. */
     if (p_instance_ctrl->bitwidth <= SPI_BIT_WIDTH_8_BITS)
     {
-        /* Read 8-bit data from RXDA register */
-        ((uint8_t *) p_instance_ctrl->p_rx_data)[rx_count] = p_mspi_regs[chip_select].RXDA0;
+        /* Store 8-bit data */
+        ((uint8_t *) p_instance_ctrl->p_rx_data)[rx_count] = (uint8_t) rx_data;
     }
-    /* Read data when bit width between 9 bits and 16 bits */
-    else if ((p_instance_ctrl->bitwidth > SPI_BIT_WIDTH_8_BITS) && (p_instance_ctrl->bitwidth <= SPI_BIT_WIDTH_16_BITS))
+    else if (p_instance_ctrl->bitwidth <= SPI_BIT_WIDTH_16_BITS)
     {
-        /* Read 16-bit data from RXDA register */
-        ((uint16_t *) p_instance_ctrl->p_rx_data)[rx_count] = p_mspi_regs[chip_select].RXDA0;
-    }
-    /* Read data when bit width between 17 bits and 32 bits */
-    else if ((p_instance_ctrl->bitwidth > SPI_BIT_WIDTH_16_BITS) &&
-             (p_instance_ctrl->bitwidth <= SPI_BIT_WIDTH_32_BITS))
-    {
-        /* Read 32-bit data from RXDA register */
-        ((uint32_t *) p_instance_ctrl->p_rx_data)[rx_count] = p_mspi_regs[chip_select].RXDA0;
+        /* Store 16-bit data */
+        ((uint16_t *) p_instance_ctrl->p_rx_data)[rx_count] = (uint16_t) rx_data;
     }
     else
     {
-        ((uint32_t *) p_instance_ctrl->p_rx_data)[rx_count] = p_mspi_regs[chip_select].RXDA0;
+        /* Store over 16-bit data */
+        ((uint32_t *) p_instance_ctrl->p_rx_data)[rx_count] = rx_data;
     }
 }
 
@@ -1789,35 +1818,35 @@ static void r_mspi_read_register (mspi_instance_ctrl_t * p_instance_ctrl)
  **********************************************************************************************************************/
 static void r_mspi_write_register (mspi_instance_ctrl_t * p_instance_ctrl)
 {
-    R_MSPI0_MSPI0_CH_Type * p_mspi_regs = (R_MSPI0_MSPI0_CH_Type *) p_instance_ctrl->p_regs->MSPI0_CH;
-    uint32_t                chip_select = p_instance_ctrl->p_cfg->channel;
-    uint32_t                tx_count    = p_instance_ctrl->tx_count;
+    R_MSPI0_MSPI0_CH_Type * p_mspi_regs =
+        (R_MSPI0_MSPI0_CH_Type *) p_instance_ctrl->p_regs->MSPI0_CH;
+
+    uint32_t const chip_select = p_instance_ctrl->p_cfg->channel;
+    uint32_t const tx_count    = p_instance_ctrl->tx_count;
+    uint32_t       tx_data     = 0U;
+
+    /* Store RX data into the user buffer according to the configured bit width. */
     if (NULL != p_instance_ctrl->p_tx_data)
     {
-        /* Write data to TXDA register */
         if (p_instance_ctrl->bitwidth <= SPI_BIT_WIDTH_8_BITS)
         {
-            /* Write 8-bit data to TXDA register */
-            p_mspi_regs[chip_select].TXDA0 = ((uint8_t *) p_instance_ctrl->p_tx_data)[tx_count];
+            /* Write 8-bit data  */
+            tx_data = ((uint8_t const *) p_instance_ctrl->p_tx_data)[tx_count];
         }
-        /* Write data when bit width between 9 bits and 16 bits */
         else if (p_instance_ctrl->bitwidth <= SPI_BIT_WIDTH_16_BITS)
         {
-            /* Write 16-bit data to TXDA register */
-            p_mspi_regs[chip_select].TXDA0 = ((uint16_t *) p_instance_ctrl->p_tx_data)[tx_count];
-        }
-        /* Write data when bit width between 17 bits and 32 bits */
-        else if ((p_instance_ctrl->bitwidth > SPI_BIT_WIDTH_16_BITS) &&
-                 (p_instance_ctrl->bitwidth <= SPI_BIT_WIDTH_32_BITS))
-        {
-            /* Write 32-bit data to TXDA register */
-            p_mspi_regs[chip_select].TXDA0 = ((uint32_t *) p_instance_ctrl->p_tx_data)[tx_count];
+            /* Write 16-bit data */
+            tx_data = ((uint16_t const *) p_instance_ctrl->p_tx_data)[tx_count];
         }
         else
         {
-            p_mspi_regs[chip_select].TXDA0 = ((uint32_t *) p_instance_ctrl->p_tx_data)[tx_count];
+            /* Write 32-bit data */
+            tx_data = ((uint32_t const *) p_instance_ctrl->p_tx_data)[tx_count];
         }
     }
+
+    /* Write the prepared data to the selected channel TX register. */
+    p_mspi_regs[chip_select].TXDA0 = tx_data;
 }
 
 /*******************************************************************************************************************//**
@@ -2053,7 +2082,7 @@ void mspi_fe_transfer_callback (transfer_callback_args_t * p_transfer_args)
 /*******************************************************************************************************************//**
  * ISR called when data is loaded into MSPI data register from the shift register.
  **********************************************************************************************************************/
-void mspi_txi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void mspi_txi_isr (void)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE;
@@ -2081,7 +2110,7 @@ void mspi_txi_isr (void)
 /*******************************************************************************************************************//**
  * ISR called when MSPI finished to receive data and can be read data from register.
  **********************************************************************************************************************/
-void mspi_rxi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void mspi_rxi_isr (void)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE;
@@ -2109,7 +2138,7 @@ void mspi_rxi_isr (void)
 /*******************************************************************************************************************//**
  * ISR called error transmit/receive occur.
  **********************************************************************************************************************/
-void mspi_err_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void mspi_err_isr (void)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE;
@@ -2216,7 +2245,7 @@ void mspi_err_isr (void)
 /*******************************************************************************************************************//**
  * ISR called when frame count is returned to zero.
  **********************************************************************************************************************/
-void mspi_fe_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void mspi_fe_isr (void)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE;

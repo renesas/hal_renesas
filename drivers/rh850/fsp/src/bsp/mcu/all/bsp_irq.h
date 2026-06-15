@@ -32,14 +32,12 @@ FSP_HEADER
 #if (BSP_FEATURE_DEVICE_HAS_ORED_IRQ)
 
 /** Total interrupt vector entries including OR-ed IRQ and VIRQ */
- #define BSP_INT_VECTOR_MAX_ENTRIES    (BSP_INTC1_VECTOR_MAX_ENTRIES + BSP_INTC2_VECTOR_MAX_ENTRIES + \
-                                        BSP_FEINT_VECTOR_MAX_ENTRIES + BSP_FENMI_VECTOR_MAX_ENTRIES + \
+ #define BSP_INT_VECTOR_MAX_ENTRIES    (BSP_INTC_VECTOR_MAX_ENTRIES + BSP_FEINT_VECTOR_MAX_ENTRIES + \
                                         BSP_FEATURE_VIRQ_MAX_ENTRIES)
 #else
 
 /** Total interrupt vector entries excluding VIRQ */
- #define BSP_INT_VECTOR_MAX_ENTRIES    (BSP_INTC1_VECTOR_MAX_ENTRIES + BSP_INTC2_VECTOR_MAX_ENTRIES + \
-                                        BSP_FEINT_VECTOR_MAX_ENTRIES + BSP_FENMI_VECTOR_MAX_ENTRIES)
+ #define BSP_INT_VECTOR_MAX_ENTRIES    (BSP_INTC_VECTOR_MAX_ENTRIES + BSP_FEINT_VECTOR_MAX_ENTRIES)
 #endif
 
 #define BSP_FEINC_PE_OFFSET            (0x100U) ///< Offset applied for FEINC mapping per PE
@@ -66,6 +64,8 @@ extern void * gp_renesas_isr_context[BSP_INT_VECTOR_MAX_ENTRIES];
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU
  * @defgroup BSP_COMMON BSP Common
+ * @brief This section provides common support.
+ *
  * @{
  **********************************************************************************************************************/
 
@@ -284,8 +284,8 @@ __STATIC_INLINE IRQn_Type R_FSP_CurrentIrqGet (void)
 
     if (*pfeintf != 0)                 /* FE interrupt */
     {
-        intid  = __SCH1R(*pfeintf);
-        intid += BSP_INTC_VECTOR_MAX_ENTRIES;
+        intid  = __SCH1R(*pfeintf) - 1U;
+        intid += BSP_INTC_INTBP_MAX_ENTRIES;
     }
     else                               /* EI interrupt */
     {
@@ -313,12 +313,14 @@ __STATIC_INLINE void R_BSP_IrqStatusClear (IRQn_Type irq)
     uint8_t            coreID;
     uint8_t            detectionType;
     R_INTC1_PE0_Type * R_INTC1_PE;
+    R_FEINC_Type     * R_FEINC_PE;
+
+    /* Get the current coreID */
+    coreID = R_BSP_GetCoreID();
 
     /* INTC1 */
     if (irq < BSP_INTC1_VECTOR_MAX_ENTRIES)
     {
-        /* Get the current coreID */
-        coreID        = R_BSP_GetCoreID();
         R_INTC1_PE    = (R_INTC1_PE0_Type *) (R_INTC1_PE0_BASE + coreID * BSP_INT_INTC1_OFFSET);
         detectionType = R_INTC1_PE->EEIC_b[irq].EICT;
 
@@ -343,6 +345,15 @@ __STATIC_INLINE void R_BSP_IrqStatusClear (IRQn_Type irq)
             /* Dummy read and syncp */
             BSP_INT_IOREG_DUMMY_READ_SYNCP(R_INTC2->EEIC[irq]);
         }
+    }
+
+    /* FEINT */
+    else if (irq < BSP_INT_VECTOR_MAX_ENTRIES)
+    {
+        /* Get FEINTMSK register address for this core */
+        R_FEINC_PE = (R_FEINC_Type *) (R_FEINC_BASE + coreID * BSP_FEINC_PE_OFFSET);
+
+        R_FEINC_PE->FEINTC |= (uint32_t) (1 << (irq - BSP_INTC_INTBP_MAX_ENTRIES));
     }
     else
     {

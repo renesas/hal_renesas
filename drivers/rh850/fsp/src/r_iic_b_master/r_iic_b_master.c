@@ -66,10 +66,10 @@ typedef BSP_CMSE_NONSECURE_CALL void (*volatile iic_b_master_prv_ns_callback)(i2
  * Private function prototypes
  **********************************************************************************************************************/
 
-void iic_b_master_rxi_isr(void);
-void iic_b_master_txi_isr(void);
-void iic_b_master_tei_isr(void);
-void iic_b_master_eri_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_b_master_rxi_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_b_master_txi_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_b_master_tei_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_b_master_eri_isr(void);
 
 /* Internal helper functions */
 static void      iic_b_master_abort_seq_master(iic_b_master_instance_ctrl_t * const p_ctrl, bool iic_reset);
@@ -1523,7 +1523,7 @@ static fsp_err_t iic_b_master_transfer_configure (iic_b_master_instance_ctrl_t *
  * This function implements the IIC Receive buffer full ISR routine.
  *
  **********************************************************************************************************************/
-void iic_b_master_rxi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_b_master_rxi_isr (void)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
@@ -1544,7 +1544,7 @@ void iic_b_master_rxi_isr (void)
  * This function implements the Transmit buffer empty ISR routine.
  *
  **********************************************************************************************************************/
-void iic_b_master_txi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_b_master_txi_isr (void)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
@@ -1565,7 +1565,7 @@ void iic_b_master_txi_isr (void)
  * This function implements the IIC Transmission End ISR routine.
  *
  **********************************************************************************************************************/
-void iic_b_master_tei_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_b_master_tei_isr (void)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
@@ -1587,7 +1587,7 @@ void iic_b_master_tei_isr (void)
  * This function implements the IIC Event/Error.
  *
  **********************************************************************************************************************/
-void iic_b_master_eri_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_b_master_eri_isr (void)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE

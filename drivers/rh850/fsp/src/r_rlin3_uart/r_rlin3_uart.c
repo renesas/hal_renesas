@@ -46,6 +46,7 @@
 #define RLIN3_UART_SRC_RESET                            (0U)
 #define RLIN3_UART_NUM_TRANSFER_RESET                   (0U)
 #define RLIN3_UART_PAIR_SIZE                            (2U)
+#define RLIN3_TRANSMISSION_END                          (0U)
 
 /* Offset between RLIN3 register groups (even 32-30, odd 33-31) */
 #define RLIN3_REG_SIZE(channel)    (((R_RLN32_BASE - R_RLN30_BASE) *      \
@@ -486,7 +487,7 @@ fsp_err_t R_RLIN3_UART_Read (uart_ctrl_t * const p_api_ctrl, uint8_t * const p_d
         if (UART_DATA_BITS_9 == p_ctrl->p_cfg->data_bits)
         {
             /* Calculate 9-bit transfers subtract 2 for setup */
-            p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->number_transfer = (uint16_t) bytes * 2;
+            p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->number_transfer = (uint16_t) bytes / 2;
         }
         else
         {
@@ -608,15 +609,15 @@ fsp_err_t R_RLIN3_UART_Write (uart_ctrl_t * const p_api_ctrl, uint8_t const * co
                 if (UART_DATA_BITS_9 == p_ctrl->p_cfg->data_bits)
                 {
                     /* Adjust the number of transfers for data bits by subtracting 2 from total bytes. */
-                    uint32_t num_transfers = (bytes * 2) - 1;
+                    uint32_t num_transfers = bytes;
 
                     /* Calculate number of transfers */
-                    p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->number_transfer = (uint16_t) num_transfers;
+                    p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->number_transfer = (uint16_t) (num_transfers - 2) / 2;
                 }
                 else
                 {
                     /* Adjust the number of transfers for configurations.*/
-                    uint32_t num_transfers = bytes - 1;
+                    uint32_t num_transfers = p_ctrl->tx_src_bytes;
 
                     /* Calculate number of transfers */
                     p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->number_transfer = (uint16_t) num_transfers;
@@ -831,11 +832,21 @@ void rlin3_uart_txi_transfer_callback (transfer_callback_args_t * p_args)
     {
         rlin3_uart_instance_ctrl_t * p_ctrl = (rlin3_uart_instance_ctrl_t *) p_args->p_context;
 
-        /* Reset tx_src_bytes for next transfer*/
-        p_ctrl->tx_src_bytes = 0U;
+        /* Wait until transmission ends */
+        FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->LST_b.UTS, RLIN3_TRANSMISSION_END);
 
         /* Call the user callback with the fast channel transmit complete event */
         r_rlin3_uart_call_callback(p_ctrl, 0U, UART_EVENT_TX_COMPLETE);
+
+        /* Reset tx_src_bytes for next transfer*/
+        p_ctrl->tx_src_bytes = 0U;
+        p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->number_transfer = RLIN3_UART_NUM_TRANSFER_RESET;
+        p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->p_src           = (uint32_t *) NULL;
+        p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->p_dest          = (uint32_t *) NULL;
+        p_ctrl->p_cfg->p_transfer_tx->p_api->disable(p_ctrl->p_cfg->p_transfer_tx->p_ctrl);
+        p_ctrl->p_cfg->p_transfer_tx->p_api->reconfigure(p_ctrl->p_cfg->p_transfer_tx->p_ctrl,
+                                                         p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info);
+        R_BSP_IrqEnable(p_ctrl->p_cfg->txi_irq);
     }
 }
 
@@ -926,7 +937,19 @@ static fsp_err_t r_rlin3_uart_transfer_receive_configure (rlin3_uart_instance_ct
  #endif
 
     /* Setting number data byte for transfer API*/
-    p_ctrl->data_bytes = RLIN3_UART_TRANSFER_API_DATA_NUM;
+    transfer_info_t * p_info = p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info;
+    if (UART_DATA_BITS_9 == p_ctrl->p_cfg->data_bits)
+    {
+        p_info->transfer_mode_cfg.transfer_mode_b.src_trans_size           = TRANSFER_SIZE_2_BYTE;
+        p_info->transfer_mode_cfg.transfer_mode_b.des_trans_size           = TRANSFER_SIZE_2_BYTE;
+        p_info->transfer_control_cfg.transfer_control_b.transfer_data_size = TRANSFER_SIZE_2_BYTE;
+    }
+    else
+    {
+        p_info->transfer_mode_cfg.transfer_mode_b.src_trans_size           = TRANSFER_SIZE_1_BYTE;
+        p_info->transfer_mode_cfg.transfer_mode_b.des_trans_size           = TRANSFER_SIZE_1_BYTE;
+        p_info->transfer_control_cfg.transfer_control_b.transfer_data_size = TRANSFER_SIZE_1_BYTE;
+    }
 
     if (NULL != p_cfg->p_transfer_rx)
     {
@@ -966,7 +989,20 @@ static fsp_err_t r_rlin3_uart_transfer_transmit_configure (rlin3_uart_instance_c
  #endif
 
     /* Setting number data byte for transfer API*/
-    p_ctrl->data_bytes = RLIN3_UART_TRANSFER_API_DATA_NUM;
+    transfer_info_t * p_info = p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info;
+    if (UART_DATA_BITS_9 == p_ctrl->p_cfg->data_bits)
+    {
+        p_info->transfer_mode_cfg.transfer_mode_b.src_trans_size           = TRANSFER_SIZE_2_BYTE;
+        p_info->transfer_mode_cfg.transfer_mode_b.des_trans_size           = TRANSFER_SIZE_2_BYTE;
+        p_info->transfer_control_cfg.transfer_control_b.transfer_data_size = TRANSFER_SIZE_2_BYTE;
+    }
+    else
+    {
+        p_info->transfer_mode_cfg.transfer_mode_b.src_trans_size           = TRANSFER_SIZE_1_BYTE;
+        p_info->transfer_mode_cfg.transfer_mode_b.des_trans_size           = TRANSFER_SIZE_1_BYTE;
+        p_info->transfer_control_cfg.transfer_control_b.transfer_data_size = TRANSFER_SIZE_1_BYTE;
+    }
+
     if (NULL != p_cfg->p_transfer_tx)
     {
         fsp_err_t err = p_ctrl->p_cfg->p_transfer_tx->p_api->open(p_ctrl->p_cfg->p_transfer_tx->p_ctrl,

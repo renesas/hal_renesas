@@ -63,11 +63,11 @@ static fsp_err_t iic_master_transfer_open(iic_master_instance_ctrl_t * const p_c
                                           i2c_master_cfg_t const * const     p_cfg);
 
 #endif
-void iic_master_rxi_isr(void);
-void iic_master_txi_isr(void);
-void iic_master_tei_isr(void);
-void iic_master_eri_isr(void);
-void iic_interrupt_handling_master(IRQn_Type const irq);
+BSP_INTERRUPT_ATTRIBUTE void iic_master_rxi_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_master_txi_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_master_tei_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_master_eri_isr(void);
+void                         iic_interrupt_handling_master(IRQn_Type const irq);
 
 /* Interrupt handlers */
 static void iic_master_rxi_master(iic_master_instance_ctrl_t * p_ctrl);
@@ -761,7 +761,7 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
      * In case the previous IIC master transaction enabled restart, the queued TXI will fire a this point.
      */
 
-    R_BSP_IrqEnable(p_ctrl->p_cfg->txi_irq);
+    iic_interrupt_handling_master(p_ctrl->p_cfg->txi_irq);
 
     /* Enable SPIE to detect unexpected STOP condition. This is disabled between communication events as it can lead
      * to undesired interrupts in multi-master setups. */
@@ -802,12 +802,12 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
 #endif
         p_ctrl->restarted = false;
 
-        /* Write the address byte */
-        p_ctrl->p_reg->DRT = address_byte;
-
         /* Update the number of address bytes loaded for next pass */
         p_ctrl->addr_loaded++;
         p_ctrl->addr_remain--;
+
+        /* Write the address byte */
+        p_ctrl->p_reg->DRT = address_byte;
     }
 
     /*
@@ -842,12 +842,13 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
     {
         if (0U < p_ctrl->remain)
         {
+            /* Update the number of bytes remaining for next pass */
+            p_ctrl->remain--;
+
             /* Write the data to ICDRT register */
             p_ctrl->p_reg->DRT_b.DRT = p_ctrl->p_buff[p_ctrl->loaded];
 
-            /* Update the number of bytes remaining for next pass */
             p_ctrl->loaded++;
-            p_ctrl->remain--;
         }
 
         /* Complete loading ICDRT, wait for TEND to send a stop/restart */
@@ -979,7 +980,6 @@ static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ct
             {
                 /* Disable interrupt */
                 R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
-                p_ctrl->p_cfg->p_transfer_tx->p_api->enable(p_ctrl->p_cfg->p_transfer_tx->p_ctrl);
                 p_ctrl->p_cfg->p_transfer_tx->p_api->reset(p_ctrl->p_cfg->p_transfer_tx->p_ctrl,
                                                            (void *) (p_ctrl->p_buff),
                                                            (uint8_t *) (p_iic_master_tx_buffer),
@@ -991,12 +991,12 @@ static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ct
         }
 #endif
 
-        /* Write the address byte */
-        p_ctrl->p_reg->DRT_b.DRT = address_byte;
-
         /* Update the number of address bytes loaded for next pass */
         p_ctrl->addr_loaded++;
         p_ctrl->addr_remain--;
+
+        /* Write the address byte */
+        p_ctrl->p_reg->DRT_b.DRT = address_byte;
     }
 }
 
@@ -1597,7 +1597,7 @@ void iic_interrupt_handling_master (IRQn_Type const irq)
  * This function implements the Transmit buffer empty ISR routine.
  *
  **********************************************************************************************************************/
-void iic_master_txi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_master_txi_isr (void)
 {
     /* Save context if RTOS is used */
 
@@ -1620,7 +1620,7 @@ void iic_master_txi_isr (void)
  * This function implements the IIC Receive buffer full ISR routine.
  *
  **********************************************************************************************************************/
-void iic_master_rxi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_master_rxi_isr (void)
 {
     /* Save context if RTOS is used */
 
@@ -1643,7 +1643,7 @@ void iic_master_rxi_isr (void)
  * This function implements the IIC Transmission End ISR routine.
  *
  **********************************************************************************************************************/
-void iic_master_tei_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_master_tei_isr (void)
 {
     /* Save context if RTOS is used */
 
@@ -1669,7 +1669,7 @@ void iic_master_tei_isr (void)
  * This function implements the IIC Event/Error.
  *
  **********************************************************************************************************************/
-void iic_master_eri_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_master_eri_isr (void)
 {
     /* Save context if RTOS is used */
 

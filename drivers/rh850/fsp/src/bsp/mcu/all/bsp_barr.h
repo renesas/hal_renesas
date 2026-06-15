@@ -17,6 +17,8 @@ FSP_HEADER
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU
  * @defgroup BSP_BARR BSP Barrier-Synchronization
+ * @brief This section provides barrier and synchronization support.
+ *
  * @{
  **********************************************************************************************************************/
 

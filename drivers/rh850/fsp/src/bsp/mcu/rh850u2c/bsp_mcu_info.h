@@ -25,6 +25,7 @@
 #include "bsp_dmac.h"
 #include "bsp_dtsc.h"
 #include "bsp_ecm.h"
+#include "memory_regions.h"
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -37,21 +38,19 @@
 #ifndef BSP_OVERRIDE_GROUP_IRQ_T
 
  #if (BSP_CONFIG_USE_SMP_MODE)
-  #define BSP_GRP_IRQ_MAX    (4U)
- #else
   #define BSP_GRP_IRQ_MAX    (6U)
+ #else
+  #define BSP_GRP_IRQ_MAX    (4U)
  #endif
 
 /** Which interrupts can have callbacks registered. */
 typedef enum e_bsp_grp_irq
 {
-    BSP_GRP_IRQ_EXTERNAL_NMI = 0,              ///< External NMI interrupt
-
+    BSP_GRP_IRQ_EXTERNAL_NMI              = 0, ///< External NMI interrupt
     BSP_GRP_IRQ_SECURE_WDT_OVERFLOW_FEINT = 1, ///< Secure WDT overflow FEINT
     BSP_GRP_IRQ_TPTM_FEINT                = 2, ///< TPTM PEx FEINT
     BSP_GRP_IRQ_ECM_FEINT                 = 3, ///< ECM PEx FEINT
-
-    BSP_GRP_IRQ_MAX_INDEX = BSP_GRP_IRQ_MAX
+    BSP_GRP_IRQ_MAX_INDEX                 = BSP_GRP_IRQ_MAX
 } bsp_grp_irq_t;
 
 #endif

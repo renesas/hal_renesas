@@ -849,7 +849,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .initial_cfg_value = BSP_GUARD_RIIC_WRITE_PROTECTION,
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
-            .pbg_group   = BSP_PBG_GROUP_PBG6H0,
+            .pbg_group   = BSP_PBG_GROUP_PBG70,
             .pbg_channel = (BSP_PBG_CHANNEL_03 |
                             BSP_PBG_CHANNEL_04)
             },

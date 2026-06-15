@@ -25,6 +25,7 @@
 #include "bsp_dmac.h"
 #include "bsp_dtsc.h"
 #include "bsp_ecm.h"
+#include "memory_regions.h"
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -41,9 +42,9 @@
 #ifndef BSP_OVERRIDE_GROUP_IRQ_T
 
  #if (BSP_CONFIG_USE_SMP_MODE)
-  #define BSP_GRP_IRQ_MAX    (4U)
- #else
   #define BSP_GRP_IRQ_MAX    (10U)
+ #else
+  #define BSP_GRP_IRQ_MAX    (4U)
  #endif
 
 /** Which interrupts can have callbacks registered. */

@@ -57,9 +57,14 @@ BSP_FENMI_INTERRUPT_ATTRIBUTE void FENMI (void)
     p_fenmif = (uint32_t *) (&R_FENC->FENMIF);
     channel  = __SCH1R(*p_fenmif) - 1; // Define macro for this Intrinsic functions in bsp_compiler_support.h
 
+    /* Clear pending flag */
+    R_FENC->FENMIC |= R_FENC_FENMIC_NMIC_Msk;
+
     /* call the irq callback */
     bsp_group_isr_call((bsp_grp_irq_t) channel);
 }
+
+BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_TEXT, BSP_PRAGMA_SECTION_DEFAULT)
 
 /*******************************************************************************************************************//**
  * @internal
@@ -83,6 +88,9 @@ BSP_FEINT_INTERRUPT_ATTRIBUTE void FEINT (void)
 
     channel = __SCH1R(*pfeintf);       // Define macro for this Intrinsic functions in bsp_compiler_support.h
 
+    /* Clear pending flag */
+    R_BSP_IrqStatusClear((IRQn_Type) (channel - 1U + BSP_INTC_INTBP_MAX_ENTRIES));
+
 #if (BSP_CONFIG_USE_SMP_MODE)
     if (BSP_FEINT_NON_PE_SRC != channel)
     {
@@ -93,6 +101,8 @@ BSP_FEINT_INTERRUPT_ATTRIBUTE void FEINT (void)
     /* call the irq callback */
     bsp_group_isr_call((bsp_grp_irq_t) channel);
 }
+
+BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_TEXT, BSP_PRAGMA_SECTION_DEFAULT)
 
 /*******************************************************************************************************************//**
  * @internal
@@ -129,7 +139,9 @@ static void bsp_group_isr_call (bsp_grp_irq_t irq)
         /** Callback has been found. Call it. */
         g_bsp_group_isr_sources[irq](irq);
     }
-    else
+
+    /* If there is no user callback function for FEINT exception or FENMI exception was triggered, hang the MCU */
+    if ((NULL == g_bsp_group_isr_sources[irq]) || (irq == (bsp_grp_irq_t) 0))
     {
         /* Hang MCU */
         while (1)

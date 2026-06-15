@@ -11,6 +11,7 @@
  * Includes
  **********************************************************************************************************************/
 #include "bsp_api.h"
+#include "memory_regions.h"
 
 #if (BSP_CYCLICRUN_MODE_ENABLE) && (BSP_PE0_USED)
 

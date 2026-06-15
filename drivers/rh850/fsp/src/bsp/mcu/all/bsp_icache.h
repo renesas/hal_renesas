@@ -18,6 +18,8 @@ FSP_HEADER
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU
  * @defgroup BSP_ICACHE BSP ICACHE
+ * @brief This section provides instruction cache configuration and control support.
+ *
  * @{
  **********************************************************************************************************************/
 

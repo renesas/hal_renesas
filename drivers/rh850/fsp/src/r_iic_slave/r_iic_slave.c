@@ -105,10 +105,10 @@ void             iic_slave_rxi_transfer_callback(transfer_callback_args_t * p_ar
 static fsp_err_t iic_slave_transfer_open(iic_slave_instance_ctrl_t * const p_ctrl, i2c_slave_cfg_t const * const p_cfg);
 
 #endif
-void iic_slave_rxi_isr(void);
-void iic_slave_txi_isr(void);
-void iic_slave_tei_isr(void);
-void iic_slave_eri_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_slave_rxi_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_slave_txi_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_slave_tei_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_slave_eri_isr(void);
 
 /* Internal helper functions */
 static void      iic_slave_notify(iic_slave_instance_ctrl_t * const p_ctrl, i2c_slave_event_t const slave_event);
@@ -1298,7 +1298,6 @@ static void iic_rxi_slave (iic_slave_instance_ctrl_t * p_ctrl)
                         {
                             /* The receive data full interrupt should be disabled when performing transfer. */
                             R_BSP_IrqDisable(p_ctrl->p_cfg->rxi_irq);
-                            p_ctrl->p_cfg->p_transfer_rx->p_api->enable(p_ctrl->p_cfg->p_transfer_rx->p_ctrl);
                             p_ctrl->p_cfg->p_transfer_rx->p_api->reset(p_ctrl->p_cfg->p_transfer_rx->p_ctrl,
                                                                        (uint8_t *) (p_iic_slave_rx_buffer),
                                                                        (void *) (&p_ctrl->p_buff[p_ctrl->loaded + 1]),
@@ -1445,7 +1444,7 @@ void iic_interrupt_handling (IRQn_Type const irq)
  * This function implements the Transmit buffer empty ISR routine.
  *
  *********************************************************************************************************************/
-void iic_slave_txi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_slave_txi_isr (void)
 {
     /* Save context if RTOS is used */
 
@@ -1468,7 +1467,7 @@ void iic_slave_txi_isr (void)
  * This function implements the IIC Receive buffer full ISR routine.
  *
  *********************************************************************************************************************/
-void iic_slave_rxi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_slave_rxi_isr (void)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
@@ -1490,7 +1489,7 @@ void iic_slave_rxi_isr (void)
  *
  *********************************************************************************************************************/
 
-void iic_slave_eri_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_slave_eri_isr (void)
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
@@ -1539,7 +1538,7 @@ void iic_slave_eri_isr (void)
  * This function implements the IIC Transmission End ISR routine.
  *
  ********************************************************************************************************************/
-void iic_slave_tei_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_slave_tei_isr (void)
 {
     /* Save context if RTOS is used */
 

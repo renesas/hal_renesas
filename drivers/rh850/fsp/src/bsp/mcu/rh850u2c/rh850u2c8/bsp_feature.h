@@ -119,6 +119,7 @@
 
 /** DMAC */
 #define BSP_FEATURE_DMAC_MAX_CHANNEL                                          (16U)                         ///< Maximum DMAC channels
+#define BSP_FEATURE_DMAC_MAX_UNIT                                             (2U)                          ///< Maximum DMAC units
 
 /** DTSC */
 #define BSP_FEATURE_DTSC_MAX_CHANNEL                                          (128U)                        ///< Maximum DTSC channels

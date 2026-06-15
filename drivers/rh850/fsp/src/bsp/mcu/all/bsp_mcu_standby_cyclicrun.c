@@ -65,6 +65,32 @@
  #define BSP_CYCLICRUN_DELAY_LOOPS_CALCULATE(cycles)    (((cycles) / BSP_CYCLICRUN_DELAY_LOOP_CYCLES) + 1U)
 
 /***********************************************************************************************************************
+ * Error log
+ **********************************************************************************************************************/
+ #ifndef FSP_CYCLIC_ERROR_LOG
+  #define FSP_CYCLIC_ERROR_LOG(err)
+ #endif
+
+ #define FSP_CYCLIC_ERROR_RETURN(a, err)                \
+    {                                                   \
+        if ((a))                                        \
+        {                                               \
+            (void) 0;                  /* Do nothing */ \
+        }                                               \
+        else                                            \
+        {                                               \
+            FSP_CYCLIC_ERROR_LOG(err);                  \
+            return err;                                 \
+        }                                               \
+    }
+
+ #if (2 <= BSP_CFG_ASSERT)
+  #define FSP_CYCLIC_ASSERT(a)
+ #else
+  #define FSP_CYCLIC_ASSERT(a)    FSP_CYCLIC_ERROR_RETURN((a), FSP_ERR_ASSERTION)
+ #endif
+
+/***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
@@ -225,7 +251,7 @@ void R_BSP_CyclicRunIrqEnable (IRQn_Type const irq)
     /* FEINT */
     else if (irq < BSP_INT_VECTOR_MAX_ENTRIES)
     {
-        R_FEINC->FEINTMSK &= (uint32_t) (~(1 << (irq - BSP_INTC_VECTOR_MAX_ENTRIES)));
+        R_FEINC->FEINTMSK &= (uint32_t) (~(1 << (irq - BSP_INTC_INTBP_MAX_ENTRIES)));
     }
     else
     {
@@ -259,7 +285,7 @@ void R_BSP_CyclicRunIrqDisable (IRQn_Type const irq)
     /* FEINT */
     else if (irq < BSP_INT_VECTOR_MAX_ENTRIES)
     {
-        R_FEINC->FEINTMSK |= (uint32_t) (1 << (irq - BSP_INTC_VECTOR_MAX_ENTRIES));
+        R_FEINC->FEINTMSK |= (uint32_t) (1 << (irq - BSP_INTC_INTBP_MAX_ENTRIES));
     }
     else
     {
@@ -342,8 +368,8 @@ IRQn_Type R_FSP_CyclicRunCurrentIrqGet (void)
 
     if (*pfeintf != 0)                 /* FE interrupt */
     {
-        intid  = __SCH1R(*pfeintf);
-        intid += BSP_INTC_VECTOR_MAX_ENTRIES;
+        intid  = __SCH1R(*pfeintf) - 1U;
+        intid += BSP_INTC_INTBP_MAX_ENTRIES;
     }
     else                               /* EI interrupt */
     {
@@ -408,7 +434,7 @@ fsp_err_t R_BSP_CyclicRunGroupIrqWrite (bsp_grp_irq_t irq, void (* p_callback)(b
  #if BSP_CFG_PARAM_CHECKING_ENABLE
 
     /* Check pointer for NULL value. */
-    FSP_ASSERT(p_callback);
+    FSP_CYCLIC_ASSERT(p_callback);
  #endif
 
     /* Register callback. */

@@ -132,6 +132,13 @@ static fsp_err_t r_dmac_enable_parameter_checking(dmac_instance_ctrl_t * const p
 #endif
 
 /***********************************************************************************************************************
+ * Private global variables
+ **********************************************************************************************************************/
+
+/* This table is used to store the context in the ISR. */
+void * gp_dmac_isr_context[BSP_FEATURE_DMAC_MAX_UNIT][BSP_FEATURE_DMAC_MAX_CHANNEL];
+
+/***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
 
@@ -268,6 +275,9 @@ fsp_err_t R_DMAC_Open (transfer_ctrl_t * const p_api_ctrl, transfer_cfg_t const 
         r_dmac_descriptor_set(p_ctrl);
     }
 
+    /* Store the p_ctrl of channel to context */
+    gp_dmac_isr_context[unit][channel] = p_ctrl;
+
     p_ctrl->open = DMAC_OPEN;
 
     return FSP_SUCCESS;
@@ -377,6 +387,12 @@ fsp_err_t R_DMAC_Reset (transfer_ctrl_t * const p_api_ctrl,
     {
         number_transfer_byte = r_dmac_number_transfer(p_ctrl->p_cfg->p_info);
     }
+    else
+    {
+        number_transfer_byte =
+            (uint32_t) ((1U << p_ctrl->p_cfg->p_info->transfer_mode_cfg.transfer_mode_b.src_trans_size) *
+                        num_transfers);
+    }
 
     /* Reset the transfer count if it is normal transfer mode. */
     p_ctrl->p_reg->sDMAC_CH[channel].TSR = (uint32_t) number_transfer_byte;
@@ -443,7 +459,7 @@ fsp_err_t R_DMAC_SoftwareStop (transfer_ctrl_t * const p_api_ctrl)
     uint8_t               channel  = p_extend->channel;
 
     /* Clear transfer status */
-    p_ctrl->p_reg->sDMAC_CH[channel].CHFCR = DMAC_PRV_CLEAR_ALL_TRANSFER_STATUS;
+    p_ctrl->p_reg->sDMAC_CH[channel].CHFCR_b.DEC = DMAC_PRV_CHANNEL_ENABLE;
 
     return FSP_SUCCESS;
 }
@@ -714,6 +730,12 @@ static void r_dmac_config_transfer_info (dmac_instance_ctrl_t * p_ctrl, transfer
     if (DMAC_TRIGGER_EVENT_SOFTWARE != p_extend->activation_source)
     {
         number_transfer_byte = r_dmac_number_transfer(p_info);
+    }
+    else
+    {
+        number_transfer_byte =
+            (uint32_t) ((1U << p_ctrl->p_cfg->p_info->transfer_mode_cfg.transfer_mode_b.src_trans_size) *
+                        p_info->number_transfer);
     }
 
     /* Set Transfer size in transfer size register */
@@ -1123,12 +1145,17 @@ BSP_INTERRUPT_ATTRIBUTE void dmac_int_isr (void)
     /* Assign unit, channel */
     dmac_extended_cfg_t * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
     uint8_t               channel  = p_extend->channel;
-
-    transfer_event_t event = (transfer_event_t) p_ctrl->p_reg->sDMAC_CH[channel].CHSTA;
+    transfer_event_t      event;
+    uint32_t              event_flag = p_ctrl->p_reg->sDMAC_CH[channel].CHSTA;
 
     /* Check if event is descriptor step end flag */
-    if (TRANSFER_EVENT_DESCRIPTOR_FLAG == (TRANSFER_EVENT_DESCRIPTOR_FLAG & event))
+    if (TRANSFER_EVENT_DESCRIPTOR_FLAG == (TRANSFER_EVENT_DESCRIPTOR_FLAG & event_flag))
     {
+        event = TRANSFER_EVENT_DESCRIPTOR_FLAG;
+
+        /* Call user callback */
+        r_dmac_call_callback(p_ctrl, event);
+
         /* Clear descriptor step end flag */
         p_ctrl->p_reg->sDMAC_CH[channel].CHFCR_b.DSEC = DMAC_PRV_ENABLE_BIT;
 
@@ -1136,17 +1163,19 @@ BSP_INTERRUPT_ATTRIBUTE void dmac_int_isr (void)
     }
 
     /* Check if event is transfer end flag */
-    if (TRANSFER_EVENT_TRANS_END_FLAG == (TRANSFER_EVENT_TRANS_END_FLAG & event))
+    if (TRANSFER_EVENT_TRANS_END_FLAG == (TRANSFER_EVENT_TRANS_END_FLAG & event_flag))
     {
+        event = TRANSFER_EVENT_TRANS_END_FLAG;
+
         /* Disable DMA transfer */
         p_ctrl->p_reg->sDMAC_CH[channel].CHCR_b.DE = DMAC_PRV_DISABLE_BIT;
+
+        /* Call user callback */
+        r_dmac_call_callback(p_ctrl, event);
 
         /* Clear transfer end flag */
         p_ctrl->p_reg->sDMAC_CH[channel].CHFCR_b.TEC = DMAC_PRV_ENABLE_BIT;
     }
-
-    /* Call user callback */
-    r_dmac_call_callback(p_ctrl, event);
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE
@@ -1165,20 +1194,34 @@ BSP_INTERRUPT_ATTRIBUTE void dmac_error_isr (void)
     /* Clear IRQ to make sure it doesn't fire again after exiting */
     R_BSP_IrqStatusClear(irq);
 
-    /* Recover ISR context saved in open. */
-    dmac_instance_ctrl_t * p_ctrl = (dmac_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-
     /* Assign unit, channel */
-    dmac_extended_cfg_t * p_extend = (dmac_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
-    uint8_t               channel  = p_extend->channel;
+    uint8_t channel;
+    uint8_t unit;
 
-    transfer_event_t event = (transfer_event_t) p_ctrl->p_reg->sDMAC_CH[channel].CHSTA;
+    if ((SCH1R(R_DMAC0->DMAjESTA) - 1U) < BSP_FEATURE_DMAC_MAX_CHANNEL)
+    {
+        channel = (SCH1R(R_DMAC0->DMAjESTA) - 1U);
+        unit    = 0U;
+    }
 
-    /* Clear Address error flag */
-    p_ctrl->p_reg->sDMAC_CH[channel].CHFCR_b.CAEC = DMAC_PRV_ENABLE_BIT;
+#if (2U == BSP_FEATURE_DMAC_MAX_UNIT)
+    else
+    {
+        channel = (SCH1R(R_DMAC1->DMAjESTA) - 1U);
+        unit    = 1U;
+    }
+#endif
+
+    /* Get p_ctrl for the detected channel. */
+    dmac_instance_ctrl_t * p_ctrl = (dmac_instance_ctrl_t *) gp_dmac_isr_context[unit][channel];
+
+    transfer_event_t event = TRANSFER_EVENT_ADDR_ERR_FLAG;
 
     /* Call user callback */
     r_dmac_call_callback(p_ctrl, event);
+
+    /* Clear Address error */
+    p_ctrl->p_reg->sDMAC_CH[channel].CHFCR_b.CAEC = DMAC_PRV_ENABLE_BIT;
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE

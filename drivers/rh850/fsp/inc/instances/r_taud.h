@@ -1,4 +1,8 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/*
+* Copyright (c) 2025 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #ifndef R_TAUD_H
 #define R_TAUD_H
@@ -23,18 +27,23 @@ FSP_HEADER
  **********************************************************************************************************************/
 extern const timer_api_t g_timer_on_taud;
 
-/* For synchronous operation, even though there are 16 channels in each TAUD Unit,
- * there always has to be one Slave channel (With Slave channel > Master channel).
+/* Note for the Synchronous Operation:
+ *   + Even though there are 16 channels in each TAUD Unit,
+ *     there always has to be one Slave Channel.
  *
- * The valid Master channel is an even channel (such as channel 0, channel 2, channel 4, ...),
- * Any channel other than channel 0 can be set as a Slave channel. */
-#define TAUD_MAX_CHANNEL_NUM            (15U)
-
-#if TAUD_CFG_MULTI_SLAVE_ENABLE
- #define TAUD_MAX_NUM_SLAVE_CHANNELS    (TAUD_MAX_CHANNEL_NUM)
-#else
- #define TAUD_MAX_NUM_SLAVE_CHANNELS    (1U)
-#endif
+ *   + Only even channels (channel 0, channel 2, channel 4, ...) can be set as Master Channels.
+ *     Any channel apart from channel 0 can be set as a Slave Channel.
+ *
+ *   + Only channels lower than the Master Channel can be set as Slave Channels,
+ *     and multiple Slave Channels can be set for one Master Channel.
+ *     Example: If channel 2 is a Master Channel, channel 3 and the lower channels (channel 4, channel 5, ...)
+ *              can be set as Slave Channels.
+ *
+ *   + If multiple Master Channels are used, Slave Channels cannot cross the Master Channels.
+ *     Example: If channel 0 and channel 4 are Master Channels,
+ *              channel 1 to channel 3 can be set as Slave Channels for channel 0, but channel 5 to channel 15 cannot.
+ */
+#define TAUD_MAX_NUM_SLAVE_CHANNELS    (15U)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -106,7 +115,7 @@ typedef enum e_taud_channel_type
 {
     TAUD_CHANNEL_TYPE_SLAVE       = 0, ///< Slave channel.
     TAUD_CHANNEL_TYPE_MASTER      = 1, ///< Master channel.
-    TAUD_CHANNEL_TYPE_INDEPENDENT = 2, ///< Dependent channel.
+    TAUD_CHANNEL_TYPE_INDEPENDENT = 2, ///< Independent channel.
     TAUD_CHANNEL_TYPE_SLAVE_EVEN  = 3, ///< Slave even channel.
     TAUD_CHANNEL_TYPE_SLAVE_ODD   = 4, ///< Slave odd channel.
 } taud_channel_type_t;
@@ -182,7 +191,7 @@ typedef enum e_taud_function
     TAUD_FUNCTION_REAL_TIME_OUTPUT_TYPE_2                             = (25U), ///< Real-Time Output Function Type 2.
     TAUD_FUNCTION_INPUT_PULSE_INTERVAL_JUDGMENT                       = (26U), ///< Input Pulse Interval Judgment Function.
     TAUD_FUNCTION_INPUT_SIGNAL_WIDTH_JUDGMENT                         = (27U), ///< Input Signal Width Judgment Function.
-    TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_1                        = (28U), ///< AD Conversion Trigger output Type 1 Function.
+    TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_1                        = (28U), ///< A/D Conversion Trigger Output Function Type 1.
     TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_2                        = (29U), ///< A/D Conversion Trigger Output Function Type 2.
     TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_1 = (30U), ///< Non-Complementary Modulation Output Function Type 1.
     TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT                     = (31U), ///< Complementary Modulation Output Function.
@@ -296,68 +305,70 @@ typedef enum e_taud_io_pin
 /** Channel control block. DO NOT INITIALIZE. Initialization occurs when @ref timer_api_t::open is called. */
 typedef struct st_taud_instance_ctrl
 {
-    uint32_t            open;                           // Whether or not channel is open.
-    const timer_cfg_t * p_cfg;                          // Pointer to initial configurations.
-    uint16_t            channels_mask;                  // Masked value of all channels used
-    uint16_t            master_channel_mask;            // Masked value of master channel used
-    uint16_t            slave_channels_mask;            // Masked value of slave channels used
-    uint16_t            output_mask;                    // Masked value of all output channels used
-    R_TAUD_Type       * p_reg;                          // Base register for this channel.
-    void (* p_callback)(timer_callback_args_t * p_arg); // Pointer to callback.
-    timer_callback_args_t * p_callback_memory;          // Pointer to pre-allocated callback argument.
-    void * p_context;                                   // Pointer to context to be passed into callback function.
+    uint32_t            open;                     ///< Whether or not channel is open.
+    const timer_cfg_t * p_cfg;                    ///< Pointer to initial configurations.
+    uint16_t            channels_mask;            ///< Masked value of all Master and Slave channels used.
+    uint16_t            master_channel_mask;      ///< Masked value of Master channel used.
+    uint16_t            slave_channels_mask;      ///< Masked value of Slave channels used.
+    uint16_t            output_mask;              ///< Masked value of all output channels used in Synchronous Operation.
+    R_TAUD_Type       * p_reg;                    ///< Base register for this channel.
+    void (* p_callback)(timer_callback_args_t *); ///< Pointer to callback.
+    timer_callback_args_t * p_callback_memory;    ///< Pointer to pre-allocated callback argument.
+    void * p_context;                             ///< Pointer to context to be passed into callback function.
 } taud_instance_ctrl_t;
 
 /** Channel source. */
 typedef enum e_taud_unit_source
 {
-    TAUD_UNIT0 = 0,                    // < TAUD Unit 0.
-    TAUD_UNIT1 = 1,                    // < TAUD Unit 1.
+    TAUD_UNIT0 = 0,                    ///< TAUD Unit 0.
+    TAUD_UNIT1 = 1,                    ///< TAUD Unit 1.
 #if (BSP_FEATURE_TAUD_MAX_UNIT > (2U))
-    TAUD_UNIT2 = 2,                    // < TAUD Unit 2.
+    TAUD_UNIT2 = 2,                    ///< TAUD Unit 2.
 #endif
 #if (BSP_FEATURE_TAUD_MAX_UNIT > (3U))
-    TAUD_UNIT3 = 3,                    // < TAUD Unit 3.
+    TAUD_UNIT3 = 3,                    ///< TAUD Unit 3.
 #endif
 } taud_unit_source_t;
 
 /** Optional TAUD extension data structure. */
 typedef struct st_taud_extended_cfg
 {
-    taud_function_t                     taud_function;                               // Selection of functions
-    taud_clock_t                        operation_clk;                               // The PCLK prescaler
-    taud_count_clock_t                  count_clk;                                   // Selection of Count Clock
-    taud_div_t                          clk_div;                                     // Clock division
-    uint16_t                            baudrate;                                    // Baud rate setting
-    uint32_t                            delay_counts;                                // Delay from trigger input to pulse output in raw timer counts
-    uint32_t                            width_counts;                                // Pulse width in raw timer counts
-    uint32_t                            divider_value;                               // Divider value for Clock Divide fucntion
-    uint32_t                            deadtime_value;                              // Dead time in raw timer counts
-    taud_channel_type_t                 channel_type;                                // Channel of master or slave
-    uint8_t                             slave_ordinal_number;                        // Ordinal number of slave channel, applied for Delay Pulse Output function
-    taud_unit_source_t                  taud_unit;                                   // Unit of TAUD module
-    taud_trigger_t                      trigger_type;                                // Selection of external start trigger
-    taud_overflow_t                     overflow_timing;                             // Specifies the timing for updating capture register and overflow flag
-    taud_mode_t                         operating_mode;                              // Specifies an operating mode
-    taud_mode_specific_t                mode_config;                                 // Specifies the configuration of an operating mode
-    taud_input_edge_t                   edge_type;                                   // Selection of input edge detection
-    taud_output_t                       output_enable;                               // Enables/disables the independent channel output mode
-    taud_output_mode_t                  output_mode;                                 // Specifies an output mode
-    taud_output_operating_mode_t        output_operating;                            // Specifies the output mode of each channel in combination with TAUDnTOMm.
-    taud_output_logic_t                 output_logic;                                // Specifies the output logic
-    taud_deadtime_operation_t           deadtime_operation;                          // Specifies the dead time operation
-    taud_add_deadtime_t                 add_deadtime_phase;                          // Specifies the phase in which dead time is added.
-    taud_simultaneous_rewrite_t         simultaneous_rewrite;                        // Enable/Disable simultaneous rewrite data register
-    taud_simultaneous_rewrite_channel_t simultaneous_rewrite_channel;                // Specifies the channel that controls Simultaneous Rewrite.
-    taud_simultaneous_rewrite_trigger_t simultaneous_rewrite_trigger;                // Specifies the timing for generating a Simultaneous Rewrite control signal.
-    taud_real_time_output_t             real_time_output;                            // Enable/Disable real-time output.
-    taud_real_time_output_trigger_t     real_time_output_trigger;                    // Specifies the real-time output trigger of each channel.
-    taud_real_time_output_level_t       real_time_output_level;                      // Specifies the real-time output level.
-    taud_modulation_t                   modulation;                                  // Enable/Disable modulation output for timer output and real-time output.
+    taud_function_t                     taud_function;                               ///< Selection of functions.
+    taud_clock_t                        operation_clk;                               ///< The PCLK prescaler.
+    taud_count_clock_t                  count_clk;                                   ///< Selection of Count Clock.
+    taud_div_t                          clk_div;                                     ///< Clock division.
+    uint16_t                            baudrate;                                    ///< Baud rate setting.
+    uint32_t                            delay_counts;                                ///< Delay from trigger input to pulse output in raw timer counts.
+    uint32_t                            width_counts;                                ///< Pulse width in raw timer counts.
+    uint32_t                            divider_value;                               ///< Divider value for Clock Divide fucntion.
+    uint32_t                            deadtime_value;                              ///< Dead time in raw timer counts.
+    taud_channel_type_t                 channel_type;                                ///< Specifies the channel type, such as Master, Slave, Independent, Slave odd, or Slave even.
+    uint8_t                             slave_ordinal_number;                        ///< Ordinal number of Slave channel, applied for Delay Pulse Output Function, Non-Complementary Modulation Output Function Type 1, Non-Complementary Modulation Output Function Type 2, Complementary Modulation Output Function.
+    taud_unit_source_t                  taud_unit;                                   ///< Unit of TAUD module.
+    taud_trigger_t                      trigger_type;                                ///< Selection of external start trigger.
+    taud_overflow_t                     overflow_timing;                             ///< Specifies the timing for updating capture register and overflow flag.
+    taud_mode_t                         operating_mode;                              ///< Specifies an operating mode.
+    taud_mode_specific_t                mode_config;                                 ///< Specifies the configuration of an operating mode.
+    taud_input_edge_t                   edge_type;                                   ///< Selection of input edge detection.
+    taud_output_t                       output_enable;                               ///< Enables/disables the independent channel output mode.
+    taud_output_mode_t                  output_mode;                                 ///< Specifies an output mode.
+    taud_output_operating_mode_t        output_operating;                            ///< Specifies the output mode of each channel in combination with TAUDnTOMm.
+    taud_output_logic_t                 output_logic;                                ///< Specifies the output logic.
+    taud_deadtime_operation_t           deadtime_operation;                          ///< Specifies the dead time operation.
+    taud_add_deadtime_t                 add_deadtime_phase;                          ///< Specifies the phase in which dead time is added.
+    taud_simultaneous_rewrite_t         simultaneous_rewrite;                        ///< Enable/Disable simultaneous rewrite data register.
+    taud_simultaneous_rewrite_channel_t simultaneous_rewrite_channel;                ///< Specifies the channel that controls Simultaneous Rewrite.
+    taud_simultaneous_rewrite_trigger_t simultaneous_rewrite_trigger;                ///< Specifies the timing for generating a Simultaneous Rewrite control signal.
+    taud_real_time_output_t             real_time_output;                            ///< Enable/Disable real-time output.
+    taud_real_time_output_trigger_t     real_time_output_trigger;                    ///< Specifies the real-time output trigger of each channel.
+    taud_real_time_output_level_t       real_time_output_level;                      ///< Specifies the real-time output level.
+    taud_modulation_t                   modulation;                                  ///< Enable/Disable modulation output for timer output and real-time output.
+
 #if (BSP_FEATURE_DEVICE_HAS_INTSEL_IRQ)
-    bsp_intsel_t intsel_irq_cfg;                                                     // Interrupt source for TAUD unit 3.
+    bsp_intsel_t intsel_irq_cfg;                                                     ///< Interrupt source for TAUD unit 3.
 #endif
-    timer_instance_t const * p_slave_channel_instances[TAUD_MAX_NUM_SLAVE_CHANNELS]; ///< Configuration for each slave channel, at least 1 slave channel is required.
+
+    timer_instance_t const * p_slave_channel_instances[TAUD_MAX_NUM_SLAVE_CHANNELS]; ///< Configuration for each Slave Channel, at least 1 Slave Channel is required.
 } taud_extended_cfg_t;
 
 /** Specifies the limited values for setting TAUD_CDR. */
@@ -368,22 +379,11 @@ typedef enum e_taud_cdr
 } taud_cdr_t;
 
 /** Specifies the period count maximum values. */
-typedef enum e_taud_period_count_max_function
+typedef enum e_taud_period_count_max
 {
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_INTERVAL_TIMER                             = 0x20000, ///< Maximum period count for Interval Timer Function.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_INPUT_INTERVAL_TIMER                       = 0x20000, ///< Maximum period count for Input Interval Timer Function.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_PWM_OUTPUT                                 = 0x10000, ///< Maximum period count for PWM Output Function.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_EXTERNAL_EVENT_COUNT                       = 0x10000, ///< Maximum period count for External Event Count Function.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_DELAY_COUNT                                = 0x10000, ///< Maximum period count for Delay Count Function.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_INTERRUPT_REQUEST_SIGNAL_CULLING           = 0x10000, ///< Maximum period count for Interrupt Request Signal Culling Function.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_TRIGGER_START_PWM_OUTPUT                   = 0x10000, ///< Maximum period count for Trigger Start PWM Output Function.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_REAL_TIME_OUTPUT_TYPE_1                    = 0x10000, ///< Maximum period count for Real-Time Output Type 1 Function.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_INPUT_PULSE_INTERVAL                       = 0x10000, ///< Maximum period count for Input Pulse Interval Function.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_INPUT_SIGNAL_WIDTH                         = 0x10000, ///< Maximum period count for Input Signal Width Function.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_TYPE_2 = 0xFFFF,  ///< Maximum period count for Non-Complementary Modulation Output Function Type 2.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_1               = 0x10000, ///< Maximum period count for AD Conversion Trigger Output Type 1 Function.
-    TAUD_PERIOD_COUNT_MAX_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT            = 0xFFFF   ///< Maximum period count for Complementary Modulation Output Function.
-} taud_period_count_max_function_t;
+    TAUD_PERIOD_COUNT_MAX_CDR_X2 = 0x20000, ///< Maximum period count with range from 0 to 131072.
+    TAUD_PERIOD_COUNT_MAX_CDR_X1 = 0x10000, ///< Maximum period count with range from 0 to 65536.
+} taud_period_count_max_t;
 
 /** Specifies the deadtime count maximum values. */
 typedef enum e_taud_deadtime_count_max_function

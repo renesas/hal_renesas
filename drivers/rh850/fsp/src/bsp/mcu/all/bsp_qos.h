@@ -21,6 +21,8 @@ FSP_HEADER
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU
  * @defgroup BSP_QOS BSP QoS
+ * @brief This section provides quality of service control support.
+ *
  * @{
  **********************************************************************************************************************/
 
@@ -164,6 +166,9 @@ __STATIC_INLINE uint8_t R_BSP_QoSLatencyMonitorInterruptFlagGet (bsp_qos_unit_t 
 {
     volatile R_QOSCNT_FL_PE0CL0_Type * p_qos_reg = g_qos_info_table[(uint8_t) (unit)];
 
+    /* Synchronization of instruction fetching */
+    __SYNCP();
+
     return (p_qos_reg->LM_INTFLG & (1U << (uint8_t) (bit))) >> bit;
 }
 
@@ -178,6 +183,9 @@ __STATIC_INLINE void R_BSP_QoSLatencyMonitorInterruptFlagClear (bsp_qos_unit_t u
 {
     volatile R_QOSCNT_FL_PE0CL0_Type * p_qos_reg = g_qos_info_table[(uint8_t) (unit)];
     p_qos_reg->LM_INTCLR = R_QOSCNT_FL_PE0CL0_LM_INTCLR_CLR_Msk;
+
+    /* Wait for completion of the instruction, then refetch the subsequent instructions*/
+    __SYNCI();
 }
 
 /*******************************************************************************************************************//**
@@ -218,6 +226,9 @@ __STATIC_INLINE void R_BSP_QoSLatencyOverflowIrqEnable (bsp_qos_unit_t unit, uin
 {
     volatile R_QOSCNT_FL_PE0CL0_Type * p_qos_reg = g_qos_info_table[(uint8_t) (unit)];
     p_qos_reg->LM_INTEN_b.EN |= (1U << interrupt_port_bind_bit);
+
+    /* Wait for loading to be completed */
+    __SYNCP();
 }
 
 /*******************************************************************************************************************//**
@@ -232,6 +243,9 @@ __STATIC_INLINE void R_BSP_QoSLatencyOverflowIrqDisable (bsp_qos_unit_t unit, ui
 {
     volatile R_QOSCNT_FL_PE0CL0_Type * p_qos_reg = g_qos_info_table[(uint8_t) (unit)];
     p_qos_reg->LM_INTEN_b.EN &= ~(1U << interrupt_port_bind_bit);
+
+    /* Wait for loading to be completed */
+    __SYNCP();
 }
 
 /***********************************************************************************************************************

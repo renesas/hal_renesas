@@ -19,7 +19,8 @@
 /*******************************************************************************************************************//**
  * @ingroup RENESAS_COMMON
  * @defgroup RENESAS_ERROR_CODES Common Error Codes
- * All FSP modules share these common error codes.
+ * @brief FSP modules share these common error codes.
+ *
  * @{
  **********************************************************************************************************************/
 

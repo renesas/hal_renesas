@@ -96,6 +96,8 @@
  #define BSP_SECTION_CRUN_CODE_BSS                ".CRUN_CODE.bss"                 ///< CRUN BSS section tag (compiler-specific) (used for BSP_PLACE_IN_SECTION)
  #define BSP_SECTION_CRUN_INTVECT_PE0             ".CRUN_inttable_PE0.const"       ///< CRUN interrupt table (PE0) (used for BSP_PLACE_IN_SECTION)
 
+ #define BSP_SECTION_NOINIT                       ".noinit"                        ///< No initialization section
+
 /* Heap section */
  #ifndef BSP_SECTION_HEAP
   #define BSP_SECTION_HEAP                                                         ///< Placeholder: heap section tag (empty on CCRH)
@@ -167,6 +169,8 @@
  #define BSP_SECTION_CRUN_CODE_ROM_DATA           ".CRUN_CODE.rosdata"                                   ///< CRUN ROM-data section tag (compiler-specific) (used for BSP_PLACE_IN_SECTION)
  #define BSP_SECTION_CRUN_CODE_BSS                ".CRUN_CODE.sbss"                                      ///< CRUN BSS section tag (compiler-specific) (used for BSP_PLACE_IN_SECTION)
  #define BSP_SECTION_CRUN_INTVECT_PE0             ".CRUN_inttable_PE0.data"                              ///< CRUN interrupt table (PE0) (used for BSP_PLACE_IN_SECTION)
+
+ #define BSP_SECTION_NOINIT                       ".noinit"                                              ///< No initialization section
 
 /* Heap section */
  #ifndef BSP_SECTION_HEAP
@@ -240,6 +244,8 @@
  #define BSP_SECTION_CRUN_CODE_BSS                ".CRUN_CODE.bss"                                       ///< CRUN BSS section tag (compiler-specific) (used for BSP_PLACE_IN_SECTION)
  #define BSP_SECTION_CRUN_INTVECT_PE0             ".CRUN_inttable_PE0.data"                              ///< CRUN interrupt table (PE0) (used for BSP_PLACE_IN_SECTION)
 
+ #define BSP_SECTION_NOINIT                       ".noinit"                                              ///< No initialization section
+
 /* Heap section */
  #ifndef BSP_SECTION_HEAP
   #define BSP_SECTION_HEAP                        ".heap"                                                ///< Section name for heap
@@ -311,6 +317,8 @@
  #define BSP_SECTION_CRUN_CODE_ROM_DATA           ".CRUN_CODE.rodata"                                    ///< CRUN ROM-data section tag (compiler-specific) (used for BSP_PLACE_IN_SECTION)
  #define BSP_SECTION_CRUN_CODE_BSS                ".CRUN_CODE.bss"                                       ///< CRUN BSS section tag (compiler-specific) (used for BSP_PLACE_IN_SECTION)
  #define BSP_SECTION_CRUN_INTVECT_PE0             ".CRUN_inttable_PE0.data"                              ///< CRUN interrupt table (PE0) (used for BSP_PLACE_IN_SECTION)
+
+ #define BSP_SECTION_NOINIT                       ".noinit"                                              ///< No initialization section
 
 /* Heap section */
  #ifndef BSP_SECTION_HEAP
