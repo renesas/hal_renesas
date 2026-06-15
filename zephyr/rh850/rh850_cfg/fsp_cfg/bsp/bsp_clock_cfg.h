@@ -6,18 +6,20 @@
 #ifndef BSP_CLOCK_CFG_H_
 #define BSP_CLOCK_CFG_H_
 
-#if defined(CONFIG_SOC_R7F702300BEBBC_C)
+#if defined(CONFIG_SOC_R7F702300BEBBC_C) || \
+    defined(CONFIG_SOC_R7F702300BEBBC_C) || \
+    defined(CONFIG_SOC_R7F702300EBBG_C)
  #include "bsp_clock_cfg_u2a16.h"
-#elif defined(CONFIG_SOC_R7F70255xFABB_C) || \
-    defined(CONFIG_SOC_R7F70255xAFABB_C) || \
-    defined(CONFIG_SOC_R7F70255xBFABB_C)
+#elif defined(CONFIG_SOC_R7F70255XFABB_C) || \
+    defined(CONFIG_SOC_R7F70255XAFABB_C) || \
+    defined(CONFIG_SOC_R7F70255XBFABB_C)
  #include "bsp_clock_cfg_u2b6.h"
-#elif defined(CONFIG_SOC_R7F70254xFABG_C) || \
-    defined(CONFIG_SOC_R7F70254xFABA_C) || \
-    defined(CONFIG_SOC_R7F70254xFABB_C) || \
-    defined(CONFIG_SOC_R7F70254xAFABG_C) || \
-    defined(CONFIG_SOC_R7F70254xAFABA_C) || \
-    defined(CONFIG_SOC_R7F70254xAFABB_C)
+#elif defined(CONFIG_SOC_R7F70254XFABG_C) || \
+    defined(CONFIG_SOC_R7F70254XFABA_C) || \
+    defined(CONFIG_SOC_R7F70254XFABB_C) || \
+    defined(CONFIG_SOC_R7F70254XAFABG_C) || \
+    defined(CONFIG_SOC_R7F70254XAFABA_C) || \
+    defined(CONFIG_SOC_R7F70254XAFABB_C)
  #include "bsp_clock_cfg_u2b10.h"
 #elif defined(CONFIG_SOC_R7F702600AFABB_C) || \
 	defined(CONFIG_SOC_R7F702600FABB_C)

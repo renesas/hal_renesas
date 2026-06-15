@@ -9,5 +9,5 @@
 
 #define RLIN3_UART_CFG_CLOCK                        (80000000U)
 #define RLIN3_UART_CFG_CLOCK_CH23                   (100000000U)
-#define R_RLIN3_UART_CFG_TRANSFER_SUPPORT_ENABLE    (0)
+#define R_RLIN3_UART_CFG_TRANSFER_SUPPORT_ENABLE    (1)
 #endif                                 /* R_RLIN3_UART_CFG_H_ */
