@@ -10,5 +10,6 @@ if(CONFIG_USE_RCARSOC_DRV_DMAC)
 			"drv/src/dmac/sysdmac_ctrl.c")
 	zephyr_library_sources(${rcarsoc_drv_dmac_srcs})
 	zephyr_include_directories(drv/src/dmac)
+	zephyr_include_directories(drv/inc/dmac)
 endif()
 

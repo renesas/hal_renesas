@@ -39,6 +39,14 @@ typedef enum {
     SYS_DMAC1 = 9, /*!< SYS-DMA Controller Instance 1 */
     SYS_DMAC2 = 10, /*!< SYS-DMA Controller Instance 2 */
     SYS_DMAC3 = 11, /*!< SYS-DMA Controller Instance 3 */
+#ifdef CONFIG_USE_RCARSOC_DRV_DMAC
+    AUDIO_DMAC0 = 16,
+    AUDIO_DMAC1,
+    AUDIO_DMAC2,
+    AUDIO_DMAC3,
+    SCP_DMAC0 = 24,
+    SCP_DMAC1,
+#endif /* CONFIG_USE_RCARSOC_DRV_DMAC */
     DMAC_MAX /*!< Maximum number of DMA Controller Instances */
 } DMAC_t;
 
@@ -163,6 +171,7 @@ typedef enum e_rDmacTransferUnit {
  */
 typedef enum e_rDmacResource {
     DRV_RTDMAC_MEMORY,        /*!< Memory resource */
+    DRV_RTDMAC_EXTEND,        /*!< Peripheral resource */
     DRV_RTDMAC_RESOUCE_MAX    /*!< Maximum number of resources */
 } rDmacResource_t;
 
