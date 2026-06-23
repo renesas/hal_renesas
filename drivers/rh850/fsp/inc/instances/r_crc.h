@@ -57,7 +57,7 @@ typedef enum e_crc_polynomial_size
     CRC_POLYNOMIAL_SIZE_15_BITS = 0x0EUL, ///< 0x0E: 15-bits
     CRC_POLYNOMIAL_SIZE_16_BITS = 0x0FUL, ///< 0x0F: 16-bits
     CRC_POLYNOMIAL_SIZE_17_BITS = 0x10UL, ///< 0x10: 17-bits
-    CRCPOLYNOMIAL_SIZE_21_BITS  = 0x14UL, ///< 0x14: 21-bits
+    CRC_POLYNOMIAL_SIZE_21_BITS = 0x14UL, ///< 0x14: 21-bits
     CRC_POLYNOMIAL_SIZE_32_BITS = 0x1FUL, ///< 0x1F: 32-bits
     CRC_POLYNOMIAL_SIZE_64_BITS = 0x3FUL, ///< 0x3F: 64-bits
 } crc_polynomial_size_t;

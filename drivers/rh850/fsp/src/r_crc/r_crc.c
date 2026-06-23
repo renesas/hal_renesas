@@ -123,6 +123,12 @@ fsp_err_t R_CRC_Open (crc_ctrl_t * const p_ctrl, crc_cfg_t const * const p_cfg)
     p_instance_ctrl->p_reg->POLY1 = (uint32_t) (p_extend->poly1);
     p_instance_ctrl->p_reg->XOR0  = (uint32_t) (p_extend->xor0);
     p_instance_ctrl->p_reg->XOR1  = (uint32_t) (p_extend->xor1);
+
+    /* Setting the KCRCnDOUT0 and KCRCnDOUT1 registers before the first write access
+     *                             to the KCRC input register (KCRCnDIN) is performed.*/
+    p_instance_ctrl->p_reg->DOUT0 = (uint32_t) (p_extend->dout0);
+    p_instance_ctrl->p_reg->DOUT1 = (uint32_t) (p_extend->dout1);
+
     p_instance_ctrl->open         = CRC_OPEN;
 
     return FSP_SUCCESS;
@@ -179,12 +185,9 @@ fsp_err_t R_CRC_Calculate (crc_ctrl_t * const p_ctrl, crc_input_t * const p_crc_
     FSP_ASSERT(calculatedValue);
     FSP_ERROR_RETURN((0UL != p_crc_input->num_bytes), FSP_ERR_INVALID_ARGUMENT);
     FSP_ERROR_RETURN(CRC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
-#endif
 
     /* Pointer to CRC extended configuration */
     crc_extended_cfg_t * p_extend = (crc_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
-
-#if CRC_CFG_PARAM_CHECKING_ENABLE
 
     /* Check input data size */
     if (CRC_INPUT_DATA_SIZE_16_BITS == p_extend->control_reg->input_data_size)
@@ -204,11 +207,6 @@ fsp_err_t R_CRC_Calculate (crc_ctrl_t * const p_ctrl, crc_input_t * const p_crc_
         /* Do nothing */
     }
 #endif
-
-    /* Setting the KCRCnDOUT0 and KCRCnDOUT1 registers before the first write access
-     *                             to the KCRC input register (KCRCnDIN) is performed.*/
-    p_instance_ctrl->p_reg->DOUT0 = (uint32_t) (p_extend->dout0);
-    p_instance_ctrl->p_reg->DOUT1 = (uint32_t) (p_extend->dout1);
 
     /* Calculate CRC value for the input buffer */
     crc_calculate_polynomial(p_instance_ctrl, p_crc_input, calculatedValue);
