@@ -138,6 +138,10 @@ zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_PIC
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_RLIN3_UART
 	fsp/src/r_rlin3_uart/r_rlin3_uart.c)
 
+# RTCA
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_RTCA
+	fsp/src/r_rtca/r_rtca.c)
+
 # TAUD
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_TAUD
 	fsp/src/r_taud/r_taud.c)
