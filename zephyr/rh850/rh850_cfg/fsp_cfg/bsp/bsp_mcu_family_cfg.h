@@ -6,7 +6,7 @@
 #ifndef BSP_MCU_FAMILY_CFG_H_
 #define BSP_MCU_FAMILY_CFG_H_
 
-#if defined(CONFIG_SOC_R7F702300BEBBC_C) || \
+#if defined(CONFIG_SOC_R7F702300AEBBC_C) || \
     defined(CONFIG_SOC_R7F702300BEBBC_C) || \
     defined(CONFIG_SOC_R7F702300EBBG_C)
  #include "bsp_mcu_family_cfg_u2a16.h"
