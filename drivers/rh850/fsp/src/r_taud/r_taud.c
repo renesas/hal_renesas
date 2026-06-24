@@ -1309,8 +1309,7 @@ fsp_err_t R_TAUD_Close (timer_ctrl_t * const p_ctrl)
     if (p_instance_ctrl->p_cfg->cycle_end_irq >= 0)
     {
 #if ((BSP_FEATURE_DEVICE_HAS_INTSEL_IRQ) && (BSP_FEATURE_TAUD_MAX_UNIT > (3U)))
-        taud_extended_cfg_t * p_extend  = (taud_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
-        taud_unit_source_t    unit_used = p_extend->taud_unit;
+        taud_unit_source_t unit_used = p_extend->taud_unit;
 
         /* Interrupt select only available for TAUD Unit 3 */
         if (TAUD_UNIT3 == unit_used)
@@ -1870,7 +1869,7 @@ static void r_taud_hardware_initialize (taud_instance_ctrl_t * const p_instance_
     cmor_value |= (p_extend->overflow_timing << TAUD_CMOR_COS_Pos);
 
     /* Set operating mode. */
-    cmor_value |= (p_extend->operating_mode | p_extend->mode_config);
+    cmor_value |= ((uint16_t) p_extend->operating_mode | (uint16_t) p_extend->mode_config);
 
     /* Write setting data to TAUDnCMORm register. */
     p_instance_ctrl->p_reg->TAUDnCMOR[p_cfg->channel].TAUDnCMOR = cmor_value;
