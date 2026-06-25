@@ -66,7 +66,11 @@
 #endif
 
 #ifndef BSP_CFG_CLK_MOSC_SELECT_STANDBY_MODE
- #define BSP_CFG_CLK_MOSC_SELECT_STANDBY_MODE          (0)                         /* MainOSC-STPM: Stop */
+ #if defined(CONFIG_RH850_CLOCK_MOSC_CONTINUE_IN_STANDBY)
+  #define BSP_CFG_CLK_MOSC_SELECT_STANDBY_MODE         (1)                         /* MainOSC-STPM: Continue */
+ #else
+  #define BSP_CFG_CLK_MOSC_SELECT_STANDBY_MODE         (0)                         /* MainOSC-STPM: Stop */
+ #endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_MOSC_HZ
@@ -86,7 +90,11 @@
 #endif
 
 #ifndef BSP_CFG_CLK_PLL_SELECT_STANDBY_MODE
- #define BSP_CFG_CLK_PLL_SELECT_STANDBY_MODE           (0)                         /* PLL-STPM: Stop */
+ #if defined(CONFIG_RH850_CLOCK_PLL_CONTINUE_IN_STANDBY)
+  #define BSP_CFG_CLK_PLL_SELECT_STANDBY_MODE          (1)                         /* PLL-STPM: Continue */
+ #else
+  #define BSP_CFG_CLK_PLL_SELECT_STANDBY_MODE          (0)                         /* PLL-STPM: Stop */
+ #endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_SSCG_HZ
@@ -278,7 +286,11 @@
 #endif
 
 #ifndef BSP_CFG_CLK_HSOSC_SELECT_STANDBY_MODE
- #define BSP_CFG_CLK_HSOSC_SELECT_STANDBY_MODE         (0)                         /* HSOSC-STPM: Stop */
+ #if defined(CONFIG_RH850_CLOCK_HSOSC_CONTINUE_IN_STANDBY)
+  #define BSP_CFG_CLK_HSOSC_SELECT_STANDBY_MODE        (1)                         /* HSOSC-STPM: Continue */
+ #else
+  #define BSP_CFG_CLK_HSOSC_SELECT_STANDBY_MODE        (0)                         /* HSOSC-STPM: Stop */
+ #endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_EXTCLK0O_SRC
