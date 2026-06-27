@@ -4410,8 +4410,8 @@ typedef struct
                                         *   or ECNTBFx is read depending on theoperation mode.                        */
         } CDRF_b;
     };
-    __IM uint32_t RESERVED4[16];
-} R_ATU_TIMER_F_SB_Type;               /*!< Size = 112 (0x70)                                                         */
+    __IM uint32_t RESERVED4[4];
+} R_ATU_TIMER_F_SB_Type;               /*!< Size = 64 (0x40)                                                          */
 
 /**
  * @brief R_ATU_TIMER_G_SB [SB] (ATU_TIMER_G Subblock [0..13] Registers)
@@ -4504,6 +4504,127 @@ typedef struct
         } RLDG_b;
     };
 } R_ATU_TIMER_G_SB_Type;               /*!< Size = 16 (0x10)                                                          */
+
+/**
+ * @brief R_CADC00_CADC00VCR [CADC00VCR] (CADC the number of a virtual channel register j.)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint32_t VCR;                     /*!< (@ 0x00000000) CADC the number of a virtual channel register
+                                                 *                  j.                                                         */
+
+        struct
+        {
+            __IOM uint32_t CADC00GCTRL : 4;     /*!< [3..0] General ControlThese bits set the A/D conversion in each
+                                                 *   conversion mode.Single-ended input (CADCnCNVCLS = 0H, 1H)Analog
+                                                 *   input channels are selected by the CADCnGCTRL[3:0] bits.0H:
+                                                 *   CANn0P1H: CANn0N2H: CANn1P3H: CANn1N4H: CANn2P5H: CANn2N6H:
+                                                 *   CANn3P7H: CANn3NOther than the above: Setting prohibited.Differential
+                                                 *   input (CADCnCNVCLS = 2H)Analog input channels are selected
+                                                 *   by the CADCnGCTRL[3:0] bits.0H: CANn0P/CANn0N1H: Setting
+                                                 *   prohibited2H: CANn1P/CANn1N3H: Setting prohibited4H: CANn2P/CANn2N5H:
+                                                 *   Setting prohib                                                            */
+            __IOM uint32_t CADC00CNVCLS : 2;    /*!< [5..4] Conversion Type0H: Single-ended input, common voltage
+                                                 *   = ADSVREFL1H: Single-ended input, common voltage = ADSVREFH/22H:
+                                                 *   Differential input3H: Self-diagnosis                                      */
+            uint32_t                   : 2;
+            __IOM uint32_t CADC00DFTAG : 4;     /*!< [11..8] DFE-TAGThese bits are used to perform entry to a channel
+                                                 *   of the DFE for which the TAG is identical to the setting
+                                                 *   of CADC00DFTAG[3:0]. If the TAG matches the setting of
+                                                 *   CADC00DFTAG[3:0] for multiple channels, entry to multiple
+                                                 *   DFE channels is performed.                                                */
+            __IOM uint32_t CADC00DFENT : 1;     /*!< [12..12] DFE Entry0: Entry is not performed.1: Entry is performed.This
+                                                 *   bit selects whether or not to perform entry to the DFE
+                                                 *   (digital filter engine).                                                  */
+            uint32_t                   : 1;
+            __IOM uint32_t CADC00ULEIE : 1;     /*!< [14..14] Upper-Limit/Lower-Limit Error Interrupt Enable0: CADEn
+                                                 *   is not output upon an upper-limit or lower-limit error
+                                                 *   of CADC00DIRj.1: CADEn is output upon an upper-limit or
+                                                 *   lower-limit error of CADC00DIRj.                                          */
+            __IOM uint32_t CADC00ADIE : 1;      /*!< [15..15] onversion End Interrupt Enable0: CADIn is not output
+                                                 *   when the CADC00DIRj conversion result is output.1: CADIn
+                                                 *   is output when the CADC00DIRj conversion result is output.                */
+            uint32_t                       : 8;
+            __IOM uint32_t CADC00VCULLMTBS : 2; /*!< [25..24] Virtual Channel Upper-Limit/Lower-Limit Table Register
+                                                 *   SelectThese bits select the upper-limit/lower-limit table
+                                                 *   register to be compared.0H: Upper-limit/lower-limit values
+                                                 *   are checked by CADCnULTBR0.1H: Upper-limit/lower-limit
+                                                 *   values are checked by CADCnULTBR1.2H: Upper-limit/lower-limit
+                                                 *   values are checked by CADCnULTBR2.3H: Upper-limit/lower-limit
+                                                 *   values are checked by CADCnULTBR3.When the A/D converted
+                                                 *   value is stored in the CADCnDR, upper-limit/lowerlimit
+                                                 *   values are checked by using the upper-limit valu                          */
+            __IOM uint32_t CADC00VCLLME : 1;    /*!< [26..26] Virtual Channel Lower-Limit Excess Notification Enable0:
+                                                 *   If the A/D conversion result is less than lower limit of
+                                                 *   the virtual channel, it is not notified.1: If the A/D conversion
+                                                 *   result is less than lower limit of the virtual channel,
+                                                 *   it is notified.                                                           */
+            __IOM uint32_t CADC00VCULME : 1;    /*!< [27..27] Virtual Channel Upper-Limit Excess Notification Enable0:
+                                                 *   If the A/D conversion result is greater than the upper
+                                                 *   limit of the virtual channel, it is not notified.1: If
+                                                 *   the A/D conversion result is greater than the upper limit
+                                                 *   of the virtual channel, it is notified.                                   */
+            uint32_t : 4;
+        } VCR_b;
+    };
+} R_CADC00_CADC00VCR_Type;                      /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_CADC00_CADC00DIR [CADC00DIR] (CADC Data Supplementary Information Register j.)
+ */
+typedef struct
+{
+    union
+    {
+        __IM uint32_t DIR;                /*!< (@ 0x00000000) CADC Data Supplementary Information Register
+                                           *                  j.                                                         */
+
+        struct
+        {
+            __IM uint32_t CADC00DR : 16;  /*!< [15..0] These bits are used to store the A/D converted value.For
+                                           *   the data format, see "Bits 15 to 0 DR Data Register Data
+                                           *   Format"                                                                   */
+            uint32_t                 : 8;
+            __IM uint32_t CADC00PRTY : 1; /*!< [24..24] ParityThis bit indicates the even parity bit of CADC00DR
+                                           *   and CADC00IDEF.                                                           */
+            __IM uint32_t CADC00WFLG : 1; /*!< [25..25] Write FlagSetting conditionStoring an A/D converted
+                                           *   value in CADC00DIRjClearing conditionReading CADC00DIR                    */
+            __IM uint32_t CADC00IDEF : 1; /*!< [26..26] ID Error0: An error has occurred.1: No error has occurred.       */
+            uint32_t                 : 5;
+        } DIR_b;
+    };
+} R_CADC00_CADC00DIR_Type;                /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_CADC00_CADC00ULTBR [CADC00ULTBR] (CADC Upper-Limit/Lower-Limit Table Register 0/1/2/3.)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint32_t ULTBR;                /*!< (@ 0x00000000) CADC Upper-Limit/Lower-Limit Table Register 0/1/2/3.       */
+
+        struct
+        {
+            __IOM uint32_t CADC00LLMTB : 16; /*!< [15..0] Lower-Limit TableThese bits specify the lower-limit
+                                              *   value of the A/D converted value. When the following condition
+                                              *   is met, CADC00LLE (lower-limit error) is set to 1LLMTB[15:0]
+                                              *   > A/D converted valueThe LLMTB[15:0] format is the same
+                                              *   as the DR format. For unsigned format, the value is compared
+                                              *   as unsigned. A/D converted values are compared by using
+                                              *   the values before they are masked by DFMT[3:0].                           */
+            __IOM uint32_t CADC00ULMTB : 16; /*!< [31..16] Upper-Limit TableThese bits specify the upper-limit
+                                              *   value of the A/D converted value. When the following condition
+                                              *   is met, CADC00ULE (upper-limit error) is set to 1.ULMTB[15:0]
+                                              *   < A/D converted valueThe ULMTB[15:0] format is the same
+                                              *   as the DR format. For unsigned format, the value is compared
+                                              *   as unsigned. A/D converted values are compared by using
+                                              *   the values before they are masked by DFMT[3:0].                           */
+        } ULTBR_b;
+    };
+} R_CADC00_CADC00ULTBR_Type;                 /*!< Size = 4 (0x4)                                                            */
 
 /**
  * @brief R_GUARD_CRAMCRG0_CRG_CTR [CRG_CTR] (CRG Channel protection control register)
@@ -4661,6 +4782,161 @@ typedef struct
         } ADV_b;
     };
 } R_DFPGRD_DFP_CTR_Type;               /*!< Size = 16 (0x10)                                                          */
+
+/**
+ * @brief R_DSADC00_DSADCnVCR [DSADCnVCR] (DSADC the number of a virtual channel register j.)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint32_t VCR;               /*!< (@ 0x00000000) DSADC the number of a virtual channel register
+                                           *                  j.                                                         */
+
+        struct
+        {
+            __IOM uint32_t GCTRL : 4;     /*!< [3..0] General ControlThese bits set the A/D conversion for
+                                           *   each conversion mode.Single-ended input (CNVCLS = 0H, 1H)Analog
+                                           *   input channels are selected by the GCTRL[3:0] bits.0H:
+                                           *   DSANn0P1H: DSANn0N2H: DSANn1P3H: DSANn1N4H: DSANn2P5H:
+                                           *   DSANn2N6H: DSANn3P7H: DSANn3NSetting of unsupported channels
+                                           *   is prohibited.Differential input (CNVCLS = 2H)Analog input
+                                           *   channels are selected by the GCTRL[3:0] bits.0H: DSANn0P/DSANn0N1H:
+                                           *   Setting prohibited2H: DSANn1P/DSANn1N3H: Setting prohibited4H:
+                                           *   DSANn2P/DSANn2N5H: Setting prohib                                         */
+            __IOM uint32_t CNVCLS : 2;    /*!< [5..4] Conversion Type0H: Single-ended input, common voltage
+                                           *   = ADSVREFL1H: Single-ended input, common voltage = ADSVREFH/22H:
+                                           *   Differential input3H: Self-diagnosis                                      */
+            uint32_t             : 2;
+            __IOM uint32_t DFTAG : 4;     /*!< [11..8] DFE-TAGThese bits are used to perform entry to a channel
+                                           *   of the DFE for which the TAG identical to the setting of
+                                           *   DFTAG[3:0] is set. If the TAG matches the setting of DFTAG[3:0]
+                                           *   for multiple channels, entry to multiple channels is performed.           */
+            __IOM uint32_t DFENT : 1;     /*!< [12..12] DFE Entry0: Entry is not performed.1: Entry is performed.This
+                                           *   bit selects whether to perform entry to the DFE0 or DFE1
+                                           *   (Digital Filter Engine).                                                  */
+            uint32_t             : 1;
+            __IOM uint32_t ULEIE : 1;     /*!< [14..14] Upper-Limit/Lower-Limit Error Interrupt Enable0: DSADEn
+                                           *   is not output at an upper-limit or lower-limit error of
+                                           *   DSADCnDIRj.1: DSADEn is output at an upper-limit or lower-limit
+                                           *   error of DSADCnDIRj.                                                      */
+            __IOM uint32_t ADIE : 1;      /*!< [15..15] Conversion End Interrupt Enable0: DSADIn is not output
+                                           *   by writing to DSADCnDIRj.1: DSADIn is output by writing
+                                           *   to DSADCnDIRj.                                                            */
+            __IOM uint32_t DSDFTYP : 4;   /*!< [19..16] Delta-Sigma ADC Post-Filter TypeSpecifications of settable
+                                           *   filter type are provided in Table 51.40, Register Set Values
+                                           *   for Each Filter Type and Table 51.41, Register Set Values
+                                           *   for Each Filter Type (Extend Sampling Rate) [For U2B-FCC
+                                           *   only].Setting to any combination of ORT, TPVSL, and DSDFTYP
+                                           *   other than the settings shown in Table 51.40, Register
+                                           *   Set Values for Each Filter Type and Table 51.41, Register
+                                           *   Set Values for Each Filter Type (Extend Sampling Rate)
+                                           *   [For U2B-FCC only] is prohibited.When bit31 FSEL                          */
+            __IOM uint32_t TPVSL : 3;     /*!< [22..20] Use of the Delta-Sigma ADC Post-Filter 2nd Stage and
+                                           *   the TAP Coefficient SelectThese bits are valid when DSDFTYP
+                                           *   = 0H. See Table 51.19, Coefficients of Post-Filter 2nd
+                                           *   Stage in Delta-Sigma ADC (1/2) and Table 51.20, Coefficients
+                                           *   of Post-Filter 2nd Stage in Delta-Sigma ADC (2/2) Coefficients.0H:
+                                           *   The 2nd stage of the post-filter in the delta-sigma ADC
+                                           *   is not used. (Fs = 400ksps)1H: The 2nd stage of the post-filter
+                                           *   in the delta-sigma ADC is used, and coefficient 1 is applied.2H:
+                                           *   The 2nd stage of the post-filt                                            */
+            __IOM uint32_t ORT : 1;       /*!< [23..23] Delta-Sigma ADC Post-Filter 2nd Stage Output Rate SelectThis
+                                           *   bit is invalid when TPVSL[2:0] = 0H (2nd stage not used).0:
+                                           *   The 2nd stage output rate is set to 1/2.1: The 2nd stage
+                                           *   output rate is set to 1/4.The output rate (entire filter
+                                           *   type) is determined in combination with the DSDFTYP set
+                                           *   value.Specifications of the settable filter type are provided
+                                           *   in Table 51.40, Register Set Values for Each Filter Type
+                                           *   and Table 51.41, Register Set Values for Each Filter Type
+                                           *   (Extend Sampling Rate) [For U2B-FCC only].S                               */
+            __IOM uint32_t VCULLMTBS : 2; /*!< [25..24] Virtual Channel Upper-Limit/Lower-Limit Table Register
+                                           *   SelectThese bits select the upper-limit/lower-limit table
+                                           *   register to be compared.0H: Upper-limit/lower-limit values
+                                           *   are checked by DSADCnULTBR0. [Initial value]1H: Upper-limit/lower-limit
+                                           *   values are checked by DSADCnULTBR1.2H: Upper-limit/lower-limit
+                                           *   values are checked by DSADCnULTBR2.3H: Upper-limit/lower-limit
+                                           *   values are checked by DSADCnULTBR3.When the A/D converted
+                                           *   value is stored in the DR, upper-limit/lower-limit values
+                                           *   are checked by using the                                                  */
+            __IOM uint32_t VCLLME : 1;    /*!< [26..26] Virtual Channel Lower-Limit Excess Notification Enable0:
+                                           *   An A/D conversion less than the result lower-limit of virtual
+                                           *   channel is not notified.1: An A/D conversion less than
+                                           *   the result lower-limit of virtual channel is notified.                    */
+            __IOM uint32_t VCULME : 1;    /*!< [27..27] Virtual Channel Upper-Limit Excess Notification Enable0:
+                                           *   An A/D conversion greater than the result upper-limit of
+                                           *   the virtual channel is not notified.1: An A/D conversion
+                                           *   greater than the result upper-limit of the virtual channel
+                                           *   is notified.                                                              */
+            __IOM uint32_t GAIN : 2;      /*!< [29..28] GainThese bits specify the input gain.0H: × 11H: ×
+                                           *   22H: × 4 (When high resolution mode is set, this setting
+                                           *   is prohibited)3H: × 8 (When high resolution mode is set,
+                                           *   this setting is prohibited)                                               */
+            uint32_t                : 1;
+            __IOM uint32_t FSELEXTE : 1;  /*!< [31..31] Extended Fs switching bit0: Non-expanded Fs (Fs = F1a,
+                                           *   F1b, F2, F3a, F3b, F4, F5, F7, F6)1: Extended Fs (Fs =
+                                           *   F8~F18) [For U2B-FCC only]                                                */
+        } VCR_b;
+    };
+} R_DSADC00_DSADCnVCR_Type;               /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_DSADC00_DSADCnDIR [DSADCnDIR] (DSADC Data Supplementary Information Register j.)
+ */
+typedef struct
+{
+    union
+    {
+        __IM uint32_t DIR;             /*!< (@ 0x00000000) DSADC Data Supplementary Information Register
+                                        *                  j.                                                         */
+
+        struct
+        {
+            __IM uint32_t DR : 16;     /*!< [15..0] These bits are used to store the A/D converted value.For
+                                        *   the data format, see “Bits 15 to 0 DR Data Register Data
+                                        *   Format”.                                                                */
+            uint32_t           : 8;
+            __IM uint32_t PRTY : 1;    /*!< [24..24] ParityThis bit indicates the even parity bit of DR
+                                        *   and IDEF                                                                  */
+            __IM uint32_t WFLG : 1;    /*!< [25..25] Write FlagSetting conditionStoring an A/D converted
+                                        *   value in DSADCnDIRjClearing conditionReading DSADCnDIRj                   */
+            __IM uint32_t IDEF : 1;    /*!< [26..26] ID Error0: An error is present.1: No error is present            */
+            uint32_t           : 5;
+        } DIR_b;
+    };
+} R_DSADC00_DSADCnDIR_Type;            /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_DSADC00_DSADCnULTBR [DSADCnULTBR] (DSADC Upper-Limit/Lower-Limit Table Register 0/1/2/3.)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint32_t ULTBR;          /*!< (@ 0x00000000) DSADC Upper-Limit/Lower-Limit Table Register
+                                        *                  0/1/2/3.                                                   */
+
+        struct
+        {
+            __IOM uint32_t LLMTB : 16; /*!< [15..0] Lower-Limit TableThese bits specify the lower-limit
+                                        *   value of the A/D converted value. When the following condition
+                                        *   is met, the LLE (lower-limit error) is set to 1LLMTB[15:0]
+                                        *   > A/D converted valueThe LLMTB[15:0] format is the same
+                                        *   as the DR format. For the unsigned format, it is compared
+                                        *   with the A/D converted value as unsigned. The A/D converted
+                                        *   values are compared by using the values before they are
+                                        *   masked by DFMT[3:0].                                                      */
+            __IOM uint32_t ULMTB : 16; /*!< [31..16] Upper-Limit TableThese bits specify the upper-limit
+                                        *   value of the A/D converted value. When the following condition
+                                        *   is met, the ULE (upper-limit error) is set to 1.ULMTB[15:0]
+                                        *   < A/D converted valueThe ULMTB[15:0] format is the same
+                                        *   as the DR format. For the unsigned format, it is compared
+                                        *   with the A/D converted value as unsigned. The A/D converted
+                                        *   values are compared by using the values before they are
+                                        *   masked by DFMT[3:0].                                                      */
+        } ULTBR_b;
+    };
+} R_DSADC00_DSADCnULTBR_Type;          /*!< Size = 4 (0x4)                                                            */
 
 /**
  * @brief R_DTS0_CH [CH] (DTS channel register)
@@ -8344,53 +8620,52 @@ typedef struct
 typedef struct
 {
     __IOM R_GTM0_TIM_CLS_CH_Type CH[8]; /*!< (@ 0x00000000) [0..7]                                                     */
-    __IM uint32_t                RESERVED[512];
 
     union
     {
-        __IM uint32_t TIM_INP_VAL;     /*!< (@ 0x00000C00) TIM[i] input value observation register                    */
+        __IM uint32_t TIM_INP_VAL;      /*!< (@ 0x00000400) TIM[i] input value observation register                    */
 
         struct
         {
-            __IM uint32_t F_OUT0 : 1;  /*!< [0..0] Signal channel [x] after TIM FLT unit                              */
-            __IM uint32_t F_OUT1 : 1;  /*!< [1..1] Signal channel [x] after TIM FLT unit                              */
-            __IM uint32_t F_OUT2 : 1;  /*!< [2..2] Signal channel [x] after TIM FLT unit                              */
-            __IM uint32_t F_OUT3 : 1;  /*!< [3..3] Signal channel [x] after TIM FLT unit                              */
-            __IM uint32_t F_OUT4 : 1;  /*!< [4..4] Signal channel [x] after TIM FLT unit                              */
-            __IM uint32_t F_OUT5 : 1;  /*!< [5..5] Signal channel [x] after TIM FLT unit                              */
-            __IM uint32_t F_OUT6 : 1;  /*!< [6..6] Signal channel [x] after TIM FLT unit                              */
-            __IM uint32_t F_OUT7 : 1;  /*!< [7..7] Signal channel [x] after TIM FLT unit                              */
-            __IM uint32_t F_IN0  : 1;  /*!< [8..8] Signal channel [x] after INPSRC selection, before TIM
-                                        *   FLT unit                                                                  */
-            __IM uint32_t F_IN1 : 1;   /*!< [9..9] Signal channel [x] after INPSRC selection, before TIM
-                                        *   FLT unit                                                                  */
-            __IM uint32_t F_IN2 : 1;   /*!< [10..10] Signal channel [x] after INPSRC selection, before TIM
-                                        *   FLT unit                                                                  */
-            __IM uint32_t F_IN3 : 1;   /*!< [11..11] Signal channel [x] after INPSRC selection, before TIM
-                                        *   FLT unit                                                                  */
-            __IM uint32_t F_IN4 : 1;   /*!< [12..12] Signal channel [x] after INPSRC selection, before TIM
-                                        *   FLT unit                                                                  */
-            __IM uint32_t F_IN5 : 1;   /*!< [13..13] Signal channel [x] after INPSRC selection, before TIM
-                                        *   FLT unit                                                                  */
-            __IM uint32_t F_IN6 : 1;   /*!< [14..14] Signal channel [x] after INPSRC selection, before TIM
-                                        *   FLT unit                                                                  */
-            __IM uint32_t F_IN7 : 1;   /*!< [15..15] Signal channel [x] after INPSRC selection, before TIM
-                                        *   FLT unit                                                                  */
-            __IM uint32_t TIM_IN0 : 1; /*!< [16..16] Signal channel [x] after TIM input signal synchronization        */
-            __IM uint32_t TIM_IN1 : 1; /*!< [17..17] Signal channel [x] after TIM input signal synchronization        */
-            __IM uint32_t TIM_IN2 : 1; /*!< [18..18] Signal channel [x] after TIM input signal synchronization        */
-            __IM uint32_t TIM_IN3 : 1; /*!< [19..19] Signal channel [x] after TIM input signal synchronization        */
-            __IM uint32_t TIM_IN4 : 1; /*!< [20..20] Signal channel [x] after TIM input signal synchronization        */
-            __IM uint32_t TIM_IN5 : 1; /*!< [21..21] Signal channel [x] after TIM input signal synchronization        */
-            __IM uint32_t TIM_IN6 : 1; /*!< [22..22] Signal channel [x] after TIM input signal synchronization        */
-            __IM uint32_t TIM_IN7 : 1; /*!< [23..23] Signal channel [x] after TIM input signal synchronization        */
+            __IM uint32_t F_OUT0 : 1;   /*!< [0..0] Signal channel [x] after TIM FLT unit                              */
+            __IM uint32_t F_OUT1 : 1;   /*!< [1..1] Signal channel [x] after TIM FLT unit                              */
+            __IM uint32_t F_OUT2 : 1;   /*!< [2..2] Signal channel [x] after TIM FLT unit                              */
+            __IM uint32_t F_OUT3 : 1;   /*!< [3..3] Signal channel [x] after TIM FLT unit                              */
+            __IM uint32_t F_OUT4 : 1;   /*!< [4..4] Signal channel [x] after TIM FLT unit                              */
+            __IM uint32_t F_OUT5 : 1;   /*!< [5..5] Signal channel [x] after TIM FLT unit                              */
+            __IM uint32_t F_OUT6 : 1;   /*!< [6..6] Signal channel [x] after TIM FLT unit                              */
+            __IM uint32_t F_OUT7 : 1;   /*!< [7..7] Signal channel [x] after TIM FLT unit                              */
+            __IM uint32_t F_IN0  : 1;   /*!< [8..8] Signal channel [x] after INPSRC selection, before TIM
+                                         *   FLT unit                                                                  */
+            __IM uint32_t F_IN1 : 1;    /*!< [9..9] Signal channel [x] after INPSRC selection, before TIM
+                                         *   FLT unit                                                                  */
+            __IM uint32_t F_IN2 : 1;    /*!< [10..10] Signal channel [x] after INPSRC selection, before TIM
+                                         *   FLT unit                                                                  */
+            __IM uint32_t F_IN3 : 1;    /*!< [11..11] Signal channel [x] after INPSRC selection, before TIM
+                                         *   FLT unit                                                                  */
+            __IM uint32_t F_IN4 : 1;    /*!< [12..12] Signal channel [x] after INPSRC selection, before TIM
+                                         *   FLT unit                                                                  */
+            __IM uint32_t F_IN5 : 1;    /*!< [13..13] Signal channel [x] after INPSRC selection, before TIM
+                                         *   FLT unit                                                                  */
+            __IM uint32_t F_IN6 : 1;    /*!< [14..14] Signal channel [x] after INPSRC selection, before TIM
+                                         *   FLT unit                                                                  */
+            __IM uint32_t F_IN7 : 1;    /*!< [15..15] Signal channel [x] after INPSRC selection, before TIM
+                                         *   FLT unit                                                                  */
+            __IM uint32_t TIM_IN0 : 1;  /*!< [16..16] Signal channel [x] after TIM input signal synchronization        */
+            __IM uint32_t TIM_IN1 : 1;  /*!< [17..17] Signal channel [x] after TIM input signal synchronization        */
+            __IM uint32_t TIM_IN2 : 1;  /*!< [18..18] Signal channel [x] after TIM input signal synchronization        */
+            __IM uint32_t TIM_IN3 : 1;  /*!< [19..19] Signal channel [x] after TIM input signal synchronization        */
+            __IM uint32_t TIM_IN4 : 1;  /*!< [20..20] Signal channel [x] after TIM input signal synchronization        */
+            __IM uint32_t TIM_IN5 : 1;  /*!< [21..21] Signal channel [x] after TIM input signal synchronization        */
+            __IM uint32_t TIM_IN6 : 1;  /*!< [22..22] Signal channel [x] after TIM input signal synchronization        */
+            __IM uint32_t TIM_IN7 : 1;  /*!< [23..23] Signal channel [x] after TIM input signal synchronization        */
             uint32_t              : 8;
         } TIM_INP_VAL_b;
     };
 
     union
     {
-        __IOM uint32_t TIM_IN_SRC;     /*!< (@ 0x00000C04) TIM[i] AUX IN source selection register                    */
+        __IOM uint32_t TIM_IN_SRC;     /*!< (@ 0x00000404) TIM[i] AUX IN source selection register                    */
 
         struct
         {
@@ -8415,7 +8690,7 @@ typedef struct
 
     union
     {
-        __IOM uint32_t TIM_RST;         /*!< (@ 0x00000C08) TIM[i] global software reset register                      */
+        __IOM uint32_t TIM_RST;         /*!< (@ 0x00000408) TIM[i] global software reset register                      */
 
         struct
         {
@@ -8430,7 +8705,7 @@ typedef struct
             uint32_t               : 24;
         } TIM_RST_b;
     };
-    __IM uint32_t RESERVED1[31997];
+    __IM uint32_t RESERVED[32509];
 } R_GTM0_TIM_CLS_Type;                 /*!< Size = 131072 (0x20000)                                                   */
 
 /**
@@ -17542,6 +17817,533 @@ typedef struct
 } R_PSI5S0_MB_CH_Type;                    /*!< Size = 72 (0x48)                                                          */
 
 /**
+ * @brief R_RDC3ASn_CLS [CLS] ([0..1])
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint32_t RDC3ASnDSST;    /*!< (@ 0x00000000) ADC setting support register.                              */
+
+        struct
+        {
+            __IOM uint32_t DSFQ : 2;   /*!< [1..0] ADC output update frequency setting.                               */
+            uint32_t            : 2;
+            __IOM uint32_t DSDL : 2;   /*!< [5..4] ADC group delay setting.                                           */
+            uint32_t            : 26;
+        } RDC3ASnDSST_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnPI0;     /*!< (@ 0x00000004) Control Gain Select Register 0                             */
+
+        struct
+        {
+            __IOM uint32_t LPGS  : 3;  /*!< [2..0] Loop Gain Select                                                   */
+            uint32_t             : 1;
+            __IOM uint32_t BWCS  : 1;  /*!< [4..4] Bandwidth Setting                                                  */
+            uint32_t             : 3;
+            __IOM uint32_t HKVS  : 4;  /*!< [11..8] High Kv Gain Select                                               */
+            __IOM uint32_t LKVS  : 4;  /*!< [15..12] Low Kv Gain Select                                               */
+            __IOM uint32_t DEVCK : 3;  /*!< [18..16] Control Variation Determination Clock Select                     */
+            uint32_t             : 1;
+            __IOM uint32_t KIS   : 3;  /*!< [22..20] Ki Gain Select                                                   */
+            uint32_t             : 1;
+            __IOM uint32_t KPS   : 2;  /*!< [25..24] Kp Gain Select                                                   */
+            __IOM uint32_t KPF   : 1;  /*!< [26..26] Kp Gain Quadruple                                                */
+            uint32_t             : 1;
+            __IOM uint32_t DVW   : 2;  /*!< [29..28] ERR Deviation Weighting                                          */
+            __IOM uint32_t KVMS  : 2;  /*!< [31..30] Kv Gain Method Select                                            */
+        } RDC3ASnPI0_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnPI1;     /*!< (@ 0x00000008) Control Gain Select Register 1                             */
+
+        struct
+        {
+            __IOM uint32_t MAXV  : 3;  /*!< [2..0] Maximum Angular Velocity Select                                    */
+            uint32_t             : 5;
+            __IOM uint32_t LKVLM : 4;  /*!< [11..8] AGC Low Gain Limit Setting                                        */
+            __IOM uint32_t HKVLM : 4;  /*!< [15..12] AGC High Gain Limit Setting                                      */
+            __IOM uint32_t AGDS  : 1;  /*!< [16..16] AGC Kv High Gain Transition Restriction                          */
+            uint32_t             : 3;
+            __IOM uint32_t AGST  : 4;  /*!< [23..20] Short-Period BIST Recovery Initial AGC Gain                      */
+            __IOM uint32_t AGCD  : 1;  /*!< [24..24] AGCON Disable                                                    */
+            uint32_t             : 3;
+            __IOM uint32_t SAGD  : 1;  /*!< [28..28] Short-Period BIST Recovery AGCON Disable                         */
+            uint32_t             : 3;
+        } RDC3ASnPI1_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnPHICP0;   /*!< (@ 0x0000000C) PHI Compare Setting Register 0                             */
+
+        struct
+        {
+            __IM uint32_t INTFLG0  : 1; /*!< [0..0] Compare Match Interrupt 0 Flag                                     */
+            __IM uint32_t INTFLG1  : 1; /*!< [1..1] Compare Match Interrupt 1 Flag                                     */
+            __IM uint32_t INTFLG2  : 1; /*!< [2..2] Compare Match Interrupt 2 Flag                                     */
+            uint32_t               : 13;
+            __IOM uint32_t IRS     : 1; /*!< [16..16] Compare Match Interrupt Request Signal Select                    */
+            uint32_t               : 7;
+            __IOM uint32_t INTCLR0 : 1; /*!< [24..24] Compare Match Interrupt 0 Clear                                  */
+            __IOM uint32_t INTCLR1 : 1; /*!< [25..25] Compare Match Interrupt 1 Clear                                  */
+            __IOM uint32_t INTCLR2 : 1; /*!< [26..26] Compare Match Interrupt 2 Clear                                  */
+            uint32_t               : 5;
+        } RDC3ASnPHICP0_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnPHICP1;  /*!< (@ 0x00000010) PHI Compare Setting Register 1                             */
+
+        struct
+        {
+            __IOM uint32_t CMP0 : 16;  /*!< [15..0] Phi Compare Value 0                                               */
+            __IOM uint32_t CMP1 : 16;  /*!< [31..16] Phi Compare Value 1                                              */
+        } RDC3ASnPHICP1_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnPHICP2;  /*!< (@ 0x00000014) PHI Compare Setting Register 2                             */
+
+        struct
+        {
+            __IOM uint32_t CMP2 : 16;  /*!< [15..0] Phi Compare Value 2                                               */
+            uint32_t            : 16;
+        } RDC3ASnPHICP2_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnSCCOR0;  /*!< (@ 0x00000018) Sine/Cosine Angle Correction Register                      */
+
+        struct
+        {
+            __IOM uint32_t SINPO : 12; /*!< [11..0] Sine Angle Correction                                             */
+            uint32_t             : 4;
+            __IOM uint32_t COSPO : 12; /*!< [27..16] Cosine Angle Correction                                          */
+            uint32_t             : 4;
+        } RDC3ASnSCCOR0_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnSCCOR1;  /*!< (@ 0x0000001C) Sine/Cosine Correction Register 1                          */
+
+        struct
+        {
+            uint32_t             : 8;
+            __IOM uint32_t PHCSL : 2;  /*!< [9..8] Sine/Cosine Phase Correction Type Select                           */
+            __IOM uint32_t PHCLT : 2;  /*!< [11..10] Phase Correction Limit                                           */
+            uint32_t             : 4;
+            __IOM uint32_t GNCSL : 2;  /*!< [17..16] Gain Correction Type Select                                      */
+            __IOM uint32_t GNCLT : 2;  /*!< [19..18] Gain Correction Range Limit                                      */
+            __IOM uint32_t CMCSL : 2;  /*!< [21..20] Common Offset Correction Type Select                             */
+            __IOM uint32_t CMCLT : 2;  /*!< [23..22] Common Offset Correction Limit                                   */
+            __IOM uint32_t GNCST : 1;  /*!< [24..24] Gain Correction Start                                            */
+            uint32_t             : 1;
+            __IOM uint32_t PHCST : 1;  /*!< [26..26] Phase Correction Start                                           */
+            uint32_t             : 5;
+        } RDC3ASnSCCOR1_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnSCCOR2;  /*!< (@ 0x00000020) Sine/Cosine Correction Register 2                          */
+
+        struct
+        {
+            __IOM uint32_t PHSNM : 6;  /*!< [5..0] Sine Side Phase Correction Fixed Value                             */
+            uint32_t             : 2;
+            __IOM uint32_t PHCNM : 6;  /*!< [13..8] Cosine Side Phase Correction Fixed Value                          */
+            uint32_t             : 2;
+            __IOM uint32_t GNCNM : 12; /*!< [27..16] Gain Correction Fixed Value                                      */
+            uint32_t             : 4;
+        } RDC3ASnSCCOR2_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnSCCOR3;  /*!< (@ 0x00000024) Sine/Cosine Correction Register 3                          */
+
+        struct
+        {
+            __IOM uint32_t CSOSN : 10; /*!< [9..0] Sine Side Common Offset Correction Fixed Value Setting             */
+            uint32_t             : 6;
+            __IOM uint32_t CCOSN : 10; /*!< [25..16] Cosine Side Common Offset Correction Fixed Value Setting         */
+            uint32_t             : 6;
+        } RDC3ASnSCCOR3_b;
+    };
+    __IM uint32_t RESERVED[2];
+
+    union
+    {
+        __IOM uint32_t RDC3ASnDIAG0;   /*!< (@ 0x00000030) Error Detection Register 0                                 */
+
+        struct
+        {
+            __IOM uint32_t SGBDTH : 8; /*!< [7..0] Disconnect Error Comparison Threshold Setting (for DC
+                                        *   Resolver)                                                                 */
+            __IOM uint32_t SGBTH  : 8; /*!< [15..8] Disconnect Error Comparison Threshold (for VR Resolver)           */
+            __IOM uint32_t EXCETH : 8; /*!< [23..16] Resolver Signal Error Comparison Threshold                       */
+            __IOM uint32_t P2ANT  : 2; /*!< [25..24] Two Paths Conversions Error Threshold                            */
+            uint32_t              : 6;
+        } RDC3ASnDIAG0_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnDIAG1;   /*!< (@ 0x00000034) Error Detection Register 1                                 */
+
+        struct
+        {
+            __IOM uint32_t KIRST  : 1; /*!< [0..0] Ki Component Reset                                                 */
+            uint32_t              : 7;
+            __IOM uint32_t ERRST  : 1; /*!< [8..8] Error Signal Reset Bit                                             */
+            uint32_t              : 1;
+            __IOM uint32_t SQERST : 1; /*!< [10..10] Sum-of-Squares Amplitude Error Excitation Counter Reset          */
+            uint32_t              : 1;
+            __IOM uint32_t ERDEN  : 1; /*!< [12..12] Error Detection Start                                            */
+            uint32_t              : 15;
+            __IOM uint32_t EDPS   : 2; /*!< [29..28] RD Conversion Error Determination Time Select                    */
+            __IOM uint32_t CVEDS  : 1; /*!< [30..30] Conversion Error Detection Circuit Select                        */
+            uint32_t              : 1;
+        } RDC3ASnDIAG1_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnDIAG2;   /*!< (@ 0x00000038) Error Detection Register 2                                 */
+
+        struct
+        {
+            uint32_t              : 16;
+            __IOM uint32_t ERCNVS : 1; /*!< [16..16] Conversion Error Select                                          */
+            __IOM uint32_t ERP2S  : 1; /*!< [17..17] Two Paths Conversion Error Select                                */
+            __IOM uint32_t ERSQS  : 1; /*!< [18..18] Sum of Squares Amplitude Error Select                            */
+            uint32_t              : 1;
+            __IOM uint32_t ERSBSS : 1; /*!< [20..20] Disconnection Error (Sine) Selection                             */
+            __IOM uint32_t ERSBCS : 1; /*!< [21..21] Disconnection Error (Cosine) Select                              */
+            __IOM uint32_t EREXCS : 1; /*!< [22..22] Resolver Signal Error Select                                     */
+            uint32_t              : 9;
+        } RDC3ASnDIAG2_b;
+    };
+
+    union
+    {
+        __IM uint32_t RDC3ASnDGOUT0;   /*!< (@ 0x0000003C) Error Detection Output Register 0                          */
+
+        struct
+        {
+            uint32_t            : 16;
+            __IM uint32_t ERCNV : 1;   /*!< [16..16] Conversion Error                                                 */
+            __IM uint32_t ERP2  : 1;   /*!< [17..17] Two Paths Conversion Error                                       */
+            __IM uint32_t ERSQ  : 1;   /*!< [18..18] Sum of Squares Amplitude Error                                   */
+            uint32_t            : 1;
+            __IM uint32_t ERSBS : 1;   /*!< [20..20] Disconnect Error (Sine Side)                                     */
+            __IM uint32_t ERSBC : 1;   /*!< [21..21] Disconnect Error (Cosine Side)                                   */
+            __IM uint32_t EREXC : 1;   /*!< [22..22] Resolver Signal Error                                            */
+            uint32_t            : 1;
+            __IM uint32_t ERHD  : 1;   /*!< [24..24] Error Hold                                                       */
+            uint32_t            : 3;
+            __IM uint32_t ERR   : 1;   /*!< [28..28] Error                                                            */
+            uint32_t            : 3;
+        } RDC3ASnDGOUT0_b;
+    };
+
+    union
+    {
+        __IM uint32_t RDC3ASnDGOUT1;   /*!< (@ 0x00000040) Error Detection Output Register 1                          */
+
+        struct
+        {
+            uint32_t             : 16;
+            __IM uint32_t ERDCNV : 1;  /*!< [16..16] Conversion Error Hold                                            */
+            __IM uint32_t ERDP2  : 1;  /*!< [17..17] Two Paths Conversion Error Hold                                  */
+            __IM uint32_t ERDSQ  : 1;  /*!< [18..18] Sum of Squares Amplitude Error Hold                              */
+            uint32_t             : 1;
+            __IM uint32_t ERDSBS : 1;  /*!< [20..20] Disconnect Error (Sine Side) Hold                                */
+            __IM uint32_t ERDSBC : 1;  /*!< [21..21] Disconnect Error (Cosine Side) Hold                              */
+            __IM uint32_t ERDEXC : 1;  /*!< [22..22] Resolver Signal Error Hold                                       */
+            uint32_t             : 1;
+            __IM uint32_t ERHD   : 1;  /*!< [24..24] Error Hold                                                       */
+            uint32_t             : 3;
+            __IM uint32_t ERR    : 1;  /*!< [28..28] Error                                                            */
+            uint32_t             : 3;
+        } RDC3ASnDGOUT1_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnBIST0;    /*!< (@ 0x00000044) BIST Register 0                                            */
+
+        struct
+        {
+            __IM uint32_t BISTCD   : 4; /*!< [3..0] BIST Result Store                                                  */
+            uint32_t               : 4;
+            __IM uint32_t BSTF     : 1; /*!< [8..8] BIST Flag                                                          */
+            uint32_t               : 7;
+            __IOM uint32_t CBSP2D  : 1; /*!< [16..16] Two Paths Conversion BIST Disable                                */
+            uint32_t               : 3;
+            __IOM uint32_t ERCVP2D : 1; /*!< [20..20] Two Paths Conversion Error BIST Disable                          */
+            uint32_t               : 11;
+        } RDC3ASnBIST0_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnBIST1;   /*!< (@ 0x00000048) BIST Register 1                                            */
+
+        struct
+        {
+            __IOM uint32_t BCON   : 4; /*!< [3..0] BIST Execution Setting                                             */
+            uint32_t              : 4;
+            __IOM uint32_t BEXE   : 1; /*!< [8..8] BIST Execution                                                     */
+            uint32_t              : 7;
+            __IOM uint32_t BISTCL : 1; /*!< [16..16] BIST Result Clear                                                */
+            uint32_t              : 15;
+        } RDC3ASnBIST1_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnREF;       /*!< (@ 0x0000004C) Excitation Setting Register                                */
+
+        struct
+        {
+            __IOM uint32_t REFDLCT : 16; /*!< [15..0] Excitation phase signal delay adjustment counter setting
+                                          *   bit                                                                       */
+            __IOM uint32_t EXRFPSL : 2;  /*!< [17..16] Excitation phase signal shape selection bit                      */
+            uint32_t               : 2;
+            __IOM uint32_t REFINSL : 2;  /*!< [21..20] Input excitation phase signal selection bit                      */
+            uint32_t               : 2;
+            __IOM uint32_t EXIO    : 1;  /*!< [24..24] Sensor Selection                                                 */
+            __IOM uint32_t SENS    : 1;  /*!< [25..25] Sensor Selection                                                 */
+            uint32_t               : 1;
+            __IOM uint32_t REFXS   : 1;  /*!< [27..27] Excitation Component Extraction Function                         */
+            __IOM uint32_t PLSNFS  : 1;  /*!< [28..28] Excitation Extraction Noise Filter                               */
+            uint32_t               : 3;
+        } RDC3ASnREF_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnENC0;     /*!< (@ 0x00000050) Encoder Register 0                                         */
+
+        struct
+        {
+            __IOM uint32_t EINTEN  : 1; /*!< [0..0] RDC Error Interrupt Enable                                         */
+            __IOM uint32_t ZEN     : 1; /*!< [1..1] Z Phase Output and Z Phase Signal Interrupt Enable                 */
+            __IOM uint32_t UVWEN   : 1; /*!< [2..2] Encoder Pulse U/V/W Phase Output Enable                            */
+            __IOM uint32_t ABEN    : 1; /*!< [3..3] A/B Phase Output Enable                                            */
+            __IOM uint32_t CINTEN  : 1; /*!< [4..4] Angle Compare Interrupt Enable                                     */
+            __IOM uint32_t REFZEN  : 1; /*!< [5..5] Excitation Zero-Crossing Interrupt Output Enable                   */
+            uint32_t               : 2;
+            __IOM uint32_t HYSS    : 1; /*!< [8..8] Hysteresis Output Select                                           */
+            uint32_t               : 7;
+            __IOM uint32_t XUVW    : 4; /*!< [19..16] Encoder Pulse Pole Selection                                     */
+            __IOM uint32_t PHIERLK : 1; /*!< [20..20] PHI Fixing Selection on Error                                    */
+            uint32_t               : 3;
+            __IOM uint32_t OMGLT   : 1; /*!< [24..24] Angular Velocity Output Fixing Trigger                           */
+            __IOM uint32_t PHILT   : 1; /*!< [25..25] PHI Output Fixing Trigger                                        */
+            uint32_t               : 2;
+            __IOM uint32_t OMGLTSL : 1; /*!< [28..28] Angular Velocity Output Fixing Select                            */
+            __IOM uint32_t PHILTSL : 1; /*!< [29..29] PHI Output Fixing Select                                         */
+            uint32_t               : 2;
+        } RDC3ASnENC0_b;
+    };
+
+    union
+    {
+        __IM uint32_t RDC3ASnENC1;     /*!< (@ 0x00000054) Encoder Register 1                                         */
+
+        struct
+        {
+            __IM uint32_t ENCW : 1;    /*!< [0..0] Encoder Pulse W Phase                                              */
+            __IM uint32_t ENCV : 1;    /*!< [1..1] Encoder Pulse V Phase                                              */
+            __IM uint32_t ENCU : 1;    /*!< [2..2] Encoder Pulse U Phase                                              */
+            __IM uint32_t ENCZ : 1;    /*!< [3..3] Encoder Pulse Z Phase                                              */
+            __IM uint32_t ENCB : 1;    /*!< [4..4] Encoder Pulse B Phase                                              */
+            __IM uint32_t ENCA : 1;    /*!< [5..5] Encoder Pulse A Phase                                              */
+            uint32_t           : 10;
+            __IM uint32_t PHI  : 16;   /*!< [31..16] The digitally output PHI angle is stored in these bits
+                                        *   with a 16-bit width.                                                      */
+        } RDC3ASnENC1_b;
+    };
+
+    union
+    {
+        __IM uint32_t RDC3ASnENC2;     /*!< (@ 0x00000058) Encoder Register 2                                         */
+
+        struct
+        {
+            uint32_t             : 16;
+            __IM uint32_t PHIAD1 : 16; /*!< [31..16] The digitally output PHI angle from conversion loop1
+                                        *   is stored in these bits with a 16 bit width.                              */
+        } RDC3ASnENC2_b;
+    };
+
+    union
+    {
+        __IM uint32_t RDC3ASnOMG;      /*!< (@ 0x0000005C) Angular Velocity Register                                  */
+
+        struct
+        {
+            __IM uint32_t OMG : 32;    /*!< [31..0] Indicates the amount of change in phi within the measuring
+                                        *   period (selected by OMGPTC[1:0]). The resolution is 25-bits.              */
+        } RDC3ASnOMG_b;
+    };
+
+    union
+    {
+        __IM uint32_t RDC3ASnETC;      /*!< (@ 0x00000060) MNT Signal Register                                        */
+
+        struct
+        {
+            __IM uint32_t COSPK : 13;  /*!< [12..0] COSMNT Excitation PeakIndicates the value of COSMNT
+                                        *   latched by the excitation peak trigger signal (trg_ad)
+                                        *   from the excitation timer (ET).                                           */
+            uint32_t            : 3;
+            __IM uint32_t SINPK : 13;  /*!< [28..16] SINMNT Excitation PeakIndicates the value of SINMNT
+                                        *   latched by the excitation peak trigger signal (trg_ad)
+                                        *   from the excitation timer (ET).                                           */
+            uint32_t : 3;
+        } RDC3ASnETC_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnTBUS;     /*!< (@ 0x00000064) Test Bus Register                                          */
+
+        struct
+        {
+            __IM uint32_t  DATA   : 16; /*!< [15..0] testbus External Output                                           */
+            __IOM uint32_t DATSEL : 7;  /*!< [22..16] RDC Data Select                                                  */
+            uint32_t              : 5;
+            __IOM uint32_t OMGPTC : 2;  /*!< [29..28] Angular Velocity Measuring Period Select                         */
+            uint32_t              : 2;
+        } RDC3ASnTBUS_b;
+    };
+    __IM uint32_t RESERVED1;
+
+    union
+    {
+        __IOM uint32_t RDC3ASnETEN;      /*!< (@ 0x0000006C) ET Control Register                                        */
+
+        struct
+        {
+            __IM uint32_t  CNT     : 16; /*!< [15..0] ET Counter Register                                               */
+            __IOM uint32_t CNTEN   : 1;  /*!< [16..16] Counter Operation Enable                                         */
+            __IOM uint32_t ZCES    : 1;  /*!< [17..17] Zero-Crossing Signal Edge Select                                 */
+            __IOM uint32_t ADTEN   : 1;  /*!< [18..18] A/D Conversion Start Trigger Enable                              */
+            __IOM uint32_t DREN    : 1;  /*!< [19..19] DMA Request Enable                                               */
+            __IOM uint32_t IREN    : 1;  /*!< [20..20] Interrupt Request Enable                                         */
+            __IOM uint32_t CMPEN   : 1;  /*!< [21..21] Compare Match Function Enable                                    */
+            uint32_t               : 2;
+            __IOM uint32_t ZCSTRG  : 1;  /*!< [24..24] Software Trigger                                                 */
+            uint32_t               : 3;
+            __IOM uint32_t REFETSL : 1;  /*!< [28..28] Excitation Zero-Crossing Select                                  */
+            uint32_t               : 1;
+            __IOM uint32_t REFZSL  : 2;  /*!< [31..30] Excitation Zero-Crossing Pulse Select                            */
+        } RDC3ASnETEN_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnETCAP;   /*!< (@ 0x00000070) ET Capture Register                                        */
+
+        struct
+        {
+            __IOM uint32_t CMP : 16;   /*!< [15..0] ET Compare                                                        */
+            __IM uint32_t  CAP : 16;   /*!< [31..16] ET Capture                                                       */
+        } RDC3ASnETCAP_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnETMCNT;  /*!< (@ 0x00000074) ET Zero-Crossing Counter Register                          */
+
+        struct
+        {
+            __IOM uint32_t RLD : 16;   /*!< [15..0] ET Reload                                                         */
+            __IM uint32_t  CNT : 16;   /*!< [31..16] Zero-Crossing Period Measurement Counter                         */
+        } RDC3ASnETMCNT_b;
+    };
+    __IM uint32_t RESERVED2[14];
+
+    union
+    {
+        __IOM uint32_t RDC3ASnDIAG3;   /*!< (@ 0x000000B0) Error Detection Register 3                                 */
+
+        struct
+        {
+            __IOM uint32_t SQLTH : 16; /*!< [15..0] Sum of Squares Amplitude Lower Threshold                          */
+            __IOM uint32_t SQHTH : 16; /*!< [31..16] Sum of Squares Amplitude Upper Threshold                         */
+        } RDC3ASnDIAG3_b;
+    };
+
+    union
+    {
+        __IOM uint32_t RDC3ASnDIAG4;   /*!< (@ 0x000000B4) Error Detection Register 4                                 */
+
+        struct
+        {
+            __IOM uint32_t SQCTH : 3;  /*!< [2..0] Sum of Squares Amplitude Error Excitation Counts Threshold         */
+            uint32_t             : 5;
+            __IM uint32_t SQCNT  : 7;  /*!< [14..8] Sum of Squares Amplitude error Counter Value                      */
+            uint32_t             : 17;
+        } RDC3ASnDIAG4_b;
+    };
+    __IM uint32_t RESERVED3[2];
+
+    union
+    {
+        __IM uint32_t RDC3ASnDBG0;      /*!< (@ 0x000000C0) Debugging Read Register 0                                  */
+
+        struct
+        {
+            __IM uint32_t CMNTAD1 : 13; /*!< [12..0] COSMNT Acquired by ADC                                            */
+            uint32_t              : 3;
+            __IM uint32_t SMNTAD1 : 13; /*!< [28..16] SINMNT Acquired by ADC                                           */
+            uint32_t              : 3;
+        } RDC3ASnDBG0_b;
+    };
+
+    union
+    {
+        __IM uint32_t RDC3ASnDBG1;     /*!< (@ 0x000000C4) Debugging Read Register 1                                  */
+
+        struct
+        {
+            __IM uint32_t CMNMAX : 14; /*!< [13..0] COSMNT Acquired by ADC                                            */
+            uint32_t             : 2;
+            __IM uint32_t SMNMAX : 14; /*!< [29..16] SINMNT Acquired by ADC                                           */
+            uint32_t             : 2;
+        } RDC3ASnDBG1_b;
+    };
+    __IM uint32_t RESERVED4;
+
+    union
+    {
+        __IM uint32_t RDC3ASnDBG3;     /*!< (@ 0x000000CC) Debugging Read Register 3                                  */
+
+        struct
+        {
+            uint32_t             : 16;
+            __IM uint32_t REFAD1 : 13; /*!< [28..16] Excitation signal acquired by ADC                                */
+            uint32_t             : 3;
+        } RDC3ASnDBG3_b;
+    };
+    __IM uint32_t RESERVED5[54284];
+} R_RDC3ASn_CLS_Type;                  /*!< Size = 217344 (0x35100)                                                   */
+
+/**
  * @brief R_DMAC0_sDMAC_CH [sDMAC_CH] (DMA Channel Registers)
  */
 typedef struct
@@ -21875,7 +22677,7 @@ typedef struct                         /*!< (@ 0xFFF80000) R_INTC2 Structure    
 /* =========================================================================================================================== */
 
 /**
- * @brief TPBA Interrupt Number Select Register (R_INTIF)
+ * @brief TPTM Interrupt FE EI Select Register (R_INTIF)
  */
 
 typedef struct                                   /*!< (@ 0xFF090800) R_INTIF Structure                                          */
@@ -23199,7 +24001,36 @@ typedef struct                                   /*!< (@ 0xFF090800) R_INTIF Str
             uint32_t : 23;
         } INTQOS7MON1_b;
     };
-} R_INTIF_Type;                           /*!< Size = 144 (0x90)                                                         */
+    __IM uint32_t RESERVED4[92];
+
+    union
+    {
+        __IOM uint32_t TPTMSEL;          /*!< (@ 0x00000200) TPTMSEL — TPTM Interrupt FE EI Select Register           */
+
+        struct
+        {
+            __IOM uint32_t TPTMSEL0 : 1; /*!< [0..0] This bit selects whether the FEINT or the EIINT is the
+                                          *   TPTM interrupt of PE0.0: The TPTM interrupt of PE0 is connected
+                                          *   to FEINT.1: The TPTM interrupt of PE0 is connected to EIINT               */
+            __IOM uint32_t TPTMSEL1 : 1; /*!< [1..1] This bit selects whether the FEINT or the EIINT is the
+                                          *   TPTM interrupt of PE1.0: The TPTM interrupt of PE1 is connected
+                                          *   to FEINT.1: The TPTM interrupt of PE1 is connected to EIINT               */
+            __IOM uint32_t TPTMSEL2 : 1; /*!< [2..2] This bit selects whether the FEINT or the EIINT is the
+                                          *   TPTM interrupt of PE2.0: The TPTM interrupt of PE2 is connected
+                                          *   to FEINT.1: The TPTM interrupt of PE2 is connected to EIINT               */
+            __IOM uint32_t TPTMSEL3 : 1; /*!< [3..3] This bit selects whether the FEINT or the EIINT is the
+                                          *   TPTM interrupt of PE3.0: The TPTM interrupt of PE3 is connected
+                                          *   to FEINT.1: The TPTM interrupt of PE3 is connected to EIINT               */
+            __IOM uint32_t TPTMSEL4 : 1; /*!< [4..4] This bit selects whether the FEINT or the EIINT is the
+                                          *   TPTM interrupt of PE4.0: The TPTM interrupt of PE4 is connected
+                                          *   to FEINT.1: The TPTM interrupt of PE4 is connected to EIINT               */
+            __IOM uint32_t TPTMSEL5 : 1; /*!< [5..5] This bit selects whether the FEINT or the EIINT is the
+                                          *   TPTM interrupt of PE5.0: The TPTM interrupt of PE5 is connected
+                                          *   to FEINT.1: The TPTM interrupt of PE5 is connected to EIINT               */
+            uint32_t : 26;
+        } TPTMSEL_b;
+    };
+} R_INTIF_Type;                          /*!< Size = 516 (0x204)                                                        */
 
 /* =========================================================================================================================== */
 /* ================                                         R_INTIF0                                          ================ */
@@ -68640,6 +69471,881 @@ typedef struct                         /*!< (@ 0xFFED4800) R_FCLACTL_TAPA Struct
 } R_FCLACTL_TAPA_Type;                 /*!< Size = 21 (0x15)                                                          */
 
 /* =========================================================================================================================== */
+/* ================                                           R_LPS                                           ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief This section contains a generic description of the low-power sampler (LPS).The first part of this section describes the features specific RH850/U2B such as the number of units, register base addresses, etc. The remainder of the section describes the functions and registers of the LPS (R_LPS)
+ */
+
+typedef struct                         /*!< (@ 0xFF9A3800) R_LPS Structure                                            */
+{
+    union
+    {
+        __IOM uint32_t SCTLR;          /*!< (@ 0x00000000) LPS Control RegisterThis register is used to
+                                        *                  configure the LPS.                                         */
+
+        struct
+        {
+            __IOM uint32_t DPEN   : 1; /*!< [0..0] DPEN                                                               */
+            __IOM uint32_t ADEN   : 1; /*!< [1..1] ADEN                                                               */
+            __IOM uint32_t TJIS0  : 1; /*!< [2..2] Sequence Start Trigger Select                                      */
+            __IOM uint32_t TJIS1  : 1; /*!< [3..3] Sequence Start Trigger Select                                      */
+            __IOM uint32_t NUMDP0 : 1; /*!< [4..4] These bits specify the number of times the port is read
+                                        *   in digital input mode. If two or more times are specified,
+                                        *   the external multiplexer is controlled by the DPSEL[2:0]
+                                        *   pins.The bits for which comparison is enabled in the DPSELR0,
+                                        *   DPSELRM, and DPSELRH registers are compared regardless
+                                        *   of the repeat number setting, and WUTRG will be generated
+                                        *   according to the results.                                                 */
+            __IOM uint32_t NUMDP1 : 1; /*!< [5..5] These bits specify the number of times the port is read
+                                        *   in digital input mode. If two or more times are specified,
+                                        *   the external multiplexer is controlled by the DPSEL[2:0]
+                                        *   pins.The bits for which comparison is enabled in the DPSELR0,
+                                        *   DPSELRM, and DPSELRH registers are compared regardless
+                                        *   of the repeat number setting, and WUTRG will be generated
+                                        *   according to the results.                                                 */
+            __IOM uint32_t NUMDP2 : 1; /*!< [6..6] These bits specify the number of times the port is read
+                                        *   in digital input mode. If two or more times are specified,
+                                        *   the external multiplexer is controlled by the DPSEL[2:0]
+                                        *   pins.The bits for which comparison is enabled in the DPSELR0,
+                                        *   DPSELRM, and DPSELRH registers are compared regardless
+                                        *   of the repeat number setting, and WUTRG will be generated
+                                        *   according to the results.                                                 */
+            __IOM uint32_t TJIS2 : 1;  /*!< [7..7] Sequence Start Trigger Select                                      */
+            uint32_t             : 24;
+        } SCTLR_b;
+    };
+
+    union
+    {
+        __IOM uint32_t EVFR;           /*!< (@ 0x00000004) Event Flag RegisterThis register indicates the
+                                        *                  result of comparing the data sequentially
+                                        *                  captured at the digital input pins and stored
+                                        *                  in the DPDIMR7 to DPDIMR0 registers with
+                                        *                  the comparison target data in the DPDSRH/DPDSRM/DPDSR0
+                                        *                  registers.                                                 */
+
+        struct
+        {
+            __IOM uint32_t DINEVF : 1; /*!< [0..0] This bit indicates the result of comparing the data captured
+                                        *   at the digital input pins and stored in the DPDIMR7 to
+                                        *   DPDIMR0 registers with the comparison target data in the
+                                        *   DPDSRH/DPDSRM/DPDSR0 registers.                                           */
+            uint32_t : 31;
+        } EVFR_b;
+    };
+
+    union
+    {
+        __IOM uint32_t DPSELR0;         /*!< (@ 0x00000008) DPIN Select Register 0This register specifies
+                                         *                  the compare target bits in the DPDSR0 and
+                                         *                  DPDIMR0 registers.Write to the DPSELR0 register
+                                         *                  before the sequence operation is started
+                                         *                  (when the SOSTR.SOF bit = 0).                              */
+
+        struct
+        {
+            __IOM uint32_t D0EN_0 : 1;  /*!< [0..0] These bits enable or disable comparing each bit of the
+                                         *   first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_1 : 1;  /*!< [1..1] These bits enable or disable comparing each bit of the
+                                         *   first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_2 : 1;  /*!< [2..2] These bits enable or disable comparing each bit of the
+                                         *   first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_3 : 1;  /*!< [3..3] These bits enable or disable comparing each bit of the
+                                         *   first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_4 : 1;  /*!< [4..4] These bits enable or disable comparing each bit of the
+                                         *   first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_5 : 1;  /*!< [5..5] These bits enable or disable comparing each bit of the
+                                         *   first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_6 : 1;  /*!< [6..6] These bits enable or disable comparing each bit of the
+                                         *   first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_7 : 1;  /*!< [7..7] These bits enable or disable comparing each bit of the
+                                         *   first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_8 : 1;  /*!< [8..8] These bits enable or disable comparing each bit of the
+                                         *   first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_9 : 1;  /*!< [9..9] These bits enable or disable comparing each bit of the
+                                         *   first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_10 : 1; /*!< [10..10] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_11 : 1; /*!< [11..11] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_12 : 1; /*!< [12..12] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_13 : 1; /*!< [13..13] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_14 : 1; /*!< [14..14] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_15 : 1; /*!< [15..15] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_16 : 1; /*!< [16..16] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_17 : 1; /*!< [17..17] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_18 : 1; /*!< [18..18] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_19 : 1; /*!< [19..19] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_20 : 1; /*!< [20..20] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_21 : 1; /*!< [21..21] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_22 : 1; /*!< [22..22] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            __IOM uint32_t D0EN_23 : 1; /*!< [23..23] These bits enable or disable comparing each bit of
+                                         *   the first data captured at the digital input pins and stored
+                                         *   in the DPDIMR0 register with the comparison target data
+                                         *   in the DPDSR0 register.                                                   */
+            uint32_t : 8;
+        } DPSELR0_b;
+    };
+
+    union
+    {
+        __IOM uint32_t DPSELRM;        /*!< (@ 0x0000000C) DPIN Select Register MThis register specifies
+                                        *                  the compare target bits in the DPDSRM and
+                                        *                  DPDIMRm (m = 4 to 1) registers.Write to
+                                        *                  the DPSELRM register before the sequence
+                                        *                  operation is started (when the SOSTR.SOF
+                                        *                  bit = 0).                                                  */
+
+        struct
+        {
+            __IOM uint32_t D1EN_0 : 1; /*!< [0..0] These bits enable or disable comparing each bit of the
+                                        *   second data captured at the digital input pins and stored
+                                        *   in the DPDIMR1 register with the comparison target data
+                                        *   in the DPDSR1 register.                                                   */
+            __IOM uint32_t D1EN_1 : 1; /*!< [1..1] These bits enable or disable comparing each bit of the
+                                        *   second data captured at the digital input pins and stored
+                                        *   in the DPDIMR1 register with the comparison target data
+                                        *   in the DPDSR1 register.                                                   */
+            __IOM uint32_t D1EN_2 : 1; /*!< [2..2] These bits enable or disable comparing each bit of the
+                                        *   second data captured at the digital input pins and stored
+                                        *   in the DPDIMR1 register with the comparison target data
+                                        *   in the DPDSR1 register.                                                   */
+            __IOM uint32_t D1EN_3 : 1; /*!< [3..3] These bits enable or disable comparing each bit of the
+                                        *   second data captured at the digital input pins and stored
+                                        *   in the DPDIMR1 register with the comparison target data
+                                        *   in the DPDSR1 register.                                                   */
+            __IOM uint32_t D1EN_4 : 1; /*!< [4..4] These bits enable or disable comparing each bit of the
+                                        *   second data captured at the digital input pins and stored
+                                        *   in the DPDIMR1 register with the comparison target data
+                                        *   in the DPDSR1 register.                                                   */
+            __IOM uint32_t D1EN_5 : 1; /*!< [5..5] These bits enable or disable comparing each bit of the
+                                        *   second data captured at the digital input pins and stored
+                                        *   in the DPDIMR1 register with the comparison target data
+                                        *   in the DPDSR1 register.                                                   */
+            __IOM uint32_t D1EN_6 : 1; /*!< [6..6] These bits enable or disable comparing each bit of the
+                                        *   second data captured at the digital input pins and stored
+                                        *   in the DPDIMR1 register with the comparison target data
+                                        *   in the DPDSR1 register.                                                   */
+            __IOM uint32_t D1EN_7 : 1; /*!< [7..7] These bits enable or disable comparing each bit of the
+                                        *   second data captured at the digital input pins and stored
+                                        *   in the DPDIMR1 register with the comparison target data
+                                        *   in the DPDSR1 register.                                                   */
+            __IOM uint32_t D2EN_0 : 1; /*!< [8..8] These bits enable or disable comparing each bit of the
+                                        *   third data captured at the digital input pins and stored
+                                        *   in the DPDIMR2 register with the comparison target data
+                                        *   in the DPDSR2 register.                                                   */
+            __IOM uint32_t D2EN_1 : 1; /*!< [9..9] These bits enable or disable comparing each bit of the
+                                        *   third data captured at the digital input pins and stored
+                                        *   in the DPDIMR2 register with the comparison target data
+                                        *   in the DPDSR2 register.                                                   */
+            __IOM uint32_t D2EN_2 : 1; /*!< [10..10] These bits enable or disable comparing each bit of
+                                        *   the third data captured at the digital input pins and stored
+                                        *   in the DPDIMR2 register with the comparison target data
+                                        *   in the DPDSR2 register.                                                   */
+            __IOM uint32_t D2EN_3 : 1; /*!< [11..11] These bits enable or disable comparing each bit of
+                                        *   the third data captured at the digital input pins and stored
+                                        *   in the DPDIMR2 register with the comparison target data
+                                        *   in the DPDSR2 register.                                                   */
+            __IOM uint32_t D2EN_4 : 1; /*!< [12..12] These bits enable or disable comparing each bit of
+                                        *   the third data captured at the digital input pins and stored
+                                        *   in the DPDIMR2 register with the comparison target data
+                                        *   in the DPDSR2 register.                                                   */
+            __IOM uint32_t D2EN_5 : 1; /*!< [13..13] These bits enable or disable comparing each bit of
+                                        *   the third data captured at the digital input pins and stored
+                                        *   in the DPDIMR2 register with the comparison target data
+                                        *   in the DPDSR2 register.                                                   */
+            __IOM uint32_t D2EN_6 : 1; /*!< [14..14] These bits enable or disable comparing each bit of
+                                        *   the third data captured at the digital input pins and stored
+                                        *   in the DPDIMR2 register with the comparison target data
+                                        *   in the DPDSR2 register.                                                   */
+            __IOM uint32_t D2EN_7 : 1; /*!< [15..15] These bits enable or disable comparing each bit of
+                                        *   the third data captured at the digital input pins and stored
+                                        *   in the DPDIMR2 register with the comparison target data
+                                        *   in the DPDSR2 register.                                                   */
+            __IOM uint32_t D3EN_0 : 1; /*!< [16..16] These bits enable or disable comparing each bit of
+                                        *   the fourth data captured at the digital input pins and
+                                        *   stored in the DPDIMR3 register with the comparison target
+                                        *   data in the DPDSR3 register.                                              */
+            __IOM uint32_t D3EN_1 : 1; /*!< [17..17] These bits enable or disable comparing each bit of
+                                        *   the fourth data captured at the digital input pins and
+                                        *   stored in the DPDIMR3 register with the comparison target
+                                        *   data in the DPDSR3 register.                                              */
+            __IOM uint32_t D3EN_2 : 1; /*!< [18..18] These bits enable or disable comparing each bit of
+                                        *   the fourth data captured at the digital input pins and
+                                        *   stored in the DPDIMR3 register with the comparison target
+                                        *   data in the DPDSR3 register.                                              */
+            __IOM uint32_t D3EN_3 : 1; /*!< [19..19] These bits enable or disable comparing each bit of
+                                        *   the fourth data captured at the digital input pins and
+                                        *   stored in the DPDIMR3 register with the comparison target
+                                        *   data in the DPDSR3 register.                                              */
+            __IOM uint32_t D3EN_4 : 1; /*!< [20..20] These bits enable or disable comparing each bit of
+                                        *   the fourth data captured at the digital input pins and
+                                        *   stored in the DPDIMR3 register with the comparison target
+                                        *   data in the DPDSR3 register.                                              */
+            __IOM uint32_t D3EN_5 : 1; /*!< [21..21] These bits enable or disable comparing each bit of
+                                        *   the fourth data captured at the digital input pins and
+                                        *   stored in the DPDIMR3 register with the comparison target
+                                        *   data in the DPDSR3 register.                                              */
+            __IOM uint32_t D3EN_6 : 1; /*!< [22..22] These bits enable or disable comparing each bit of
+                                        *   the fourth data captured at the digital input pins and
+                                        *   stored in the DPDIMR3 register with the comparison target
+                                        *   data in the DPDSR3 register.                                              */
+            __IOM uint32_t D3EN_7 : 1; /*!< [23..23] These bits enable or disable comparing each bit of
+                                        *   the fourth data captured at the digital input pins and
+                                        *   stored in the DPDIMR3 register with the comparison target
+                                        *   data in the DPDSR3 register.                                              */
+            __IOM uint32_t D4EN_0 : 1; /*!< [24..24] These bits enable or disable comparing each bit of
+                                        *   the fifth data captured at the digital input pins and stored
+                                        *   in the DPDIMR4 register with the comparison target data
+                                        *   in the DPDSR4 register.                                                   */
+            __IOM uint32_t D4EN_1 : 1; /*!< [25..25] These bits enable or disable comparing each bit of
+                                        *   the fifth data captured at the digital input pins and stored
+                                        *   in the DPDIMR4 register with the comparison target data
+                                        *   in the DPDSR4 register.                                                   */
+            __IOM uint32_t D4EN_2 : 1; /*!< [26..26] These bits enable or disable comparing each bit of
+                                        *   the fifth data captured at the digital input pins and stored
+                                        *   in the DPDIMR4 register with the comparison target data
+                                        *   in the DPDSR4 register.                                                   */
+            __IOM uint32_t D4EN_3 : 1; /*!< [27..27] These bits enable or disable comparing each bit of
+                                        *   the fifth data captured at the digital input pins and stored
+                                        *   in the DPDIMR4 register with the comparison target data
+                                        *   in the DPDSR4 register.                                                   */
+            __IOM uint32_t D4EN_4 : 1; /*!< [28..28] These bits enable or disable comparing each bit of
+                                        *   the fifth data captured at the digital input pins and stored
+                                        *   in the DPDIMR4 register with the comparison target data
+                                        *   in the DPDSR4 register.                                                   */
+            __IOM uint32_t D4EN_5 : 1; /*!< [29..29] These bits enable or disable comparing each bit of
+                                        *   the fifth data captured at the digital input pins and stored
+                                        *   in the DPDIMR4 register with the comparison target data
+                                        *   in the DPDSR4 register.                                                   */
+            __IOM uint32_t D4EN_6 : 1; /*!< [30..30] These bits enable or disable comparing each bit of
+                                        *   the fifth data captured at the digital input pins and stored
+                                        *   in the DPDIMR4 register with the comparison target data
+                                        *   in the DPDSR4 register.                                                   */
+            __IOM uint32_t D4EN_7 : 1; /*!< [31..31] These bits enable or disable comparing each bit of
+                                        *   the fifth data captured at the digital input pins and stored
+                                        *   in the DPDIMR4 register with the comparison target data
+                                        *   in the DPDSR4 register.                                                   */
+        } DPSELRM_b;
+    };
+
+    union
+    {
+        __IOM uint32_t DPSELRH;        /*!< (@ 0x00000010) DPIN Select Register HThis register specifies
+                                        *                  the compare target bits in the DPDSRH and
+                                        *                  DPDIMRm (m = 7 to 5) registers.Write to
+                                        *                  the DPSELRH register before the sequence
+                                        *                  operation is started (when the SOSTR.SOF
+                                        *                  bit = 0).                                                  */
+
+        struct
+        {
+            __IOM uint32_t D5EN_0 : 1; /*!< [0..0] These bits enable or disable comparing each bit of the
+                                        *   sixth data captured at the digital input pins and stored
+                                        *   in the DPDIMR5 register with the compare target data in
+                                        *   the DPDSR5 register.                                                      */
+            __IOM uint32_t D5EN_1 : 1; /*!< [1..1] These bits enable or disable comparing each bit of the
+                                        *   sixth data captured at the digital input pins and stored
+                                        *   in the DPDIMR5 register with the compare target data in
+                                        *   the DPDSR5 register.                                                      */
+            __IOM uint32_t D5EN_2 : 1; /*!< [2..2] These bits enable or disable comparing each bit of the
+                                        *   sixth data captured at the digital input pins and stored
+                                        *   in the DPDIMR5 register with the compare target data in
+                                        *   the DPDSR5 register.                                                      */
+            __IOM uint32_t D5EN_3 : 1; /*!< [3..3] These bits enable or disable comparing each bit of the
+                                        *   sixth data captured at the digital input pins and stored
+                                        *   in the DPDIMR5 register with the compare target data in
+                                        *   the DPDSR5 register.                                                      */
+            __IOM uint32_t D5EN_4 : 1; /*!< [4..4] These bits enable or disable comparing each bit of the
+                                        *   sixth data captured at the digital input pins and stored
+                                        *   in the DPDIMR5 register with the compare target data in
+                                        *   the DPDSR5 register.                                                      */
+            __IOM uint32_t D5EN_5 : 1; /*!< [5..5] These bits enable or disable comparing each bit of the
+                                        *   sixth data captured at the digital input pins and stored
+                                        *   in the DPDIMR5 register with the compare target data in
+                                        *   the DPDSR5 register.                                                      */
+            __IOM uint32_t D5EN_6 : 1; /*!< [6..6] These bits enable or disable comparing each bit of the
+                                        *   sixth data captured at the digital input pins and stored
+                                        *   in the DPDIMR5 register with the compare target data in
+                                        *   the DPDSR5 register.                                                      */
+            __IOM uint32_t D5EN_7 : 1; /*!< [7..7] These bits enable or disable comparing each bit of the
+                                        *   sixth data captured at the digital input pins and stored
+                                        *   in the DPDIMR5 register with the compare target data in
+                                        *   the DPDSR5 register.                                                      */
+            __IOM uint32_t D6EN_0 : 1; /*!< [8..8] These bits enable or disable comparing each bit of the
+                                        *   seventh data captured at the digital input pins and stored
+                                        *   in the DPDIMR6 register with the compare target data in
+                                        *   the DPDSR6 register.                                                      */
+            __IOM uint32_t D6EN_1 : 1; /*!< [9..9] These bits enable or disable comparing each bit of the
+                                        *   seventh data captured at the digital input pins and stored
+                                        *   in the DPDIMR6 register with the compare target data in
+                                        *   the DPDSR6 register.                                                      */
+            __IOM uint32_t D6EN_2 : 1; /*!< [10..10] These bits enable or disable comparing each bit of
+                                        *   the seventh data captured at the digital input pins and
+                                        *   stored in the DPDIMR6 register with the compare target
+                                        *   data in the DPDSR6 register.                                              */
+            __IOM uint32_t D6EN_3 : 1; /*!< [11..11] These bits enable or disable comparing each bit of
+                                        *   the seventh data captured at the digital input pins and
+                                        *   stored in the DPDIMR6 register with the compare target
+                                        *   data in the DPDSR6 register.                                              */
+            __IOM uint32_t D6EN_4 : 1; /*!< [12..12] These bits enable or disable comparing each bit of
+                                        *   the seventh data captured at the digital input pins and
+                                        *   stored in the DPDIMR6 register with the compare target
+                                        *   data in the DPDSR6 register.                                              */
+            __IOM uint32_t D6EN_5 : 1; /*!< [13..13] These bits enable or disable comparing each bit of
+                                        *   the seventh data captured at the digital input pins and
+                                        *   stored in the DPDIMR6 register with the compare target
+                                        *   data in the DPDSR6 register.                                              */
+            __IOM uint32_t D6EN_6 : 1; /*!< [14..14] These bits enable or disable comparing each bit of
+                                        *   the seventh data captured at the digital input pins and
+                                        *   stored in the DPDIMR6 register with the compare target
+                                        *   data in the DPDSR6 register.                                              */
+            __IOM uint32_t D6EN_7 : 1; /*!< [15..15] These bits enable or disable comparing each bit of
+                                        *   the seventh data captured at the digital input pins and
+                                        *   stored in the DPDIMR6 register with the compare target
+                                        *   data in the DPDSR6 register.                                              */
+            __IOM uint32_t D7EN_0 : 1; /*!< [16..16] These bits enable or disable comparing each bit of
+                                        *   the eighth data captured at the digital input pins and
+                                        *   stored in the DPDIMR7 register with the compare target
+                                        *   data in the DPDSR7 register.                                              */
+            __IOM uint32_t D7EN_1 : 1; /*!< [17..17] These bits enable or disable comparing each bit of
+                                        *   the eighth data captured at the digital input pins and
+                                        *   stored in the DPDIMR7 register with the compare target
+                                        *   data in the DPDSR7 register.                                              */
+            __IOM uint32_t D7EN_2 : 1; /*!< [18..18] These bits enable or disable comparing each bit of
+                                        *   the eighth data captured at the digital input pins and
+                                        *   stored in the DPDIMR7 register with the compare target
+                                        *   data in the DPDSR7 register.                                              */
+            __IOM uint32_t D7EN_3 : 1; /*!< [19..19] These bits enable or disable comparing each bit of
+                                        *   the eighth data captured at the digital input pins and
+                                        *   stored in the DPDIMR7 register with the compare target
+                                        *   data in the DPDSR7 register.                                              */
+            __IOM uint32_t D7EN_4 : 1; /*!< [20..20] These bits enable or disable comparing each bit of
+                                        *   the eighth data captured at the digital input pins and
+                                        *   stored in the DPDIMR7 register with the compare target
+                                        *   data in the DPDSR7 register.                                              */
+            __IOM uint32_t D7EN_5 : 1; /*!< [21..21] These bits enable or disable comparing each bit of
+                                        *   the eighth data captured at the digital input pins and
+                                        *   stored in the DPDIMR7 register with the compare target
+                                        *   data in the DPDSR7 register.                                              */
+            __IOM uint32_t D7EN_6 : 1; /*!< [22..22] These bits enable or disable comparing each bit of
+                                        *   the eighth data captured at the digital input pins and
+                                        *   stored in the DPDIMR7 register with the compare target
+                                        *   data in the DPDSR7 register.                                              */
+            __IOM uint32_t D7EN_7 : 1; /*!< [23..23] These bits enable or disable comparing each bit of
+                                        *   the eighth data captured at the digital input pins and
+                                        *   stored in the DPDIMR7 register with the compare target
+                                        *   data in the DPDSR7 register.                                              */
+            uint32_t : 8;
+        } DPSELRH_b;
+    };
+
+    union
+    {
+        __IOM uint32_t DPDSR0;         /*!< (@ 0x00000014) DPIN Data Set Register 0This register specifies
+                                        *                  the data to be compared with the data captured
+                                        *                  at a digital input pin and stored in the
+                                        *                  DPDIMR0 register.Write to the DPDSR0 register
+                                        *                  before the sequence operation is started
+                                        *                  (when the SOSTR.SOF bit = 0).                              */
+
+        struct
+        {
+            __IOM uint32_t D0_0 : 1;   /*!< [0..0] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_1 : 1;   /*!< [1..1] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_2 : 1;   /*!< [2..2] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_3 : 1;   /*!< [3..3] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_4 : 1;   /*!< [4..4] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_5 : 1;   /*!< [5..5] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_6 : 1;   /*!< [6..6] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_7 : 1;   /*!< [7..7] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_8 : 1;   /*!< [8..8] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_9 : 1;   /*!< [9..9] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_10 : 1;  /*!< [10..10] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_11 : 1;  /*!< [11..11] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_12 : 1;  /*!< [12..12] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_13 : 1;  /*!< [13..13] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_14 : 1;  /*!< [14..14] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_15 : 1;  /*!< [15..15] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_16 : 1;  /*!< [16..16] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_17 : 1;  /*!< [17..17] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_18 : 1;  /*!< [18..18] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_19 : 1;  /*!< [19..19] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_20 : 1;  /*!< [20..20] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_21 : 1;  /*!< [21..21] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_22 : 1;  /*!< [22..22] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D0_23 : 1;  /*!< [23..23] Data to be compared with the first digital port input
+                                        *   (DPINm)                                                                   */
+            uint32_t : 8;
+        } DPDSR0_b;
+    };
+
+    union
+    {
+        __IOM uint32_t DPDSRM;         /*!< (@ 0x00000018) DPIN Data Set Register MThis register specifies
+                                        *                  the data to be compared with the data captured
+                                        *                  at a digital input pin and stored in the
+                                        *                  DPDIMR4 to DPDIMR1 registers.Write to the
+                                        *                  DPDSRM register before the sequence operation
+                                        *                  is started (when the SOSTR.SOF bit = 0).                   */
+
+        struct
+        {
+            __IOM uint32_t D1_0 : 1;   /*!< [0..0] Data to be compared with the second digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D1_1 : 1;   /*!< [1..1] Data to be compared with the second digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D1_2 : 1;   /*!< [2..2] Data to be compared with the second digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D1_3 : 1;   /*!< [3..3] Data to be compared with the second digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D1_4 : 1;   /*!< [4..4] Data to be compared with the second digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D1_5 : 1;   /*!< [5..5] Data to be compared with the second digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D1_6 : 1;   /*!< [6..6] Data to be compared with the second digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D1_7 : 1;   /*!< [7..7] Data to be compared with the second digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D2_0 : 1;   /*!< [8..8] Data to be compared with the third digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D2_1 : 1;   /*!< [9..9] Data to be compared with the third digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D2_2 : 1;   /*!< [10..10] Data to be compared with the third digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D2_3 : 1;   /*!< [11..11] Data to be compared with the third digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D2_4 : 1;   /*!< [12..12] Data to be compared with the third digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D2_5 : 1;   /*!< [13..13] Data to be compared with the third digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D2_6 : 1;   /*!< [14..14] Data to be compared with the third digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D2_7 : 1;   /*!< [15..15] Data to be compared with the third digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D3_0 : 1;   /*!< [16..16] Data to be compared with the fourth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D3_1 : 1;   /*!< [17..17] Data to be compared with the fourth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D3_2 : 1;   /*!< [18..18] Data to be compared with the fourth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D3_3 : 1;   /*!< [19..19] Data to be compared with the fourth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D3_4 : 1;   /*!< [20..20] Data to be compared with the fourth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D3_5 : 1;   /*!< [21..21] Data to be compared with the fourth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D3_6 : 1;   /*!< [22..22] Data to be compared with the fourth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D3_7 : 1;   /*!< [23..23] Data to be compared with the fourth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D4_0 : 1;   /*!< [24..24] Data to be compared with the fifth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D4_1 : 1;   /*!< [25..25] Data to be compared with the fifth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D4_2 : 1;   /*!< [26..26] Data to be compared with the fifth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D4_3 : 1;   /*!< [27..27] Data to be compared with the fifth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D4_4 : 1;   /*!< [28..28] Data to be compared with the fifth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D4_5 : 1;   /*!< [29..29] Data to be compared with the fifth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D4_6 : 1;   /*!< [30..30] Data to be compared with the fifth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D4_7 : 1;   /*!< [31..31] Data to be compared with the fifth digital port input
+                                        *   (DPINm)                                                                   */
+        } DPDSRM_b;
+    };
+
+    union
+    {
+        __IOM uint32_t DPDSRH;         /*!< (@ 0x0000001C) DPIN Data Set Register HThis register specifies
+                                        *                  the data to be compared with the data captured
+                                        *                  at a digital input pin and stored in the
+                                        *                  DPDIMR7 to DPDIMR5 registers.Write to the
+                                        *                  DPDSRH register before the sequence operation
+                                        *                  is started (when the SOSTR.SOF bit = 0).                   */
+
+        struct
+        {
+            __IOM uint32_t D5_0 : 1;   /*!< [0..0] Data to be compared with the sixth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D5_1 : 1;   /*!< [1..1] Data to be compared with the sixth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D5_2 : 1;   /*!< [2..2] Data to be compared with the sixth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D5_3 : 1;   /*!< [3..3] Data to be compared with the sixth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D5_4 : 1;   /*!< [4..4] Data to be compared with the sixth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D5_5 : 1;   /*!< [5..5] Data to be compared with the sixth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D5_6 : 1;   /*!< [6..6] Data to be compared with the sixth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D5_7 : 1;   /*!< [7..7] Data to be compared with the sixth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D6_0 : 1;   /*!< [8..8] Data to be compared with the seventh digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D6_1 : 1;   /*!< [9..9] Data to be compared with the seventh digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D6_2 : 1;   /*!< [10..10] Data to be compared with the seventh digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D6_3 : 1;   /*!< [11..11] Data to be compared with the seventh digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D6_4 : 1;   /*!< [12..12] Data to be compared with the seventh digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D6_5 : 1;   /*!< [13..13] Data to be compared with the seventh digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D6_6 : 1;   /*!< [14..14] Data to be compared with the seventh digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D6_7 : 1;   /*!< [15..15] Data to be compared with the seventh digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D7_0 : 1;   /*!< [16..16] Data to be compared with the eighth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D7_1 : 1;   /*!< [17..17] Data to be compared with the eighth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D7_2 : 1;   /*!< [18..18] Data to be compared with the eighth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D7_3 : 1;   /*!< [19..19] Data to be compared with the eighth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D7_4 : 1;   /*!< [20..20] Data to be compared with the eighth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D7_5 : 1;   /*!< [21..21] Data to be compared with the eighth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D7_6 : 1;   /*!< [22..22] Data to be compared with the eighth digital port input
+                                        *   (DPINm)                                                                   */
+            __IOM uint32_t D7_7 : 1;   /*!< [23..23] Data to be compared with the eighth digital port input
+                                        *   (DPINm)                                                                   */
+            uint32_t : 8;
+        } DPDSRH_b;
+    };
+
+    union
+    {
+        __IM uint32_t DPDIMR0;         /*!< (@ 0x00000020) DPIN Data Input Monitor Register 0This register
+                                        *                  stores the data which the LPS acquired from
+                                        *                  the digital port input (DPINm (m = 0 to
+                                        *                  23)) in digital input mode. DPDIMR0 stores
+                                        *                  the data acquired for the first time.                      */
+
+        struct
+        {
+            __IM uint32_t D0M_0  : 1;  /*!< [0..0] The first digital port input (DPINm) data                          */
+            __IM uint32_t D0M_1  : 1;  /*!< [1..1] The first digital port input (DPINm) data                          */
+            __IM uint32_t D0M_2  : 1;  /*!< [2..2] The first digital port input (DPINm) data                          */
+            __IM uint32_t D0M_3  : 1;  /*!< [3..3] The first digital port input (DPINm) data                          */
+            __IM uint32_t D0M_4  : 1;  /*!< [4..4] The first digital port input (DPINm) data                          */
+            __IM uint32_t D0M_5  : 1;  /*!< [5..5] The first digital port input (DPINm) data                          */
+            __IM uint32_t D0M_6  : 1;  /*!< [6..6] The first digital port input (DPINm) data                          */
+            __IM uint32_t D0M_7  : 1;  /*!< [7..7] The first digital port input (DPINm) data                          */
+            __IM uint32_t D0M_8  : 1;  /*!< [8..8] The first digital port input (DPINm) data                          */
+            __IM uint32_t D0M_9  : 1;  /*!< [9..9] The first digital port input (DPINm) data                          */
+            __IM uint32_t D0M_10 : 1;  /*!< [10..10] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_11 : 1;  /*!< [11..11] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_12 : 1;  /*!< [12..12] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_13 : 1;  /*!< [13..13] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_14 : 1;  /*!< [14..14] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_15 : 1;  /*!< [15..15] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_16 : 1;  /*!< [16..16] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_17 : 1;  /*!< [17..17] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_18 : 1;  /*!< [18..18] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_19 : 1;  /*!< [19..19] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_20 : 1;  /*!< [20..20] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_21 : 1;  /*!< [21..21] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_22 : 1;  /*!< [22..22] The first digital port input (DPINm) data                        */
+            __IM uint32_t D0M_23 : 1;  /*!< [23..23] The first digital port input (DPINm) data                        */
+            uint32_t             : 8;
+        } DPDIMR0_b;
+    };
+
+    union
+    {
+        __IM uint8_t DPDIMR1;          /*!< (@ 0x00000024) DPIN Data Input Monitor Register 1This register
+                                        *                  stores the data which the LPS acquired from
+                                        *                  the digital port input (DPINm (m = 0 to
+                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR1
+                                        *                  stores the data acquired for the second
+                                        *                  time.                                                      */
+
+        struct
+        {
+            __IM uint8_t D1M_0 : 1;    /*!< [0..0] The second digital port input (DPINm) data                         */
+            __IM uint8_t D1M_1 : 1;    /*!< [1..1] The second digital port input (DPINm) data                         */
+            __IM uint8_t D1M_2 : 1;    /*!< [2..2] The second digital port input (DPINm) data                         */
+            __IM uint8_t D1M_3 : 1;    /*!< [3..3] The second digital port input (DPINm) data                         */
+            __IM uint8_t D1M_4 : 1;    /*!< [4..4] The second digital port input (DPINm) data                         */
+            __IM uint8_t D1M_5 : 1;    /*!< [5..5] The second digital port input (DPINm) data                         */
+            __IM uint8_t D1M_6 : 1;    /*!< [6..6] The second digital port input (DPINm) data                         */
+            __IM uint8_t D1M_7 : 1;    /*!< [7..7] The second digital port input (DPINm) data                         */
+        } DPDIMR1_b;
+    };
+    __IM uint8_t  RESERVED;
+    __IM uint16_t RESERVED1;
+
+    union
+    {
+        __IM uint8_t DPDIMR2;          /*!< (@ 0x00000028) DPIN Data Input Monitor Register 2This register
+                                        *                  stores the data which the LPS acquired from
+                                        *                  the digital port input (DPINm (m = 0 to
+                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR2
+                                        *                  stores the data acquired for the third time.               */
+
+        struct
+        {
+            __IM uint8_t D2M_0 : 1;    /*!< [0..0] The third digital port input (DPINm) data                          */
+            __IM uint8_t D2M_1 : 1;    /*!< [1..1] The third digital port input (DPINm) data                          */
+            __IM uint8_t D2M_2 : 1;    /*!< [2..2] The third digital port input (DPINm) data                          */
+            __IM uint8_t D2M_3 : 1;    /*!< [3..3] The third digital port input (DPINm) data                          */
+            __IM uint8_t D2M_4 : 1;    /*!< [4..4] The third digital port input (DPINm) data                          */
+            __IM uint8_t D2M_5 : 1;    /*!< [5..5] The third digital port input (DPINm) data                          */
+            __IM uint8_t D2M_6 : 1;    /*!< [6..6] The third digital port input (DPINm) data                          */
+            __IM uint8_t D2M_7 : 1;    /*!< [7..7] The third digital port input (DPINm) data                          */
+        } DPDIMR2_b;
+    };
+    __IM uint8_t  RESERVED2;
+    __IM uint16_t RESERVED3;
+
+    union
+    {
+        __IM uint8_t DPDIMR3;          /*!< (@ 0x0000002C) DPIN Data Input Monitor Register 3This register
+                                        *                  stores the data which the LPS acquired from
+                                        *                  the digital port input (DPINm (m = 0 to
+                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR3
+                                        *                  stores the data acquired for the fourth
+                                        *                  time.                                                      */
+
+        struct
+        {
+            __IM uint8_t D3M_0 : 1;    /*!< [0..0] The fourth digital port input (DPINm) data                         */
+            __IM uint8_t D3M_1 : 1;    /*!< [1..1] The fourth digital port input (DPINm) data                         */
+            __IM uint8_t D3M_2 : 1;    /*!< [2..2] The fourth digital port input (DPINm) data                         */
+            __IM uint8_t D3M_3 : 1;    /*!< [3..3] The fourth digital port input (DPINm) data                         */
+            __IM uint8_t D3M_4 : 1;    /*!< [4..4] The fourth digital port input (DPINm) data                         */
+            __IM uint8_t D3M_5 : 1;    /*!< [5..5] The fourth digital port input (DPINm) data                         */
+            __IM uint8_t D3M_6 : 1;    /*!< [6..6] The fourth digital port input (DPINm) data                         */
+            __IM uint8_t D3M_7 : 1;    /*!< [7..7] The fourth digital port input (DPINm) data                         */
+        } DPDIMR3_b;
+    };
+    __IM uint8_t  RESERVED4;
+    __IM uint16_t RESERVED5;
+
+    union
+    {
+        __IM uint8_t DPDIMR4;          /*!< (@ 0x00000030) DPIN Data Input Monitor Register 4This register
+                                        *                  stores the data which the LPS acquired from
+                                        *                  the digital port input (DPINm (m = 0 to
+                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR4
+                                        *                  stores the data acquired for the fifth time.               */
+
+        struct
+        {
+            __IM uint8_t D4M_0 : 1;    /*!< [0..0] The fifth digital port input (DPINm) data                          */
+            __IM uint8_t D4M_1 : 1;    /*!< [1..1] The fifth digital port input (DPINm) data                          */
+            __IM uint8_t D4M_2 : 1;    /*!< [2..2] The fifth digital port input (DPINm) data                          */
+            __IM uint8_t D4M_3 : 1;    /*!< [3..3] The fifth digital port input (DPINm) data                          */
+            __IM uint8_t D4M_4 : 1;    /*!< [4..4] The fifth digital port input (DPINm) data                          */
+            __IM uint8_t D4M_5 : 1;    /*!< [5..5] The fifth digital port input (DPINm) data                          */
+            __IM uint8_t D4M_6 : 1;    /*!< [6..6] The fifth digital port input (DPINm) data                          */
+            __IM uint8_t D4M_7 : 1;    /*!< [7..7] The fifth digital port input (DPINm) data                          */
+        } DPDIMR4_b;
+    };
+    __IM uint8_t  RESERVED6;
+    __IM uint16_t RESERVED7;
+
+    union
+    {
+        __IM uint8_t DPDIMR5;          /*!< (@ 0x00000034) DPIN Data Input Monitor Register 5This register
+                                        *                  stores the data which the LPS acquired from
+                                        *                  the digital port input (DPINm (m = 0 to
+                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR5
+                                        *                  stores the data acquired for the sixth time.               */
+
+        struct
+        {
+            __IM uint8_t D5M_0 : 1;    /*!< [0..0] The sixth digital port input (DPINm) data                          */
+            __IM uint8_t D5M_1 : 1;    /*!< [1..1] The sixth digital port input (DPINm) data                          */
+            __IM uint8_t D5M_2 : 1;    /*!< [2..2] The sixth digital port input (DPINm) data                          */
+            __IM uint8_t D5M_3 : 1;    /*!< [3..3] The sixth digital port input (DPINm) data                          */
+            __IM uint8_t D5M_4 : 1;    /*!< [4..4] The sixth digital port input (DPINm) data                          */
+            __IM uint8_t D5M_5 : 1;    /*!< [5..5] The sixth digital port input (DPINm) data                          */
+            __IM uint8_t D5M_6 : 1;    /*!< [6..6] The sixth digital port input (DPINm) data                          */
+            __IM uint8_t D5M_7 : 1;    /*!< [7..7] The sixth digital port input (DPINm) data                          */
+        } DPDIMR5_b;
+    };
+    __IM uint8_t  RESERVED8;
+    __IM uint16_t RESERVED9;
+
+    union
+    {
+        __IM uint8_t DPDIMR6;          /*!< (@ 0x00000038) DPIN Data Input Monitor Register 6This register
+                                        *                  stores the data which the LPS acquired from
+                                        *                  the digital port input (DPINm (m = 0 to
+                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR6
+                                        *                  stores the data acquired for the seventh
+                                        *                  time.                                                      */
+
+        struct
+        {
+            __IM uint8_t D6M_0 : 1;    /*!< [0..0] The seventh digital port input (DPINm) data                        */
+            __IM uint8_t D6M_1 : 1;    /*!< [1..1] The seventh digital port input (DPINm) data                        */
+            __IM uint8_t D6M_2 : 1;    /*!< [2..2] The seventh digital port input (DPINm) data                        */
+            __IM uint8_t D6M_3 : 1;    /*!< [3..3] The seventh digital port input (DPINm) data                        */
+            __IM uint8_t D6M_4 : 1;    /*!< [4..4] The seventh digital port input (DPINm) data                        */
+            __IM uint8_t D6M_5 : 1;    /*!< [5..5] The seventh digital port input (DPINm) data                        */
+            __IM uint8_t D6M_6 : 1;    /*!< [6..6] The seventh digital port input (DPINm) data                        */
+            __IM uint8_t D6M_7 : 1;    /*!< [7..7] The seventh digital port input (DPINm) data                        */
+        } DPDIMR6_b;
+    };
+    __IM uint8_t  RESERVED10;
+    __IM uint16_t RESERVED11;
+
+    union
+    {
+        __IM uint8_t DPDIMR7;          /*!< (@ 0x0000003C) DPIN Data Input Monitor Register 7This register
+                                        *                  stores the data which the LPS acquired from
+                                        *                  the digital port input (DPINm (m = 0 to
+                                        *                  7)) in multiplexer mode. DPDIMR7 stores
+                                        *                  the data acquired for the eighth time.                     */
+
+        struct
+        {
+            __IM uint8_t D7M_0 : 1;    /*!< [0..0] The eighth digital port input (DPINm) data                         */
+            __IM uint8_t D7M_1 : 1;    /*!< [1..1] The eighth digital port input (DPINm) data                         */
+            __IM uint8_t D7M_2 : 1;    /*!< [2..2] The eighth digital port input (DPINm) data                         */
+            __IM uint8_t D7M_3 : 1;    /*!< [3..3] The eighth digital port input (DPINm) data                         */
+            __IM uint8_t D7M_4 : 1;    /*!< [4..4] The eighth digital port input (DPINm) data                         */
+            __IM uint8_t D7M_5 : 1;    /*!< [5..5] The eighth digital port input (DPINm) data                         */
+            __IM uint8_t D7M_6 : 1;    /*!< [6..6] The eighth digital port input (DPINm) data                         */
+            __IM uint8_t D7M_7 : 1;    /*!< [7..7] The eighth digital port input (DPINm) data                         */
+        } DPDIMR7_b;
+    };
+    __IM uint8_t  RESERVED12;
+    __IM uint16_t RESERVED13;
+
+    union
+    {
+        __IOM uint16_t CNTVAL;         /*!< (@ 0x00000040) Count Value RegisterThis register specifies the
+                                        *                  stabilization time of the external circuits
+                                        *                  (digital signal source and analog signal
+                                        *                  source).• In digital mode The time from
+                                        *                  when the DPO output is set to 1 to the time
+                                        *                  when the port input is acquired for the
+                                        *                  first time• In analog mode The time from
+                                        *                  when the APO output is set to 1 to the time
+                                        *                  when the LPS outputs the A/D conversion
+                                        *                  trigger to the ADCKAWrite to the CNTVAL
+                                        *                  register before the sequence operation is
+                                        *                  started (when the SOSTR.SO                                 */
+
+        struct
+        {
+            uint16_t             : 8;
+            __IOM uint16_t CNT1n : 8;  /*!< [15..8] These bits set the stabilization time of the external
+                                        *   circuit (analog signal source).Stabilization time = (1/(fRH/20))
+                                        *   × 16 × CNT1n (set value)                                                */
+        } CNTVAL_b;
+    };
+    __IM uint16_t RESERVED14;
+
+    union
+    {
+        __IM uint8_t SOSTR;            /*!< (@ 0x00000044) LPS Operation Status RegisterThis register indicates
+                                        *                  the operating state of the LPS.                            */
+
+        struct
+        {
+            __IM uint8_t SOF : 1;      /*!< [0..0] LPS Operation Status Flag                                          */
+            uint8_t          : 7;
+        } SOSTR_b;
+    };
+    __IM uint8_t  RESERVED15;
+    __IM uint16_t RESERVED16;
+} R_LPS_Type;                          /*!< Size = 72 (0x48)                                                          */
+
+/* =========================================================================================================================== */
 /* ================                                          R_OTS0                                           ================ */
 /* =========================================================================================================================== */
 
@@ -72396,7 +74102,7 @@ typedef struct                          /*!< (@ 0xFFD55000) R_MMCA0 Structure   
                                            *   × 2^21 1000: MMCA clock cycles × 2^22 1001: MMCA clock
                                            *   cycles × 2^23 1010: MMCA clock cycles × 2^24 1011: MMCA
                                            *   clock cycles × 2^25 1100: MMCA clock cycles × 2^26 1101:
-                                           *   MMCA clock cycles × 2^27 1110: MMCA clock cycles �                       */
+                                           *   MMCA clock cycles × 2^27 1110: MMCA clock cycles                        */
             __IOM uint32_t SRBSYTO : 4;   /*!< [11..8] Response Busy Timeout Setting. 0000: MMCA clock cycles
                                            *   × 2^14 0001: MMCA clock cycles × 2^15 0010: MMCA clock
                                            *   cycles × 2^16 0011: MMCA clock cycles × 2^17 0100: MMCA
@@ -74540,8 +76246,8 @@ typedef struct                         /*!< (@ 0x10000000) R_RHSIF0_L2 Structure
 
         struct
         {
-            uint32_t           : 4;
-            __IM uint32_t STSA : 28;   /*!< [31..4] These bits specify the start address of the area storing
+            uint32_t            : 4;
+            __IOM uint32_t STSA : 28;  /*!< [31..4] These bits specify the start address of the area storing
                                         *   the data to be transferred when L2, operating as an initiator
                                         *   node, starts the DMAC for Stream Command transmission.When
                                         *   the data payload of the Stream Command to be transmitted
@@ -87975,7 +89681,7 @@ typedef struct                         /*!< (@ 0xFF88E000) R_ATU_TIMER_F Structu
     __IM uint16_t               RESERVED3;
     __IM uint32_t               RESERVED4[6];
     __IOM R_ATU_TIMER_F_SB_Type SB[20]; /*!< (@ 0x00000040) Sub-block [0..19] of module ATU                            */
-} R_ATU_TIMER_F_Type;                   /*!< Size = 2304 (0x900)                                                       */
+} R_ATU_TIMER_F_Type;                   /*!< Size = 1344 (0x540)                                                       */
 
 /* =========================================================================================================================== */
 /* ================                                       R_ATU_TIMER_G                                       ================ */
@@ -93332,6 +95038,476 @@ typedef struct                         /*!< (@ 0xFFFB8000) R_BARR Structure     
 } R_BARR_Type;                         /*!< Size = 3573 (0xdf5)                                                       */
 
 /* =========================================================================================================================== */
+/* ================                                          R_CADC                                           ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief This section contains a description of the Cyclic A/D Converter (CADC).The first part of this section describes all of the features specific to this product, such as the number of units and register base addresses. The remainder of the section describes the functions and registers of the CADC. (R_CADC)
+ */
+
+typedef struct                         /*!< (@ 0xFFF26000) R_CADC Structure                                           */
+{
+    __IM uint8_t RESERVED[4];
+
+    union
+    {
+        __IOM uint8_t CADCADGCR;         /*!< (@ 0x00000004) AD Control RegisterCADCADGCR is an 8-bit access
+                                          *                  register to totally control A/D conversion                 */
+
+        struct
+        {
+            __IOM uint8_t CADCUNSND : 1; /*!< [0..0] Unsigned Conversion Result Output EnableWhen unsigned
+                                          *   output is enabled in this register, the A/D conversion
+                                          *   result (when ADSVREFL is selected for the single-ended
+                                          *   common voltage) can be output as an unsigned value.0: A/D
+                                          *   conversion result is output as a signed value.1: When the
+                                          *   single-ended common voltage = ADSVREFL, A/D conversion
+                                          *   result is output as an unsigned value.*1For details about
+                                          *   the difference in the data format for this bit, see Section
+                                          *   52.5.2, CADCnDIRj — Data Supplementary Information Regis                */
+            uint8_t               : 3;
+            __IOM uint8_t CADCODE : 1;   /*!< [4..4] Wiring-break Detection Enable0: Wiring-break detection
+                                          *   is disabled.1: Wiring-break detection is enabled.When CADCODE
+                                          *   is set to 1, wiring-break detection is enabled for all
+                                          *   analog pins.Setting this bit in 1 simultaneously with pin
+                                          *   level self-diagnosis (CADCTDE=1) is prohibited.When setting
+                                          *   CADCADGCR.CADCODE as 1, if CADCnVCRj.CADCnCNVCLS[1:0] value
+                                          *   is set to anything but 0H, A/D conversion is prohibited.                  */
+            __IOM uint8_t CADCODDE : 1;  /*!< [5..5] Wiring-break Detection Function Self-Diagnosis Enable0:
+                                          *   Self-diagnosis of the wiring-break detection function is
+                                          *   disabled.1: Self-diagnosis of the wiring-break detection
+                                          *   function is enabled.When CADCODDE is set to 1, wiring-break
+                                          *   detection function self-diagnosis and pin level self-diagnosis
+                                          *   are enabled. When doing pin level self-diagnosis, set CADCODDE
+                                          *   to 1 before setting CADCTDE to 1.If CADCTDE is set to 1
+                                          *   with CADDCODDE = 0, the self-diagnosis pin level voltage
+                                          *   is output to the chip pin, which might aff                                */
+            uint8_t : 2;
+        } CADCADGCR_b;
+    };
+    __IM uint8_t RESERVED1[7];
+
+    union
+    {
+        __IOM uint8_t CADCTDCR;        /*!< (@ 0x0000000C) Pin Level Self-Diagnosis Control RegisterCADCTDCR
+                                        *                  is an 8-bit access register to control pin
+                                        *                  level self-diagnosis                                       */
+
+        struct
+        {
+            __IOM uint8_t CADCTDE : 1; /*!< [0..0] Pin Level Self-Diagnosis Enable0: Pin level self-diagnosis
+                                        *   is disabled.1: Pin level self-diagnosis is enabled.When
+                                        *   CADCTDE is set to 1, all analog pins are disconnected from
+                                        *   the analog I/O buffer. When CADCTDE is set to 0, all analog
+                                        *   pins are connected to the analog I/O buffer.When CADCTDE
+                                        *   = 1, analog pins CANn0x to CANn3x are fixed to the level
+                                        *   specified by CADCnTDLVR.AN0xLV to CADCnTDLVR.AN3xLV. By
+                                        *   performing A/D conversion in this state and checking the
+                                        *   A/D converted value, the path between the analog p                        */
+            uint8_t : 7;
+        } CADCTDCR_b;
+    };
+} R_CADC_Type;                         /*!< Size = 13 (0xd)                                                           */
+
+/* =========================================================================================================================== */
+/* ================                                         R_CADC00                                          ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief This section contains a description of the Cyclic A/D Converter (CADC).The first part of this section describes all of the features specific to this product, such as the number of units and register base addresses. The remainder of the section describes the functions and registers of the CADC. (R_CADC00)
+ */
+
+typedef struct                                  /*!< (@ 0xFFF27000) R_CADC00 Structure                                         */
+{
+    __IOM R_CADC00_CADC00VCR_Type CADC00VCR[8]; /*!< (@ 0x00000000) CADC the number of a virtual channel register
+                                                 *                  j.                                                         */
+    __IOM R_CADC00_CADC00DIR_Type CADC00DIR[8]; /*!< (@ 0x00000020) CADC Data Supplementary Information Register
+                                                 *                  j.                                                         */
+
+    union
+    {
+        __OM uint8_t CADC00ADSTCR;              /*!< (@ 0x00000040) AD Start Control RegisterCADC00ADSTCR is an 8-bit
+                                                 *                  write-only register to control Cyclic ADC
+                                                 *                  start. This register is always read as 0.                  */
+
+        struct
+        {
+            __OM uint8_t CADC00ADST : 1;        /*!< [0..0] A/D Conversion StartA/D conversion start condition with
+                                                 *   CADC00ADSTWriting 1 to CADC00ADST starts an A/D conversionWhen
+                                                 *   1 is written to this bit while an A/D conversion is already
+                                                 *   in progress, if the CADC00VCEP[2:0] value in CADC00UCR
+                                                 *   is not 0H, the ongoing A/D conversion stops and A/D conversion
+                                                 *   of the next virtual channel starts. Writing 1 to this bit
+                                                 *   while ADACT = 1 and CADC00VCEP[2:0] in CADC00UCR is 0H
+                                                 *   suspends the A/D conversion and repeats the A/D conversion
+                                                 *   of virtual channel 0.When 1 is written to                                 */
+            uint8_t : 7;
+        } CADC00ADSTCR_b;
+    };
+    __IM uint8_t  RESERVED;
+    __IM uint16_t RESERVED1;
+
+    union
+    {
+        __OM uint8_t CADC00ADENDCR;       /*!< (@ 0x00000044) AD Stop Control RegisterCADC00ADENDCR is an 8-bit
+                                           *                  write-only register to control Cyclic ADC
+                                           *                  stop. This register is always read as 0.                   */
+
+        struct
+        {
+            __OM uint8_t CADC00ADEND : 1; /*!< [0..0] A/D Conversion EndA/D conversion stop condition with
+                                           *   CADC00ADENDWriting 1 to CADC00ADEND stops an active A/D
+                                           *   conversion.When A/D conversion is stopped with CADC00VPRSTE
+                                           *   = 0, the virtual channel is incremented. When A/D conversion
+                                           *   is stopped with CADC00VPRSTE = 1, the virtual channel is
+                                           *   cleared to 0.Writing 1 to this bit when CADC00ADACT = 0
+                                           *   is ignored.Writing 0 to this bit is ignored.                              */
+            uint8_t : 7;
+        } CADC00ADENDCR_b;
+    };
+    __IM uint8_t  RESERVED2;
+    __IM uint16_t RESERVED3;
+
+    union
+    {
+        __OM uint8_t CADC00CLBSTCR;       /*!< (@ 0x00000048) Calibration Start Control RegisterCADC00CLBSTCR
+                                           *                  is an 8-bit write-only register to control
+                                           *                  calibration start. This register is always
+                                           *                  read as 0.                                                 */
+
+        struct
+        {
+            __OM uint8_t CADC00CLBST : 1; /*!< [0..0] Calibration StartCalibration start condition with CADC00CLBSTWriting
+                                           *   1 to CADC00CLBST when both calibration and A/D conversion
+                                           *   are stopped starts A/D calibration.Writing 1 to this bit
+                                           *   when calibration is active or A/D conversion is active
+                                           *   is ignored.                                                               */
+            uint8_t : 7;
+        } CADC00CLBSTCR_b;
+    };
+    __IM uint8_t  RESERVED4;
+    __IM uint16_t RESERVED5;
+
+    union
+    {
+        __OM uint8_t CADC00CLBEDCR;      /*!< (@ 0x0000004C) Calibration Stop Control RegisterCADC00CLBENDCR
+                                          *                  is an 8-bit write-only register to control
+                                          *                  calibration stop. This register is always
+                                          *                  read as 0.                                                 */
+
+        struct
+        {
+            __OM uint8_t CADCCLBEND : 1; /*!< [0..0] Calibration StopCalibration stop condition with CADC00CLBENDWriting
+                                          *   1 to CADC00CLBEND when calibration is active, stops A/D
+                                          *   calibration.Writing 1 to this bit when calibration is stopped
+                                          *   is ignored.If calibration is terminated by CADC00CLBEND
+                                          *   before calibration is completed, the correction value present
+                                          *   before calibration is started is retained.Writing 0 to
+                                          *   this bit is ignored.                                                      */
+            uint8_t : 7;
+        } CADC00CLBEDCR_b;
+    };
+    __IM uint8_t  RESERVED6;
+    __IM uint16_t RESERVED7;
+
+    union
+    {
+        __IOM uint8_t CADC00ADTCR;           /*!< (@ 0x00000050) AD Conversion Trigger Control RegisterCADC00ADTCR
+                                              *                  is an 8-bit access register to control the
+                                              *                  Cyclic ADC.                                                */
+
+        struct
+        {
+            __OM uint8_t CADC00STTRGE : 1;   /*!< [0..0] AD Start Trigger Enable0: AD start trigger n is disabled.1:
+                                              *   AD start trigger n is enabled.The trigger selection function
+                                              *   is used to set the trigger source selection for AD start
+                                              *   trigger n.                                                                */
+            __IOM uint8_t CADC00ENDTRGE : 1; /*!< [1..1] AD End Trigger Enable0: AD end trigger n is disabled.1:
+                                              *   AD end trigger n is enabled.The trigger selection function
+                                              *   is used to set the trigger source selection for AD end
+                                              *   trigger n.                                                                */
+            uint8_t : 6;
+        } CADC00ADTCR_b;
+    };
+    __IM uint8_t  RESERVED8;
+    __IM uint16_t RESERVED9;
+
+    union
+    {
+        __IOM uint32_t CADC00UCR;            /*!< (@ 0x00000054) Unit Control RegisterCADC00UCR is a 32-bit access
+                                              *                  register to control the cyclic AD units.                   */
+
+        struct
+        {
+            __IOM uint32_t CADC00VCEP : 3;   /*!< [2..0] End Virtual Channel PointerThese bits set the end virtual
+                                              *   channel number.                                                           */
+            uint32_t                  : 5;
+            __IOM uint32_t CADC00DFMT : 4;   /*!< [11..8] Data FormatThese bits specify the lower bits to be zero-masked
+                                              *   (rounded in the ?∞direction).0H: Not masked1H: Lower
+                                              *   1 bit masked2H: Lower 2 bits masked3H: Lower 3 bits masked4H:
+                                              *   Lower 4 bits masked5H: Lower 5 bits masked6H: Lower 6 bits
+                                              *   masked7H: Lower 7 bits masked8H: Lower 8 bits maskedOthers:
+                                              *   Setting prohibitedThe setting of these bits is the format
+                                              *   of the data for the CADC00DR, DFE and GTM.                                */
+            uint32_t                  : 16;
+            __IOM uint32_t CADC00RDMA : 1;   /*!< [28..28] Read Gate DMA ModeThis bit selects the DMA transfer
+                                              *   request output condition.0: A DMA transfer request is output
+                                              *   for all A/D conversion results.1: A DMA transfer request
+                                              *   is output for the A/D conversion result only when CADRGTn
+                                              *   is being asserted.                                                        */
+            __IOM uint32_t CADC00VPRSTE : 1; /*!< [29..29] Virtual Channel Pointer Reset Enable0: The virtual
+                                              *   channel pointer is incremented at the end of an A/D conversion
+                                              *   by AD end trigger n or CADC00ADEND.1: The virtual channel
+                                              *   pointer is cleared to 0 at the end of an A/D conversion
+                                              *   by AD end trigger n or CADC00ADEND.                                       */
+            uint32_t : 2;
+        } CADC00UCR_b;
+    };
+
+    union
+    {
+        __IOM uint8_t CADC00VCPTRR;        /*!< (@ 0x00000058) Virtual Channel Pointer RegisterCADC00VCPTRR
+                                            *                  is an 8-bit access register to monitor the
+                                            *                  number of the virtual channels in which
+                                            *                  A/D conversion is in progress.                             */
+
+        struct
+        {
+            __IOM uint8_t CADC00VCPTR : 3; /*!< [2..0] A/D Conversion Ongoing Virtual Channel NumberThese bits
+                                            *   output the number of virtual channels in which the A/D
+                                            *   conversion is in progress. If a value is written to these
+                                            *   bits while A/D conversion is not ongoing, the virtual channel
+                                            *   number is updated and A/D conversion starts for the channel
+                                            *   written at the next conversion start.Writing to these bits
+                                            *   during A/D conversion is prohibited.The channel number
+                                            *   for which A/D conversion is to be made next is retained
+                                            *   during conversion stop or during calibration.A set                        */
+            uint8_t : 5;
+        } CADC00VCPTRR_b;
+    };
+    __IM uint8_t  RESERVED10;
+    __IM uint16_t RESERVED11;
+    __IM uint32_t RESERVED12;
+
+    union
+    {
+        __IM uint8_t CADC00ADSR;           /*!< (@ 0x00000060) AD Conversion Status RegisterCADC00ADSR is an
+                                            *                  8-bit read-only register that indicates
+                                            *                  the Cyclic ADC status.                                     */
+
+        struct
+        {
+            __IM uint8_t CADC00ADACT : 1;  /*!< [0..0] A/D Conversion Status0: A/D conversion is stopped1: A/D
+                                            *   conversion is ongoingThe CADC00ADACT bit is set to 1 when
+                                            *   an A/D conversion start source is generated, and is set
+                                            *   to 0 when the A/D conversion end source is generated. This
+                                            *   bit is continuously set to 1 unless an A/D conversion end
+                                            *   source is generated. (This bit is not cleared to 0 by storing
+                                            *   in the data register.)If an A/D conversion start source
+                                            *   is generated when CADC00ADACT = 1 (where the period of
+                                            *   CADC00ADACT=0 just after the CADC00ADST set is incl                       */
+            __IM uint8_t CADC00CLBACT : 1; /*!< [1..1] Calibration Status0: Calibration is not ongoing.1: Calibration
+                                            *   is in progress                                                            */
+            uint8_t : 6;
+        } CADC00ADSR_b;
+    };
+    __IM uint8_t  RESERVED13;
+    __IM uint16_t RESERVED14;
+
+    union
+    {
+        __IM uint8_t CADC00UDPTRR;        /*!< (@ 0x00000064) Unit Data Pointer RegisterCADC00UDPTRR is an
+                                           *                  8-bit read-only register that indicates
+                                           *                  the virtual channel number of CADC00UDIR.                  */
+
+        struct
+        {
+            __IM uint8_t CADC00UDPTR : 3; /*!< [2..0] Unit Data PointerThese bits indicate the virtual channel
+                                           *   number in which the latest A/D conversion result is stored.               */
+            uint8_t : 5;
+        } CADC00UDPTRR_b;
+    };
+    __IM uint8_t  RESERVED15;
+    __IM uint16_t RESERVED16;
+
+    union
+    {
+        __IM uint32_t CADC00UDIR;          /*!< (@ 0x00000068) Unit Data Supplementary Information RegisterCADC00UDIR
+                                            *                  is a 32-bit read-only register to output
+                                            *                  all A/D conversion results of CADC00 units
+                                            *                  regardless of the selection of the virtual
+                                            *                  channel. Except for CADC00CHNUM[2:0] and
+                                            *                  CADC00UPRTY, this register is a mirror register
+                                            *                  of CADC00DIRj specified by CADC00UDPTR[3:0].
+                                            *                  When CADC00UDIR is read, CADC00WFLG of the
+                                            *                  actual CADC00DIRj is cleared at the same
+                                            *                  time. When CADC00RDCLRE is set to 1, the
+                                            *                  CADC00DR[15:0], CADC00PRTY, and CADC00IDEF
+                                            *                  bits in CADC                                               */
+
+        struct
+        {
+            __IM uint32_t CADC00UDR : 16;  /*!< [15..0] All A/D converted values of CADC00 are stored in these
+                                            *   bits.The data format is the same as CADC00DIRj.                           */
+            uint32_t                  : 8;
+            __IM uint32_t CADC00UPRTY : 1; /*!< [24..24] ParityThis bit indicates the even parity bit of CADC00UDR,
+                                            *   CADC00UIDEF, and CADC00CHNUM.                                             */
+            __IM uint32_t CADC00UWFLG : 1; /*!< [25..25] Write FlagSetting conditionStores an A/D converted
+                                            *   value in CADC00UDIRClearing conditionReads CADC00UDIR or
+                                            *   reading CADC00DIRj corresponding to CADC00UDPTR                           */
+            __IM uint32_t CADC00UIDEF : 1; /*!< [26..26] ID Error0: An error is present.1: No error is present.           */
+            uint32_t                  : 2;
+            __IM uint32_t CADC00CHNUM : 3; /*!< [31..29] Virtual Channel NumberThese bits indicate the virtual
+                                            *   channel number of CADC00UDR[15:0].                                        */
+        } CADC00UDIR_b;
+    };
+
+    union
+    {
+        __IOM uint32_t CADC00SMPCR;    /*!< (@ 0x0000006C) Sampling Rate Control RegisterCADC00SMPCR is
+                                        *                  a 32-bit access register to set the sampling
+                                        *                  rate.                                                      */
+
+        struct
+        {
+            uint32_t                  : 16;
+            __IOM uint32_t CADC00ODAV : 1; /*!< [16..16] Output Data Averaging0: Data is output without averaging
+                                            *   (oversampling rate = 1)1: Data is output with averaging
+                                            *   (oversampling rate = 2)                                                   */
+            uint32_t : 15;
+        } CADC00SMPCR_b;
+    };
+
+    union
+    {
+        __IOM uint8_t CADC00SFTCR;          /*!< (@ 0x00000070) Safety Control RegisterCADC00SFTCR is an 8-bit
+                                             *                  access register for safety control.                        */
+
+        struct
+        {
+            __IOM uint8_t CADC00IDEIE : 1;  /*!< [0..0] ID Error Interrupt Enable0: Disabled1: Enabled                     */
+            __IOM uint8_t CADC00PEIE  : 1;  /*!< [1..1] Parity Error Interrupt Enable0: Disabled1: Enabled                 */
+            __IOM uint8_t CADC00OWEIE : 1;  /*!< [2..2] Overwrite Error Interrupt Enable0: Disabled1: EnabledThe
+                                             *   Overwrite Error Interrupt and DMA transfer using CADI00
+                                             *   with read-gate cannot be used at the same time.Because
+                                             *   overwrite errors occur in spite of using read gate function,
+                                             *   using read gate function and overwrite error function at
+                                             *   the same time is prohibited.                                              */
+            uint8_t                    : 4;
+            __IOM uint8_t CADC00RDCLRE : 1; /*!< [7..7] Read and Clear Enable0: CADC00DIRj (CADC00UDIR) is not
+                                             *   cleared by reading CADC00DIRj (CADC00UDIR).1: CADC00DIRj
+                                             *   (CADC00UDIR) is cleared by reading CADC00DIRj (CADC00UDIR).The
+                                             *   WFLG of CADC00DIRj (CADC00UDIR) is cleared by reading CADC00DIRj
+                                             *   (CADC00UDIR) regardless of the RDCLRE value.When CADC00UDIR
+                                             *   is read after CADC00RDCLRE has been set to 1, CADC00DIRj
+                                             *   which corresponds with CADC00UDPTR is also cleared at the
+                                             *   same time.When CADC00DIRj which corresponds with CADC00UDPTR
+                                             *   is read, CADC00UDIR is also cleared                                       */
+        } CADC00SFTCR_b;
+    };
+    __IM uint8_t  RESERVED17;
+    __IM uint16_t RESERVED18;
+
+    union
+    {
+        __OM uint8_t CADC00ECR;        /*!< (@ 0x00000074) Error Clear RegisterCADC00ECR is an 8-bit write-only
+                                        *                  register to control error clear. This register
+                                        *                  is always read as 0.                                       */
+
+        struct
+        {
+            uint8_t                : 1;
+            __OM uint8_t CADC00PEC : 1;  /*!< [1..1] Parity Error Clear0: Does not clear the parity error.1:
+                                          *   Clears the parity error.                                                  */
+            __OM uint8_t CADC00OWEC : 1; /*!< [2..2] Overwrite Error Clear0: Does not clear the overwrite
+                                          *   error.1: Clears the overwrite error.                                      */
+            __OM uint8_t CADC00LLEC : 1; /*!< [3..3] Lower-Limit Error Clear0: Does not clear the lower-limit
+                                          *   error.1: Clears the lower-limit error.                                    */
+            __OM uint8_t CADC00ULEC : 1; /*!< [4..4] Upper-Limit Error Clear0: Does not clear the upper-limit
+                                          *   error.1: Clears the upper-limit error.                                    */
+            uint8_t : 3;
+        } CADC00ECR_b;
+    };
+    __IM uint8_t  RESERVED19;
+    __IM uint16_t RESERVED20;
+
+    union
+    {
+        __IM uint32_t CADC00ER;        /*!< (@ 0x00000078) Error RegisterCADC00ER is a 32-bit read-only
+                                        *                  register that indicates errors.                            */
+
+        struct
+        {
+            uint32_t                  : 8;
+            __IM uint32_t CADC00PECAP : 3;  /*!< [10..8] Parity Error CaptureThese bits show the virtual channel
+                                             *   number in which a parity error occurred.When writing 1
+                                             *   to CADC00PEC, these bits are cleared to 0H.When a parity
+                                             *   error occurred in CADC00UDIR, these bits indicate the number
+                                             *   of CADC00CHNUM.                                                           */
+            uint32_t               : 4;
+            __IM uint32_t CADC00PE : 1;     /*!< [15..15] Parity Error0: No parity error is present.1: A parity
+                                             *   error is present.Setting conditionA parity error is detected.Clearing
+                                             *   conditionWriting 1 to CADC00PEC                                           */
+            __IM uint32_t CADC00OWECAP : 3; /*!< [18..16] Overwrite Error CaptureThese bits show the virtual
+                                             *   channel number in which an overwrite error occurred.When
+                                             *   writing 1 to CADC00OWEC, these bits are cleared to 0H.                    */
+            uint32_t                : 4;
+            __IM uint32_t CADC00OWE : 1;    /*!< [23..23] Overwrite Error0: No overwrite error is present.1:
+                                             *   An overwrite error is present.Setting conditionWriting
+                                             *   the A/D converted value to CADC00DIRj.DR when CADC00WFLG
+                                             *   = 1Even if CADC00UDIR.CADC00UDR is overwritten when CADC00UDIR.CADC00UWFL
+                                             *   = 1, this bit is not set to 1 if CADC00DIRj.CADC00DR is
+                                             *   not overwritten.Clearing conditionWriting 1 to CADC00OWEC                 */
+            __IM uint32_t CADC00ULECAP : 3; /*!< [26..24] Upper-Limit/Lower-Limit Error CaptureThese bits show
+                                             *   the virtual channel number in which an upper-limit or lower-limit
+                                             *   error occurred.When writing 1 to CADC00ULEC, these bits
+                                             *   are cleared to 0H.                                                        */
+            uint32_t                : 3;
+            __IM uint32_t CADC00LLE : 1;    /*!< [30..30] Lower-Limit Error0: No lower-limit error is present.1:
+                                             *   A lower-limit error is present.Setting conditionThe A/D
+                                             *   converted value exceeds the specified lower-limit table
+                                             *   range.Clearing conditionWriting 1 to CADC00LLECWhen CADC00ULE
+                                             *   was set already, CADC00LLE is not set.                                    */
+            __IM uint32_t CADC00ULE : 1;    /*!< [31..31] Upper-Limit Error0: No upper-limit error is present.1:
+                                             *   An upper-limit error is present.Setting conditionThe A/D
+                                             *   converted value exceeds the specified upper-limit table
+                                             *   range.Clearing conditionWriting 1 to CADC00ULECWhen CADC00LLE
+                                             *   is set already, CADC00ULE is not set.                                     */
+        } CADC00ER_b;
+    };
+
+    union
+    {
+        __IOM uint8_t CADC00TDLVR;          /*!< (@ 0x0000007C) Pin Level Self-Diagnosis Level RegisterCADC00TDLVR
+                                             *                  is a 8-bit access register to specify pin
+                                             *                  level self-diagnosis levels.                               */
+
+        struct
+        {
+            __IOM uint8_t CADC00AN0PLV : 1; /*!< [0..0] Pin Level Self-Diagnosis Level of CANn0P0: CANn0P is
+                                             *   discharged (ADSVSS).1: CANn0P is charged (ADSVCC).                        */
+            __IOM uint8_t CADC00AN0NLV : 1; /*!< [1..1] Pin Level Self-Diagnosis Level of CANn0N0: CANn0N is
+                                             *   discharged (ADSVSS).1: CANn0N is charged (ADSVCC).                        */
+            __IOM uint8_t CADC00AN1PLV : 1; /*!< [2..2] Pin Level Self-Diagnosis Level of CANn1P0: CANn1P is
+                                             *   discharged (ADSVSS).1: CANn1P is charged (ADSVCC).                        */
+            __IOM uint8_t CADC00AN1NLV : 1; /*!< [3..3] Pin Level Self-Diagnosis Level of CANn1N0: CANn1N is
+                                             *   discharged (ADSVSS).1: CANn1N is charged (ADSVCC).                        */
+            __IOM uint8_t CADC00AN2PLV : 1; /*!< [4..4] Pin Level Self-Diagnosis Level of CANn2P0: CANn2P is
+                                             *   discharged (ADSVSS).1: CANn2P is charged (ADSVCC).                        */
+            __IOM uint8_t CADC00AN2NLV : 1; /*!< [5..5] Pin Level Self-Diagnosis Level of CANn2N0: CANn2N is
+                                             *   discharged (ADSVSS).1: CANn2N is charged (ADSVCC).                        */
+            __IOM uint8_t CADC00AN3PLV : 1; /*!< [6..6] Pin Level Self-Diagnosis Level of CANn3P0: CANn3P is
+                                             *   discharged (ADSVSS).1: CANn3P is charged (ADSVCC).                        */
+            __IOM uint8_t CADC00AN3NLV : 1; /*!< [7..7] Pin Level Self-Diagnosis Level of CANn3N0: CANn3N is
+                                             *   discharged (ADSVSS).1: CANn3N is charged (ADSVCC).                        */
+        } CADC00TDLVR_b;
+    };
+    __IM uint8_t  RESERVED21;
+    __IM uint16_t RESERVED22;
+    __IOM R_CADC00_CADC00ULTBR_Type CADC00ULTBR[4]; /*!< (@ 0x00000080) CADC Upper-Limit/Lower-Limit Table Register 0/1/2/3.      */
+} R_CADC00_Type;                                    /*!< Size = 144 (0x90)                                                         */
+
+/* =========================================================================================================================== */
 /* ================                                          R_CLMA0                                          ================ */
 /* =========================================================================================================================== */
 
@@ -94099,6 +96275,569 @@ typedef struct                         /*!< (@ 0xFFC69000) R_GUARD_DMAC0 Structu
         } DMAGPROT_CH_b[16];
     };
 } R_GUARD_DMAC0_Type;                   /*!< Size = 320 (0x140)                                                        */
+
+/* =========================================================================================================================== */
+/* ================                                          R_DSADC                                          ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief This section contains a description of the Delta Sigma A/D Converter (DSADC).The first part of this section describes all of the products, such as the number of units, and register base addresses. The remainder of the section describes the functions and registers of the DSADC. (R_DSADC)
+ */
+
+typedef struct                         /*!< (@ 0xFFF24000) R_DSADC Structure                                          */
+{
+    union
+    {
+        __OM uint8_t DSADCSYNSTCR;     /*!< (@ 0x00000000) AD Synchronization Start Control RegisterDSADCSYNSTCR
+                                        *                  is an 8-bit write-only register to control
+                                        *                  the simultaneous start of each Delta-Sigma
+                                        *                  ADC. This register is always read as 0.                    */
+
+        struct
+        {
+            __OM uint8_t ADSTART : 1;  /*!< [0..0] A/D Conversion Start of Each Delta-Sigma ADCA/D conversion
+                                        *   start condition of DSADCn with ADSTART:When ADSTART is
+                                        *   set to 1 with ADSTTE = 1.All DSADCn in which ADSTTE is
+                                        *   set to 1 are activated simultaneously. However, DSADCB
+                                        *   and DSADCA operate with a shift of half oversampling ratecycles.When
+                                        *   1 is written to this bit with A/D conversion operating,
+                                        *   if the DSADCnUCR.VCEP[2:0] value is 0H, the ongoing A/D
+                                        *   conversion stops and A/D conversion of the virtual channel
+                                        *   0 starts.When 1 is written to this bit with A/D                           */
+            uint8_t : 7;
+        } DSADCSYNSTCR_b;
+    };
+    __IM uint8_t RESERVED[3];
+
+    union
+    {
+        __IOM uint8_t DSADCADGCR;      /*!< (@ 0x00000004) AD Global Control RegisterDSADCADGCR is an 8-bit
+                                        *                  access register to fully control the AD.                   */
+
+        struct
+        {
+            __IOM uint8_t UNSND : 1;   /*!< [0..0] Unsigned Conversion Result Output EnableWhen this bit
+                                        *   is set to 1, the A/D conversion result (when ADSVREFL is
+                                        *   selected for the single-ended common voltage) can be output
+                                        *   as an unsigned value.0: The A/D conversion result is output
+                                        *   as a signed value.1: When single-ended common voltage =
+                                        *   ADSVREFL, the A/D conversion result is output as an unsigned
+                                        *   value.*1 Otherwise, it is output as a signed value.For
+                                        *   differences in data format due to UNSND setting, see the
+                                        *   description on the Section 51.5.2, DSADCnDIRj — D                       */
+            uint8_t           : 3;
+            __IOM uint8_t ODE : 1;     /*!< [4..4] Wiring-break Detection Enable0: Wiring-break detection
+                                        *   is disabled.1: Wiring-break detection is enabled.When ODE
+                                        *   is set to 1, wiring-break detection is enabled for all
+                                        *   analog pins.Setting this bit in 1 simultaneously with pin
+                                        *   level self-diagnosis (TDE = 1) is prohibited.When setting
+                                        *   DSADCADGCR.ODE as 1, if DSADCnVCRj.CNVCLS[1:0] value is
+                                        *   set to anything but 0H, A/D conversion is prohibited.                     */
+            __IOM uint8_t ODDE : 1;    /*!< [5..5] Wiring-break Detection Function Self-Diagnosis Enable0:
+                                        *   Self-diagnosis of the wiring-break detection function is
+                                        *   disabled.1: Self-diagnosis of the wiring-break detection
+                                        *   function is enabled.When ODDE is set to 1, wiring-break
+                                        *   detection function self-diagnosis and pin level self-diagnosis
+                                        *   are enabled. When doing pin level self-diagnosis, set ODDE
+                                        *   to 1 before setting TDE to 1.If TDE is set to 1 with ODDE
+                                        *   = 0, the self-diagnosis pin level voltage is output to
+                                        *   the chip pin, which might affect the external circ                        */
+            uint8_t : 2;
+        } DSADCADGCR_b;
+    };
+    __IM uint8_t RESERVED1[7];
+
+    union
+    {
+        __IOM uint8_t DSADCTDCR;       /*!< (@ 0x0000000C) Pin Level Self-Diagnosis Control RegisterDSADCTDCR
+                                        *                  is an 8-bit access register to control pin
+                                        *                  level self-diagnosis.                                      */
+
+        struct
+        {
+            __IOM uint8_t TDE : 1;     /*!< [0..0] Pin Level Self-Diagnosis Enable0: Pin level self-diagnosis
+                                        *   is disabled.1: Pin level self-diagnosis is enabled.When
+                                        *   TDE is set to 1, all analog pins are disconnected from
+                                        *   the analog I/O buffer. When TDE is set to 0, all analog
+                                        *   pins are connected to the analog I/O buffer.When TDE =
+                                        *   1, analog pin DSANn0x to DSANn3x is fixed to the level
+                                        *   specified by DSADCnTDLVR.AN0xLV to DSADCnTDLVR.AN3xLV.
+                                        *   By performing an A/D conversion in this state and checking
+                                        *   the A/D converted value, the path between the analog pin
+                                        *   and                                                                       */
+            uint8_t : 7;
+        } DSADCTDCR_b;
+    };
+} R_DSADC_Type;                        /*!< Size = 13 (0xd)                                                           */
+
+/* =========================================================================================================================== */
+/* ================                                         R_DSADC00                                         ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief R_DSADC00 (R_DSADC00)
+ */
+
+typedef struct                                   /*!< (@ 0xFFF24200) R_DSADC00 Structure                                        */
+{
+    __IOM R_DSADC00_DSADCnVCR_Type DSADCnVCR[8]; /*!< (@ 0x00000000) DSADC the number of a virtual channel register
+                                                  *                  j.                                                         */
+    __IOM R_DSADC00_DSADCnDIR_Type DSADCnDIR[8]; /*!< (@ 0x00000020) DSADC Data Supplementary Information Register
+                                                  *                  j.                                                         */
+
+    union
+    {
+        __OM uint8_t DSADCnADSTCR;               /*!< (@ 0x00000040) AD Start Control RegisterDSADCnADSTCR is an 8-bit
+                                                  *                  write-only register to control the Delta-Sigma
+                                                  *                  ADC start. This register is always read
+                                                  *                  as 0.                                                      */
+
+        struct
+        {
+            __OM uint8_t ADST : 1;               /*!< [0..0] A/D Conversion StartA/D conversion start condition with
+                                                  *   ADSTWriting 1 to ADSTWhen 1 is written to this bit with
+                                                  *   A/D conversion operating, the ongoing A/D conversion stops
+                                                  *   and A/D conversion of the next virtual channel starts.When
+                                                  *   1 is written to this bit with A/D conversion operating,
+                                                  *   if the DSADCnUCR.VCEP[2:0] value is 0H, the ongoing A/D
+                                                  *   conversion stops and A/D conversion of the virtual channel
+                                                  *   0 starts.Writing 0 to this bit is ignored.                                */
+            uint8_t : 7;
+        } DSADCnADSTCR_b;
+    };
+    __IM uint8_t  RESERVED;
+    __IM uint16_t RESERVED1;
+
+    union
+    {
+        __OM uint8_t DSADCnADENDCR;    /*!< (@ 0x00000044) AD Stop Control RegisterDSADCnADENDCR is an 8-bit
+                                        *                  write-only register to control the Delta-Sigma
+                                        *                  ADC stop. This register is always read as
+                                        *                  0.                                                         */
+
+        struct
+        {
+            __OM uint8_t ADEND : 1;    /*!< [0..0] A/D Conversion EndA/D conversion stop condition with
+                                        *   ADENDWriting 1 to this bit stops A/D conversion when A/D
+                                        *   conversion is operating.When A/D conversion is stopped
+                                        *   with VPRSTE = 0, the virtual channel is incremented. When
+                                        *   A/D conversion is stopped with VPRSTE = 1, the virtual
+                                        *   channel is cleared to 0.Writing 1 to this bit is ignored
+                                        *   when A/D conversion is stopped.Writing 0 to this bit is
+                                        *   ignored.NOTE: When changing the other register setting
+                                        *   after an A/D conversion is stopped, please be sure to confirm
+                                        *   tha                                                                       */
+            uint8_t : 7;
+        } DSADCnADENDCR_b;
+    };
+    __IM uint8_t  RESERVED2;
+    __IM uint16_t RESERVED3;
+
+    union
+    {
+        __OM uint8_t DSADCnCLBSTCR;    /*!< (@ 0x00000048) Calibration Start Control RegisterDSADCnCLBSTCR
+                                        *                  is an 8-bit write-only register to control
+                                        *                  calibration start. This register is always
+                                        *                  read as 0.                                                 */
+
+        struct
+        {
+            __OM uint8_t CLBST : 1;    /*!< [0..0] Calibration StartCalibration start condition with CLBSTWriting
+                                        *   1 to this bit starts calibration when calibration and A/D
+                                        *   conversion are stopped.Writing 1 to this bit is ignored
+                                        *   when calibration or A/D conversion is operating                           */
+            uint8_t : 7;
+        } DSADCnCLBSTCR_b;
+    };
+    __IM uint8_t  RESERVED4;
+    __IM uint16_t RESERVED5;
+
+    union
+    {
+        __OM uint8_t DSADCnCLBEDCR;    /*!< (@ 0x0000004C) Calibration Stop Control RegisterDSADCnCLBEDCR
+                                        *                  is an 8-bit write-only register to control
+                                        *                  calibration stop. This register is always
+                                        *                  read as 0.                                                 */
+
+        struct
+        {
+            __OM uint8_t CLBEND : 1;   /*!< [0..0] Calibration StopCalibration stop condition with CLBENDWriting
+                                        *   1 to this bit stops calibration when calibration is operating.Writing
+                                        *   1 to this bit is ignored when calibration is stopped.CAUTION:
+                                        *   If calibration is suspended by CLBEND before calibration
+                                        *   is completed, the correction value before calibration is
+                                        *   performed is retained.Writing 0 to this bit is ignored.                   */
+            uint8_t : 7;
+        } DSADCnCLBEDCR_b;
+    };
+    __IM uint8_t  RESERVED6;
+    __IM uint16_t RESERVED7;
+
+    union
+    {
+        __IOM uint8_t DSADCnADTCR;     /*!< (@ 0x00000050) AD Conversion Trigger Control RegisterDSADCnADTCR
+                                        *                  is an 8-bit access register to control the
+                                        *                  Delta-Sigma ADC.                                           */
+
+        struct
+        {
+            __IOM uint8_t STTRGE : 1;  /*!< [0..0] A/D Conversion Start Trigger Enable0: A/D conversion
+                                        *   start trigger n is disabled.1: A/D conversion start trigger
+                                        *   n is enabled.The trigger selection function is used to
+                                        *   set the trigger source selection for A/D conversion start
+                                        *   trigger n.For details, see Section 45, Peripheral Interconnect
+                                        *   (PIC).                                                                    */
+            __IOM uint8_t ENDTRGE : 1; /*!< [1..1] A/D Conversion End Trigger Enable0: A/D conversion end
+                                        *   trigger n is disabled.1: A/D conversion end trigger n is
+                                        *   enabled.The trigger selection function is used to set the
+                                        *   trigger source selection for A/D conversion end trigger
+                                        *   n.For details, see Section 45, Peripheral Interconnect
+                                        *   (PIC)                                                                     */
+            uint8_t              : 4;
+            __IOM uint8_t ADSTTE : 1;  /*!< [6..6] A/D Synchronization Start Enable0: ADSTART is disabled.1:
+                                        *   ADSTART is enabled.                                                       */
+            uint8_t : 1;
+        } DSADCnADTCR_b;
+    };
+    __IM uint8_t  RESERVED8;
+    __IM uint16_t RESERVED9;
+
+    union
+    {
+        __IOM uint32_t DSADCnUCR;      /*!< (@ 0x00000054) Unit Control RegisterDSADCnUCR is a 32-bit access
+                                        *                  register to control the Delta-Sigma AD units.              */
+
+        struct
+        {
+            __IOM uint32_t VCEP : 3;   /*!< [2..0] End Virtual Channel PointerThese bits set the end virtual
+                                        *   channel number.                                                           */
+            uint32_t            : 5;
+            __IOM uint32_t DFMT : 4;   /*!< [11..8] Data FormatThese bits specify the lower bits to be zero-masked
+                                        *   (rounded in the −∞direction).0H: Not masked1H: Lower
+                                        *   1 bit masked2H: Lower 2 bits masked3H: Lower 3 bits masked4H:
+                                        *   Lower 4 bits masked5H: Lower 5 bits masked6H: Lower 6 bits
+                                        *   masked7H: Lower 7 bits masked8H: Lower 8 bits maskedOthers:
+                                        *   Setting prohibitedThe setting of these bits depends on
+                                        *   the format of the data for DR, DFE, GTM and RDC3AS.For
+                                        *   details about the data format, see Section 51.5.2, DSADCnDIRj
+                                        *   — Data Supplementary Information Reg                                    */
+            uint32_t            : 12;
+            __IOM uint32_t DFES : 1;   /*!< [24..24] DFE Channel SelectWhen DSADCn entry to DFE, this bit
+                                        *   must be set 0. 0: DFE(DFE0 and DFE1) is selected.1: Setting
+                                        *   prohibitedWhen DSADCn entry to GTM, this bit sets ADC_CHy_DATA
+                                        *   register of GTM to be assigned to DSADCn. Entry to GTM
+                                        *   is performed for each VCR register. 0: One register is
+                                        *   selected from ADC_CH0_DATA to ADC_CH15_DATA. 1: One register
+                                        *   is selected from ADC_CH16_DATA to ADC_CH31_DATA.For details
+                                        *   about selection setting, see Section 41.4.18, ADC Interface               */
+            uint32_t             : 1;
+            __IOM uint32_t RESO0 : 1;  /*!< [26..26] High Resolution Mode0: High resolution mode1: High
+                                        *   impedance modeBe sure to perform calibration after high
+                                        *   resolution mode is changed.                                               */
+            uint32_t            : 1;
+            __IOM uint32_t RDMA : 1;   /*!< [28..28] Read Gate DMA ModeThis bit selects a DMA transfer request
+                                        *   output condition.0: A DMA transfer request is output for
+                                        *   all A/D conversion results.1: A DMA transfer request is
+                                        *   output for the A/D conversion result for which DSADRGTn
+                                        *   is being asserted.                                                        */
+            __IOM uint32_t VPRSTE : 1; /*!< [29..29] Virtual Channel Pointer Reset Enable0: The virtual
+                                        *   channel pointer is incremented at the end of the A/D conversion
+                                        *   by the A/D conversion end trigger n or ADEND.1: The virtual
+                                        *   channel pointer is set as 0 at the end of the A/D conversion
+                                        *   by the A/D conversion end trigger n or ADEND.                             */
+            uint32_t : 2;
+        } DSADCnUCR_b;
+    };
+
+    union
+    {
+        __IOM uint8_t DSADCnVCPTRR;    /*!< (@ 0x00000058) Virtual Channel Pointer Control RegisterDSADCnVCPTRR
+                                        *                  is an 8-bit access register to monitor the
+                                        *                  number of the virtual channel for which
+                                        *                  A/D conversion is in progress.                             */
+
+        struct
+        {
+            __IOM uint8_t VCPTR : 3;   /*!< [2..0] A/D Conversion Ongoing Virtual Channel NumberThese bits
+                                        *   output the number of virtual channels for which A/D conversion
+                                        *   is in progress.If a value is written to these bits while
+                                        *   A/D conversion is not ongoing, the virtual channel number
+                                        *   is updated and A/D conversion starts for the channel written
+                                        *   at the next conversion start.Writing to these bits during
+                                        *   A/D conversion is prohibited. When any value is written
+                                        *   to these bits with A/D conversion operating, the A/D conversion
+                                        *   of the next start channel cannot be gu                                    */
+            uint8_t : 5;
+        } DSADCnVCPTRR_b;
+    };
+    __IM uint8_t  RESERVED10;
+    __IM uint16_t RESERVED11;
+    __IM uint32_t RESERVED12;
+
+    union
+    {
+        __IM uint8_t DSADCnADSR;       /*!< (@ 0x00000060) AD Conversion Status RegisterDSADCnADSR is an
+                                        *                  8-bit read-only register that indicates
+                                        *                  the delta-sigma ADC status                                 */
+
+        struct
+        {
+            __IM uint8_t ADACT : 1;    /*!< [0..0] A/D Conversion Status0: A/D conversion is not in progress.1:
+                                        *   A/D conversion is in progress.The ADACT bit is set to 1
+                                        *   when an A/D conversion start source is generated, and it
+                                        *   is set to 0 when an A/D conversion end source is generated.
+                                        *   This bit is continuously set to 1 unless an A/D conversion
+                                        *   end source is generated. (This bit is not cleared to 0
+                                        *   by storing the converted data in the data register)If an
+                                        *   A/D conversion start source is generated when ADACT = 1
+                                        *   (where the period of ADACT = 0 just after the ADST                        */
+            __IM uint8_t CLBACT : 1;   /*!< [1..1] Calibration Status0: Calibration is not in progress.1:
+                                        *   Calibration is in progress.                                               */
+            uint8_t : 6;
+        } DSADCnADSR_b;
+    };
+    __IM uint8_t  RESERVED13;
+    __IM uint16_t RESERVED14;
+
+    union
+    {
+        __IM uint8_t DSADCnUDPTRR;     /*!< (@ 0x00000064) Unit Data Pointer RegisterDSADCnUDPTRR is an
+                                        *                  8-bit read-only register that indicates
+                                        *                  the virtual channel number of DSADCnUDIR.                  */
+
+        struct
+        {
+            __IM uint8_t UDPTR : 3;    /*!< [2..0] Unit Data PointerThese bits indicate the virtual channel
+                                        *   number in which the latest A/D conversion result is stored.               */
+            uint8_t : 5;
+        } DSADCnUDPTRR_b;
+    };
+    __IM uint8_t  RESERVED15;
+    __IM uint16_t RESERVED16;
+
+    union
+    {
+        __IOM uint32_t DSADCnUDIR;     /*!< (@ 0x00000068) Unit Data Supplementary Information RegisterDSADCnUDIR
+                                        *                  is a 32-bit read-only register to output
+                                        *                  all A/D conversion results of DSADCn units
+                                        *                  regardless of the selection of the virtual
+                                        *                  channel. The bit besides CHNUM[2:0] and
+                                        *                  UPRTY of this register is a mirror register
+                                        *                  of DSADCnDIRj specified by UDPTR[3:0]. When
+                                        *                  DSADCnUDIR is read, the WFLG of the actual
+                                        *                  DSADCnDIRj is cleared at the same time,
+                                        *                  and DR[15:0], PRTY and IDEF in DSADCnDIRj
+                                        *                  as well as CHNUM[2:0] and UPRTY in this
+                                        *                  register are also cle                                      */
+
+        struct
+        {
+            __IM uint32_t UDR : 16;    /*!< [15..0] All A/D converted values of DSADCn are stored in these
+                                        *   bits.The data format is the same as DSADCnDIRj                            */
+            uint32_t            : 8;
+            __IM uint32_t UPRTY : 1;   /*!< [24..24] ParityThis bit indicates the even parity bit of UDR,
+                                        *   UIDEF and CHNUM.                                                          */
+            __IM uint32_t UWFLG : 1;   /*!< [25..25] Write FlagSetting conditionStores an A/D converted
+                                        *   value in DSADCnUDIR.Clearing conditionReads DSADCnUDIR
+                                        *   or DSADCnDIRj of the channel indicated by UDPTR.                          */
+            __IM uint32_t UIDEF : 1;   /*!< [26..26] ID Error0: An error is present.1: No error is present.           */
+            uint32_t            : 2;
+            __IM uint32_t CHNUM : 3;   /*!< [31..29] Virtual Channel NumberVirtual channel number of UDR[15:0]        */
+        } DSADCnUDIR_b;
+    };
+
+    union
+    {
+        __IM uint32_t DSADCnTSVAL;     /*!< (@ 0x0000006C) Timestamp RegisterDSADCnTSVAL is a 32-bit read-only
+                                        *                  register to output timestamp data. When
+                                        *                  DSADRGTn from ATU or GTM is rising edge,
+                                        *                  the timestamp value and A/D conversion result
+                                        *                  can be captured in this register.                          */
+
+        struct
+        {
+            __IM uint32_t TSDR : 16;   /*!< [15..0] Timestamp Data OutputThe A/D conversion result when
+                                        *   reading the timestamp can be monitored.It is the signed
+                                        *   fixed point format. It does not correspond to DFMT                        */
+            __IM uint32_t TSVAL : 9;   /*!< [24..16] Timestamp Data at the DSADRGTn Rising edgeThe lapsed
+                                        *   time (oversampling cycles) after the previous conversion
+                                        *   ended can be monitored.A value of 1FFH is output during
+                                        *   A/D conversion stop or the first A/D conversion.                          */
+            uint32_t : 7;
+        } DSADCnTSVAL_b;
+    };
+
+    union
+    {
+        __IOM uint8_t DSADCnSFTCR;     /*!< (@ 0x00000070) Safety Control RegisterDSADCnSFTCR is an 8-bit
+                                        *                  access register for safety control.                        */
+
+        struct
+        {
+            __IOM uint8_t IDEIE : 1;   /*!< [0..0] ID Error Interrupt Enable0: Disabled1: Enabled                     */
+            __IOM uint8_t PEIE  : 1;   /*!< [1..1] Parity Error Interrupt Enable0: Disabled1: Enabled                 */
+            __IOM uint8_t OWEIE : 1;   /*!< [2..2] Overwrite Error Interrupt Enable0: Disabled1: EnabledWhen
+                                        *   using DMA transfer with read-gate, if read-gate is in the
+                                        *   inactive state, a DMA request is not output, but, on the
+                                        *   other hand, an overwrite error occurs.Therefore, the overwrite
+                                        *   Error Interrupt and DMA transfer by the DSADIn with read-gate
+                                        *   cannot be used at the same time.                                          */
+            uint8_t              : 4;
+            __IOM uint8_t RDCLRE : 1;  /*!< [7..7] Read and Clear Enable0: DSADCnDIRj (DSADCnUDIR) is not
+                                        *   cleared by reading DSADCnDIRj (DSADCnUDIR).1: DSADCnDIRj
+                                        *   (DSADCnUDIR) is cleared by reading DSADCnDIRj (DSADCnUDIR).The
+                                        *   WFLG of DSADCnDIRj (DSADCnUDIR) is cleared by reading DSADCnDIRj
+                                        *   (DSADCnUDIR) regardless of the RDCLRE value.When DSADCnUDIR
+                                        *   is read after RDCLRE has been set to 1, DSADCnDIRj which
+                                        *   corresponds with DSADCnUDPTR is also cleared at the same
+                                        *   time.When DSADCnDIRj which corresponds with DSADCnUDPTR
+                                        *   is read, DSADCnUDIR is also cleared at th                                 */
+        } DSADCnSFTCR_b;
+    };
+    __IM uint8_t  RESERVED17;
+    __IM uint16_t RESERVED18;
+
+    union
+    {
+        __OM uint8_t DSADCnECR;        /*!< (@ 0x00000074) Error Clear RegisterDSADCnECR is an 8-bit write-only
+                                        *                  register to control error clear. This register
+                                        *                  is always read as 0                                        */
+
+        struct
+        {
+            uint8_t          : 1;
+            __OM uint8_t PEC : 1;      /*!< [1..1] Parity Error Clear0: Does not clear the parity error.1:
+                                        *   Clears the parity error.                                                  */
+            __OM uint8_t OWEC : 1;     /*!< [2..2] Overwrite Error Clear0: Does not clear the overwrite
+                                        *   error.1: Clears the overwrite error.                                      */
+            __OM uint8_t LLEC : 1;     /*!< [3..3] Lower-Limit Error Clear0: Does not clear the lower-limit
+                                        *   error.1: Clears the lower-limit error.                                    */
+            __OM uint8_t ULEC : 1;     /*!< [4..4] Upper-Limit Error Clear0: Does not clear the upper-limit
+                                        *   error.1: Clears the upper-limit error.                                    */
+            uint8_t : 3;
+        } DSADCnECR_b;
+    };
+    __IM uint8_t  RESERVED19;
+    __IM uint16_t RESERVED20;
+
+    union
+    {
+        __IM uint32_t DSADCnER;        /*!< (@ 0x00000078) Error RegisterDSADCnER is a 32-bit read-only
+                                        *                  register that indicates errors.                            */
+
+        struct
+        {
+            uint32_t            : 8;
+            __IM uint32_t PECAP : 3;   /*!< [10..8] Parity Error CaptureThese bits show the virtual channel
+                                        *   number in which a parity error occurred.When writing 1
+                                        *   to PEC, these bits are cleared to 0H.When a parity error
+                                        *   is indicated by DSADCnUDIR, the number of DSADCnUDIR.CHNUM[2:0]
+                                        *   is shown.                                                                 */
+            uint32_t         : 4;
+            __IM uint32_t PE : 1;      /*!< [15..15] Parity Error0: No parity error is present.1: A parity
+                                        *   error is present.Setting conditionA parity error is detected.Clearing
+                                        *   conditionWriting 1 to PEC in DSADCnECR.                                   */
+            __IM uint32_t OWECAP : 3;  /*!< [18..16] Overwrite Error CaptureThese bits show the virtual
+                                        *   channel number in which an overwrite error occurred.When
+                                        *   writing 1 to OWEC, these bits are cleared to 0H.                          */
+            uint32_t          : 4;
+            __IM uint32_t OWE : 1;     /*!< [23..23] Overwrite Error0: No overwrite error is present.1:
+                                        *   An overwrite error is present.Setting conditionWriting
+                                        *   an A/D converted value to DSADCnDIRj.DR occurs when WFLG
+                                        *   = 1.Even if DSADCnUDIR.UDR is overwritten when DSADCnUDIR.UWFLG
+                                        *   = 1,this bit is not set to 1 if DSADCnDIRj.DR is not overwritten.Clearing
+                                        *   conditionWriting 1 to OWEC in DSADCnECR                                   */
+            __IM uint32_t ULECAP : 3;  /*!< [26..24] Upper-Limit/Lower-Limit Error CaptureThese bits show
+                                        *   the virtual channel number in which an upper-limit or lower-limit
+                                        *   error occurred.When writing 1 to ULEC, these bits are cleared
+                                        *   to 0H                                                                     */
+            uint32_t          : 3;
+            __IM uint32_t LLE : 1;     /*!< [30..30] Lower-Limit Error0: No lower-limit error is present.1:
+                                        *   A lower-limit error is present.Setting conditionThe A/D
+                                        *   converted value exceeds the specified lower-limit table
+                                        *   range.Clearing conditionWriting 1 to ULEC in DSADCnECR.When
+                                        *   ULE is set to 1, LLE is not set to 1 even if a lower-limit
+                                        *   error occurred                                                            */
+            __IM uint32_t ULE : 1;     /*!< [31..31] Upper-Limit Error0: No upper-limit error is present.1:
+                                        *   An upper-limit error is present.Setting conditionThe A/D
+                                        *   converted value exceeds the specified upper-limit table
+                                        *   range.Clearing conditionWriting 1 to ULEC in DSADCnECR.When
+                                        *   LLE is set to 1, ULE is not set to 1 even if an upper-limit
+                                        *   error occurred                                                            */
+        } DSADCnER_b;
+    };
+
+    union
+    {
+        __IOM uint8_t DSADCnTDLVR;     /*!< (@ 0x0000007C) Pin Level Self-Diagnosis Level RegisterDSADCnTDLVR
+                                        *                  is an 8-bit access register to specify pin
+                                        *                  level self-diagnosis levels. Write to this
+                                        *                  register, when the DSADCTDCR.TDE bit is
+                                        *                  in the state of 0.                                         */
+
+        struct
+        {
+            __IOM uint8_t AN0PLV : 1;  /*!< [0..0] Pin Level Self-Diagnosis Level of DSANn0P0: DSANn0P is
+                                        *   discharged (ADSVSS).1: DSANn0P is charged (ADSVCC).                       */
+            __IOM uint8_t AN0NLV : 1;  /*!< [1..1] Pin Level Self-Diagnosis Level of DSANn0N0: DSANn0N is
+                                        *   discharged (ADSVSS).1: DSANn0N is charged (ADSVCC).                       */
+            __IOM uint8_t AN1PLV : 1;  /*!< [2..2] Pin Level Self-Diagnosis Level of DSANn1P0: DSANn1P is
+                                        *   discharged (ADSVSS).1: DSANn1P is charged (ADSVCC).                       */
+            __IOM uint8_t AN1NLV : 1;  /*!< [3..3] Pin Level Self-Diagnosis Level of DSANn1N0: DSANn1N is
+                                        *   discharged (ADSVSS).1: DSANn1N is charged (ADSVCC).                       */
+            __IOM uint8_t AN2PLV : 1;  /*!< [4..4] Pin Level Self-Diagnosis Level of DSANn2P0: DSANn2P is
+                                        *   discharged (ADSVSS).1: DSANn2P is charged (ADSVCC).                       */
+            __IOM uint8_t AN2NLV : 1;  /*!< [5..5] Pin Level Self-Diagnosis Level of DSANn2N0: DSANn2N is
+                                        *   discharged (ADSVSS).1: DSANn2N is charged (ADSVCC).                       */
+            __IOM uint8_t AN3PLV : 1;  /*!< [6..6] Pin Level Self-Diagnosis Level of DSANn3P0: DSANn3P is
+                                        *   discharged (ADSVSS).1: DSANn3P is charged (ADSVCC).                       */
+            __IOM uint8_t AN3NLV : 1;  /*!< [7..7] Pin Level Self-Diagnosis Level of DSANn3N0: DSANn3N is
+                                        *   discharged (ADSVSS).1: DSANn3N is charged (ADSVCC).                       */
+        } DSADCnTDLVR_b;
+    };
+    __IM uint8_t  RESERVED21;
+    __IM uint16_t RESERVED22;
+    __IOM R_DSADC00_DSADCnULTBR_Type DSADCnULTBR[4]; /*!< (@ 0x00000080) DSADC Upper-Limit/Lower-Limit Table Register
+                                                      *                0/1/2/3.                                                   */
+    __IM uint32_t RESERVED23[8];
+
+    union
+    {
+        __IOM uint8_t DSADCnTRCR;       /*!< (@ 0x000000B0) AD Input Bias On/Off Register [For U2B-FCC only]DSADCnTRCR
+                                         *                  is an 8-bit access that controls On/Off
+                                         *                  of AD input bias. It controls for each AD
+                                         *                  input channel.                                             */
+
+        struct
+        {
+            __IOM uint8_t AN0PBSEN : 1; /*!< [0..0] AD input bias control 0-P0: OFF1: ON                               */
+            __IOM uint8_t AN0NBSEN : 1; /*!< [1..1] AD input bias control 0-N0: OFF1: ON                               */
+            __IOM uint8_t AN1PBSEN : 1; /*!< [2..2] AD input bias control 1-P0: OFF1: ON                               */
+            __IOM uint8_t AN1NBSEN : 1; /*!< [3..3] AD input bias control 1-N0: OFF1: ON                               */
+            __IOM uint8_t AN2PBSEN : 1; /*!< [4..4] AD input bias control 2-P0: OFF1: ON                               */
+            __IOM uint8_t AN2NBSEN : 1; /*!< [5..5] AD input bias control 2-N0: OFF1: ON                               */
+            __IOM uint8_t AN3PBSEN : 1; /*!< [6..6] AD input bias control 3-P0: OFF1: ON                               */
+            __IOM uint8_t AN3NBSEN : 1; /*!< [7..7] AD input bias control 3-N0: OFF1: ON                               */
+        } DSADCnTRCR_b;
+    };
+    __IM uint8_t  RESERVED24;
+    __IM uint16_t RESERVED25;
+
+    union
+    {
+        __IOM uint8_t DSADCnVBIASR;    /*!< (@ 0x000000B4) VBIAS On/Off Register [For U2B-FCC only]DSADCnVBIASR
+                                        *                  is an 8-bit access register that controls
+                                        *                  On/Off of VBIAS                                            */
+
+        struct
+        {
+            __IOM uint8_t VBIASEN : 1; /*!< [0..0] VBIAS switch control0: OFF1: ON                                    */
+            uint8_t               : 7;
+        } DSADCnVBIASR_b;
+    };
+    __IM uint8_t  RESERVED26;
+    __IM uint16_t RESERVED27;
+} R_DSADCn_Type;                       /*!< Size = 184 (0xb8)                                                         */
 
 /* =========================================================================================================================== */
 /* ================                                        R_DTSTRGSEL                                        ================ */
@@ -102280,8 +105019,8 @@ typedef struct                         /*!< (@ 0xFF608000) R_GTM0_DPLL Structure
                                         *   corresponding increment *2ˆ32 while only the lower 24
                                         *   bits are used; no gap considered. The LSB is roundedup
                                         *   when the next truncated bit is 1.Note:There are 2*(DPLL_CTRL_0.SNU+1−DP
-                                        *   L_CTRL_1.SYN_NS) entries for DPLL_CTRL_1.SYSF=0 or 2*(DPLL_CTRL_0.SNU+1)�
-                                        *   �DPLL_CTRL_1.SYN_NS entries for DPLL_CTRL_1.SYSF=1 respectively           */
+                                        *   L_CTRL_1.SYN_NS) entries for DPLL_CTRL_1.SYSF=0 or 2*(DPLL_CTRL_0.SNU+1)
+                                        *   DPLL_CTRL_1.SYN_NS entries for DPLL_CTRL_1.SYSF=1 respectively           */
             uint32_t : 8;
         } DPLL_RDT_S_b[64];
     };
@@ -110421,6 +113160,3012 @@ typedef struct                               /*!< (@ 0xFFD90000) R_PORT Structur
 } R_PORT_Type;                               /*!< Size = 27200 (0x6a40)                                                     */
 
 /* =========================================================================================================================== */
+/* ================                                          R_IPIR                                           ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief The following sections describe Inter-Processor InterruptThe first section describes the attributes which are specific to the RH850 U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_IPIR)
+ */
+
+typedef struct                         /*!< (@ 0xFFFB9000) R_IPIR Structure                                           */
+{
+    union
+    {
+        __IOM uint8_t IPI0ENS;         /*!< (@ 0x00000000) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI0ENS_b;
+    };
+    __IM uint8_t RESERVED[3];
+
+    union
+    {
+        __IM uint8_t IPI0FLGS;         /*!< (@ 0x00000004) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI0FLGS_b;
+    };
+    __IM uint8_t RESERVED1[3];
+
+    union
+    {
+        __OM uint8_t IPI0FCLRS;        /*!< (@ 0x00000008) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI0FCLRS_b;
+    };
+    __IM uint8_t RESERVED2[7];
+
+    union
+    {
+        __IOM uint8_t IPI0REQS;        /*!< (@ 0x00000010) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI0REQS_b;
+    };
+    __IM uint8_t RESERVED3[3];
+
+    union
+    {
+        __OM uint8_t IPI0RCLRS;        /*!< (@ 0x00000014) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI0RCLRS_b;
+    };
+    __IM uint8_t RESERVED4[11];
+
+    union
+    {
+        __IOM uint8_t IPI1ENS;         /*!< (@ 0x00000020) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI1ENS_b;
+    };
+    __IM uint8_t RESERVED5[3];
+
+    union
+    {
+        __IM uint8_t IPI1FLGS;         /*!< (@ 0x00000024) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI1FLGS_b;
+    };
+    __IM uint8_t RESERVED6[3];
+
+    union
+    {
+        __OM uint8_t IPI1FCLRS;        /*!< (@ 0x00000028) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI1FCLRS_b;
+    };
+    __IM uint8_t RESERVED7[7];
+
+    union
+    {
+        __IOM uint8_t IPI1REQS;        /*!< (@ 0x00000030) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI1REQS_b;
+    };
+    __IM uint8_t RESERVED8[3];
+
+    union
+    {
+        __OM uint8_t IPI1RCLRS;        /*!< (@ 0x00000034) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI1RCLRS_b;
+    };
+    __IM uint8_t RESERVED9[11];
+
+    union
+    {
+        __IOM uint8_t IPI2ENS;         /*!< (@ 0x00000040) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI2ENS_b;
+    };
+    __IM uint8_t RESERVED10[3];
+
+    union
+    {
+        __IM uint8_t IPI2FLGS;         /*!< (@ 0x00000044) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI2FLGS_b;
+    };
+    __IM uint8_t RESERVED11[3];
+
+    union
+    {
+        __OM uint8_t IPI2FCLRS;        /*!< (@ 0x00000048) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI2FCLRS_b;
+    };
+    __IM uint8_t RESERVED12[7];
+
+    union
+    {
+        __IOM uint8_t IPI2REQS;        /*!< (@ 0x00000050) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI2REQS_b;
+    };
+    __IM uint8_t RESERVED13[3];
+
+    union
+    {
+        __OM uint8_t IPI2RCLRS;        /*!< (@ 0x00000054) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI2RCLRS_b;
+    };
+    __IM uint8_t RESERVED14[11];
+
+    union
+    {
+        __IOM uint8_t IPI3ENS;         /*!< (@ 0x00000060) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI3ENS_b;
+    };
+    __IM uint8_t RESERVED15[3];
+
+    union
+    {
+        __IM uint8_t IPI3FLGS;         /*!< (@ 0x00000064) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI3FLGS_b;
+    };
+    __IM uint8_t RESERVED16[3];
+
+    union
+    {
+        __OM uint8_t IPI3FCLRS;        /*!< (@ 0x00000068) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI3FCLRS_b;
+    };
+    __IM uint8_t RESERVED17[7];
+
+    union
+    {
+        __IOM uint8_t IPI3REQS;        /*!< (@ 0x00000070) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI3REQS_b;
+    };
+    __IM uint8_t RESERVED18[3];
+
+    union
+    {
+        __OM uint8_t IPI3RCLRS;        /*!< (@ 0x00000074) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI3RCLRS_b;
+    };
+    __IM uint8_t RESERVED19[1931];
+
+    union
+    {
+        __IOM uint8_t IPI0EN0;         /*!< (@ 0x00000800) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI0EN0_b;
+    };
+    __IM uint8_t RESERVED20[3];
+
+    union
+    {
+        __IM uint8_t IPI0FLG0;         /*!< (@ 0x00000804) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI0FLG0_b;
+    };
+    __IM uint8_t RESERVED21[3];
+
+    union
+    {
+        __OM uint8_t IPI0FCLR0;        /*!< (@ 0x00000808) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI0FCLR0_b;
+    };
+    __IM uint8_t RESERVED22[7];
+
+    union
+    {
+        __IOM uint8_t IPI0REQ0;        /*!< (@ 0x00000810) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI0REQ0_b;
+    };
+    __IM uint8_t RESERVED23[3];
+
+    union
+    {
+        __OM uint8_t IPI0RCLR0;        /*!< (@ 0x00000814) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI0RCLR0_b;
+    };
+    __IM uint8_t RESERVED24[11];
+
+    union
+    {
+        __IOM uint8_t IPI1EN0;         /*!< (@ 0x00000820) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI1EN0_b;
+    };
+    __IM uint8_t RESERVED25[3];
+
+    union
+    {
+        __IM uint8_t IPI1FLG0;         /*!< (@ 0x00000824) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI1FLG0_b;
+    };
+    __IM uint8_t RESERVED26[3];
+
+    union
+    {
+        __OM uint8_t IPI1FCLR0;        /*!< (@ 0x00000828) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI1FCLR0_b;
+    };
+    __IM uint8_t RESERVED27[7];
+
+    union
+    {
+        __IOM uint8_t IPI1REQ0;        /*!< (@ 0x00000830) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI1REQ0_b;
+    };
+    __IM uint8_t RESERVED28[3];
+
+    union
+    {
+        __OM uint8_t IPI1RCLR0;        /*!< (@ 0x00000834) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI1RCLR0_b;
+    };
+    __IM uint8_t RESERVED29[11];
+
+    union
+    {
+        __IOM uint8_t IPI2EN0;         /*!< (@ 0x00000840) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI2EN0_b;
+    };
+    __IM uint8_t RESERVED30[3];
+
+    union
+    {
+        __IM uint8_t IPI2FLG0;         /*!< (@ 0x00000844) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI2FLG0_b;
+    };
+    __IM uint8_t RESERVED31[3];
+
+    union
+    {
+        __OM uint8_t IPI2FCLR0;        /*!< (@ 0x00000848) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI2FCLR0_b;
+    };
+    __IM uint8_t RESERVED32[7];
+
+    union
+    {
+        __IOM uint8_t IPI2REQ0;        /*!< (@ 0x00000850) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI2REQ0_b;
+    };
+    __IM uint8_t RESERVED33[3];
+
+    union
+    {
+        __OM uint8_t IPI2RCLR0;        /*!< (@ 0x00000854) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI2RCLR0_b;
+    };
+    __IM uint8_t RESERVED34[11];
+
+    union
+    {
+        __IOM uint8_t IPI3EN0;         /*!< (@ 0x00000860) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI3EN0_b;
+    };
+    __IM uint8_t RESERVED35[3];
+
+    union
+    {
+        __IM uint8_t IPI3FLG0;         /*!< (@ 0x00000864) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI3FLG0_b;
+    };
+    __IM uint8_t RESERVED36[3];
+
+    union
+    {
+        __OM uint8_t IPI3FCLR0;        /*!< (@ 0x00000868) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI3FCLR0_b;
+    };
+    __IM uint8_t RESERVED37[7];
+
+    union
+    {
+        __IOM uint8_t IPI3REQ0;        /*!< (@ 0x00000870) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI3REQ0_b;
+    };
+    __IM uint8_t RESERVED38[3];
+
+    union
+    {
+        __OM uint8_t IPI3RCLR0;        /*!< (@ 0x00000874) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI3RCLR0_b;
+    };
+    __IM uint8_t RESERVED39[139];
+
+    union
+    {
+        __IOM uint8_t IPI0EN1;         /*!< (@ 0x00000900) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI0EN1_b;
+    };
+    __IM uint8_t RESERVED40[3];
+
+    union
+    {
+        __IM uint8_t IPI0FLG1;         /*!< (@ 0x00000904) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI0FLG1_b;
+    };
+    __IM uint8_t RESERVED41[3];
+
+    union
+    {
+        __OM uint8_t IPI0FCLR1;        /*!< (@ 0x00000908) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI0FCLR1_b;
+    };
+    __IM uint8_t RESERVED42[7];
+
+    union
+    {
+        __IOM uint8_t IPI0REQ1;        /*!< (@ 0x00000910) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI0REQ1_b;
+    };
+    __IM uint8_t RESERVED43[3];
+
+    union
+    {
+        __OM uint8_t IPI0RCLR1;        /*!< (@ 0x00000914) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI0RCLR1_b;
+    };
+    __IM uint8_t RESERVED44[11];
+
+    union
+    {
+        __IOM uint8_t IPI1EN1;         /*!< (@ 0x00000920) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI1EN1_b;
+    };
+    __IM uint8_t RESERVED45[3];
+
+    union
+    {
+        __IM uint8_t IPI1FLG1;         /*!< (@ 0x00000924) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI1FLG1_b;
+    };
+    __IM uint8_t RESERVED46[3];
+
+    union
+    {
+        __OM uint8_t IPI1FCLR1;        /*!< (@ 0x00000928) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI1FCLR1_b;
+    };
+    __IM uint8_t RESERVED47[7];
+
+    union
+    {
+        __IOM uint8_t IPI1REQ1;        /*!< (@ 0x00000930) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI1REQ1_b;
+    };
+    __IM uint8_t RESERVED48[3];
+
+    union
+    {
+        __OM uint8_t IPI1RCLR1;        /*!< (@ 0x00000934) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI1RCLR1_b;
+    };
+    __IM uint8_t RESERVED49[11];
+
+    union
+    {
+        __IOM uint8_t IPI2EN1;         /*!< (@ 0x00000940) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI2EN1_b;
+    };
+    __IM uint8_t RESERVED50[3];
+
+    union
+    {
+        __IM uint8_t IPI2FLG1;         /*!< (@ 0x00000944) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI2FLG1_b;
+    };
+    __IM uint8_t RESERVED51[3];
+
+    union
+    {
+        __OM uint8_t IPI2FCLR1;        /*!< (@ 0x00000948) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI2FCLR1_b;
+    };
+    __IM uint8_t RESERVED52[7];
+
+    union
+    {
+        __IOM uint8_t IPI2REQ1;        /*!< (@ 0x00000950) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI2REQ1_b;
+    };
+    __IM uint8_t RESERVED53[3];
+
+    union
+    {
+        __OM uint8_t IPI2RCLR1;        /*!< (@ 0x00000954) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI2RCLR1_b;
+    };
+    __IM uint8_t RESERVED54[11];
+
+    union
+    {
+        __IOM uint8_t IPI3EN1;         /*!< (@ 0x00000960) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI3EN1_b;
+    };
+    __IM uint8_t RESERVED55[3];
+
+    union
+    {
+        __IM uint8_t IPI3FLG1;         /*!< (@ 0x00000964) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI3FLG1_b;
+    };
+    __IM uint8_t RESERVED56[3];
+
+    union
+    {
+        __OM uint8_t IPI3FCLR1;        /*!< (@ 0x00000968) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI3FCLR1_b;
+    };
+    __IM uint8_t RESERVED57[7];
+
+    union
+    {
+        __IOM uint8_t IPI3REQ1;        /*!< (@ 0x00000970) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI3REQ1_b;
+    };
+    __IM uint8_t RESERVED58[3];
+
+    union
+    {
+        __OM uint8_t IPI3RCLR1;        /*!< (@ 0x00000974) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI3RCLR1_b;
+    };
+    __IM uint8_t RESERVED59[139];
+
+    union
+    {
+        __IOM uint8_t IPI0EN2;         /*!< (@ 0x00000A00) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI0EN2_b;
+    };
+    __IM uint8_t RESERVED60[3];
+
+    union
+    {
+        __IM uint8_t IPI0FLG2;         /*!< (@ 0x00000A04) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI0FLG2_b;
+    };
+    __IM uint8_t RESERVED61[3];
+
+    union
+    {
+        __OM uint8_t IPI0FCLR2;        /*!< (@ 0x00000A08) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI0FCLR2_b;
+    };
+    __IM uint8_t RESERVED62[7];
+
+    union
+    {
+        __IOM uint8_t IPI0REQ2;        /*!< (@ 0x00000A10) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI0REQ2_b;
+    };
+    __IM uint8_t RESERVED63[3];
+
+    union
+    {
+        __OM uint8_t IPI0RCLR2;        /*!< (@ 0x00000A14) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI0RCLR2_b;
+    };
+    __IM uint8_t RESERVED64[11];
+
+    union
+    {
+        __IOM uint8_t IPI1EN2;         /*!< (@ 0x00000A20) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI1EN2_b;
+    };
+    __IM uint8_t RESERVED65[3];
+
+    union
+    {
+        __IM uint8_t IPI1FLG2;         /*!< (@ 0x00000A24) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI1FLG2_b;
+    };
+    __IM uint8_t RESERVED66[3];
+
+    union
+    {
+        __OM uint8_t IPI1FCLR2;        /*!< (@ 0x00000A28) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI1FCLR2_b;
+    };
+    __IM uint8_t RESERVED67[7];
+
+    union
+    {
+        __IOM uint8_t IPI1REQ2;        /*!< (@ 0x00000A30) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI1REQ2_b;
+    };
+    __IM uint8_t RESERVED68[3];
+
+    union
+    {
+        __OM uint8_t IPI1RCLR2;        /*!< (@ 0x00000A34) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI1RCLR2_b;
+    };
+    __IM uint8_t RESERVED69[11];
+
+    union
+    {
+        __IOM uint8_t IPI2EN2;         /*!< (@ 0x00000A40) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI2EN2_b;
+    };
+    __IM uint8_t RESERVED70[3];
+
+    union
+    {
+        __IM uint8_t IPI2FLG2;         /*!< (@ 0x00000A44) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI2FLG2_b;
+    };
+    __IM uint8_t RESERVED71[3];
+
+    union
+    {
+        __OM uint8_t IPI2FCLR2;        /*!< (@ 0x00000A48) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI2FCLR2_b;
+    };
+    __IM uint8_t RESERVED72[7];
+
+    union
+    {
+        __IOM uint8_t IPI2REQ2;        /*!< (@ 0x00000A50) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI2REQ2_b;
+    };
+    __IM uint8_t RESERVED73[3];
+
+    union
+    {
+        __OM uint8_t IPI2RCLR2;        /*!< (@ 0x00000A54) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI2RCLR2_b;
+    };
+    __IM uint8_t RESERVED74[11];
+
+    union
+    {
+        __IOM uint8_t IPI3EN2;         /*!< (@ 0x00000A60) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI3EN2_b;
+    };
+    __IM uint8_t RESERVED75[3];
+
+    union
+    {
+        __IM uint8_t IPI3FLG2;         /*!< (@ 0x00000A64) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI3FLG2_b;
+    };
+    __IM uint8_t RESERVED76[3];
+
+    union
+    {
+        __OM uint8_t IPI3FCLR2;        /*!< (@ 0x00000A68) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI3FCLR2_b;
+    };
+    __IM uint8_t RESERVED77[7];
+
+    union
+    {
+        __IOM uint8_t IPI3REQ2;        /*!< (@ 0x00000A70) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI3REQ2_b;
+    };
+    __IM uint8_t RESERVED78[3];
+
+    union
+    {
+        __OM uint8_t IPI3RCLR2;        /*!< (@ 0x00000A74) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI3RCLR2_b;
+    };
+    __IM uint8_t RESERVED79[139];
+
+    union
+    {
+        __IOM uint8_t IPI0EN3;         /*!< (@ 0x00000B00) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI0EN3_b;
+    };
+    __IM uint8_t RESERVED80[3];
+
+    union
+    {
+        __IM uint8_t IPI0FLG3;         /*!< (@ 0x00000B04) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI0FLG3_b;
+    };
+    __IM uint8_t RESERVED81[3];
+
+    union
+    {
+        __OM uint8_t IPI0FCLR3;        /*!< (@ 0x00000B08) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI0FCLR3_b;
+    };
+    __IM uint8_t RESERVED82[7];
+
+    union
+    {
+        __IOM uint8_t IPI0REQ3;        /*!< (@ 0x00000B10) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI0REQ3_b;
+    };
+    __IM uint8_t RESERVED83[3];
+
+    union
+    {
+        __OM uint8_t IPI0RCLR3;        /*!< (@ 0x00000B14) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI0RCLR3_b;
+    };
+    __IM uint8_t RESERVED84[11];
+
+    union
+    {
+        __IOM uint8_t IPI1EN3;         /*!< (@ 0x00000B20) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI1EN3_b;
+    };
+    __IM uint8_t RESERVED85[3];
+
+    union
+    {
+        __IM uint8_t IPI1FLG3;         /*!< (@ 0x00000B24) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI1FLG3_b;
+    };
+    __IM uint8_t RESERVED86[3];
+
+    union
+    {
+        __OM uint8_t IPI1FCLR3;        /*!< (@ 0x00000B28) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI1FCLR3_b;
+    };
+    __IM uint8_t RESERVED87[7];
+
+    union
+    {
+        __IOM uint8_t IPI1REQ3;        /*!< (@ 0x00000B30) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI1REQ3_b;
+    };
+    __IM uint8_t RESERVED88[3];
+
+    union
+    {
+        __OM uint8_t IPI1RCLR3;        /*!< (@ 0x00000B34) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI1RCLR3_b;
+    };
+    __IM uint8_t RESERVED89[11];
+
+    union
+    {
+        __IOM uint8_t IPI2EN3;         /*!< (@ 0x00000B40) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI2EN3_b;
+    };
+    __IM uint8_t RESERVED90[3];
+
+    union
+    {
+        __IM uint8_t IPI2FLG3;         /*!< (@ 0x00000B44) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI2FLG3_b;
+    };
+    __IM uint8_t RESERVED91[3];
+
+    union
+    {
+        __OM uint8_t IPI2FCLR3;        /*!< (@ 0x00000B48) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI2FCLR3_b;
+    };
+    __IM uint8_t RESERVED92[7];
+
+    union
+    {
+        __IOM uint8_t IPI2REQ3;        /*!< (@ 0x00000B50) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI2REQ3_b;
+    };
+    __IM uint8_t RESERVED93[3];
+
+    union
+    {
+        __OM uint8_t IPI2RCLR3;        /*!< (@ 0x00000B54) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI2RCLR3_b;
+    };
+    __IM uint8_t RESERVED94[11];
+
+    union
+    {
+        __IOM uint8_t IPI3EN3;         /*!< (@ 0x00000B60) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI3EN3_b;
+    };
+    __IM uint8_t RESERVED95[3];
+
+    union
+    {
+        __IM uint8_t IPI3FLG3;         /*!< (@ 0x00000B64) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI3FLG3_b;
+    };
+    __IM uint8_t RESERVED96[3];
+
+    union
+    {
+        __OM uint8_t IPI3FCLR3;        /*!< (@ 0x00000B68) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI3FCLR3_b;
+    };
+    __IM uint8_t RESERVED97[7];
+
+    union
+    {
+        __IOM uint8_t IPI3REQ3;        /*!< (@ 0x00000B70) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI3REQ3_b;
+    };
+    __IM uint8_t RESERVED98[3];
+
+    union
+    {
+        __OM uint8_t IPI3RCLR3;        /*!< (@ 0x00000B74) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI3RCLR3_b;
+    };
+    __IM uint8_t RESERVED99[139];
+
+    union
+    {
+        __IOM uint8_t IPI0EN4;         /*!< (@ 0x00000C00) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI0EN4_b;
+    };
+    __IM uint8_t RESERVED100[3];
+
+    union
+    {
+        __IM uint8_t IPI0FLG4;         /*!< (@ 0x00000C04) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI0FLG4_b;
+    };
+    __IM uint8_t RESERVED101[3];
+
+    union
+    {
+        __OM uint8_t IPI0FCLR4;        /*!< (@ 0x00000C08) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI0FCLR4_b;
+    };
+    __IM uint8_t RESERVED102[7];
+
+    union
+    {
+        __IOM uint8_t IPI0REQ4;        /*!< (@ 0x00000C10) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI0REQ4_b;
+    };
+    __IM uint8_t RESERVED103[3];
+
+    union
+    {
+        __OM uint8_t IPI0RCLR4;        /*!< (@ 0x00000C14) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI0RCLR4_b;
+    };
+    __IM uint8_t RESERVED104[11];
+
+    union
+    {
+        __IOM uint8_t IPI1EN4;         /*!< (@ 0x00000C20) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI1EN4_b;
+    };
+    __IM uint8_t RESERVED105[3];
+
+    union
+    {
+        __IM uint8_t IPI1FLG4;         /*!< (@ 0x00000C24) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI1FLG4_b;
+    };
+    __IM uint8_t RESERVED106[3];
+
+    union
+    {
+        __OM uint8_t IPI1FCLR4;        /*!< (@ 0x00000C28) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI1FCLR4_b;
+    };
+    __IM uint8_t RESERVED107[7];
+
+    union
+    {
+        __IOM uint8_t IPI1REQ4;        /*!< (@ 0x00000C30) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI1REQ4_b;
+    };
+    __IM uint8_t RESERVED108[3];
+
+    union
+    {
+        __OM uint8_t IPI1RCLR4;        /*!< (@ 0x00000C34) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI1RCLR4_b;
+    };
+    __IM uint8_t RESERVED109[11];
+
+    union
+    {
+        __IOM uint8_t IPI2EN4;         /*!< (@ 0x00000C40) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI2EN4_b;
+    };
+    __IM uint8_t RESERVED110[3];
+
+    union
+    {
+        __IM uint8_t IPI2FLG4;         /*!< (@ 0x00000C44) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI2FLG4_b;
+    };
+    __IM uint8_t RESERVED111[3];
+
+    union
+    {
+        __OM uint8_t IPI2FCLR4;        /*!< (@ 0x00000C48) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI2FCLR4_b;
+    };
+    __IM uint8_t RESERVED112[7];
+
+    union
+    {
+        __IOM uint8_t IPI2REQ4;        /*!< (@ 0x00000C50) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI2REQ4_b;
+    };
+    __IM uint8_t RESERVED113[3];
+
+    union
+    {
+        __OM uint8_t IPI2RCLR4;        /*!< (@ 0x00000C54) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI2RCLR4_b;
+    };
+    __IM uint8_t RESERVED114[11];
+
+    union
+    {
+        __IOM uint8_t IPI3EN4;         /*!< (@ 0x00000C60) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI3EN4_b;
+    };
+    __IM uint8_t RESERVED115[3];
+
+    union
+    {
+        __IM uint8_t IPI3FLG4;         /*!< (@ 0x00000C64) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI3FLG4_b;
+    };
+    __IM uint8_t RESERVED116[3];
+
+    union
+    {
+        __OM uint8_t IPI3FCLR4;        /*!< (@ 0x00000C68) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI3FCLR4_b;
+    };
+    __IM uint8_t RESERVED117[7];
+
+    union
+    {
+        __IOM uint8_t IPI3REQ4;        /*!< (@ 0x00000C70) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI3REQ4_b;
+    };
+    __IM uint8_t RESERVED118[3];
+
+    union
+    {
+        __OM uint8_t IPI3RCLR4;        /*!< (@ 0x00000C74) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI3RCLR4_b;
+    };
+    __IM uint8_t RESERVED119[139];
+
+    union
+    {
+        __IOM uint8_t IPI0EN5;         /*!< (@ 0x00000D00) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI0EN5_b;
+    };
+    __IM uint8_t RESERVED120[3];
+
+    union
+    {
+        __IM uint8_t IPI0FLG5;         /*!< (@ 0x00000D04) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI0FLG5_b;
+    };
+    __IM uint8_t RESERVED121[3];
+
+    union
+    {
+        __OM uint8_t IPI0FCLR5;        /*!< (@ 0x00000D08) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI0FCLR5_b;
+    };
+    __IM uint8_t RESERVED122[7];
+
+    union
+    {
+        __IOM uint8_t IPI0REQ5;        /*!< (@ 0x00000D10) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI0REQ5_b;
+    };
+    __IM uint8_t RESERVED123[3];
+
+    union
+    {
+        __OM uint8_t IPI0RCLR5;        /*!< (@ 0x00000D14) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI0RCLR5_b;
+    };
+    __IM uint8_t RESERVED124[11];
+
+    union
+    {
+        __IOM uint8_t IPI1EN5;         /*!< (@ 0x00000D20) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI1EN5_b;
+    };
+    __IM uint8_t RESERVED125[3];
+
+    union
+    {
+        __IM uint8_t IPI1FLG5;         /*!< (@ 0x00000D24) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI1FLG5_b;
+    };
+    __IM uint8_t RESERVED126[3];
+
+    union
+    {
+        __OM uint8_t IPI1FCLR5;        /*!< (@ 0x00000D28) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI1FCLR5_b;
+    };
+    __IM uint8_t RESERVED127[7];
+
+    union
+    {
+        __IOM uint8_t IPI1REQ5;        /*!< (@ 0x00000D30) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI1REQ5_b;
+    };
+    __IM uint8_t RESERVED128[3];
+
+    union
+    {
+        __OM uint8_t IPI1RCLR5;        /*!< (@ 0x00000D34) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI1RCLR5_b;
+    };
+    __IM uint8_t RESERVED129[11];
+
+    union
+    {
+        __IOM uint8_t IPI2EN5;         /*!< (@ 0x00000D40) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI2EN5_b;
+    };
+    __IM uint8_t RESERVED130[3];
+
+    union
+    {
+        __IM uint8_t IPI2FLG5;         /*!< (@ 0x00000D44) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI2FLG5_b;
+    };
+    __IM uint8_t RESERVED131[3];
+
+    union
+    {
+        __OM uint8_t IPI2FCLR5;        /*!< (@ 0x00000D48) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI2FCLR5_b;
+    };
+    __IM uint8_t RESERVED132[7];
+
+    union
+    {
+        __IOM uint8_t IPI2REQ5;        /*!< (@ 0x00000D50) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI2REQ5_b;
+    };
+    __IM uint8_t RESERVED133[3];
+
+    union
+    {
+        __OM uint8_t IPI2RCLR5;        /*!< (@ 0x00000D54) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI2RCLR5_b;
+    };
+    __IM uint8_t RESERVED134[11];
+
+    union
+    {
+        __IOM uint8_t IPI3EN5;         /*!< (@ 0x00000D60) Inter-PE Interrupt Enable RegisterThis register
+                                        *                  sets the transmitting PE allowed to issue
+                                        *                  inter-PE interrupt requests to PEm.This
+                                        *                  register is used to enable inter-PE interrupt
+                                        *                  requests of PE (PEx) by the receiving PE
+                                        *                  (PEm) itself.                                              */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } IPI3EN5_b;
+    };
+    __IM uint8_t RESERVED135[3];
+
+    union
+    {
+        __IM uint8_t IPI3FLG5;         /*!< (@ 0x00000D64) nter-PE Interrupt Flag RegisterThis register
+                                        *                  indicates the transmitting PE that issued
+                                        *                  an inter-PE interrupt request to PEm.This
+                                        *                  register is used to distinguish the requesting
+                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
+                                        *                  request.                                                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } IPI3FLG5_b;
+    };
+    __IM uint8_t RESERVED136[3];
+
+    union
+    {
+        __OM uint8_t IPI3FCLR5;        /*!< (@ 0x00000D68) Inter-PE Interrupt Clear Register This register
+                                        *                  clears inter-PE interrupt requests to PEm.This
+                                        *                  register is used to clear the request flag
+                                        *                  (IPInFLGm) and the request (IPInREQx) after
+                                        *                  receivingthe Inter-PE interrupt request
+                                        *                  from another PE.                                           */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } IPI3FCLR5_b;
+    };
+    __IM uint8_t RESERVED137[7];
+
+    union
+    {
+        __IOM uint8_t IPI3REQ5;        /*!< (@ 0x00000D70) Inter-PE Interrupt Request RegisterThis register
+                                        *                  controls Inter-PE interrupt request from
+                                        *                  PEm to other PEs.                                          */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } IPI3REQ5_b;
+    };
+    __IM uint8_t RESERVED138[3];
+
+    union
+    {
+        __OM uint8_t IPI3RCLR5;        /*!< (@ 0x00000D74) Inter-PE Interrupt Request Clear RegisterThis
+                                        *                  register clears inter-PE interrupt requests
+                                        *                  for other PEs by PEm.This register is assumed
+                                        *                  to be used to clear inter-PE interrupt requests
+                                        *                  by the transmitting PE.                                    */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } IPI3RCLR5_b;
+    };
+} R_IPIR_Type;                         /*!< Size = 3445 (0xd75)                                                       */
+
+/* =========================================================================================================================== */
 /* ================                                          R_JPORT                                          ================ */
 /* =========================================================================================================================== */
 
@@ -110438,879 +116183,109 @@ typedef struct                                 /*!< (@ 0xFFDA0000) R_JPORT Struc
 } R_JPORT_Type;                                /*!< Size = 16448 (0x4040)                                                     */
 
 /* =========================================================================================================================== */
-/* ================                                           R_LPS                                           ================ */
+/* ================                                          R_LTSC                                           ================ */
 /* =========================================================================================================================== */
 
 /**
- * @brief This section contains a generic description of the low-power sampler (LPS).The first part of this section describes the features specific RH850/U2B such as the number of units, register base addresses, etc. The remainder of the section describes the functions and registers of the LPS (R_LPS)
+ * @brief R_LTSC (R_LTSC)
  */
 
-typedef struct                         /*!< (@ 0xFF9A3800) R_LPS Structure                                            */
+typedef struct                         /*!< (@ 0xFFC78100) R_LTSC Structure                                           */
 {
-    union
-    {
-        __IOM uint32_t SCTLR;          /*!< (@ 0x00000000) LPS Control RegisterThis register is used to
-                                        *                  configure the LPS.                                         */
-
-        struct
-        {
-            __IOM uint32_t DPEN   : 1; /*!< [0..0] DPEN                                                               */
-            __IOM uint32_t ADEN   : 1; /*!< [1..1] ADEN                                                               */
-            __IOM uint32_t TJIS0  : 1; /*!< [2..2] Sequence Start Trigger Select                                      */
-            __IOM uint32_t TJIS1  : 1; /*!< [3..3] Sequence Start Trigger Select                                      */
-            __IOM uint32_t NUMDP0 : 1; /*!< [4..4] These bits specify the number of times the port is read
-                                        *   in digital input mode. If two or more times are specified,
-                                        *   the external multiplexer is controlled by the DPSEL[2:0]
-                                        *   pins.The bits for which comparison is enabled in the DPSELR0,
-                                        *   DPSELRM, and DPSELRH registers are compared regardless
-                                        *   of the repeat number setting, and WUTRG will be generated
-                                        *   according to the results.                                                 */
-            __IOM uint32_t NUMDP1 : 1; /*!< [5..5] These bits specify the number of times the port is read
-                                        *   in digital input mode. If two or more times are specified,
-                                        *   the external multiplexer is controlled by the DPSEL[2:0]
-                                        *   pins.The bits for which comparison is enabled in the DPSELR0,
-                                        *   DPSELRM, and DPSELRH registers are compared regardless
-                                        *   of the repeat number setting, and WUTRG will be generated
-                                        *   according to the results.                                                 */
-            __IOM uint32_t NUMDP2 : 1; /*!< [6..6] These bits specify the number of times the port is read
-                                        *   in digital input mode. If two or more times are specified,
-                                        *   the external multiplexer is controlled by the DPSEL[2:0]
-                                        *   pins.The bits for which comparison is enabled in the DPSELR0,
-                                        *   DPSELRM, and DPSELRH registers are compared regardless
-                                        *   of the repeat number setting, and WUTRG will be generated
-                                        *   according to the results.                                                 */
-            __IOM uint32_t TJIS2 : 1;  /*!< [7..7] Sequence Start Trigger Select                                      */
-            uint32_t             : 24;
-        } SCTLR_b;
-    };
+    __IM uint32_t RESERVED[4];
 
     union
     {
-        __IOM uint32_t EVFR;           /*!< (@ 0x00000004) Event Flag RegisterThis register indicates the
-                                        *                  result of comparing the data sequentially
-                                        *                  captured at the digital input pins and stored
-                                        *                  in the DPDIMR7 to DPDIMR0 registers with
-                                        *                  the comparison target data in the DPDSRH/DPDSRM/DPDSR0
-                                        *                  registers.                                                 */
+        __OM uint32_t TCS;             /*!< (@ 0x00000010) LTSC timer counter start registerThis register
+                                        *                  is a write-only register that can be written
+                                        *                  in 32- or 8-bit units.                                     */
 
         struct
         {
-            __IOM uint32_t DINEVF : 1; /*!< [0..0] This bit indicates the result of comparing the data captured
-                                        *   at the digital input pins and stored in the DPDIMR7 to
-                                        *   DPDIMR0 registers with the comparison target data in the
-                                        *   DPDSRH/DPDSRM/DPDSR0 registers.                                           */
+            __OM uint32_t TS : 1;      /*!< [0..0] This bit starts the counter channel.0: No function1:
+                                        *   Starts the counter and sets LTSCnCSTR.LTSCnCST = 1.Setting
+                                        *   this bit is ignored as long as LTSCnCSTR.LTSCnCST = 1.                    */
             uint32_t : 31;
-        } EVFR_b;
+        } TCS_b;
     };
 
     union
     {
-        __IOM uint32_t DPSELR0;         /*!< (@ 0x00000008) DPIN Select Register 0This register specifies
-                                         *                  the compare target bits in the DPDSR0 and
-                                         *                  DPDIMR0 registers.Write to the DPSELR0 register
-                                         *                  before the sequence operation is started
-                                         *                  (when the SOSTR.SOF bit = 0).                              */
+        __OM uint32_t TCT;             /*!< (@ 0x00000014) LTSC timer counter stop registerThis register
+                                        *                  is a write-only register that can be written
+                                        *                  in 32- or 8-bit units.                                     */
 
         struct
         {
-            __IOM uint32_t D0EN_0 : 1;  /*!< [0..0] These bits enable or disable comparing each bit of the
-                                         *   first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_1 : 1;  /*!< [1..1] These bits enable or disable comparing each bit of the
-                                         *   first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_2 : 1;  /*!< [2..2] These bits enable or disable comparing each bit of the
-                                         *   first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_3 : 1;  /*!< [3..3] These bits enable or disable comparing each bit of the
-                                         *   first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_4 : 1;  /*!< [4..4] These bits enable or disable comparing each bit of the
-                                         *   first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_5 : 1;  /*!< [5..5] These bits enable or disable comparing each bit of the
-                                         *   first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_6 : 1;  /*!< [6..6] These bits enable or disable comparing each bit of the
-                                         *   first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_7 : 1;  /*!< [7..7] These bits enable or disable comparing each bit of the
-                                         *   first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_8 : 1;  /*!< [8..8] These bits enable or disable comparing each bit of the
-                                         *   first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_9 : 1;  /*!< [9..9] These bits enable or disable comparing each bit of the
-                                         *   first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_10 : 1; /*!< [10..10] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_11 : 1; /*!< [11..11] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_12 : 1; /*!< [12..12] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_13 : 1; /*!< [13..13] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_14 : 1; /*!< [14..14] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_15 : 1; /*!< [15..15] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_16 : 1; /*!< [16..16] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_17 : 1; /*!< [17..17] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_18 : 1; /*!< [18..18] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_19 : 1; /*!< [19..19] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_20 : 1; /*!< [20..20] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_21 : 1; /*!< [21..21] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_22 : 1; /*!< [22..22] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            __IOM uint32_t D0EN_23 : 1; /*!< [23..23] These bits enable or disable comparing each bit of
-                                         *   the first data captured at the digital input pins and stored
-                                         *   in the DPDIMR0 register with the comparison target data
-                                         *   in the DPDSR0 register.                                                   */
-            uint32_t : 8;
-        } DPSELR0_b;
+            __OM uint32_t TT : 1;      /*!< [0..0] This bit stops the counter.0: No function1: Stops the
+                                        *   counter and clears LTSCnCSTR.LTSCnCST bit.Setting this
+                                        *   bit is ignored as long as LTSCnCSTR.LTSCnCST = 0.                         */
+            uint32_t : 31;
+        } TCT_b;
     };
 
     union
     {
-        __IOM uint32_t DPSELRM;        /*!< (@ 0x0000000C) DPIN Select Register MThis register specifies
-                                        *                  the compare target bits in the DPDSRM and
-                                        *                  DPDIMRm (m = 4 to 1) registers.Write to
-                                        *                  the DPSELRM register before the sequence
-                                        *                  operation is started (when the SOSTR.SOF
-                                        *                  bit = 0).                                                  */
+        __IM uint32_t CSTR;            /*!< (@ 0x00000018) LTSC timer counter status registerThis register
+                                        *                  is a read-only register that can be read
+                                        *                  in 32- or 8-bit units.                                     */
 
         struct
         {
-            __IOM uint32_t D1EN_0 : 1; /*!< [0..0] These bits enable or disable comparing each bit of the
-                                        *   second data captured at the digital input pins and stored
-                                        *   in the DPDIMR1 register with the comparison target data
-                                        *   in the DPDSR1 register.                                                   */
-            __IOM uint32_t D1EN_1 : 1; /*!< [1..1] These bits enable or disable comparing each bit of the
-                                        *   second data captured at the digital input pins and stored
-                                        *   in the DPDIMR1 register with the comparison target data
-                                        *   in the DPDSR1 register.                                                   */
-            __IOM uint32_t D1EN_2 : 1; /*!< [2..2] These bits enable or disable comparing each bit of the
-                                        *   second data captured at the digital input pins and stored
-                                        *   in the DPDIMR1 register with the comparison target data
-                                        *   in the DPDSR1 register.                                                   */
-            __IOM uint32_t D1EN_3 : 1; /*!< [3..3] These bits enable or disable comparing each bit of the
-                                        *   second data captured at the digital input pins and stored
-                                        *   in the DPDIMR1 register with the comparison target data
-                                        *   in the DPDSR1 register.                                                   */
-            __IOM uint32_t D1EN_4 : 1; /*!< [4..4] These bits enable or disable comparing each bit of the
-                                        *   second data captured at the digital input pins and stored
-                                        *   in the DPDIMR1 register with the comparison target data
-                                        *   in the DPDSR1 register.                                                   */
-            __IOM uint32_t D1EN_5 : 1; /*!< [5..5] These bits enable or disable comparing each bit of the
-                                        *   second data captured at the digital input pins and stored
-                                        *   in the DPDIMR1 register with the comparison target data
-                                        *   in the DPDSR1 register.                                                   */
-            __IOM uint32_t D1EN_6 : 1; /*!< [6..6] These bits enable or disable comparing each bit of the
-                                        *   second data captured at the digital input pins and stored
-                                        *   in the DPDIMR1 register with the comparison target data
-                                        *   in the DPDSR1 register.                                                   */
-            __IOM uint32_t D1EN_7 : 1; /*!< [7..7] These bits enable or disable comparing each bit of the
-                                        *   second data captured at the digital input pins and stored
-                                        *   in the DPDIMR1 register with the comparison target data
-                                        *   in the DPDSR1 register.                                                   */
-            __IOM uint32_t D2EN_0 : 1; /*!< [8..8] These bits enable or disable comparing each bit of the
-                                        *   third data captured at the digital input pins and stored
-                                        *   in the DPDIMR2 register with the comparison target data
-                                        *   in the DPDSR2 register.                                                   */
-            __IOM uint32_t D2EN_1 : 1; /*!< [9..9] These bits enable or disable comparing each bit of the
-                                        *   third data captured at the digital input pins and stored
-                                        *   in the DPDIMR2 register with the comparison target data
-                                        *   in the DPDSR2 register.                                                   */
-            __IOM uint32_t D2EN_2 : 1; /*!< [10..10] These bits enable or disable comparing each bit of
-                                        *   the third data captured at the digital input pins and stored
-                                        *   in the DPDIMR2 register with the comparison target data
-                                        *   in the DPDSR2 register.                                                   */
-            __IOM uint32_t D2EN_3 : 1; /*!< [11..11] These bits enable or disable comparing each bit of
-                                        *   the third data captured at the digital input pins and stored
-                                        *   in the DPDIMR2 register with the comparison target data
-                                        *   in the DPDSR2 register.                                                   */
-            __IOM uint32_t D2EN_4 : 1; /*!< [12..12] These bits enable or disable comparing each bit of
-                                        *   the third data captured at the digital input pins and stored
-                                        *   in the DPDIMR2 register with the comparison target data
-                                        *   in the DPDSR2 register.                                                   */
-            __IOM uint32_t D2EN_5 : 1; /*!< [13..13] These bits enable or disable comparing each bit of
-                                        *   the third data captured at the digital input pins and stored
-                                        *   in the DPDIMR2 register with the comparison target data
-                                        *   in the DPDSR2 register.                                                   */
-            __IOM uint32_t D2EN_6 : 1; /*!< [14..14] These bits enable or disable comparing each bit of
-                                        *   the third data captured at the digital input pins and stored
-                                        *   in the DPDIMR2 register with the comparison target data
-                                        *   in the DPDSR2 register.                                                   */
-            __IOM uint32_t D2EN_7 : 1; /*!< [15..15] These bits enable or disable comparing each bit of
-                                        *   the third data captured at the digital input pins and stored
-                                        *   in the DPDIMR2 register with the comparison target data
-                                        *   in the DPDSR2 register.                                                   */
-            __IOM uint32_t D3EN_0 : 1; /*!< [16..16] These bits enable or disable comparing each bit of
-                                        *   the fourth data captured at the digital input pins and
-                                        *   stored in the DPDIMR3 register with the comparison target
-                                        *   data in the DPDSR3 register.                                              */
-            __IOM uint32_t D3EN_1 : 1; /*!< [17..17] These bits enable or disable comparing each bit of
-                                        *   the fourth data captured at the digital input pins and
-                                        *   stored in the DPDIMR3 register with the comparison target
-                                        *   data in the DPDSR3 register.                                              */
-            __IOM uint32_t D3EN_2 : 1; /*!< [18..18] These bits enable or disable comparing each bit of
-                                        *   the fourth data captured at the digital input pins and
-                                        *   stored in the DPDIMR3 register with the comparison target
-                                        *   data in the DPDSR3 register.                                              */
-            __IOM uint32_t D3EN_3 : 1; /*!< [19..19] These bits enable or disable comparing each bit of
-                                        *   the fourth data captured at the digital input pins and
-                                        *   stored in the DPDIMR3 register with the comparison target
-                                        *   data in the DPDSR3 register.                                              */
-            __IOM uint32_t D3EN_4 : 1; /*!< [20..20] These bits enable or disable comparing each bit of
-                                        *   the fourth data captured at the digital input pins and
-                                        *   stored in the DPDIMR3 register with the comparison target
-                                        *   data in the DPDSR3 register.                                              */
-            __IOM uint32_t D3EN_5 : 1; /*!< [21..21] These bits enable or disable comparing each bit of
-                                        *   the fourth data captured at the digital input pins and
-                                        *   stored in the DPDIMR3 register with the comparison target
-                                        *   data in the DPDSR3 register.                                              */
-            __IOM uint32_t D3EN_6 : 1; /*!< [22..22] These bits enable or disable comparing each bit of
-                                        *   the fourth data captured at the digital input pins and
-                                        *   stored in the DPDIMR3 register with the comparison target
-                                        *   data in the DPDSR3 register.                                              */
-            __IOM uint32_t D3EN_7 : 1; /*!< [23..23] These bits enable or disable comparing each bit of
-                                        *   the fourth data captured at the digital input pins and
-                                        *   stored in the DPDIMR3 register with the comparison target
-                                        *   data in the DPDSR3 register.                                              */
-            __IOM uint32_t D4EN_0 : 1; /*!< [24..24] These bits enable or disable comparing each bit of
-                                        *   the fifth data captured at the digital input pins and stored
-                                        *   in the DPDIMR4 register with the comparison target data
-                                        *   in the DPDSR4 register.                                                   */
-            __IOM uint32_t D4EN_1 : 1; /*!< [25..25] These bits enable or disable comparing each bit of
-                                        *   the fifth data captured at the digital input pins and stored
-                                        *   in the DPDIMR4 register with the comparison target data
-                                        *   in the DPDSR4 register.                                                   */
-            __IOM uint32_t D4EN_2 : 1; /*!< [26..26] These bits enable or disable comparing each bit of
-                                        *   the fifth data captured at the digital input pins and stored
-                                        *   in the DPDIMR4 register with the comparison target data
-                                        *   in the DPDSR4 register.                                                   */
-            __IOM uint32_t D4EN_3 : 1; /*!< [27..27] These bits enable or disable comparing each bit of
-                                        *   the fifth data captured at the digital input pins and stored
-                                        *   in the DPDIMR4 register with the comparison target data
-                                        *   in the DPDSR4 register.                                                   */
-            __IOM uint32_t D4EN_4 : 1; /*!< [28..28] These bits enable or disable comparing each bit of
-                                        *   the fifth data captured at the digital input pins and stored
-                                        *   in the DPDIMR4 register with the comparison target data
-                                        *   in the DPDSR4 register.                                                   */
-            __IOM uint32_t D4EN_5 : 1; /*!< [29..29] These bits enable or disable comparing each bit of
-                                        *   the fifth data captured at the digital input pins and stored
-                                        *   in the DPDIMR4 register with the comparison target data
-                                        *   in the DPDSR4 register.                                                   */
-            __IOM uint32_t D4EN_6 : 1; /*!< [30..30] These bits enable or disable comparing each bit of
-                                        *   the fifth data captured at the digital input pins and stored
-                                        *   in the DPDIMR4 register with the comparison target data
-                                        *   in the DPDSR4 register.                                                   */
-            __IOM uint32_t D4EN_7 : 1; /*!< [31..31] These bits enable or disable comparing each bit of
-                                        *   the fifth data captured at the digital input pins and stored
-                                        *   in the DPDIMR4 register with the comparison target data
-                                        *   in the DPDSR4 register.                                                   */
-        } DPSELRM_b;
+            __IM uint32_t CST : 1;     /*!< [0..0] This bit indicates whether the counter is enabled or
+                                        *   disabled.0: Counter disabled1: Counter enabledThis bit
+                                        *   is set to 1 in response to LTSCnTCS.LTSCnTS being set to
+                                        *   1.Setting LTSCnTCT.LTSCnTT to 1 re-sets this bit to 0.                    */
+            uint32_t : 31;
+        } CSTR_b;
+    };
+    __IM uint32_t RESERVED1[6];
+
+    union
+    {
+        __IOM uint32_t RMSK;           /*!< (@ 0x00000034) LTSC timer SW reset mask registerThis register
+                                        *                  can be read or written in 32- or 8-bit units.              */
+
+        struct
+        {
+            __IOM uint32_t RM : 1;     /*!< [0..0] This bit masks the SW reset (Application Reset).When
+                                        *   SW reset is masked, it behaves as follows:• The counter
+                                        *   continues counting up operation. SW reset occurrence has
+                                        *   noimpact on the counter operation and the counter value.•
+                                        *   The count enable status will not be changed by SW reset;
+                                        *   no stop trigger willbe generated by occurrence of SW reset.All
+                                        *   other LTSC registers will be reset independent whether
+                                        *   masking wasselected or not.0: Reset mask disabled(LTSC
+                                        *   responds to SW reset (Application Reset))1: Reset mas                     */
+            uint32_t : 31;
+        } RMSK_b;
+    };
+    __IM uint32_t RESERVED2[2];
+
+    union
+    {
+        __IOM uint32_t CNTL;           /*!< (@ 0x00000040) LTSC timer counter register low (lower 32-bit)This
+                                        *                  register can be read or written in 32-bit
+                                        *                  units                                                      */
+
+        struct
+        {
+            __IOM uint32_t CNTL : 32;  /*!< [31..0] Lower 32-bit of 64-bit counter value                              */
+        } CNTL_b;
     };
 
     union
     {
-        __IOM uint32_t DPSELRH;        /*!< (@ 0x00000010) DPIN Select Register HThis register specifies
-                                        *                  the compare target bits in the DPDSRH and
-                                        *                  DPDIMRm (m = 7 to 5) registers.Write to
-                                        *                  the DPSELRH register before the sequence
-                                        *                  operation is started (when the SOSTR.SOF
-                                        *                  bit = 0).                                                  */
+        __IOM uint32_t CNTH;           /*!< (@ 0x00000044) LTSC timer counter register high (upper 32-bit)This
+                                        *                  register can be read or written in 32-bit
+                                        *                  units                                                      */
 
         struct
         {
-            __IOM uint32_t D5EN_0 : 1; /*!< [0..0] These bits enable or disable comparing each bit of the
-                                        *   sixth data captured at the digital input pins and stored
-                                        *   in the DPDIMR5 register with the compare target data in
-                                        *   the DPDSR5 register.                                                      */
-            __IOM uint32_t D5EN_1 : 1; /*!< [1..1] These bits enable or disable comparing each bit of the
-                                        *   sixth data captured at the digital input pins and stored
-                                        *   in the DPDIMR5 register with the compare target data in
-                                        *   the DPDSR5 register.                                                      */
-            __IOM uint32_t D5EN_2 : 1; /*!< [2..2] These bits enable or disable comparing each bit of the
-                                        *   sixth data captured at the digital input pins and stored
-                                        *   in the DPDIMR5 register with the compare target data in
-                                        *   the DPDSR5 register.                                                      */
-            __IOM uint32_t D5EN_3 : 1; /*!< [3..3] These bits enable or disable comparing each bit of the
-                                        *   sixth data captured at the digital input pins and stored
-                                        *   in the DPDIMR5 register with the compare target data in
-                                        *   the DPDSR5 register.                                                      */
-            __IOM uint32_t D5EN_4 : 1; /*!< [4..4] These bits enable or disable comparing each bit of the
-                                        *   sixth data captured at the digital input pins and stored
-                                        *   in the DPDIMR5 register with the compare target data in
-                                        *   the DPDSR5 register.                                                      */
-            __IOM uint32_t D5EN_5 : 1; /*!< [5..5] These bits enable or disable comparing each bit of the
-                                        *   sixth data captured at the digital input pins and stored
-                                        *   in the DPDIMR5 register with the compare target data in
-                                        *   the DPDSR5 register.                                                      */
-            __IOM uint32_t D5EN_6 : 1; /*!< [6..6] These bits enable or disable comparing each bit of the
-                                        *   sixth data captured at the digital input pins and stored
-                                        *   in the DPDIMR5 register with the compare target data in
-                                        *   the DPDSR5 register.                                                      */
-            __IOM uint32_t D5EN_7 : 1; /*!< [7..7] These bits enable or disable comparing each bit of the
-                                        *   sixth data captured at the digital input pins and stored
-                                        *   in the DPDIMR5 register with the compare target data in
-                                        *   the DPDSR5 register.                                                      */
-            __IOM uint32_t D6EN_0 : 1; /*!< [8..8] These bits enable or disable comparing each bit of the
-                                        *   seventh data captured at the digital input pins and stored
-                                        *   in the DPDIMR6 register with the compare target data in
-                                        *   the DPDSR6 register.                                                      */
-            __IOM uint32_t D6EN_1 : 1; /*!< [9..9] These bits enable or disable comparing each bit of the
-                                        *   seventh data captured at the digital input pins and stored
-                                        *   in the DPDIMR6 register with the compare target data in
-                                        *   the DPDSR6 register.                                                      */
-            __IOM uint32_t D6EN_2 : 1; /*!< [10..10] These bits enable or disable comparing each bit of
-                                        *   the seventh data captured at the digital input pins and
-                                        *   stored in the DPDIMR6 register with the compare target
-                                        *   data in the DPDSR6 register.                                              */
-            __IOM uint32_t D6EN_3 : 1; /*!< [11..11] These bits enable or disable comparing each bit of
-                                        *   the seventh data captured at the digital input pins and
-                                        *   stored in the DPDIMR6 register with the compare target
-                                        *   data in the DPDSR6 register.                                              */
-            __IOM uint32_t D6EN_4 : 1; /*!< [12..12] These bits enable or disable comparing each bit of
-                                        *   the seventh data captured at the digital input pins and
-                                        *   stored in the DPDIMR6 register with the compare target
-                                        *   data in the DPDSR6 register.                                              */
-            __IOM uint32_t D6EN_5 : 1; /*!< [13..13] These bits enable or disable comparing each bit of
-                                        *   the seventh data captured at the digital input pins and
-                                        *   stored in the DPDIMR6 register with the compare target
-                                        *   data in the DPDSR6 register.                                              */
-            __IOM uint32_t D6EN_6 : 1; /*!< [14..14] These bits enable or disable comparing each bit of
-                                        *   the seventh data captured at the digital input pins and
-                                        *   stored in the DPDIMR6 register with the compare target
-                                        *   data in the DPDSR6 register.                                              */
-            __IOM uint32_t D6EN_7 : 1; /*!< [15..15] These bits enable or disable comparing each bit of
-                                        *   the seventh data captured at the digital input pins and
-                                        *   stored in the DPDIMR6 register with the compare target
-                                        *   data in the DPDSR6 register.                                              */
-            __IOM uint32_t D7EN_0 : 1; /*!< [16..16] These bits enable or disable comparing each bit of
-                                        *   the eighth data captured at the digital input pins and
-                                        *   stored in the DPDIMR7 register with the compare target
-                                        *   data in the DPDSR7 register.                                              */
-            __IOM uint32_t D7EN_1 : 1; /*!< [17..17] These bits enable or disable comparing each bit of
-                                        *   the eighth data captured at the digital input pins and
-                                        *   stored in the DPDIMR7 register with the compare target
-                                        *   data in the DPDSR7 register.                                              */
-            __IOM uint32_t D7EN_2 : 1; /*!< [18..18] These bits enable or disable comparing each bit of
-                                        *   the eighth data captured at the digital input pins and
-                                        *   stored in the DPDIMR7 register with the compare target
-                                        *   data in the DPDSR7 register.                                              */
-            __IOM uint32_t D7EN_3 : 1; /*!< [19..19] These bits enable or disable comparing each bit of
-                                        *   the eighth data captured at the digital input pins and
-                                        *   stored in the DPDIMR7 register with the compare target
-                                        *   data in the DPDSR7 register.                                              */
-            __IOM uint32_t D7EN_4 : 1; /*!< [20..20] These bits enable or disable comparing each bit of
-                                        *   the eighth data captured at the digital input pins and
-                                        *   stored in the DPDIMR7 register with the compare target
-                                        *   data in the DPDSR7 register.                                              */
-            __IOM uint32_t D7EN_5 : 1; /*!< [21..21] These bits enable or disable comparing each bit of
-                                        *   the eighth data captured at the digital input pins and
-                                        *   stored in the DPDIMR7 register with the compare target
-                                        *   data in the DPDSR7 register.                                              */
-            __IOM uint32_t D7EN_6 : 1; /*!< [22..22] These bits enable or disable comparing each bit of
-                                        *   the eighth data captured at the digital input pins and
-                                        *   stored in the DPDIMR7 register with the compare target
-                                        *   data in the DPDSR7 register.                                              */
-            __IOM uint32_t D7EN_7 : 1; /*!< [23..23] These bits enable or disable comparing each bit of
-                                        *   the eighth data captured at the digital input pins and
-                                        *   stored in the DPDIMR7 register with the compare target
-                                        *   data in the DPDSR7 register.                                              */
-            uint32_t : 8;
-        } DPSELRH_b;
+            __IOM uint32_t CNTH : 32;  /*!< [31..0] Upper 32-bit of 64-bit counter value                              */
+        } CNTH_b;
     };
-
-    union
-    {
-        __IOM uint32_t DPDSR0;         /*!< (@ 0x00000014) DPIN Data Set Register 0This register specifies
-                                        *                  the data to be compared with the data captured
-                                        *                  at a digital input pin and stored in the
-                                        *                  DPDIMR0 register.Write to the DPDSR0 register
-                                        *                  before the sequence operation is started
-                                        *                  (when the SOSTR.SOF bit = 0).                              */
-
-        struct
-        {
-            __IOM uint32_t D0_0 : 1;   /*!< [0..0] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_1 : 1;   /*!< [1..1] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_2 : 1;   /*!< [2..2] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_3 : 1;   /*!< [3..3] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_4 : 1;   /*!< [4..4] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_5 : 1;   /*!< [5..5] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_6 : 1;   /*!< [6..6] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_7 : 1;   /*!< [7..7] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_8 : 1;   /*!< [8..8] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_9 : 1;   /*!< [9..9] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_10 : 1;  /*!< [10..10] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_11 : 1;  /*!< [11..11] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_12 : 1;  /*!< [12..12] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_13 : 1;  /*!< [13..13] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_14 : 1;  /*!< [14..14] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_15 : 1;  /*!< [15..15] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_16 : 1;  /*!< [16..16] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_17 : 1;  /*!< [17..17] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_18 : 1;  /*!< [18..18] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_19 : 1;  /*!< [19..19] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_20 : 1;  /*!< [20..20] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_21 : 1;  /*!< [21..21] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_22 : 1;  /*!< [22..22] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D0_23 : 1;  /*!< [23..23] Data to be compared with the first digital port input
-                                        *   (DPINm)                                                                   */
-            uint32_t : 8;
-        } DPDSR0_b;
-    };
-
-    union
-    {
-        __IOM uint32_t DPDSRM;         /*!< (@ 0x00000018) DPIN Data Set Register MThis register specifies
-                                        *                  the data to be compared with the data captured
-                                        *                  at a digital input pin and stored in the
-                                        *                  DPDIMR4 to DPDIMR1 registers.Write to the
-                                        *                  DPDSRM register before the sequence operation
-                                        *                  is started (when the SOSTR.SOF bit = 0).                   */
-
-        struct
-        {
-            __IOM uint32_t D1_0 : 1;   /*!< [0..0] Data to be compared with the second digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D1_1 : 1;   /*!< [1..1] Data to be compared with the second digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D1_2 : 1;   /*!< [2..2] Data to be compared with the second digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D1_3 : 1;   /*!< [3..3] Data to be compared with the second digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D1_4 : 1;   /*!< [4..4] Data to be compared with the second digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D1_5 : 1;   /*!< [5..5] Data to be compared with the second digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D1_6 : 1;   /*!< [6..6] Data to be compared with the second digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D1_7 : 1;   /*!< [7..7] Data to be compared with the second digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D2_0 : 1;   /*!< [8..8] Data to be compared with the third digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D2_1 : 1;   /*!< [9..9] Data to be compared with the third digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D2_2 : 1;   /*!< [10..10] Data to be compared with the third digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D2_3 : 1;   /*!< [11..11] Data to be compared with the third digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D2_4 : 1;   /*!< [12..12] Data to be compared with the third digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D2_5 : 1;   /*!< [13..13] Data to be compared with the third digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D2_6 : 1;   /*!< [14..14] Data to be compared with the third digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D2_7 : 1;   /*!< [15..15] Data to be compared with the third digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D3_0 : 1;   /*!< [16..16] Data to be compared with the fourth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D3_1 : 1;   /*!< [17..17] Data to be compared with the fourth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D3_2 : 1;   /*!< [18..18] Data to be compared with the fourth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D3_3 : 1;   /*!< [19..19] Data to be compared with the fourth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D3_4 : 1;   /*!< [20..20] Data to be compared with the fourth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D3_5 : 1;   /*!< [21..21] Data to be compared with the fourth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D3_6 : 1;   /*!< [22..22] Data to be compared with the fourth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D3_7 : 1;   /*!< [23..23] Data to be compared with the fourth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D4_0 : 1;   /*!< [24..24] Data to be compared with the fifth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D4_1 : 1;   /*!< [25..25] Data to be compared with the fifth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D4_2 : 1;   /*!< [26..26] Data to be compared with the fifth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D4_3 : 1;   /*!< [27..27] Data to be compared with the fifth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D4_4 : 1;   /*!< [28..28] Data to be compared with the fifth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D4_5 : 1;   /*!< [29..29] Data to be compared with the fifth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D4_6 : 1;   /*!< [30..30] Data to be compared with the fifth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D4_7 : 1;   /*!< [31..31] Data to be compared with the fifth digital port input
-                                        *   (DPINm)                                                                   */
-        } DPDSRM_b;
-    };
-
-    union
-    {
-        __IOM uint32_t DPDSRH;         /*!< (@ 0x0000001C) DPIN Data Set Register HThis register specifies
-                                        *                  the data to be compared with the data captured
-                                        *                  at a digital input pin and stored in the
-                                        *                  DPDIMR7 to DPDIMR5 registers.Write to the
-                                        *                  DPDSRH register before the sequence operation
-                                        *                  is started (when the SOSTR.SOF bit = 0).                   */
-
-        struct
-        {
-            __IOM uint32_t D5_0 : 1;   /*!< [0..0] Data to be compared with the sixth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D5_1 : 1;   /*!< [1..1] Data to be compared with the sixth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D5_2 : 1;   /*!< [2..2] Data to be compared with the sixth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D5_3 : 1;   /*!< [3..3] Data to be compared with the sixth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D5_4 : 1;   /*!< [4..4] Data to be compared with the sixth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D5_5 : 1;   /*!< [5..5] Data to be compared with the sixth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D5_6 : 1;   /*!< [6..6] Data to be compared with the sixth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D5_7 : 1;   /*!< [7..7] Data to be compared with the sixth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D6_0 : 1;   /*!< [8..8] Data to be compared with the seventh digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D6_1 : 1;   /*!< [9..9] Data to be compared with the seventh digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D6_2 : 1;   /*!< [10..10] Data to be compared with the seventh digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D6_3 : 1;   /*!< [11..11] Data to be compared with the seventh digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D6_4 : 1;   /*!< [12..12] Data to be compared with the seventh digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D6_5 : 1;   /*!< [13..13] Data to be compared with the seventh digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D6_6 : 1;   /*!< [14..14] Data to be compared with the seventh digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D6_7 : 1;   /*!< [15..15] Data to be compared with the seventh digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D7_0 : 1;   /*!< [16..16] Data to be compared with the eighth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D7_1 : 1;   /*!< [17..17] Data to be compared with the eighth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D7_2 : 1;   /*!< [18..18] Data to be compared with the eighth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D7_3 : 1;   /*!< [19..19] Data to be compared with the eighth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D7_4 : 1;   /*!< [20..20] Data to be compared with the eighth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D7_5 : 1;   /*!< [21..21] Data to be compared with the eighth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D7_6 : 1;   /*!< [22..22] Data to be compared with the eighth digital port input
-                                        *   (DPINm)                                                                   */
-            __IOM uint32_t D7_7 : 1;   /*!< [23..23] Data to be compared with the eighth digital port input
-                                        *   (DPINm)                                                                   */
-            uint32_t : 8;
-        } DPDSRH_b;
-    };
-
-    union
-    {
-        __IM uint32_t DPDIMR0;         /*!< (@ 0x00000020) DPIN Data Input Monitor Register 0This register
-                                        *                  stores the data which the LPS acquired from
-                                        *                  the digital port input (DPINm (m = 0 to
-                                        *                  23)) in digital input mode. DPDIMR0 stores
-                                        *                  the data acquired for the first time.                      */
-
-        struct
-        {
-            __IM uint32_t D0M_0  : 1;  /*!< [0..0] The first digital port input (DPINm) data                          */
-            __IM uint32_t D0M_1  : 1;  /*!< [1..1] The first digital port input (DPINm) data                          */
-            __IM uint32_t D0M_2  : 1;  /*!< [2..2] The first digital port input (DPINm) data                          */
-            __IM uint32_t D0M_3  : 1;  /*!< [3..3] The first digital port input (DPINm) data                          */
-            __IM uint32_t D0M_4  : 1;  /*!< [4..4] The first digital port input (DPINm) data                          */
-            __IM uint32_t D0M_5  : 1;  /*!< [5..5] The first digital port input (DPINm) data                          */
-            __IM uint32_t D0M_6  : 1;  /*!< [6..6] The first digital port input (DPINm) data                          */
-            __IM uint32_t D0M_7  : 1;  /*!< [7..7] The first digital port input (DPINm) data                          */
-            __IM uint32_t D0M_8  : 1;  /*!< [8..8] The first digital port input (DPINm) data                          */
-            __IM uint32_t D0M_9  : 1;  /*!< [9..9] The first digital port input (DPINm) data                          */
-            __IM uint32_t D0M_10 : 1;  /*!< [10..10] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_11 : 1;  /*!< [11..11] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_12 : 1;  /*!< [12..12] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_13 : 1;  /*!< [13..13] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_14 : 1;  /*!< [14..14] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_15 : 1;  /*!< [15..15] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_16 : 1;  /*!< [16..16] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_17 : 1;  /*!< [17..17] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_18 : 1;  /*!< [18..18] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_19 : 1;  /*!< [19..19] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_20 : 1;  /*!< [20..20] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_21 : 1;  /*!< [21..21] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_22 : 1;  /*!< [22..22] The first digital port input (DPINm) data                        */
-            __IM uint32_t D0M_23 : 1;  /*!< [23..23] The first digital port input (DPINm) data                        */
-            uint32_t             : 8;
-        } DPDIMR0_b;
-    };
-
-    union
-    {
-        __IM uint8_t DPDIMR1;          /*!< (@ 0x00000024) DPIN Data Input Monitor Register 1This register
-                                        *                  stores the data which the LPS acquired from
-                                        *                  the digital port input (DPINm (m = 0 to
-                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR1
-                                        *                  stores the data acquired for the second
-                                        *                  time.                                                      */
-
-        struct
-        {
-            __IM uint8_t D1M_0 : 1;    /*!< [0..0] The second digital port input (DPINm) data                         */
-            __IM uint8_t D1M_1 : 1;    /*!< [1..1] The second digital port input (DPINm) data                         */
-            __IM uint8_t D1M_2 : 1;    /*!< [2..2] The second digital port input (DPINm) data                         */
-            __IM uint8_t D1M_3 : 1;    /*!< [3..3] The second digital port input (DPINm) data                         */
-            __IM uint8_t D1M_4 : 1;    /*!< [4..4] The second digital port input (DPINm) data                         */
-            __IM uint8_t D1M_5 : 1;    /*!< [5..5] The second digital port input (DPINm) data                         */
-            __IM uint8_t D1M_6 : 1;    /*!< [6..6] The second digital port input (DPINm) data                         */
-            __IM uint8_t D1M_7 : 1;    /*!< [7..7] The second digital port input (DPINm) data                         */
-        } DPDIMR1_b;
-    };
-    __IM uint8_t  RESERVED;
-    __IM uint16_t RESERVED1;
-
-    union
-    {
-        __IM uint8_t DPDIMR2;          /*!< (@ 0x00000028) DPIN Data Input Monitor Register 2This register
-                                        *                  stores the data which the LPS acquired from
-                                        *                  the digital port input (DPINm (m = 0 to
-                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR2
-                                        *                  stores the data acquired for the third time.               */
-
-        struct
-        {
-            __IM uint8_t D2M_0 : 1;    /*!< [0..0] The third digital port input (DPINm) data                          */
-            __IM uint8_t D2M_1 : 1;    /*!< [1..1] The third digital port input (DPINm) data                          */
-            __IM uint8_t D2M_2 : 1;    /*!< [2..2] The third digital port input (DPINm) data                          */
-            __IM uint8_t D2M_3 : 1;    /*!< [3..3] The third digital port input (DPINm) data                          */
-            __IM uint8_t D2M_4 : 1;    /*!< [4..4] The third digital port input (DPINm) data                          */
-            __IM uint8_t D2M_5 : 1;    /*!< [5..5] The third digital port input (DPINm) data                          */
-            __IM uint8_t D2M_6 : 1;    /*!< [6..6] The third digital port input (DPINm) data                          */
-            __IM uint8_t D2M_7 : 1;    /*!< [7..7] The third digital port input (DPINm) data                          */
-        } DPDIMR2_b;
-    };
-    __IM uint8_t  RESERVED2;
-    __IM uint16_t RESERVED3;
-
-    union
-    {
-        __IM uint8_t DPDIMR3;          /*!< (@ 0x0000002C) DPIN Data Input Monitor Register 3This register
-                                        *                  stores the data which the LPS acquired from
-                                        *                  the digital port input (DPINm (m = 0 to
-                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR3
-                                        *                  stores the data acquired for the fourth
-                                        *                  time.                                                      */
-
-        struct
-        {
-            __IM uint8_t D3M_0 : 1;    /*!< [0..0] The fourth digital port input (DPINm) data                         */
-            __IM uint8_t D3M_1 : 1;    /*!< [1..1] The fourth digital port input (DPINm) data                         */
-            __IM uint8_t D3M_2 : 1;    /*!< [2..2] The fourth digital port input (DPINm) data                         */
-            __IM uint8_t D3M_3 : 1;    /*!< [3..3] The fourth digital port input (DPINm) data                         */
-            __IM uint8_t D3M_4 : 1;    /*!< [4..4] The fourth digital port input (DPINm) data                         */
-            __IM uint8_t D3M_5 : 1;    /*!< [5..5] The fourth digital port input (DPINm) data                         */
-            __IM uint8_t D3M_6 : 1;    /*!< [6..6] The fourth digital port input (DPINm) data                         */
-            __IM uint8_t D3M_7 : 1;    /*!< [7..7] The fourth digital port input (DPINm) data                         */
-        } DPDIMR3_b;
-    };
-    __IM uint8_t  RESERVED4;
-    __IM uint16_t RESERVED5;
-
-    union
-    {
-        __IM uint8_t DPDIMR4;          /*!< (@ 0x00000030) DPIN Data Input Monitor Register 4This register
-                                        *                  stores the data which the LPS acquired from
-                                        *                  the digital port input (DPINm (m = 0 to
-                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR4
-                                        *                  stores the data acquired for the fifth time.               */
-
-        struct
-        {
-            __IM uint8_t D4M_0 : 1;    /*!< [0..0] The fifth digital port input (DPINm) data                          */
-            __IM uint8_t D4M_1 : 1;    /*!< [1..1] The fifth digital port input (DPINm) data                          */
-            __IM uint8_t D4M_2 : 1;    /*!< [2..2] The fifth digital port input (DPINm) data                          */
-            __IM uint8_t D4M_3 : 1;    /*!< [3..3] The fifth digital port input (DPINm) data                          */
-            __IM uint8_t D4M_4 : 1;    /*!< [4..4] The fifth digital port input (DPINm) data                          */
-            __IM uint8_t D4M_5 : 1;    /*!< [5..5] The fifth digital port input (DPINm) data                          */
-            __IM uint8_t D4M_6 : 1;    /*!< [6..6] The fifth digital port input (DPINm) data                          */
-            __IM uint8_t D4M_7 : 1;    /*!< [7..7] The fifth digital port input (DPINm) data                          */
-        } DPDIMR4_b;
-    };
-    __IM uint8_t  RESERVED6;
-    __IM uint16_t RESERVED7;
-
-    union
-    {
-        __IM uint8_t DPDIMR5;          /*!< (@ 0x00000034) DPIN Data Input Monitor Register 5This register
-                                        *                  stores the data which the LPS acquired from
-                                        *                  the digital port input (DPINm (m = 0 to
-                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR5
-                                        *                  stores the data acquired for the sixth time.               */
-
-        struct
-        {
-            __IM uint8_t D5M_0 : 1;    /*!< [0..0] The sixth digital port input (DPINm) data                          */
-            __IM uint8_t D5M_1 : 1;    /*!< [1..1] The sixth digital port input (DPINm) data                          */
-            __IM uint8_t D5M_2 : 1;    /*!< [2..2] The sixth digital port input (DPINm) data                          */
-            __IM uint8_t D5M_3 : 1;    /*!< [3..3] The sixth digital port input (DPINm) data                          */
-            __IM uint8_t D5M_4 : 1;    /*!< [4..4] The sixth digital port input (DPINm) data                          */
-            __IM uint8_t D5M_5 : 1;    /*!< [5..5] The sixth digital port input (DPINm) data                          */
-            __IM uint8_t D5M_6 : 1;    /*!< [6..6] The sixth digital port input (DPINm) data                          */
-            __IM uint8_t D5M_7 : 1;    /*!< [7..7] The sixth digital port input (DPINm) data                          */
-        } DPDIMR5_b;
-    };
-    __IM uint8_t  RESERVED8;
-    __IM uint16_t RESERVED9;
-
-    union
-    {
-        __IM uint8_t DPDIMR6;          /*!< (@ 0x00000038) DPIN Data Input Monitor Register 6This register
-                                        *                  stores the data which the LPS acquired from
-                                        *                  the digital port input (DPINm (m = 0 to
-                                        *                  7)) in multiplexer mode or MIX mode. DPDIMR6
-                                        *                  stores the data acquired for the seventh
-                                        *                  time.                                                      */
-
-        struct
-        {
-            __IM uint8_t D6M_0 : 1;    /*!< [0..0] The seventh digital port input (DPINm) data                        */
-            __IM uint8_t D6M_1 : 1;    /*!< [1..1] The seventh digital port input (DPINm) data                        */
-            __IM uint8_t D6M_2 : 1;    /*!< [2..2] The seventh digital port input (DPINm) data                        */
-            __IM uint8_t D6M_3 : 1;    /*!< [3..3] The seventh digital port input (DPINm) data                        */
-            __IM uint8_t D6M_4 : 1;    /*!< [4..4] The seventh digital port input (DPINm) data                        */
-            __IM uint8_t D6M_5 : 1;    /*!< [5..5] The seventh digital port input (DPINm) data                        */
-            __IM uint8_t D6M_6 : 1;    /*!< [6..6] The seventh digital port input (DPINm) data                        */
-            __IM uint8_t D6M_7 : 1;    /*!< [7..7] The seventh digital port input (DPINm) data                        */
-        } DPDIMR6_b;
-    };
-    __IM uint8_t  RESERVED10;
-    __IM uint16_t RESERVED11;
-
-    union
-    {
-        __IM uint8_t DPDIMR7;          /*!< (@ 0x0000003C) DPIN Data Input Monitor Register 7This register
-                                        *                  stores the data which the LPS acquired from
-                                        *                  the digital port input (DPINm (m = 0 to
-                                        *                  7)) in multiplexer mode. DPDIMR7 stores
-                                        *                  the data acquired for the eighth time.                     */
-
-        struct
-        {
-            __IM uint8_t D7M_0 : 1;    /*!< [0..0] The eighth digital port input (DPINm) data                         */
-            __IM uint8_t D7M_1 : 1;    /*!< [1..1] The eighth digital port input (DPINm) data                         */
-            __IM uint8_t D7M_2 : 1;    /*!< [2..2] The eighth digital port input (DPINm) data                         */
-            __IM uint8_t D7M_3 : 1;    /*!< [3..3] The eighth digital port input (DPINm) data                         */
-            __IM uint8_t D7M_4 : 1;    /*!< [4..4] The eighth digital port input (DPINm) data                         */
-            __IM uint8_t D7M_5 : 1;    /*!< [5..5] The eighth digital port input (DPINm) data                         */
-            __IM uint8_t D7M_6 : 1;    /*!< [6..6] The eighth digital port input (DPINm) data                         */
-            __IM uint8_t D7M_7 : 1;    /*!< [7..7] The eighth digital port input (DPINm) data                         */
-        } DPDIMR7_b;
-    };
-    __IM uint8_t  RESERVED12;
-    __IM uint16_t RESERVED13;
-
-    union
-    {
-        __IOM uint16_t CNTVAL;         /*!< (@ 0x00000040) Count Value RegisterThis register specifies the
-                                        *                  stabilization time of the external circuits
-                                        *                  (digital signal source and analog signal
-                                        *                  source).• In digital mode The time from
-                                        *                  when the DPO output is set to 1 to the time
-                                        *                  when the port input is acquired for the
-                                        *                  first time• In analog mode The time from
-                                        *                  when the APO output is set to 1 to the time
-                                        *                  when the LPS outputs the A/D conversion
-                                        *                  trigger to the ADCKAWrite to the CNTVAL
-                                        *                  register before the sequence operation is
-                                        *                  started (when the SOSTR.SO                                 */
-
-        struct
-        {
-            uint16_t             : 8;
-            __IOM uint16_t CNT1n : 8;  /*!< [15..8] These bits set the stabilization time of the external
-                                        *   circuit (analog signal source).Stabilization time = (1/(fRH/20))
-                                        *   × 16 × CNT1n (set value)                                                */
-        } CNTVAL_b;
-    };
-    __IM uint16_t RESERVED14;
-
-    union
-    {
-        __IM uint8_t SOSTR;            /*!< (@ 0x00000044) LPS Operation Status RegisterThis register indicates
-                                        *                  the operating state of the LPS.                            */
-
-        struct
-        {
-            __IM uint8_t SOF : 1;      /*!< [0..0] LPS Operation Status Flag                                          */
-            uint8_t          : 7;
-        } SOSTR_b;
-    };
-    __IM uint8_t  RESERVED15;
-    __IM uint16_t RESERVED16;
-} R_LPS_Type;                          /*!< Size = 72 (0x48)                                                          */
+} R_LTSC_Type;                         /*!< Size = 72 (0x48)                                                          */
 
 /* =========================================================================================================================== */
 /* ================                                         R_DNFACTL                                         ================ */
@@ -122643,7 +127618,7 @@ typedef struct                         /*!< (@ 0xFFD52000) R_PSI50 Structure    
     {
         __IOM uint32_t PSI5nTXDATA;     /*!< (@ 0x00000098) PSI5 Transmit Data RegisterThis register stores
                                          *                  transmit data.See this Registers section
-                                         *                  in RH850/U2x Group CSIH IP User‘s Manual:
+                                         *                  in R-Car/U5x Group CSIH IP User‘s Manual:
                                          *                  Hardware.                                                  */
 
         struct
@@ -122653,7 +127628,7 @@ typedef struct                         /*!< (@ 0xFFD52000) R_PSI50 Structure    
                                          *   arrangement differs depending on the transmit frame format
                                          *   specified in the PSI5nTXDCTRL.FRMFORMAT bit. (See Table,
                                          *   "PSI5nTXDATA.TXDATA Data Arrangement in Transmit Frame
-                                         *   Format" in RH850/U2x Group PSI5 IP User‘s Manual: Hardware)The
+                                         *   Format" in R-Car/U5x Group PSI5 IP User‘s Manual: Hardware)The
                                          *   data is sent after these bits are written.Read value is
                                          *   always 0.                                                                 */
         } PSI5nTXDATA_b;
@@ -125474,6 +130449,19 @@ typedef struct                         /*!< (@ 0xFFFA0000) R_QOSCNT_FL_PE0CL0 St
         } LM3_SPID_b;
     };
 } R_QOSCNT_FL_PE0CL0_Type;             /*!< Size = 696 (0x2b8)                                                        */
+
+/* =========================================================================================================================== */
+/* ================                                         R_RDC3ASn                                         ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief This R/D converter module inputs sin, cos and excitation signals from the resolver acquired by three differential inputs ADC existing outside this module, and convert analog angles to digital angles with a maximum 16-bit resolution by digital tracking loop method. (R_RDC3ASn)
+ */
+
+typedef struct                         /*!< (@ 0xFFD5A100) R_RDC3ASn Structure                                        */
+{
+    __IOM R_RDC3ASn_CLS_Type CLS[2];   /*!< (@ 0x00000000) [0..1]                                                     */
+} R_RDC3ASn_Type;                      /*!< Size = 434688 (0x6a200)                                                   */
 
 /* =========================================================================================================================== */
 /* ================                                          R_RLN30                                          ================ */
@@ -128751,6 +133739,7 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_KCRC3_BASE                0xFFD8E200UL
  #define R_SYS0_A_OM_BASE            0xFF984000UL
  #define R_FCLACTL_TAPA_BASE         0xFFED4800UL
+ #define R_LPS_BASE                  0xFF9A3800UL
  #define R_OTS0_BASE                 0xFFC00200UL
  #define R_FCLA_IRQ0_BASE            0xFFED4A00UL
  #define R_FCLA_IRQ1_BASE            0xFFED4B00UL
@@ -128852,6 +133841,8 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_ATU_TIMER_F_BASE          0xFF88E000UL
  #define R_ATU_TIMER_G_BASE          0xFF88F000UL
  #define R_BARR_BASE                 0xFFFB8000UL
+ #define R_CADC_BASE                 0xFFF26000UL
+ #define R_CADC00_BASE               0xFFF27000UL
  #define R_CLMA0_BASE                0xFF989100UL
  #define R_CLMA1_BASE                0xFF989200UL
  #define R_CLMA2_BASE                0xFF989300UL
@@ -128888,6 +133879,17 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_DFPGRD_BASE               0xFF0D2000UL
  #define R_GUARD_DMAC0_BASE          0xFFC69000UL
  #define R_GUARD_DMAC1_BASE          0xFFC69400UL
+ #define R_DSADC_BASE                0xFFF24000UL
+ #define R_DSADC00_BASE              0xFFF24200UL
+ #define R_DSADC10_BASE              0xFFF24400UL
+ #define R_DSADC12_BASE              0xFFF24800UL
+ #define R_DSADC13_BASE              0xFFCA2000UL
+ #define R_DSADC20_BASE              0xFFF24600UL
+ #define R_DSADC11_BASE              0xFFCA2200UL
+ #define R_DSADC15_BASE              0xFFCA2400UL
+ #define R_DSADC14_BASE              0xFFCA2600UL
+ #define R_DSADC22_BASE              0xFFCA2800UL
+ #define R_DSADC21_BASE              0xFFCA2A00UL
  #define R_DTSTRGSEL_BASE            0xFF090600UL
  #define R_DTS0_BASE                 0xFFF88000UL
  #define R_GUARD_DTS_BASE            0xFFC68000UL
@@ -128985,8 +133987,9 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_GUARD_IBG_TPTM_BASE       0xFFC6A600UL
  #define R_GUARD_INTC2_BASE          0xFFC64000UL
  #define R_PORT_BASE                 0xFFD90000UL
+ #define R_IPIR_BASE                 0xFFFB9000UL
  #define R_JPORT_BASE                0xFFDA0000UL
- #define R_LPS_BASE                  0xFF9A3800UL
+ #define R_LTSC_BASE                 0xFFC78100UL
  #define R_DNFACTL_BASE              0xFFED0000UL
  #define R_PBGERRSLV00_BASE          0xFFC6B000UL
  #define R_PBGERRSLV10_BASE          0xFFC63100UL
@@ -129105,6 +134108,7 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_QOSCNT_ETHER0_BASE        0xFF970000UL
  #define R_QOSCNT_ETHER1_BASE        0xFF970800UL
  #define R_QOSCNT_R_SWITCH_BASE      0xFF971000UL
+ #define R_RDC3ASn_BASE              0xFFD5A100UL
  #define R_RLN30_BASE                0xFFC7C000UL
  #define R_RLN31_BASE                0xFF89B100UL
  #define R_RLN32_BASE                0xFFC7C200UL
@@ -129185,6 +134189,7 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_KCRC3                ((R_KCRC0_Type *) R_KCRC3_BASE)
  #define R_SYS0_A_OM            ((R_SYS0_A_OM_Type *) R_SYS0_A_OM_BASE)
  #define R_FCLACTL_TAPA         ((R_FCLACTL_TAPA_Type *) R_FCLACTL_TAPA_BASE)
+ #define R_LPS                  ((R_LPS_Type *) R_LPS_BASE)
  #define R_OTS0                 ((R_OTS0_Type *) R_OTS0_BASE)
  #define R_FCLA_IRQ0            ((R_FCLA_IRQ0_Type *) R_FCLA_IRQ0_BASE)
  #define R_FCLA_IRQ1            ((R_FCLA_IRQ0_Type *) R_FCLA_IRQ1_BASE)
@@ -129286,6 +134291,8 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_ATU_TIMER_F          ((R_ATU_TIMER_F_Type *) R_ATU_TIMER_F_BASE)
  #define R_ATU_TIMER_G          ((R_ATU_TIMER_G_Type *) R_ATU_TIMER_G_BASE)
  #define R_BARR                 ((R_BARR_Type *) R_BARR_BASE)
+ #define R_CADC                 ((R_CADC_Type *) R_CADC_BASE)
+ #define R_CADC00               ((R_CADC00_Type *) R_CADC00_BASE)
  #define R_CLMA0                ((R_CLMA0_Type *) R_CLMA0_BASE)
  #define R_CLMA1                ((R_CLMA0_Type *) R_CLMA1_BASE)
  #define R_CLMA2                ((R_CLMA0_Type *) R_CLMA2_BASE)
@@ -129322,6 +134329,17 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_DFPGRD               ((R_DFPGRD_Type *) R_DFPGRD_BASE)
  #define R_GUARD_DMAC0          ((R_GUARD_DMAC0_Type *) R_GUARD_DMAC0_BASE)
  #define R_GUARD_DMAC1          ((R_GUARD_DMAC0_Type *) R_GUARD_DMAC1_BASE)
+ #define R_DSADC                ((R_DSADC_Type *) R_DSADC_BASE)
+ #define R_DSADC00              ((R_DSADCn_Type *) R_DSADC00_BASE)
+ #define R_DSADC10              ((R_DSADCn_Type *) R_DSADC10_BASE)
+ #define R_DSADC12              ((R_DSADCn_Type *) R_DSADC12_BASE)
+ #define R_DSADC13              ((R_DSADCn_Type *) R_DSADC13_BASE)
+ #define R_DSADC20              ((R_DSADCn_Type *) R_DSADC20_BASE)
+ #define R_DSADC11              ((R_DSADCn_Type *) R_DSADC11_BASE)
+ #define R_DSADC15              ((R_DSADCn_Type *) R_DSADC15_BASE)
+ #define R_DSADC14              ((R_DSADCn_Type *) R_DSADC14_BASE)
+ #define R_DSADC22              ((R_DSADCn_Type *) R_DSADC22_BASE)
+ #define R_DSADC21              ((R_DSADCn_Type *) R_DSADC21_BASE)
  #define R_DTSTRGSEL            ((R_DTSTRGSEL_Type *) R_DTSTRGSEL_BASE)
  #define R_DTS0                 ((R_DTS0_Type *) R_DTS0_BASE)
  #define R_GUARD_DTS            ((R_GUARD_DTS_Type *) R_GUARD_DTS_BASE)
@@ -129419,8 +134437,9 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_GUARD_IBG_TPTM       ((R_GUARD_IBG_TPTM_Type *) R_GUARD_IBG_TPTM_BASE)
  #define R_GUARD_INTC2          ((R_GUARD_INTC2_Type *) R_GUARD_INTC2_BASE)
  #define R_PORT                 ((R_PORT_Type *) R_PORT_BASE)
+ #define R_IPIR                 ((R_IPIR_Type *) R_IPIR_BASE)
  #define R_JPORT                ((R_JPORT_Type *) R_JPORT_BASE)
- #define R_LPS                  ((R_LPS_Type *) R_LPS_BASE)
+ #define R_LTSC                 ((R_LTSC_Type *) R_LTSC_BASE)
  #define R_DNFACTL              ((R_DNFACTL_Type *) R_DNFACTL_BASE)
  #define R_PBGERRSLV00          ((R_PBGERRSLV00_Type *) R_PBGERRSLV00_BASE)
  #define R_PBGERRSLV10          ((R_PBGERRSLV00_Type *) R_PBGERRSLV10_BASE)
@@ -129539,6 +134558,7 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_QOSCNT_ETHER0        ((R_QOSCNT_FL_PE0CL0_Type *) R_QOSCNT_ETHER0_BASE)
  #define R_QOSCNT_ETHER1        ((R_QOSCNT_FL_PE0CL0_Type *) R_QOSCNT_ETHER1_BASE)
  #define R_QOSCNT_R_SWITCH      ((R_QOSCNT_FL_PE0CL0_Type *) R_QOSCNT_R_SWITCH_BASE)
+ #define R_RDC3ASn              ((R_RDC3ASn_Type *) R_RDC3ASn_BASE)
  #define R_RLN30                ((R_RLN30_Type *) R_RLN30_BASE)
  #define R_RLN31                ((R_RLN30_Type *) R_RLN31_BASE)
  #define R_RLN32                ((R_RLN30_Type *) R_RLN32_BASE)
@@ -131473,6 +136493,54 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_ATU_TIMER_G_SB_RLDG_RLDGx_Msk      (0xffffffffUL) /*!< RLDGx (Bitfield-Mask: 0xffffffff)                     */
 
 /* =========================================================================================================================== */
+/* ================                                         CADC00VCR                                         ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  VCR  ========================================================== */
+ #define R_CADC00_CADC00VCR_VCR_CADC00GCTRL_Pos        (0UL)         /*!< CADC00GCTRL (Bit 0)                                   */
+ #define R_CADC00_CADC00VCR_VCR_CADC00GCTRL_Msk        (0xfUL)       /*!< CADC00GCTRL (Bitfield-Mask: 0x0f)                     */
+ #define R_CADC00_CADC00VCR_VCR_CADC00CNVCLS_Pos       (4UL)         /*!< CADC00CNVCLS (Bit 4)                                  */
+ #define R_CADC00_CADC00VCR_VCR_CADC00CNVCLS_Msk       (0x30UL)      /*!< CADC00CNVCLS (Bitfield-Mask: 0x03)                    */
+ #define R_CADC00_CADC00VCR_VCR_CADC00DFTAG_Pos        (8UL)         /*!< CADC00DFTAG (Bit 8)                                   */
+ #define R_CADC00_CADC00VCR_VCR_CADC00DFTAG_Msk        (0xf00UL)     /*!< CADC00DFTAG (Bitfield-Mask: 0x0f)                     */
+ #define R_CADC00_CADC00VCR_VCR_CADC00DFENT_Pos        (12UL)        /*!< CADC00DFENT (Bit 12)                                  */
+ #define R_CADC00_CADC00VCR_VCR_CADC00DFENT_Msk        (0x1000UL)    /*!< CADC00DFENT (Bitfield-Mask: 0x01)                     */
+ #define R_CADC00_CADC00VCR_VCR_CADC00ULEIE_Pos        (14UL)        /*!< CADC00ULEIE (Bit 14)                                  */
+ #define R_CADC00_CADC00VCR_VCR_CADC00ULEIE_Msk        (0x4000UL)    /*!< CADC00ULEIE (Bitfield-Mask: 0x01)                     */
+ #define R_CADC00_CADC00VCR_VCR_CADC00ADIE_Pos         (15UL)        /*!< CADC00ADIE (Bit 15)                                   */
+ #define R_CADC00_CADC00VCR_VCR_CADC00ADIE_Msk         (0x8000UL)    /*!< CADC00ADIE (Bitfield-Mask: 0x01)                      */
+ #define R_CADC00_CADC00VCR_VCR_CADC00VCULLMTBS_Pos    (24UL)        /*!< CADC00VCULLMTBS (Bit 24)                              */
+ #define R_CADC00_CADC00VCR_VCR_CADC00VCULLMTBS_Msk    (0x3000000UL) /*!< CADC00VCULLMTBS (Bitfield-Mask: 0x03)                 */
+ #define R_CADC00_CADC00VCR_VCR_CADC00VCLLME_Pos       (26UL)        /*!< CADC00VCLLME (Bit 26)                                 */
+ #define R_CADC00_CADC00VCR_VCR_CADC00VCLLME_Msk       (0x4000000UL) /*!< CADC00VCLLME (Bitfield-Mask: 0x01)                    */
+ #define R_CADC00_CADC00VCR_VCR_CADC00VCULME_Pos       (27UL)        /*!< CADC00VCULME (Bit 27)                                 */
+ #define R_CADC00_CADC00VCR_VCR_CADC00VCULME_Msk       (0x8000000UL) /*!< CADC00VCULME (Bitfield-Mask: 0x01)                    */
+
+/* =========================================================================================================================== */
+/* ================                                         CADC00DIR                                         ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  DIR  ========================================================== */
+ #define R_CADC00_CADC00DIR_DIR_CADC00DR_Pos      (0UL)         /*!< CADC00DR (Bit 0)                                      */
+ #define R_CADC00_CADC00DIR_DIR_CADC00DR_Msk      (0xffffUL)    /*!< CADC00DR (Bitfield-Mask: 0xffff)                      */
+ #define R_CADC00_CADC00DIR_DIR_CADC00PRTY_Pos    (24UL)        /*!< CADC00PRTY (Bit 24)                                   */
+ #define R_CADC00_CADC00DIR_DIR_CADC00PRTY_Msk    (0x1000000UL) /*!< CADC00PRTY (Bitfield-Mask: 0x01)                      */
+ #define R_CADC00_CADC00DIR_DIR_CADC00WFLG_Pos    (25UL)        /*!< CADC00WFLG (Bit 25)                                   */
+ #define R_CADC00_CADC00DIR_DIR_CADC00WFLG_Msk    (0x2000000UL) /*!< CADC00WFLG (Bitfield-Mask: 0x01)                      */
+ #define R_CADC00_CADC00DIR_DIR_CADC00IDEF_Pos    (26UL)        /*!< CADC00IDEF (Bit 26)                                   */
+ #define R_CADC00_CADC00DIR_DIR_CADC00IDEF_Msk    (0x4000000UL) /*!< CADC00IDEF (Bitfield-Mask: 0x01)                      */
+
+/* =========================================================================================================================== */
+/* ================                                        CADC00ULTBR                                        ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  ULTBR  ========================================================= */
+ #define R_CADC00_CADC00ULTBR_ULTBR_CADC00LLMTB_Pos    (0UL)          /*!< CADC00LLMTB (Bit 0)                                   */
+ #define R_CADC00_CADC00ULTBR_ULTBR_CADC00LLMTB_Msk    (0xffffUL)     /*!< CADC00LLMTB (Bitfield-Mask: 0xffff)                   */
+ #define R_CADC00_CADC00ULTBR_ULTBR_CADC00ULMTB_Pos    (16UL)         /*!< CADC00ULMTB (Bit 16)                                  */
+ #define R_CADC00_CADC00ULTBR_ULTBR_CADC00ULMTB_Msk    (0xffff0000UL) /*!< CADC00ULMTB (Bitfield-Mask: 0xffff)                   */
+
+/* =========================================================================================================================== */
 /* ================                                          CRG_CTR                                          ================ */
 /* =========================================================================================================================== */
 
@@ -131523,6 +136591,64 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
 /* ==========================================================  ADV  ========================================================== */
  #define R_DFPGRD_DFP_CTR_ADV_ADV_Pos      (12UL)         /*!< ADV (Bit 12)                                          */
  #define R_DFPGRD_DFP_CTR_ADV_ADV_Msk      (0xfffff000UL) /*!< ADV (Bitfield-Mask: 0xfffff)                          */
+
+/* =========================================================================================================================== */
+/* ================                                         DSADCnVCR                                         ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  VCR  ========================================================== */
+ #define R_DSADC00_DSADCnVCR_VCR_GCTRL_Pos        (0UL)          /*!< GCTRL (Bit 0)                                         */
+ #define R_DSADC00_DSADCnVCR_VCR_GCTRL_Msk        (0xfUL)        /*!< GCTRL (Bitfield-Mask: 0x0f)                           */
+ #define R_DSADC00_DSADCnVCR_VCR_CNVCLS_Pos       (4UL)          /*!< CNVCLS (Bit 4)                                        */
+ #define R_DSADC00_DSADCnVCR_VCR_CNVCLS_Msk       (0x30UL)       /*!< CNVCLS (Bitfield-Mask: 0x03)                          */
+ #define R_DSADC00_DSADCnVCR_VCR_DFTAG_Pos        (8UL)          /*!< DFTAG (Bit 8)                                         */
+ #define R_DSADC00_DSADCnVCR_VCR_DFTAG_Msk        (0xf00UL)      /*!< DFTAG (Bitfield-Mask: 0x0f)                           */
+ #define R_DSADC00_DSADCnVCR_VCR_DFENT_Pos        (12UL)         /*!< DFENT (Bit 12)                                        */
+ #define R_DSADC00_DSADCnVCR_VCR_DFENT_Msk        (0x1000UL)     /*!< DFENT (Bitfield-Mask: 0x01)                           */
+ #define R_DSADC00_DSADCnVCR_VCR_ULEIE_Pos        (14UL)         /*!< ULEIE (Bit 14)                                        */
+ #define R_DSADC00_DSADCnVCR_VCR_ULEIE_Msk        (0x4000UL)     /*!< ULEIE (Bitfield-Mask: 0x01)                           */
+ #define R_DSADC00_DSADCnVCR_VCR_ADIE_Pos         (15UL)         /*!< ADIE (Bit 15)                                         */
+ #define R_DSADC00_DSADCnVCR_VCR_ADIE_Msk         (0x8000UL)     /*!< ADIE (Bitfield-Mask: 0x01)                            */
+ #define R_DSADC00_DSADCnVCR_VCR_DSDFTYP_Pos      (16UL)         /*!< DSDFTYP (Bit 16)                                      */
+ #define R_DSADC00_DSADCnVCR_VCR_DSDFTYP_Msk      (0xf0000UL)    /*!< DSDFTYP (Bitfield-Mask: 0x0f)                         */
+ #define R_DSADC00_DSADCnVCR_VCR_TPVSL_Pos        (20UL)         /*!< TPVSL (Bit 20)                                        */
+ #define R_DSADC00_DSADCnVCR_VCR_TPVSL_Msk        (0x700000UL)   /*!< TPVSL (Bitfield-Mask: 0x07)                           */
+ #define R_DSADC00_DSADCnVCR_VCR_ORT_Pos          (23UL)         /*!< ORT (Bit 23)                                          */
+ #define R_DSADC00_DSADCnVCR_VCR_ORT_Msk          (0x800000UL)   /*!< ORT (Bitfield-Mask: 0x01)                             */
+ #define R_DSADC00_DSADCnVCR_VCR_VCULLMTBS_Pos    (24UL)         /*!< VCULLMTBS (Bit 24)                                    */
+ #define R_DSADC00_DSADCnVCR_VCR_VCULLMTBS_Msk    (0x3000000UL)  /*!< VCULLMTBS (Bitfield-Mask: 0x03)                       */
+ #define R_DSADC00_DSADCnVCR_VCR_VCLLME_Pos       (26UL)         /*!< VCLLME (Bit 26)                                       */
+ #define R_DSADC00_DSADCnVCR_VCR_VCLLME_Msk       (0x4000000UL)  /*!< VCLLME (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnVCR_VCR_VCULME_Pos       (27UL)         /*!< VCULME (Bit 27)                                       */
+ #define R_DSADC00_DSADCnVCR_VCR_VCULME_Msk       (0x8000000UL)  /*!< VCULME (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnVCR_VCR_GAIN_Pos         (28UL)         /*!< GAIN (Bit 28)                                         */
+ #define R_DSADC00_DSADCnVCR_VCR_GAIN_Msk         (0x30000000UL) /*!< GAIN (Bitfield-Mask: 0x03)                            */
+ #define R_DSADC00_DSADCnVCR_VCR_FSELEXTE_Pos     (31UL)         /*!< FSELEXTE (Bit 31)                                     */
+ #define R_DSADC00_DSADCnVCR_VCR_FSELEXTE_Msk     (0x80000000UL) /*!< FSELEXTE (Bitfield-Mask: 0x01)                        */
+
+/* =========================================================================================================================== */
+/* ================                                         DSADCnDIR                                         ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  DIR  ========================================================== */
+ #define R_DSADC00_DSADCnDIR_DIR_DR_Pos      (0UL)         /*!< DR (Bit 0)                                            */
+ #define R_DSADC00_DSADCnDIR_DIR_DR_Msk      (0xffffUL)    /*!< DR (Bitfield-Mask: 0xffff)                            */
+ #define R_DSADC00_DSADCnDIR_DIR_PRTY_Pos    (24UL)        /*!< PRTY (Bit 24)                                         */
+ #define R_DSADC00_DSADCnDIR_DIR_PRTY_Msk    (0x1000000UL) /*!< PRTY (Bitfield-Mask: 0x01)                            */
+ #define R_DSADC00_DSADCnDIR_DIR_WFLG_Pos    (25UL)        /*!< WFLG (Bit 25)                                         */
+ #define R_DSADC00_DSADCnDIR_DIR_WFLG_Msk    (0x2000000UL) /*!< WFLG (Bitfield-Mask: 0x01)                            */
+ #define R_DSADC00_DSADCnDIR_DIR_IDEF_Pos    (26UL)        /*!< IDEF (Bit 26)                                         */
+ #define R_DSADC00_DSADCnDIR_DIR_IDEF_Msk    (0x4000000UL) /*!< IDEF (Bitfield-Mask: 0x01)                            */
+
+/* =========================================================================================================================== */
+/* ================                                        DSADCnULTBR                                        ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  ULTBR  ========================================================= */
+ #define R_DSADC00_DSADCnULTBR_ULTBR_LLMTB_Pos    (0UL)          /*!< LLMTB (Bit 0)                                         */
+ #define R_DSADC00_DSADCnULTBR_ULTBR_LLMTB_Msk    (0xffffUL)     /*!< LLMTB (Bitfield-Mask: 0xffff)                         */
+ #define R_DSADC00_DSADCnULTBR_ULTBR_ULMTB_Pos    (16UL)         /*!< ULMTB (Bit 16)                                        */
+ #define R_DSADC00_DSADCnULTBR_ULTBR_ULMTB_Msk    (0xffff0000UL) /*!< ULMTB (Bitfield-Mask: 0xffff)                         */
 
 /* =========================================================================================================================== */
 /* ================                                            CH                                             ================ */
@@ -137997,6 +143123,323 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
 /* =========================================================================================================================== */
 
 /* =========================================================================================================================== */
+/* ================                                            CLS                                            ================ */
+/* =========================================================================================================================== */
+
+/* ======================================================  RDC3ASnDSST  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnDSST_DSFQ_Pos         (0UL)          /*!< DSFQ (Bit 0)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDSST_DSFQ_Msk         (0x3UL)        /*!< DSFQ (Bitfield-Mask: 0x03)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnDSST_DSDL_Pos         (4UL)          /*!< DSDL (Bit 4)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDSST_DSDL_Msk         (0x30UL)       /*!< DSDL (Bitfield-Mask: 0x03)                            */
+/* ======================================================  RDC3ASnPI0  ======================================================= */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_LPGS_Pos          (0UL)          /*!< LPGS (Bit 0)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_LPGS_Msk          (0x7UL)        /*!< LPGS (Bitfield-Mask: 0x07)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_BWCS_Pos          (4UL)          /*!< BWCS (Bit 4)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_BWCS_Msk          (0x10UL)       /*!< BWCS (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_HKVS_Pos          (8UL)          /*!< HKVS (Bit 8)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_HKVS_Msk          (0xf00UL)      /*!< HKVS (Bitfield-Mask: 0x0f)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_LKVS_Pos          (12UL)         /*!< LKVS (Bit 12)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_LKVS_Msk          (0xf000UL)     /*!< LKVS (Bitfield-Mask: 0x0f)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_DEVCK_Pos         (16UL)         /*!< DEVCK (Bit 16)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_DEVCK_Msk         (0x70000UL)    /*!< DEVCK (Bitfield-Mask: 0x07)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_KIS_Pos           (20UL)         /*!< KIS (Bit 20)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_KIS_Msk           (0x700000UL)   /*!< KIS (Bitfield-Mask: 0x07)                             */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_KPS_Pos           (24UL)         /*!< KPS (Bit 24)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_KPS_Msk           (0x3000000UL)  /*!< KPS (Bitfield-Mask: 0x03)                             */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_KPF_Pos           (26UL)         /*!< KPF (Bit 26)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_KPF_Msk           (0x4000000UL)  /*!< KPF (Bitfield-Mask: 0x01)                             */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_DVW_Pos           (28UL)         /*!< DVW (Bit 28)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_DVW_Msk           (0x30000000UL) /*!< DVW (Bitfield-Mask: 0x03)                             */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_KVMS_Pos          (30UL)         /*!< KVMS (Bit 30)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPI0_KVMS_Msk          (0xc0000000UL) /*!< KVMS (Bitfield-Mask: 0x03)                            */
+/* ======================================================  RDC3ASnPI1  ======================================================= */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_MAXV_Pos          (0UL)          /*!< MAXV (Bit 0)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_MAXV_Msk          (0x7UL)        /*!< MAXV (Bitfield-Mask: 0x07)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_LKVLM_Pos         (8UL)          /*!< LKVLM (Bit 8)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_LKVLM_Msk         (0xf00UL)      /*!< LKVLM (Bitfield-Mask: 0x0f)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_HKVLM_Pos         (12UL)         /*!< HKVLM (Bit 12)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_HKVLM_Msk         (0xf000UL)     /*!< HKVLM (Bitfield-Mask: 0x0f)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_AGDS_Pos          (16UL)         /*!< AGDS (Bit 16)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_AGDS_Msk          (0x10000UL)    /*!< AGDS (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_AGST_Pos          (20UL)         /*!< AGST (Bit 20)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_AGST_Msk          (0xf00000UL)   /*!< AGST (Bitfield-Mask: 0x0f)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_AGCD_Pos          (24UL)         /*!< AGCD (Bit 24)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_AGCD_Msk          (0x1000000UL)  /*!< AGCD (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_SAGD_Pos          (28UL)         /*!< SAGD (Bit 28)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPI1_SAGD_Msk          (0x10000000UL) /*!< SAGD (Bitfield-Mask: 0x01)                            */
+/* =====================================================  RDC3ASnPHICP0  ===================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTFLG0_Pos    (0UL)          /*!< INTFLG0 (Bit 0)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTFLG0_Msk    (0x1UL)        /*!< INTFLG0 (Bitfield-Mask: 0x01)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTFLG1_Pos    (1UL)          /*!< INTFLG1 (Bit 1)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTFLG1_Msk    (0x2UL)        /*!< INTFLG1 (Bitfield-Mask: 0x01)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTFLG2_Pos    (2UL)          /*!< INTFLG2 (Bit 2)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTFLG2_Msk    (0x4UL)        /*!< INTFLG2 (Bitfield-Mask: 0x01)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_IRS_Pos        (16UL)         /*!< IRS (Bit 16)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_IRS_Msk        (0x10000UL)    /*!< IRS (Bitfield-Mask: 0x01)                             */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTCLR0_Pos    (24UL)         /*!< INTCLR0 (Bit 24)                                      */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTCLR0_Msk    (0x1000000UL)  /*!< INTCLR0 (Bitfield-Mask: 0x01)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTCLR1_Pos    (25UL)         /*!< INTCLR1 (Bit 25)                                      */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTCLR1_Msk    (0x2000000UL)  /*!< INTCLR1 (Bitfield-Mask: 0x01)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTCLR2_Pos    (26UL)         /*!< INTCLR2 (Bit 26)                                      */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP0_INTCLR2_Msk    (0x4000000UL)  /*!< INTCLR2 (Bitfield-Mask: 0x01)                         */
+/* =====================================================  RDC3ASnPHICP1  ===================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP1_CMP0_Pos       (0UL)          /*!< CMP0 (Bit 0)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP1_CMP0_Msk       (0xffffUL)     /*!< CMP0 (Bitfield-Mask: 0xffff)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP1_CMP1_Pos       (16UL)         /*!< CMP1 (Bit 16)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP1_CMP1_Msk       (0xffff0000UL) /*!< CMP1 (Bitfield-Mask: 0xffff)                          */
+/* =====================================================  RDC3ASnPHICP2  ===================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP2_CMP2_Pos       (0UL)          /*!< CMP2 (Bit 0)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnPHICP2_CMP2_Msk       (0xffffUL)     /*!< CMP2 (Bitfield-Mask: 0xffff)                          */
+/* =====================================================  RDC3ASnSCCOR0  ===================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR0_SINPO_Pos      (0UL)          /*!< SINPO (Bit 0)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR0_SINPO_Msk      (0xfffUL)      /*!< SINPO (Bitfield-Mask: 0xfff)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR0_COSPO_Pos      (16UL)         /*!< COSPO (Bit 16)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR0_COSPO_Msk      (0xfff0000UL)  /*!< COSPO (Bitfield-Mask: 0xfff)                          */
+/* =====================================================  RDC3ASnSCCOR1  ===================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_PHCSL_Pos      (8UL)          /*!< PHCSL (Bit 8)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_PHCSL_Msk      (0x300UL)      /*!< PHCSL (Bitfield-Mask: 0x03)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_PHCLT_Pos      (10UL)         /*!< PHCLT (Bit 10)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_PHCLT_Msk      (0xc00UL)      /*!< PHCLT (Bitfield-Mask: 0x03)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_GNCSL_Pos      (16UL)         /*!< GNCSL (Bit 16)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_GNCSL_Msk      (0x30000UL)    /*!< GNCSL (Bitfield-Mask: 0x03)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_GNCLT_Pos      (18UL)         /*!< GNCLT (Bit 18)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_GNCLT_Msk      (0xc0000UL)    /*!< GNCLT (Bitfield-Mask: 0x03)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_CMCSL_Pos      (20UL)         /*!< CMCSL (Bit 20)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_CMCSL_Msk      (0x300000UL)   /*!< CMCSL (Bitfield-Mask: 0x03)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_CMCLT_Pos      (22UL)         /*!< CMCLT (Bit 22)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_CMCLT_Msk      (0xc00000UL)   /*!< CMCLT (Bitfield-Mask: 0x03)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_GNCST_Pos      (24UL)         /*!< GNCST (Bit 24)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_GNCST_Msk      (0x1000000UL)  /*!< GNCST (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_PHCST_Pos      (26UL)         /*!< PHCST (Bit 26)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR1_PHCST_Msk      (0x4000000UL)  /*!< PHCST (Bitfield-Mask: 0x01)                           */
+/* =====================================================  RDC3ASnSCCOR2  ===================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR2_PHSNM_Pos      (0UL)          /*!< PHSNM (Bit 0)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR2_PHSNM_Msk      (0x3fUL)       /*!< PHSNM (Bitfield-Mask: 0x3f)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR2_PHCNM_Pos      (8UL)          /*!< PHCNM (Bit 8)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR2_PHCNM_Msk      (0x3f00UL)     /*!< PHCNM (Bitfield-Mask: 0x3f)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR2_GNCNM_Pos      (16UL)         /*!< GNCNM (Bit 16)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR2_GNCNM_Msk      (0xfff0000UL)  /*!< GNCNM (Bitfield-Mask: 0xfff)                          */
+/* =====================================================  RDC3ASnSCCOR3  ===================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR3_CSOSN_Pos      (0UL)          /*!< CSOSN (Bit 0)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR3_CSOSN_Msk      (0x3ffUL)      /*!< CSOSN (Bitfield-Mask: 0x3ff)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR3_CCOSN_Pos      (16UL)         /*!< CCOSN (Bit 16)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnSCCOR3_CCOSN_Msk      (0x3ff0000UL)  /*!< CCOSN (Bitfield-Mask: 0x3ff)                          */
+/* =====================================================  RDC3ASnDIAG0  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG0_SGBDTH_Pos      (0UL)          /*!< SGBDTH (Bit 0)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG0_SGBDTH_Msk      (0xffUL)       /*!< SGBDTH (Bitfield-Mask: 0xff)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG0_SGBTH_Pos       (8UL)          /*!< SGBTH (Bit 8)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG0_SGBTH_Msk       (0xff00UL)     /*!< SGBTH (Bitfield-Mask: 0xff)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG0_EXCETH_Pos      (16UL)         /*!< EXCETH (Bit 16)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG0_EXCETH_Msk      (0xff0000UL)   /*!< EXCETH (Bitfield-Mask: 0xff)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG0_P2ANT_Pos       (24UL)         /*!< P2ANT (Bit 24)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG0_P2ANT_Msk       (0x3000000UL)  /*!< P2ANT (Bitfield-Mask: 0x03)                           */
+/* =====================================================  RDC3ASnDIAG1  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_KIRST_Pos       (0UL)          /*!< KIRST (Bit 0)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_KIRST_Msk       (0x1UL)        /*!< KIRST (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_ERRST_Pos       (8UL)          /*!< ERRST (Bit 8)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_ERRST_Msk       (0x100UL)      /*!< ERRST (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_SQERST_Pos      (10UL)         /*!< SQERST (Bit 10)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_SQERST_Msk      (0x400UL)      /*!< SQERST (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_ERDEN_Pos       (12UL)         /*!< ERDEN (Bit 12)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_ERDEN_Msk       (0x1000UL)     /*!< ERDEN (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_EDPS_Pos        (28UL)         /*!< EDPS (Bit 28)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_EDPS_Msk        (0x30000000UL) /*!< EDPS (Bitfield-Mask: 0x03)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_CVEDS_Pos       (30UL)         /*!< CVEDS (Bit 30)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG1_CVEDS_Msk       (0x40000000UL) /*!< CVEDS (Bitfield-Mask: 0x01)                           */
+/* =====================================================  RDC3ASnDIAG2  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_ERCNVS_Pos      (16UL)         /*!< ERCNVS (Bit 16)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_ERCNVS_Msk      (0x10000UL)    /*!< ERCNVS (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_ERP2S_Pos       (17UL)         /*!< ERP2S (Bit 17)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_ERP2S_Msk       (0x20000UL)    /*!< ERP2S (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_ERSQS_Pos       (18UL)         /*!< ERSQS (Bit 18)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_ERSQS_Msk       (0x40000UL)    /*!< ERSQS (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_ERSBSS_Pos      (20UL)         /*!< ERSBSS (Bit 20)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_ERSBSS_Msk      (0x100000UL)   /*!< ERSBSS (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_ERSBCS_Pos      (21UL)         /*!< ERSBCS (Bit 21)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_ERSBCS_Msk      (0x200000UL)   /*!< ERSBCS (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_EREXCS_Pos      (22UL)         /*!< EREXCS (Bit 22)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG2_EREXCS_Msk      (0x400000UL)   /*!< EREXCS (Bitfield-Mask: 0x01)                          */
+/* =====================================================  RDC3ASnDGOUT0  ===================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERCNV_Pos      (16UL)         /*!< ERCNV (Bit 16)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERCNV_Msk      (0x10000UL)    /*!< ERCNV (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERP2_Pos       (17UL)         /*!< ERP2 (Bit 17)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERP2_Msk       (0x20000UL)    /*!< ERP2 (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERSQ_Pos       (18UL)         /*!< ERSQ (Bit 18)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERSQ_Msk       (0x40000UL)    /*!< ERSQ (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERSBS_Pos      (20UL)         /*!< ERSBS (Bit 20)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERSBS_Msk      (0x100000UL)   /*!< ERSBS (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERSBC_Pos      (21UL)         /*!< ERSBC (Bit 21)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERSBC_Msk      (0x200000UL)   /*!< ERSBC (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_EREXC_Pos      (22UL)         /*!< EREXC (Bit 22)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_EREXC_Msk      (0x400000UL)   /*!< EREXC (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERHD_Pos       (24UL)         /*!< ERHD (Bit 24)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERHD_Msk       (0x1000000UL)  /*!< ERHD (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERR_Pos        (28UL)         /*!< ERR (Bit 28)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT0_ERR_Msk        (0x10000000UL) /*!< ERR (Bitfield-Mask: 0x01)                             */
+/* =====================================================  RDC3ASnDGOUT1  ===================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDCNV_Pos     (16UL)         /*!< ERDCNV (Bit 16)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDCNV_Msk     (0x10000UL)    /*!< ERDCNV (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDP2_Pos      (17UL)         /*!< ERDP2 (Bit 17)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDP2_Msk      (0x20000UL)    /*!< ERDP2 (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDSQ_Pos      (18UL)         /*!< ERDSQ (Bit 18)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDSQ_Msk      (0x40000UL)    /*!< ERDSQ (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDSBS_Pos     (20UL)         /*!< ERDSBS (Bit 20)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDSBS_Msk     (0x100000UL)   /*!< ERDSBS (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDSBC_Pos     (21UL)         /*!< ERDSBC (Bit 21)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDSBC_Msk     (0x200000UL)   /*!< ERDSBC (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDEXC_Pos     (22UL)         /*!< ERDEXC (Bit 22)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERDEXC_Msk     (0x400000UL)   /*!< ERDEXC (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERHD_Pos       (24UL)         /*!< ERHD (Bit 24)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERHD_Msk       (0x1000000UL)  /*!< ERHD (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERR_Pos        (28UL)         /*!< ERR (Bit 28)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnDGOUT1_ERR_Msk        (0x10000000UL) /*!< ERR (Bitfield-Mask: 0x01)                             */
+/* =====================================================  RDC3ASnBIST0  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST0_BISTCD_Pos      (0UL)          /*!< BISTCD (Bit 0)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST0_BISTCD_Msk      (0xfUL)        /*!< BISTCD (Bitfield-Mask: 0x0f)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST0_BSTF_Pos        (8UL)          /*!< BSTF (Bit 8)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST0_BSTF_Msk        (0x100UL)      /*!< BSTF (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST0_CBSP2D_Pos      (16UL)         /*!< CBSP2D (Bit 16)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST0_CBSP2D_Msk      (0x10000UL)    /*!< CBSP2D (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST0_ERCVP2D_Pos     (20UL)         /*!< ERCVP2D (Bit 20)                                      */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST0_ERCVP2D_Msk     (0x100000UL)   /*!< ERCVP2D (Bitfield-Mask: 0x01)                         */
+/* =====================================================  RDC3ASnBIST1  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST1_BCON_Pos        (0UL)          /*!< BCON (Bit 0)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST1_BCON_Msk        (0xfUL)        /*!< BCON (Bitfield-Mask: 0x0f)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST1_BEXE_Pos        (8UL)          /*!< BEXE (Bit 8)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST1_BEXE_Msk        (0x100UL)      /*!< BEXE (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST1_BISTCL_Pos      (16UL)         /*!< BISTCL (Bit 16)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnBIST1_BISTCL_Msk      (0x10000UL)    /*!< BISTCL (Bitfield-Mask: 0x01)                          */
+/* ======================================================  RDC3ASnREF  ======================================================= */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_REFDLCT_Pos       (0UL)          /*!< REFDLCT (Bit 0)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_REFDLCT_Msk       (0xffffUL)     /*!< REFDLCT (Bitfield-Mask: 0xffff)                       */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_EXRFPSL_Pos       (16UL)         /*!< EXRFPSL (Bit 16)                                      */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_EXRFPSL_Msk       (0x30000UL)    /*!< EXRFPSL (Bitfield-Mask: 0x03)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_REFINSL_Pos       (20UL)         /*!< REFINSL (Bit 20)                                      */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_REFINSL_Msk       (0x300000UL)   /*!< REFINSL (Bitfield-Mask: 0x03)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_EXIO_Pos          (24UL)         /*!< EXIO (Bit 24)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_EXIO_Msk          (0x1000000UL)  /*!< EXIO (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_SENS_Pos          (25UL)         /*!< SENS (Bit 25)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_SENS_Msk          (0x2000000UL)  /*!< SENS (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_REFXS_Pos         (27UL)         /*!< REFXS (Bit 27)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_REFXS_Msk         (0x8000000UL)  /*!< REFXS (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_PLSNFS_Pos        (28UL)         /*!< PLSNFS (Bit 28)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnREF_PLSNFS_Msk        (0x10000000UL) /*!< PLSNFS (Bitfield-Mask: 0x01)                          */
+/* ======================================================  RDC3ASnENC0  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_EINTEN_Pos       (0UL)          /*!< EINTEN (Bit 0)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_EINTEN_Msk       (0x1UL)        /*!< EINTEN (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_ZEN_Pos          (1UL)          /*!< ZEN (Bit 1)                                           */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_ZEN_Msk          (0x2UL)        /*!< ZEN (Bitfield-Mask: 0x01)                             */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_UVWEN_Pos        (2UL)          /*!< UVWEN (Bit 2)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_UVWEN_Msk        (0x4UL)        /*!< UVWEN (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_ABEN_Pos         (3UL)          /*!< ABEN (Bit 3)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_ABEN_Msk         (0x8UL)        /*!< ABEN (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_CINTEN_Pos       (4UL)          /*!< CINTEN (Bit 4)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_CINTEN_Msk       (0x10UL)       /*!< CINTEN (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_REFZEN_Pos       (5UL)          /*!< REFZEN (Bit 5)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_REFZEN_Msk       (0x20UL)       /*!< REFZEN (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_HYSS_Pos         (8UL)          /*!< HYSS (Bit 8)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_HYSS_Msk         (0x100UL)      /*!< HYSS (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_XUVW_Pos         (16UL)         /*!< XUVW (Bit 16)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_XUVW_Msk         (0xf0000UL)    /*!< XUVW (Bitfield-Mask: 0x0f)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_PHIERLK_Pos      (20UL)         /*!< PHIERLK (Bit 20)                                      */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_PHIERLK_Msk      (0x100000UL)   /*!< PHIERLK (Bitfield-Mask: 0x01)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_OMGLT_Pos        (24UL)         /*!< OMGLT (Bit 24)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_OMGLT_Msk        (0x1000000UL)  /*!< OMGLT (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_PHILT_Pos        (25UL)         /*!< PHILT (Bit 25)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_PHILT_Msk        (0x2000000UL)  /*!< PHILT (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_OMGLTSL_Pos      (28UL)         /*!< OMGLTSL (Bit 28)                                      */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_OMGLTSL_Msk      (0x10000000UL) /*!< OMGLTSL (Bitfield-Mask: 0x01)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_PHILTSL_Pos      (29UL)         /*!< PHILTSL (Bit 29)                                      */
+ #define R_RDC3ASn_CLS_RDC3ASnENC0_PHILTSL_Msk      (0x20000000UL) /*!< PHILTSL (Bitfield-Mask: 0x01)                         */
+/* ======================================================  RDC3ASnENC1  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCW_Pos         (0UL)          /*!< ENCW (Bit 0)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCW_Msk         (0x1UL)        /*!< ENCW (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCV_Pos         (1UL)          /*!< ENCV (Bit 1)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCV_Msk         (0x2UL)        /*!< ENCV (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCU_Pos         (2UL)          /*!< ENCU (Bit 2)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCU_Msk         (0x4UL)        /*!< ENCU (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCZ_Pos         (3UL)          /*!< ENCZ (Bit 3)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCZ_Msk         (0x8UL)        /*!< ENCZ (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCB_Pos         (4UL)          /*!< ENCB (Bit 4)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCB_Msk         (0x10UL)       /*!< ENCB (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCA_Pos         (5UL)          /*!< ENCA (Bit 5)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_ENCA_Msk         (0x20UL)       /*!< ENCA (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_PHI_Pos          (16UL)         /*!< PHI (Bit 16)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnENC1_PHI_Msk          (0xffff0000UL) /*!< PHI (Bitfield-Mask: 0xffff)                           */
+/* ======================================================  RDC3ASnENC2  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnENC2_PHIAD1_Pos       (16UL)         /*!< PHIAD1 (Bit 16)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnENC2_PHIAD1_Msk       (0xffff0000UL) /*!< PHIAD1 (Bitfield-Mask: 0xffff)                        */
+/* ======================================================  RDC3ASnOMG  ======================================================= */
+ #define R_RDC3ASn_CLS_RDC3ASnOMG_OMG_Pos           (0UL)          /*!< OMG (Bit 0)                                           */
+ #define R_RDC3ASn_CLS_RDC3ASnOMG_OMG_Msk           (0xffffffffUL) /*!< OMG (Bitfield-Mask: 0xffffffff)                       */
+/* ======================================================  RDC3ASnETC  ======================================================= */
+ #define R_RDC3ASn_CLS_RDC3ASnETC_COSPK_Pos         (0UL)          /*!< COSPK (Bit 0)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnETC_COSPK_Msk         (0x1fffUL)     /*!< COSPK (Bitfield-Mask: 0x1fff)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnETC_SINPK_Pos         (16UL)         /*!< SINPK (Bit 16)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnETC_SINPK_Msk         (0x1fff0000UL) /*!< SINPK (Bitfield-Mask: 0x1fff)                         */
+/* ======================================================  RDC3ASnTBUS  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnTBUS_DATA_Pos         (0UL)          /*!< DATA (Bit 0)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnTBUS_DATA_Msk         (0xffffUL)     /*!< DATA (Bitfield-Mask: 0xffff)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnTBUS_DATSEL_Pos       (16UL)         /*!< DATSEL (Bit 16)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnTBUS_DATSEL_Msk       (0x7f0000UL)   /*!< DATSEL (Bitfield-Mask: 0x7f)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnTBUS_OMGPTC_Pos       (28UL)         /*!< OMGPTC (Bit 28)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnTBUS_OMGPTC_Msk       (0x30000000UL) /*!< OMGPTC (Bitfield-Mask: 0x03)                          */
+/* ======================================================  RDC3ASnETEN  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_CNT_Pos          (0UL)          /*!< CNT (Bit 0)                                           */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_CNT_Msk          (0xffffUL)     /*!< CNT (Bitfield-Mask: 0xffff)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_CNTEN_Pos        (16UL)         /*!< CNTEN (Bit 16)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_CNTEN_Msk        (0x10000UL)    /*!< CNTEN (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_ZCES_Pos         (17UL)         /*!< ZCES (Bit 17)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_ZCES_Msk         (0x20000UL)    /*!< ZCES (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_ADTEN_Pos        (18UL)         /*!< ADTEN (Bit 18)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_ADTEN_Msk        (0x40000UL)    /*!< ADTEN (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_DREN_Pos         (19UL)         /*!< DREN (Bit 19)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_DREN_Msk         (0x80000UL)    /*!< DREN (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_IREN_Pos         (20UL)         /*!< IREN (Bit 20)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_IREN_Msk         (0x100000UL)   /*!< IREN (Bitfield-Mask: 0x01)                            */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_CMPEN_Pos        (21UL)         /*!< CMPEN (Bit 21)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_CMPEN_Msk        (0x200000UL)   /*!< CMPEN (Bitfield-Mask: 0x01)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_ZCSTRG_Pos       (24UL)         /*!< ZCSTRG (Bit 24)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_ZCSTRG_Msk       (0x1000000UL)  /*!< ZCSTRG (Bitfield-Mask: 0x01)                          */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_REFETSL_Pos      (28UL)         /*!< REFETSL (Bit 28)                                      */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_REFETSL_Msk      (0x10000000UL) /*!< REFETSL (Bitfield-Mask: 0x01)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_REFZSL_Pos       (30UL)         /*!< REFZSL (Bit 30)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnETEN_REFZSL_Msk       (0xc0000000UL) /*!< REFZSL (Bitfield-Mask: 0x03)                          */
+/* =====================================================  RDC3ASnETCAP  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnETCAP_CMP_Pos         (0UL)          /*!< CMP (Bit 0)                                           */
+ #define R_RDC3ASn_CLS_RDC3ASnETCAP_CMP_Msk         (0xffffUL)     /*!< CMP (Bitfield-Mask: 0xffff)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnETCAP_CAP_Pos         (16UL)         /*!< CAP (Bit 16)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnETCAP_CAP_Msk         (0xffff0000UL) /*!< CAP (Bitfield-Mask: 0xffff)                           */
+/* =====================================================  RDC3ASnETMCNT  ===================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnETMCNT_RLD_Pos        (0UL)          /*!< RLD (Bit 0)                                           */
+ #define R_RDC3ASn_CLS_RDC3ASnETMCNT_RLD_Msk        (0xffffUL)     /*!< RLD (Bitfield-Mask: 0xffff)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnETMCNT_CNT_Pos        (16UL)         /*!< CNT (Bit 16)                                          */
+ #define R_RDC3ASn_CLS_RDC3ASnETMCNT_CNT_Msk        (0xffff0000UL) /*!< CNT (Bitfield-Mask: 0xffff)                           */
+/* =====================================================  RDC3ASnDIAG3  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG3_SQLTH_Pos       (0UL)          /*!< SQLTH (Bit 0)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG3_SQLTH_Msk       (0xffffUL)     /*!< SQLTH (Bitfield-Mask: 0xffff)                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG3_SQHTH_Pos       (16UL)         /*!< SQHTH (Bit 16)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG3_SQHTH_Msk       (0xffff0000UL) /*!< SQHTH (Bitfield-Mask: 0xffff)                         */
+/* =====================================================  RDC3ASnDIAG4  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG4_SQCTH_Pos       (0UL)          /*!< SQCTH (Bit 0)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG4_SQCTH_Msk       (0x7UL)        /*!< SQCTH (Bitfield-Mask: 0x07)                           */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG4_SQCNT_Pos       (8UL)          /*!< SQCNT (Bit 8)                                         */
+ #define R_RDC3ASn_CLS_RDC3ASnDIAG4_SQCNT_Msk       (0x7f00UL)     /*!< SQCNT (Bitfield-Mask: 0x7f)                           */
+/* ======================================================  RDC3ASnDBG0  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnDBG0_CMNTAD1_Pos      (0UL)          /*!< CMNTAD1 (Bit 0)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDBG0_CMNTAD1_Msk      (0x1fffUL)     /*!< CMNTAD1 (Bitfield-Mask: 0x1fff)                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDBG0_SMNTAD1_Pos      (16UL)         /*!< SMNTAD1 (Bit 16)                                      */
+ #define R_RDC3ASn_CLS_RDC3ASnDBG0_SMNTAD1_Msk      (0x1fff0000UL) /*!< SMNTAD1 (Bitfield-Mask: 0x1fff)                       */
+/* ======================================================  RDC3ASnDBG1  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnDBG1_CMNMAX_Pos       (0UL)          /*!< CMNMAX (Bit 0)                                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDBG1_CMNMAX_Msk       (0x3fffUL)     /*!< CMNMAX (Bitfield-Mask: 0x3fff)                        */
+ #define R_RDC3ASn_CLS_RDC3ASnDBG1_SMNMAX_Pos       (16UL)         /*!< SMNMAX (Bit 16)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDBG1_SMNMAX_Msk       (0x3fff0000UL) /*!< SMNMAX (Bitfield-Mask: 0x3fff)                        */
+/* ======================================================  RDC3ASnDBG3  ====================================================== */
+ #define R_RDC3ASn_CLS_RDC3ASnDBG3_REFAD1_Pos       (16UL)         /*!< REFAD1 (Bit 16)                                       */
+ #define R_RDC3ASn_CLS_RDC3ASnDBG3_REFAD1_Msk       (0x1fff0000UL) /*!< REFAD1 (Bitfield-Mask: 0x1fff)                        */
+
+/* =========================================================================================================================== */
 /* ================                                         sDMAC_CH                                          ================ */
 /* =========================================================================================================================== */
 
@@ -140470,6 +145913,19 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_INTIF_TPBAINTNOSEL0_INTTPBA0IDTY_sel_Msk    (0xcUL)        /*!< INTTPBA0IDTY_sel (Bitfield-Mask: 0x03)                */
  #define R_INTIF_TPBAINTNOSEL0_INTTPBA0IPRD_sel_Pos    (0UL)          /*!< INTTPBA0IPRD_sel (Bit 0)                              */
  #define R_INTIF_TPBAINTNOSEL0_INTTPBA0IPRD_sel_Msk    (0x3UL)        /*!< INTTPBA0IPRD_sel (Bitfield-Mask: 0x03)                */
+/* ========================================================  TPTMSEL  ======================================================== */
+ #define R_INTIF_TPTMSEL_TPTMSEL5_Pos                  (5UL)          /*!< TPTMSEL5 (Bit 5)                                      */
+ #define R_INTIF_TPTMSEL_TPTMSEL5_Msk                  (0x20UL)       /*!< TPTMSEL5 (Bitfield-Mask: 0x01)                        */
+ #define R_INTIF_TPTMSEL_TPTMSEL4_Pos                  (4UL)          /*!< TPTMSEL4 (Bit 4)                                      */
+ #define R_INTIF_TPTMSEL_TPTMSEL4_Msk                  (0x10UL)       /*!< TPTMSEL4 (Bitfield-Mask: 0x01)                        */
+ #define R_INTIF_TPTMSEL_TPTMSEL3_Pos                  (3UL)          /*!< TPTMSEL3 (Bit 3)                                      */
+ #define R_INTIF_TPTMSEL_TPTMSEL3_Msk                  (0x8UL)        /*!< TPTMSEL3 (Bitfield-Mask: 0x01)                        */
+ #define R_INTIF_TPTMSEL_TPTMSEL2_Pos                  (2UL)          /*!< TPTMSEL2 (Bit 2)                                      */
+ #define R_INTIF_TPTMSEL_TPTMSEL2_Msk                  (0x4UL)        /*!< TPTMSEL2 (Bitfield-Mask: 0x01)                        */
+ #define R_INTIF_TPTMSEL_TPTMSEL1_Pos                  (1UL)          /*!< TPTMSEL1 (Bit 1)                                      */
+ #define R_INTIF_TPTMSEL_TPTMSEL1_Msk                  (0x2UL)        /*!< TPTMSEL1 (Bitfield-Mask: 0x01)                        */
+ #define R_INTIF_TPTMSEL_TPTMSEL0_Pos                  (0UL)          /*!< TPTMSEL0 (Bit 0)                                      */
+ #define R_INTIF_TPTMSEL_TPTMSEL0_Msk                  (0x1UL)        /*!< TPTMSEL0 (Bitfield-Mask: 0x01)                        */
 
 /* =========================================================================================================================== */
 /* ================                                         R_INTIF0                                          ================ */
@@ -157861,6 +163317,531 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_FCLACTL_TAPA_FCLACTL5_TAPA_INTR_Msk    (0x1UL)  /*!< INTR (Bitfield-Mask: 0x01)                            */
 
 /* =========================================================================================================================== */
+/* ================                                           R_LPS                                           ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  SCTLR  ========================================================= */
+ #define R_LPS_SCTLR_TJIS2_Pos        (7UL)          /*!< TJIS2 (Bit 7)                                         */
+ #define R_LPS_SCTLR_TJIS2_Msk        (0x80UL)       /*!< TJIS2 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_SCTLR_NUMDP2_Pos       (6UL)          /*!< NUMDP2 (Bit 6)                                        */
+ #define R_LPS_SCTLR_NUMDP2_Msk       (0x40UL)       /*!< NUMDP2 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_SCTLR_NUMDP1_Pos       (5UL)          /*!< NUMDP1 (Bit 5)                                        */
+ #define R_LPS_SCTLR_NUMDP1_Msk       (0x20UL)       /*!< NUMDP1 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_SCTLR_NUMDP0_Pos       (4UL)          /*!< NUMDP0 (Bit 4)                                        */
+ #define R_LPS_SCTLR_NUMDP0_Msk       (0x10UL)       /*!< NUMDP0 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_SCTLR_TJIS1_Pos        (3UL)          /*!< TJIS1 (Bit 3)                                         */
+ #define R_LPS_SCTLR_TJIS1_Msk        (0x8UL)        /*!< TJIS1 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_SCTLR_TJIS0_Pos        (2UL)          /*!< TJIS0 (Bit 2)                                         */
+ #define R_LPS_SCTLR_TJIS0_Msk        (0x4UL)        /*!< TJIS0 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_SCTLR_ADEN_Pos         (1UL)          /*!< ADEN (Bit 1)                                          */
+ #define R_LPS_SCTLR_ADEN_Msk         (0x2UL)        /*!< ADEN (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_SCTLR_DPEN_Pos         (0UL)          /*!< DPEN (Bit 0)                                          */
+ #define R_LPS_SCTLR_DPEN_Msk         (0x1UL)        /*!< DPEN (Bitfield-Mask: 0x01)                            */
+/* =========================================================  EVFR  ========================================================== */
+ #define R_LPS_EVFR_DINEVF_Pos        (0UL)          /*!< DINEVF (Bit 0)                                        */
+ #define R_LPS_EVFR_DINEVF_Msk        (0x1UL)        /*!< DINEVF (Bitfield-Mask: 0x01)                          */
+/* ========================================================  DPSELR0  ======================================================== */
+ #define R_LPS_DPSELR0_D0EN_23_Pos    (23UL)         /*!< D0EN_23 (Bit 23)                                      */
+ #define R_LPS_DPSELR0_D0EN_23_Msk    (0x800000UL)   /*!< D0EN_23 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_22_Pos    (22UL)         /*!< D0EN_22 (Bit 22)                                      */
+ #define R_LPS_DPSELR0_D0EN_22_Msk    (0x400000UL)   /*!< D0EN_22 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_21_Pos    (21UL)         /*!< D0EN_21 (Bit 21)                                      */
+ #define R_LPS_DPSELR0_D0EN_21_Msk    (0x200000UL)   /*!< D0EN_21 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_20_Pos    (20UL)         /*!< D0EN_20 (Bit 20)                                      */
+ #define R_LPS_DPSELR0_D0EN_20_Msk    (0x100000UL)   /*!< D0EN_20 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_19_Pos    (19UL)         /*!< D0EN_19 (Bit 19)                                      */
+ #define R_LPS_DPSELR0_D0EN_19_Msk    (0x80000UL)    /*!< D0EN_19 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_18_Pos    (18UL)         /*!< D0EN_18 (Bit 18)                                      */
+ #define R_LPS_DPSELR0_D0EN_18_Msk    (0x40000UL)    /*!< D0EN_18 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_17_Pos    (17UL)         /*!< D0EN_17 (Bit 17)                                      */
+ #define R_LPS_DPSELR0_D0EN_17_Msk    (0x20000UL)    /*!< D0EN_17 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_16_Pos    (16UL)         /*!< D0EN_16 (Bit 16)                                      */
+ #define R_LPS_DPSELR0_D0EN_16_Msk    (0x10000UL)    /*!< D0EN_16 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_15_Pos    (15UL)         /*!< D0EN_15 (Bit 15)                                      */
+ #define R_LPS_DPSELR0_D0EN_15_Msk    (0x8000UL)     /*!< D0EN_15 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_14_Pos    (14UL)         /*!< D0EN_14 (Bit 14)                                      */
+ #define R_LPS_DPSELR0_D0EN_14_Msk    (0x4000UL)     /*!< D0EN_14 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_13_Pos    (13UL)         /*!< D0EN_13 (Bit 13)                                      */
+ #define R_LPS_DPSELR0_D0EN_13_Msk    (0x2000UL)     /*!< D0EN_13 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_12_Pos    (12UL)         /*!< D0EN_12 (Bit 12)                                      */
+ #define R_LPS_DPSELR0_D0EN_12_Msk    (0x1000UL)     /*!< D0EN_12 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_11_Pos    (11UL)         /*!< D0EN_11 (Bit 11)                                      */
+ #define R_LPS_DPSELR0_D0EN_11_Msk    (0x800UL)      /*!< D0EN_11 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_10_Pos    (10UL)         /*!< D0EN_10 (Bit 10)                                      */
+ #define R_LPS_DPSELR0_D0EN_10_Msk    (0x400UL)      /*!< D0EN_10 (Bitfield-Mask: 0x01)                         */
+ #define R_LPS_DPSELR0_D0EN_9_Pos     (9UL)          /*!< D0EN_9 (Bit 9)                                        */
+ #define R_LPS_DPSELR0_D0EN_9_Msk     (0x200UL)      /*!< D0EN_9 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELR0_D0EN_8_Pos     (8UL)          /*!< D0EN_8 (Bit 8)                                        */
+ #define R_LPS_DPSELR0_D0EN_8_Msk     (0x100UL)      /*!< D0EN_8 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELR0_D0EN_7_Pos     (7UL)          /*!< D0EN_7 (Bit 7)                                        */
+ #define R_LPS_DPSELR0_D0EN_7_Msk     (0x80UL)       /*!< D0EN_7 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELR0_D0EN_6_Pos     (6UL)          /*!< D0EN_6 (Bit 6)                                        */
+ #define R_LPS_DPSELR0_D0EN_6_Msk     (0x40UL)       /*!< D0EN_6 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELR0_D0EN_5_Pos     (5UL)          /*!< D0EN_5 (Bit 5)                                        */
+ #define R_LPS_DPSELR0_D0EN_5_Msk     (0x20UL)       /*!< D0EN_5 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELR0_D0EN_4_Pos     (4UL)          /*!< D0EN_4 (Bit 4)                                        */
+ #define R_LPS_DPSELR0_D0EN_4_Msk     (0x10UL)       /*!< D0EN_4 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELR0_D0EN_3_Pos     (3UL)          /*!< D0EN_3 (Bit 3)                                        */
+ #define R_LPS_DPSELR0_D0EN_3_Msk     (0x8UL)        /*!< D0EN_3 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELR0_D0EN_2_Pos     (2UL)          /*!< D0EN_2 (Bit 2)                                        */
+ #define R_LPS_DPSELR0_D0EN_2_Msk     (0x4UL)        /*!< D0EN_2 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELR0_D0EN_1_Pos     (1UL)          /*!< D0EN_1 (Bit 1)                                        */
+ #define R_LPS_DPSELR0_D0EN_1_Msk     (0x2UL)        /*!< D0EN_1 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELR0_D0EN_0_Pos     (0UL)          /*!< D0EN_0 (Bit 0)                                        */
+ #define R_LPS_DPSELR0_D0EN_0_Msk     (0x1UL)        /*!< D0EN_0 (Bitfield-Mask: 0x01)                          */
+/* ========================================================  DPSELRM  ======================================================== */
+ #define R_LPS_DPSELRM_D4EN_7_Pos     (31UL)         /*!< D4EN_7 (Bit 31)                                       */
+ #define R_LPS_DPSELRM_D4EN_7_Msk     (0x80000000UL) /*!< D4EN_7 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D4EN_6_Pos     (30UL)         /*!< D4EN_6 (Bit 30)                                       */
+ #define R_LPS_DPSELRM_D4EN_6_Msk     (0x40000000UL) /*!< D4EN_6 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D4EN_5_Pos     (29UL)         /*!< D4EN_5 (Bit 29)                                       */
+ #define R_LPS_DPSELRM_D4EN_5_Msk     (0x20000000UL) /*!< D4EN_5 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D4EN_4_Pos     (28UL)         /*!< D4EN_4 (Bit 28)                                       */
+ #define R_LPS_DPSELRM_D4EN_4_Msk     (0x10000000UL) /*!< D4EN_4 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D4EN_3_Pos     (27UL)         /*!< D4EN_3 (Bit 27)                                       */
+ #define R_LPS_DPSELRM_D4EN_3_Msk     (0x8000000UL)  /*!< D4EN_3 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D4EN_2_Pos     (26UL)         /*!< D4EN_2 (Bit 26)                                       */
+ #define R_LPS_DPSELRM_D4EN_2_Msk     (0x4000000UL)  /*!< D4EN_2 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D4EN_1_Pos     (25UL)         /*!< D4EN_1 (Bit 25)                                       */
+ #define R_LPS_DPSELRM_D4EN_1_Msk     (0x2000000UL)  /*!< D4EN_1 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D4EN_0_Pos     (24UL)         /*!< D4EN_0 (Bit 24)                                       */
+ #define R_LPS_DPSELRM_D4EN_0_Msk     (0x1000000UL)  /*!< D4EN_0 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D3EN_7_Pos     (23UL)         /*!< D3EN_7 (Bit 23)                                       */
+ #define R_LPS_DPSELRM_D3EN_7_Msk     (0x800000UL)   /*!< D3EN_7 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D3EN_6_Pos     (22UL)         /*!< D3EN_6 (Bit 22)                                       */
+ #define R_LPS_DPSELRM_D3EN_6_Msk     (0x400000UL)   /*!< D3EN_6 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D3EN_5_Pos     (21UL)         /*!< D3EN_5 (Bit 21)                                       */
+ #define R_LPS_DPSELRM_D3EN_5_Msk     (0x200000UL)   /*!< D3EN_5 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D3EN_4_Pos     (20UL)         /*!< D3EN_4 (Bit 20)                                       */
+ #define R_LPS_DPSELRM_D3EN_4_Msk     (0x100000UL)   /*!< D3EN_4 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D3EN_3_Pos     (19UL)         /*!< D3EN_3 (Bit 19)                                       */
+ #define R_LPS_DPSELRM_D3EN_3_Msk     (0x80000UL)    /*!< D3EN_3 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D3EN_2_Pos     (18UL)         /*!< D3EN_2 (Bit 18)                                       */
+ #define R_LPS_DPSELRM_D3EN_2_Msk     (0x40000UL)    /*!< D3EN_2 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D3EN_1_Pos     (17UL)         /*!< D3EN_1 (Bit 17)                                       */
+ #define R_LPS_DPSELRM_D3EN_1_Msk     (0x20000UL)    /*!< D3EN_1 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D3EN_0_Pos     (16UL)         /*!< D3EN_0 (Bit 16)                                       */
+ #define R_LPS_DPSELRM_D3EN_0_Msk     (0x10000UL)    /*!< D3EN_0 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D2EN_7_Pos     (15UL)         /*!< D2EN_7 (Bit 15)                                       */
+ #define R_LPS_DPSELRM_D2EN_7_Msk     (0x8000UL)     /*!< D2EN_7 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D2EN_6_Pos     (14UL)         /*!< D2EN_6 (Bit 14)                                       */
+ #define R_LPS_DPSELRM_D2EN_6_Msk     (0x4000UL)     /*!< D2EN_6 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D2EN_5_Pos     (13UL)         /*!< D2EN_5 (Bit 13)                                       */
+ #define R_LPS_DPSELRM_D2EN_5_Msk     (0x2000UL)     /*!< D2EN_5 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D2EN_4_Pos     (12UL)         /*!< D2EN_4 (Bit 12)                                       */
+ #define R_LPS_DPSELRM_D2EN_4_Msk     (0x1000UL)     /*!< D2EN_4 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D2EN_3_Pos     (11UL)         /*!< D2EN_3 (Bit 11)                                       */
+ #define R_LPS_DPSELRM_D2EN_3_Msk     (0x800UL)      /*!< D2EN_3 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D2EN_2_Pos     (10UL)         /*!< D2EN_2 (Bit 10)                                       */
+ #define R_LPS_DPSELRM_D2EN_2_Msk     (0x400UL)      /*!< D2EN_2 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D2EN_1_Pos     (9UL)          /*!< D2EN_1 (Bit 9)                                        */
+ #define R_LPS_DPSELRM_D2EN_1_Msk     (0x200UL)      /*!< D2EN_1 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D2EN_0_Pos     (8UL)          /*!< D2EN_0 (Bit 8)                                        */
+ #define R_LPS_DPSELRM_D2EN_0_Msk     (0x100UL)      /*!< D2EN_0 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D1EN_7_Pos     (7UL)          /*!< D1EN_7 (Bit 7)                                        */
+ #define R_LPS_DPSELRM_D1EN_7_Msk     (0x80UL)       /*!< D1EN_7 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D1EN_6_Pos     (6UL)          /*!< D1EN_6 (Bit 6)                                        */
+ #define R_LPS_DPSELRM_D1EN_6_Msk     (0x40UL)       /*!< D1EN_6 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D1EN_5_Pos     (5UL)          /*!< D1EN_5 (Bit 5)                                        */
+ #define R_LPS_DPSELRM_D1EN_5_Msk     (0x20UL)       /*!< D1EN_5 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D1EN_4_Pos     (4UL)          /*!< D1EN_4 (Bit 4)                                        */
+ #define R_LPS_DPSELRM_D1EN_4_Msk     (0x10UL)       /*!< D1EN_4 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D1EN_3_Pos     (3UL)          /*!< D1EN_3 (Bit 3)                                        */
+ #define R_LPS_DPSELRM_D1EN_3_Msk     (0x8UL)        /*!< D1EN_3 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D1EN_2_Pos     (2UL)          /*!< D1EN_2 (Bit 2)                                        */
+ #define R_LPS_DPSELRM_D1EN_2_Msk     (0x4UL)        /*!< D1EN_2 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D1EN_1_Pos     (1UL)          /*!< D1EN_1 (Bit 1)                                        */
+ #define R_LPS_DPSELRM_D1EN_1_Msk     (0x2UL)        /*!< D1EN_1 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRM_D1EN_0_Pos     (0UL)          /*!< D1EN_0 (Bit 0)                                        */
+ #define R_LPS_DPSELRM_D1EN_0_Msk     (0x1UL)        /*!< D1EN_0 (Bitfield-Mask: 0x01)                          */
+/* ========================================================  DPSELRH  ======================================================== */
+ #define R_LPS_DPSELRH_D7EN_7_Pos     (23UL)         /*!< D7EN_7 (Bit 23)                                       */
+ #define R_LPS_DPSELRH_D7EN_7_Msk     (0x800000UL)   /*!< D7EN_7 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D7EN_6_Pos     (22UL)         /*!< D7EN_6 (Bit 22)                                       */
+ #define R_LPS_DPSELRH_D7EN_6_Msk     (0x400000UL)   /*!< D7EN_6 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D7EN_5_Pos     (21UL)         /*!< D7EN_5 (Bit 21)                                       */
+ #define R_LPS_DPSELRH_D7EN_5_Msk     (0x200000UL)   /*!< D7EN_5 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D7EN_4_Pos     (20UL)         /*!< D7EN_4 (Bit 20)                                       */
+ #define R_LPS_DPSELRH_D7EN_4_Msk     (0x100000UL)   /*!< D7EN_4 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D7EN_3_Pos     (19UL)         /*!< D7EN_3 (Bit 19)                                       */
+ #define R_LPS_DPSELRH_D7EN_3_Msk     (0x80000UL)    /*!< D7EN_3 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D7EN_2_Pos     (18UL)         /*!< D7EN_2 (Bit 18)                                       */
+ #define R_LPS_DPSELRH_D7EN_2_Msk     (0x40000UL)    /*!< D7EN_2 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D7EN_1_Pos     (17UL)         /*!< D7EN_1 (Bit 17)                                       */
+ #define R_LPS_DPSELRH_D7EN_1_Msk     (0x20000UL)    /*!< D7EN_1 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D7EN_0_Pos     (16UL)         /*!< D7EN_0 (Bit 16)                                       */
+ #define R_LPS_DPSELRH_D7EN_0_Msk     (0x10000UL)    /*!< D7EN_0 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D6EN_7_Pos     (15UL)         /*!< D6EN_7 (Bit 15)                                       */
+ #define R_LPS_DPSELRH_D6EN_7_Msk     (0x8000UL)     /*!< D6EN_7 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D6EN_6_Pos     (14UL)         /*!< D6EN_6 (Bit 14)                                       */
+ #define R_LPS_DPSELRH_D6EN_6_Msk     (0x4000UL)     /*!< D6EN_6 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D6EN_5_Pos     (13UL)         /*!< D6EN_5 (Bit 13)                                       */
+ #define R_LPS_DPSELRH_D6EN_5_Msk     (0x2000UL)     /*!< D6EN_5 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D6EN_4_Pos     (12UL)         /*!< D6EN_4 (Bit 12)                                       */
+ #define R_LPS_DPSELRH_D6EN_4_Msk     (0x1000UL)     /*!< D6EN_4 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D6EN_3_Pos     (11UL)         /*!< D6EN_3 (Bit 11)                                       */
+ #define R_LPS_DPSELRH_D6EN_3_Msk     (0x800UL)      /*!< D6EN_3 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D6EN_2_Pos     (10UL)         /*!< D6EN_2 (Bit 10)                                       */
+ #define R_LPS_DPSELRH_D6EN_2_Msk     (0x400UL)      /*!< D6EN_2 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D6EN_1_Pos     (9UL)          /*!< D6EN_1 (Bit 9)                                        */
+ #define R_LPS_DPSELRH_D6EN_1_Msk     (0x200UL)      /*!< D6EN_1 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D6EN_0_Pos     (8UL)          /*!< D6EN_0 (Bit 8)                                        */
+ #define R_LPS_DPSELRH_D6EN_0_Msk     (0x100UL)      /*!< D6EN_0 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D5EN_7_Pos     (7UL)          /*!< D5EN_7 (Bit 7)                                        */
+ #define R_LPS_DPSELRH_D5EN_7_Msk     (0x80UL)       /*!< D5EN_7 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D5EN_6_Pos     (6UL)          /*!< D5EN_6 (Bit 6)                                        */
+ #define R_LPS_DPSELRH_D5EN_6_Msk     (0x40UL)       /*!< D5EN_6 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D5EN_5_Pos     (5UL)          /*!< D5EN_5 (Bit 5)                                        */
+ #define R_LPS_DPSELRH_D5EN_5_Msk     (0x20UL)       /*!< D5EN_5 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D5EN_4_Pos     (4UL)          /*!< D5EN_4 (Bit 4)                                        */
+ #define R_LPS_DPSELRH_D5EN_4_Msk     (0x10UL)       /*!< D5EN_4 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D5EN_3_Pos     (3UL)          /*!< D5EN_3 (Bit 3)                                        */
+ #define R_LPS_DPSELRH_D5EN_3_Msk     (0x8UL)        /*!< D5EN_3 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D5EN_2_Pos     (2UL)          /*!< D5EN_2 (Bit 2)                                        */
+ #define R_LPS_DPSELRH_D5EN_2_Msk     (0x4UL)        /*!< D5EN_2 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D5EN_1_Pos     (1UL)          /*!< D5EN_1 (Bit 1)                                        */
+ #define R_LPS_DPSELRH_D5EN_1_Msk     (0x2UL)        /*!< D5EN_1 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPSELRH_D5EN_0_Pos     (0UL)          /*!< D5EN_0 (Bit 0)                                        */
+ #define R_LPS_DPSELRH_D5EN_0_Msk     (0x1UL)        /*!< D5EN_0 (Bitfield-Mask: 0x01)                          */
+/* ========================================================  DPDSR0  ========================================================= */
+ #define R_LPS_DPDSR0_D0_23_Pos       (23UL)         /*!< D0_23 (Bit 23)                                        */
+ #define R_LPS_DPDSR0_D0_23_Msk       (0x800000UL)   /*!< D0_23 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_22_Pos       (22UL)         /*!< D0_22 (Bit 22)                                        */
+ #define R_LPS_DPDSR0_D0_22_Msk       (0x400000UL)   /*!< D0_22 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_21_Pos       (21UL)         /*!< D0_21 (Bit 21)                                        */
+ #define R_LPS_DPDSR0_D0_21_Msk       (0x200000UL)   /*!< D0_21 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_20_Pos       (20UL)         /*!< D0_20 (Bit 20)                                        */
+ #define R_LPS_DPDSR0_D0_20_Msk       (0x100000UL)   /*!< D0_20 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_19_Pos       (19UL)         /*!< D0_19 (Bit 19)                                        */
+ #define R_LPS_DPDSR0_D0_19_Msk       (0x80000UL)    /*!< D0_19 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_18_Pos       (18UL)         /*!< D0_18 (Bit 18)                                        */
+ #define R_LPS_DPDSR0_D0_18_Msk       (0x40000UL)    /*!< D0_18 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_17_Pos       (17UL)         /*!< D0_17 (Bit 17)                                        */
+ #define R_LPS_DPDSR0_D0_17_Msk       (0x20000UL)    /*!< D0_17 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_16_Pos       (16UL)         /*!< D0_16 (Bit 16)                                        */
+ #define R_LPS_DPDSR0_D0_16_Msk       (0x10000UL)    /*!< D0_16 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_15_Pos       (15UL)         /*!< D0_15 (Bit 15)                                        */
+ #define R_LPS_DPDSR0_D0_15_Msk       (0x8000UL)     /*!< D0_15 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_14_Pos       (14UL)         /*!< D0_14 (Bit 14)                                        */
+ #define R_LPS_DPDSR0_D0_14_Msk       (0x4000UL)     /*!< D0_14 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_13_Pos       (13UL)         /*!< D0_13 (Bit 13)                                        */
+ #define R_LPS_DPDSR0_D0_13_Msk       (0x2000UL)     /*!< D0_13 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_12_Pos       (12UL)         /*!< D0_12 (Bit 12)                                        */
+ #define R_LPS_DPDSR0_D0_12_Msk       (0x1000UL)     /*!< D0_12 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_11_Pos       (11UL)         /*!< D0_11 (Bit 11)                                        */
+ #define R_LPS_DPDSR0_D0_11_Msk       (0x800UL)      /*!< D0_11 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_10_Pos       (10UL)         /*!< D0_10 (Bit 10)                                        */
+ #define R_LPS_DPDSR0_D0_10_Msk       (0x400UL)      /*!< D0_10 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDSR0_D0_9_Pos        (9UL)          /*!< D0_9 (Bit 9)                                          */
+ #define R_LPS_DPDSR0_D0_9_Msk        (0x200UL)      /*!< D0_9 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSR0_D0_8_Pos        (8UL)          /*!< D0_8 (Bit 8)                                          */
+ #define R_LPS_DPDSR0_D0_8_Msk        (0x100UL)      /*!< D0_8 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSR0_D0_7_Pos        (7UL)          /*!< D0_7 (Bit 7)                                          */
+ #define R_LPS_DPDSR0_D0_7_Msk        (0x80UL)       /*!< D0_7 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSR0_D0_6_Pos        (6UL)          /*!< D0_6 (Bit 6)                                          */
+ #define R_LPS_DPDSR0_D0_6_Msk        (0x40UL)       /*!< D0_6 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSR0_D0_5_Pos        (5UL)          /*!< D0_5 (Bit 5)                                          */
+ #define R_LPS_DPDSR0_D0_5_Msk        (0x20UL)       /*!< D0_5 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSR0_D0_4_Pos        (4UL)          /*!< D0_4 (Bit 4)                                          */
+ #define R_LPS_DPDSR0_D0_4_Msk        (0x10UL)       /*!< D0_4 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSR0_D0_3_Pos        (3UL)          /*!< D0_3 (Bit 3)                                          */
+ #define R_LPS_DPDSR0_D0_3_Msk        (0x8UL)        /*!< D0_3 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSR0_D0_2_Pos        (2UL)          /*!< D0_2 (Bit 2)                                          */
+ #define R_LPS_DPDSR0_D0_2_Msk        (0x4UL)        /*!< D0_2 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSR0_D0_1_Pos        (1UL)          /*!< D0_1 (Bit 1)                                          */
+ #define R_LPS_DPDSR0_D0_1_Msk        (0x2UL)        /*!< D0_1 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSR0_D0_0_Pos        (0UL)          /*!< D0_0 (Bit 0)                                          */
+ #define R_LPS_DPDSR0_D0_0_Msk        (0x1UL)        /*!< D0_0 (Bitfield-Mask: 0x01)                            */
+/* ========================================================  DPDSRM  ========================================================= */
+ #define R_LPS_DPDSRM_D4_7_Pos        (31UL)         /*!< D4_7 (Bit 31)                                         */
+ #define R_LPS_DPDSRM_D4_7_Msk        (0x80000000UL) /*!< D4_7 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D4_6_Pos        (30UL)         /*!< D4_6 (Bit 30)                                         */
+ #define R_LPS_DPDSRM_D4_6_Msk        (0x40000000UL) /*!< D4_6 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D4_5_Pos        (29UL)         /*!< D4_5 (Bit 29)                                         */
+ #define R_LPS_DPDSRM_D4_5_Msk        (0x20000000UL) /*!< D4_5 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D4_4_Pos        (28UL)         /*!< D4_4 (Bit 28)                                         */
+ #define R_LPS_DPDSRM_D4_4_Msk        (0x10000000UL) /*!< D4_4 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D4_3_Pos        (27UL)         /*!< D4_3 (Bit 27)                                         */
+ #define R_LPS_DPDSRM_D4_3_Msk        (0x8000000UL)  /*!< D4_3 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D4_2_Pos        (26UL)         /*!< D4_2 (Bit 26)                                         */
+ #define R_LPS_DPDSRM_D4_2_Msk        (0x4000000UL)  /*!< D4_2 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D4_1_Pos        (25UL)         /*!< D4_1 (Bit 25)                                         */
+ #define R_LPS_DPDSRM_D4_1_Msk        (0x2000000UL)  /*!< D4_1 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D4_0_Pos        (24UL)         /*!< D4_0 (Bit 24)                                         */
+ #define R_LPS_DPDSRM_D4_0_Msk        (0x1000000UL)  /*!< D4_0 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D3_7_Pos        (23UL)         /*!< D3_7 (Bit 23)                                         */
+ #define R_LPS_DPDSRM_D3_7_Msk        (0x800000UL)   /*!< D3_7 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D3_6_Pos        (22UL)         /*!< D3_6 (Bit 22)                                         */
+ #define R_LPS_DPDSRM_D3_6_Msk        (0x400000UL)   /*!< D3_6 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D3_5_Pos        (21UL)         /*!< D3_5 (Bit 21)                                         */
+ #define R_LPS_DPDSRM_D3_5_Msk        (0x200000UL)   /*!< D3_5 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D3_4_Pos        (20UL)         /*!< D3_4 (Bit 20)                                         */
+ #define R_LPS_DPDSRM_D3_4_Msk        (0x100000UL)   /*!< D3_4 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D3_3_Pos        (19UL)         /*!< D3_3 (Bit 19)                                         */
+ #define R_LPS_DPDSRM_D3_3_Msk        (0x80000UL)    /*!< D3_3 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D3_2_Pos        (18UL)         /*!< D3_2 (Bit 18)                                         */
+ #define R_LPS_DPDSRM_D3_2_Msk        (0x40000UL)    /*!< D3_2 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D3_1_Pos        (17UL)         /*!< D3_1 (Bit 17)                                         */
+ #define R_LPS_DPDSRM_D3_1_Msk        (0x20000UL)    /*!< D3_1 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D3_0_Pos        (16UL)         /*!< D3_0 (Bit 16)                                         */
+ #define R_LPS_DPDSRM_D3_0_Msk        (0x10000UL)    /*!< D3_0 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D2_7_Pos        (15UL)         /*!< D2_7 (Bit 15)                                         */
+ #define R_LPS_DPDSRM_D2_7_Msk        (0x8000UL)     /*!< D2_7 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D2_6_Pos        (14UL)         /*!< D2_6 (Bit 14)                                         */
+ #define R_LPS_DPDSRM_D2_6_Msk        (0x4000UL)     /*!< D2_6 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D2_5_Pos        (13UL)         /*!< D2_5 (Bit 13)                                         */
+ #define R_LPS_DPDSRM_D2_5_Msk        (0x2000UL)     /*!< D2_5 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D2_4_Pos        (12UL)         /*!< D2_4 (Bit 12)                                         */
+ #define R_LPS_DPDSRM_D2_4_Msk        (0x1000UL)     /*!< D2_4 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D2_3_Pos        (11UL)         /*!< D2_3 (Bit 11)                                         */
+ #define R_LPS_DPDSRM_D2_3_Msk        (0x800UL)      /*!< D2_3 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D2_2_Pos        (10UL)         /*!< D2_2 (Bit 10)                                         */
+ #define R_LPS_DPDSRM_D2_2_Msk        (0x400UL)      /*!< D2_2 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D2_1_Pos        (9UL)          /*!< D2_1 (Bit 9)                                          */
+ #define R_LPS_DPDSRM_D2_1_Msk        (0x200UL)      /*!< D2_1 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D2_0_Pos        (8UL)          /*!< D2_0 (Bit 8)                                          */
+ #define R_LPS_DPDSRM_D2_0_Msk        (0x100UL)      /*!< D2_0 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D1_7_Pos        (7UL)          /*!< D1_7 (Bit 7)                                          */
+ #define R_LPS_DPDSRM_D1_7_Msk        (0x80UL)       /*!< D1_7 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D1_6_Pos        (6UL)          /*!< D1_6 (Bit 6)                                          */
+ #define R_LPS_DPDSRM_D1_6_Msk        (0x40UL)       /*!< D1_6 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D1_5_Pos        (5UL)          /*!< D1_5 (Bit 5)                                          */
+ #define R_LPS_DPDSRM_D1_5_Msk        (0x20UL)       /*!< D1_5 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D1_4_Pos        (4UL)          /*!< D1_4 (Bit 4)                                          */
+ #define R_LPS_DPDSRM_D1_4_Msk        (0x10UL)       /*!< D1_4 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D1_3_Pos        (3UL)          /*!< D1_3 (Bit 3)                                          */
+ #define R_LPS_DPDSRM_D1_3_Msk        (0x8UL)        /*!< D1_3 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D1_2_Pos        (2UL)          /*!< D1_2 (Bit 2)                                          */
+ #define R_LPS_DPDSRM_D1_2_Msk        (0x4UL)        /*!< D1_2 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D1_1_Pos        (1UL)          /*!< D1_1 (Bit 1)                                          */
+ #define R_LPS_DPDSRM_D1_1_Msk        (0x2UL)        /*!< D1_1 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRM_D1_0_Pos        (0UL)          /*!< D1_0 (Bit 0)                                          */
+ #define R_LPS_DPDSRM_D1_0_Msk        (0x1UL)        /*!< D1_0 (Bitfield-Mask: 0x01)                            */
+/* ========================================================  DPDSRH  ========================================================= */
+ #define R_LPS_DPDSRH_D7_7_Pos        (23UL)         /*!< D7_7 (Bit 23)                                         */
+ #define R_LPS_DPDSRH_D7_7_Msk        (0x800000UL)   /*!< D7_7 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D7_6_Pos        (22UL)         /*!< D7_6 (Bit 22)                                         */
+ #define R_LPS_DPDSRH_D7_6_Msk        (0x400000UL)   /*!< D7_6 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D7_5_Pos        (21UL)         /*!< D7_5 (Bit 21)                                         */
+ #define R_LPS_DPDSRH_D7_5_Msk        (0x200000UL)   /*!< D7_5 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D7_4_Pos        (20UL)         /*!< D7_4 (Bit 20)                                         */
+ #define R_LPS_DPDSRH_D7_4_Msk        (0x100000UL)   /*!< D7_4 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D7_3_Pos        (19UL)         /*!< D7_3 (Bit 19)                                         */
+ #define R_LPS_DPDSRH_D7_3_Msk        (0x80000UL)    /*!< D7_3 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D7_2_Pos        (18UL)         /*!< D7_2 (Bit 18)                                         */
+ #define R_LPS_DPDSRH_D7_2_Msk        (0x40000UL)    /*!< D7_2 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D7_1_Pos        (17UL)         /*!< D7_1 (Bit 17)                                         */
+ #define R_LPS_DPDSRH_D7_1_Msk        (0x20000UL)    /*!< D7_1 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D7_0_Pos        (16UL)         /*!< D7_0 (Bit 16)                                         */
+ #define R_LPS_DPDSRH_D7_0_Msk        (0x10000UL)    /*!< D7_0 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D6_7_Pos        (15UL)         /*!< D6_7 (Bit 15)                                         */
+ #define R_LPS_DPDSRH_D6_7_Msk        (0x8000UL)     /*!< D6_7 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D6_6_Pos        (14UL)         /*!< D6_6 (Bit 14)                                         */
+ #define R_LPS_DPDSRH_D6_6_Msk        (0x4000UL)     /*!< D6_6 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D6_5_Pos        (13UL)         /*!< D6_5 (Bit 13)                                         */
+ #define R_LPS_DPDSRH_D6_5_Msk        (0x2000UL)     /*!< D6_5 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D6_4_Pos        (12UL)         /*!< D6_4 (Bit 12)                                         */
+ #define R_LPS_DPDSRH_D6_4_Msk        (0x1000UL)     /*!< D6_4 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D6_3_Pos        (11UL)         /*!< D6_3 (Bit 11)                                         */
+ #define R_LPS_DPDSRH_D6_3_Msk        (0x800UL)      /*!< D6_3 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D6_2_Pos        (10UL)         /*!< D6_2 (Bit 10)                                         */
+ #define R_LPS_DPDSRH_D6_2_Msk        (0x400UL)      /*!< D6_2 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D6_1_Pos        (9UL)          /*!< D6_1 (Bit 9)                                          */
+ #define R_LPS_DPDSRH_D6_1_Msk        (0x200UL)      /*!< D6_1 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D6_0_Pos        (8UL)          /*!< D6_0 (Bit 8)                                          */
+ #define R_LPS_DPDSRH_D6_0_Msk        (0x100UL)      /*!< D6_0 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D5_7_Pos        (7UL)          /*!< D5_7 (Bit 7)                                          */
+ #define R_LPS_DPDSRH_D5_7_Msk        (0x80UL)       /*!< D5_7 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D5_6_Pos        (6UL)          /*!< D5_6 (Bit 6)                                          */
+ #define R_LPS_DPDSRH_D5_6_Msk        (0x40UL)       /*!< D5_6 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D5_5_Pos        (5UL)          /*!< D5_5 (Bit 5)                                          */
+ #define R_LPS_DPDSRH_D5_5_Msk        (0x20UL)       /*!< D5_5 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D5_4_Pos        (4UL)          /*!< D5_4 (Bit 4)                                          */
+ #define R_LPS_DPDSRH_D5_4_Msk        (0x10UL)       /*!< D5_4 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D5_3_Pos        (3UL)          /*!< D5_3 (Bit 3)                                          */
+ #define R_LPS_DPDSRH_D5_3_Msk        (0x8UL)        /*!< D5_3 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D5_2_Pos        (2UL)          /*!< D5_2 (Bit 2)                                          */
+ #define R_LPS_DPDSRH_D5_2_Msk        (0x4UL)        /*!< D5_2 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D5_1_Pos        (1UL)          /*!< D5_1 (Bit 1)                                          */
+ #define R_LPS_DPDSRH_D5_1_Msk        (0x2UL)        /*!< D5_1 (Bitfield-Mask: 0x01)                            */
+ #define R_LPS_DPDSRH_D5_0_Pos        (0UL)          /*!< D5_0 (Bit 0)                                          */
+ #define R_LPS_DPDSRH_D5_0_Msk        (0x1UL)        /*!< D5_0 (Bitfield-Mask: 0x01)                            */
+/* ========================================================  DPDIMR0  ======================================================== */
+ #define R_LPS_DPDIMR0_D0M_23_Pos     (23UL)         /*!< D0M_23 (Bit 23)                                       */
+ #define R_LPS_DPDIMR0_D0M_23_Msk     (0x800000UL)   /*!< D0M_23 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_22_Pos     (22UL)         /*!< D0M_22 (Bit 22)                                       */
+ #define R_LPS_DPDIMR0_D0M_22_Msk     (0x400000UL)   /*!< D0M_22 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_21_Pos     (21UL)         /*!< D0M_21 (Bit 21)                                       */
+ #define R_LPS_DPDIMR0_D0M_21_Msk     (0x200000UL)   /*!< D0M_21 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_20_Pos     (20UL)         /*!< D0M_20 (Bit 20)                                       */
+ #define R_LPS_DPDIMR0_D0M_20_Msk     (0x100000UL)   /*!< D0M_20 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_19_Pos     (19UL)         /*!< D0M_19 (Bit 19)                                       */
+ #define R_LPS_DPDIMR0_D0M_19_Msk     (0x80000UL)    /*!< D0M_19 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_18_Pos     (18UL)         /*!< D0M_18 (Bit 18)                                       */
+ #define R_LPS_DPDIMR0_D0M_18_Msk     (0x40000UL)    /*!< D0M_18 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_17_Pos     (17UL)         /*!< D0M_17 (Bit 17)                                       */
+ #define R_LPS_DPDIMR0_D0M_17_Msk     (0x20000UL)    /*!< D0M_17 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_16_Pos     (16UL)         /*!< D0M_16 (Bit 16)                                       */
+ #define R_LPS_DPDIMR0_D0M_16_Msk     (0x10000UL)    /*!< D0M_16 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_15_Pos     (15UL)         /*!< D0M_15 (Bit 15)                                       */
+ #define R_LPS_DPDIMR0_D0M_15_Msk     (0x8000UL)     /*!< D0M_15 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_14_Pos     (14UL)         /*!< D0M_14 (Bit 14)                                       */
+ #define R_LPS_DPDIMR0_D0M_14_Msk     (0x4000UL)     /*!< D0M_14 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_13_Pos     (13UL)         /*!< D0M_13 (Bit 13)                                       */
+ #define R_LPS_DPDIMR0_D0M_13_Msk     (0x2000UL)     /*!< D0M_13 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_12_Pos     (12UL)         /*!< D0M_12 (Bit 12)                                       */
+ #define R_LPS_DPDIMR0_D0M_12_Msk     (0x1000UL)     /*!< D0M_12 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_11_Pos     (11UL)         /*!< D0M_11 (Bit 11)                                       */
+ #define R_LPS_DPDIMR0_D0M_11_Msk     (0x800UL)      /*!< D0M_11 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_10_Pos     (10UL)         /*!< D0M_10 (Bit 10)                                       */
+ #define R_LPS_DPDIMR0_D0M_10_Msk     (0x400UL)      /*!< D0M_10 (Bitfield-Mask: 0x01)                          */
+ #define R_LPS_DPDIMR0_D0M_9_Pos      (9UL)          /*!< D0M_9 (Bit 9)                                         */
+ #define R_LPS_DPDIMR0_D0M_9_Msk      (0x200UL)      /*!< D0M_9 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR0_D0M_8_Pos      (8UL)          /*!< D0M_8 (Bit 8)                                         */
+ #define R_LPS_DPDIMR0_D0M_8_Msk      (0x100UL)      /*!< D0M_8 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR0_D0M_7_Pos      (7UL)          /*!< D0M_7 (Bit 7)                                         */
+ #define R_LPS_DPDIMR0_D0M_7_Msk      (0x80UL)       /*!< D0M_7 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR0_D0M_6_Pos      (6UL)          /*!< D0M_6 (Bit 6)                                         */
+ #define R_LPS_DPDIMR0_D0M_6_Msk      (0x40UL)       /*!< D0M_6 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR0_D0M_5_Pos      (5UL)          /*!< D0M_5 (Bit 5)                                         */
+ #define R_LPS_DPDIMR0_D0M_5_Msk      (0x20UL)       /*!< D0M_5 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR0_D0M_4_Pos      (4UL)          /*!< D0M_4 (Bit 4)                                         */
+ #define R_LPS_DPDIMR0_D0M_4_Msk      (0x10UL)       /*!< D0M_4 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR0_D0M_3_Pos      (3UL)          /*!< D0M_3 (Bit 3)                                         */
+ #define R_LPS_DPDIMR0_D0M_3_Msk      (0x8UL)        /*!< D0M_3 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR0_D0M_2_Pos      (2UL)          /*!< D0M_2 (Bit 2)                                         */
+ #define R_LPS_DPDIMR0_D0M_2_Msk      (0x4UL)        /*!< D0M_2 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR0_D0M_1_Pos      (1UL)          /*!< D0M_1 (Bit 1)                                         */
+ #define R_LPS_DPDIMR0_D0M_1_Msk      (0x2UL)        /*!< D0M_1 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR0_D0M_0_Pos      (0UL)          /*!< D0M_0 (Bit 0)                                         */
+ #define R_LPS_DPDIMR0_D0M_0_Msk      (0x1UL)        /*!< D0M_0 (Bitfield-Mask: 0x01)                           */
+/* ========================================================  DPDIMR1  ======================================================== */
+ #define R_LPS_DPDIMR1_D1M_7_Pos      (7UL)          /*!< D1M_7 (Bit 7)                                         */
+ #define R_LPS_DPDIMR1_D1M_7_Msk      (0x80UL)       /*!< D1M_7 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR1_D1M_6_Pos      (6UL)          /*!< D1M_6 (Bit 6)                                         */
+ #define R_LPS_DPDIMR1_D1M_6_Msk      (0x40UL)       /*!< D1M_6 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR1_D1M_5_Pos      (5UL)          /*!< D1M_5 (Bit 5)                                         */
+ #define R_LPS_DPDIMR1_D1M_5_Msk      (0x20UL)       /*!< D1M_5 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR1_D1M_4_Pos      (4UL)          /*!< D1M_4 (Bit 4)                                         */
+ #define R_LPS_DPDIMR1_D1M_4_Msk      (0x10UL)       /*!< D1M_4 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR1_D1M_3_Pos      (3UL)          /*!< D1M_3 (Bit 3)                                         */
+ #define R_LPS_DPDIMR1_D1M_3_Msk      (0x8UL)        /*!< D1M_3 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR1_D1M_2_Pos      (2UL)          /*!< D1M_2 (Bit 2)                                         */
+ #define R_LPS_DPDIMR1_D1M_2_Msk      (0x4UL)        /*!< D1M_2 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR1_D1M_1_Pos      (1UL)          /*!< D1M_1 (Bit 1)                                         */
+ #define R_LPS_DPDIMR1_D1M_1_Msk      (0x2UL)        /*!< D1M_1 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR1_D1M_0_Pos      (0UL)          /*!< D1M_0 (Bit 0)                                         */
+ #define R_LPS_DPDIMR1_D1M_0_Msk      (0x1UL)        /*!< D1M_0 (Bitfield-Mask: 0x01)                           */
+/* ========================================================  DPDIMR2  ======================================================== */
+ #define R_LPS_DPDIMR2_D2M_7_Pos      (7UL)          /*!< D2M_7 (Bit 7)                                         */
+ #define R_LPS_DPDIMR2_D2M_7_Msk      (0x80UL)       /*!< D2M_7 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR2_D2M_6_Pos      (6UL)          /*!< D2M_6 (Bit 6)                                         */
+ #define R_LPS_DPDIMR2_D2M_6_Msk      (0x40UL)       /*!< D2M_6 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR2_D2M_5_Pos      (5UL)          /*!< D2M_5 (Bit 5)                                         */
+ #define R_LPS_DPDIMR2_D2M_5_Msk      (0x20UL)       /*!< D2M_5 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR2_D2M_4_Pos      (4UL)          /*!< D2M_4 (Bit 4)                                         */
+ #define R_LPS_DPDIMR2_D2M_4_Msk      (0x10UL)       /*!< D2M_4 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR2_D2M_3_Pos      (3UL)          /*!< D2M_3 (Bit 3)                                         */
+ #define R_LPS_DPDIMR2_D2M_3_Msk      (0x8UL)        /*!< D2M_3 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR2_D2M_2_Pos      (2UL)          /*!< D2M_2 (Bit 2)                                         */
+ #define R_LPS_DPDIMR2_D2M_2_Msk      (0x4UL)        /*!< D2M_2 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR2_D2M_1_Pos      (1UL)          /*!< D2M_1 (Bit 1)                                         */
+ #define R_LPS_DPDIMR2_D2M_1_Msk      (0x2UL)        /*!< D2M_1 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR2_D2M_0_Pos      (0UL)          /*!< D2M_0 (Bit 0)                                         */
+ #define R_LPS_DPDIMR2_D2M_0_Msk      (0x1UL)        /*!< D2M_0 (Bitfield-Mask: 0x01)                           */
+/* ========================================================  DPDIMR3  ======================================================== */
+ #define R_LPS_DPDIMR3_D3M_7_Pos      (7UL)          /*!< D3M_7 (Bit 7)                                         */
+ #define R_LPS_DPDIMR3_D3M_7_Msk      (0x80UL)       /*!< D3M_7 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR3_D3M_6_Pos      (6UL)          /*!< D3M_6 (Bit 6)                                         */
+ #define R_LPS_DPDIMR3_D3M_6_Msk      (0x40UL)       /*!< D3M_6 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR3_D3M_5_Pos      (5UL)          /*!< D3M_5 (Bit 5)                                         */
+ #define R_LPS_DPDIMR3_D3M_5_Msk      (0x20UL)       /*!< D3M_5 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR3_D3M_4_Pos      (4UL)          /*!< D3M_4 (Bit 4)                                         */
+ #define R_LPS_DPDIMR3_D3M_4_Msk      (0x10UL)       /*!< D3M_4 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR3_D3M_3_Pos      (3UL)          /*!< D3M_3 (Bit 3)                                         */
+ #define R_LPS_DPDIMR3_D3M_3_Msk      (0x8UL)        /*!< D3M_3 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR3_D3M_2_Pos      (2UL)          /*!< D3M_2 (Bit 2)                                         */
+ #define R_LPS_DPDIMR3_D3M_2_Msk      (0x4UL)        /*!< D3M_2 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR3_D3M_1_Pos      (1UL)          /*!< D3M_1 (Bit 1)                                         */
+ #define R_LPS_DPDIMR3_D3M_1_Msk      (0x2UL)        /*!< D3M_1 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR3_D3M_0_Pos      (0UL)          /*!< D3M_0 (Bit 0)                                         */
+ #define R_LPS_DPDIMR3_D3M_0_Msk      (0x1UL)        /*!< D3M_0 (Bitfield-Mask: 0x01)                           */
+/* ========================================================  DPDIMR4  ======================================================== */
+ #define R_LPS_DPDIMR4_D4M_7_Pos      (7UL)          /*!< D4M_7 (Bit 7)                                         */
+ #define R_LPS_DPDIMR4_D4M_7_Msk      (0x80UL)       /*!< D4M_7 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR4_D4M_6_Pos      (6UL)          /*!< D4M_6 (Bit 6)                                         */
+ #define R_LPS_DPDIMR4_D4M_6_Msk      (0x40UL)       /*!< D4M_6 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR4_D4M_5_Pos      (5UL)          /*!< D4M_5 (Bit 5)                                         */
+ #define R_LPS_DPDIMR4_D4M_5_Msk      (0x20UL)       /*!< D4M_5 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR4_D4M_4_Pos      (4UL)          /*!< D4M_4 (Bit 4)                                         */
+ #define R_LPS_DPDIMR4_D4M_4_Msk      (0x10UL)       /*!< D4M_4 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR4_D4M_3_Pos      (3UL)          /*!< D4M_3 (Bit 3)                                         */
+ #define R_LPS_DPDIMR4_D4M_3_Msk      (0x8UL)        /*!< D4M_3 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR4_D4M_2_Pos      (2UL)          /*!< D4M_2 (Bit 2)                                         */
+ #define R_LPS_DPDIMR4_D4M_2_Msk      (0x4UL)        /*!< D4M_2 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR4_D4M_1_Pos      (1UL)          /*!< D4M_1 (Bit 1)                                         */
+ #define R_LPS_DPDIMR4_D4M_1_Msk      (0x2UL)        /*!< D4M_1 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR4_D4M_0_Pos      (0UL)          /*!< D4M_0 (Bit 0)                                         */
+ #define R_LPS_DPDIMR4_D4M_0_Msk      (0x1UL)        /*!< D4M_0 (Bitfield-Mask: 0x01)                           */
+/* ========================================================  DPDIMR5  ======================================================== */
+ #define R_LPS_DPDIMR5_D5M_7_Pos      (7UL)          /*!< D5M_7 (Bit 7)                                         */
+ #define R_LPS_DPDIMR5_D5M_7_Msk      (0x80UL)       /*!< D5M_7 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR5_D5M_6_Pos      (6UL)          /*!< D5M_6 (Bit 6)                                         */
+ #define R_LPS_DPDIMR5_D5M_6_Msk      (0x40UL)       /*!< D5M_6 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR5_D5M_5_Pos      (5UL)          /*!< D5M_5 (Bit 5)                                         */
+ #define R_LPS_DPDIMR5_D5M_5_Msk      (0x20UL)       /*!< D5M_5 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR5_D5M_4_Pos      (4UL)          /*!< D5M_4 (Bit 4)                                         */
+ #define R_LPS_DPDIMR5_D5M_4_Msk      (0x10UL)       /*!< D5M_4 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR5_D5M_3_Pos      (3UL)          /*!< D5M_3 (Bit 3)                                         */
+ #define R_LPS_DPDIMR5_D5M_3_Msk      (0x8UL)        /*!< D5M_3 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR5_D5M_2_Pos      (2UL)          /*!< D5M_2 (Bit 2)                                         */
+ #define R_LPS_DPDIMR5_D5M_2_Msk      (0x4UL)        /*!< D5M_2 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR5_D5M_1_Pos      (1UL)          /*!< D5M_1 (Bit 1)                                         */
+ #define R_LPS_DPDIMR5_D5M_1_Msk      (0x2UL)        /*!< D5M_1 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR5_D5M_0_Pos      (0UL)          /*!< D5M_0 (Bit 0)                                         */
+ #define R_LPS_DPDIMR5_D5M_0_Msk      (0x1UL)        /*!< D5M_0 (Bitfield-Mask: 0x01)                           */
+/* ========================================================  DPDIMR6  ======================================================== */
+ #define R_LPS_DPDIMR6_D6M_7_Pos      (7UL)          /*!< D6M_7 (Bit 7)                                         */
+ #define R_LPS_DPDIMR6_D6M_7_Msk      (0x80UL)       /*!< D6M_7 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR6_D6M_6_Pos      (6UL)          /*!< D6M_6 (Bit 6)                                         */
+ #define R_LPS_DPDIMR6_D6M_6_Msk      (0x40UL)       /*!< D6M_6 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR6_D6M_5_Pos      (5UL)          /*!< D6M_5 (Bit 5)                                         */
+ #define R_LPS_DPDIMR6_D6M_5_Msk      (0x20UL)       /*!< D6M_5 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR6_D6M_4_Pos      (4UL)          /*!< D6M_4 (Bit 4)                                         */
+ #define R_LPS_DPDIMR6_D6M_4_Msk      (0x10UL)       /*!< D6M_4 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR6_D6M_3_Pos      (3UL)          /*!< D6M_3 (Bit 3)                                         */
+ #define R_LPS_DPDIMR6_D6M_3_Msk      (0x8UL)        /*!< D6M_3 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR6_D6M_2_Pos      (2UL)          /*!< D6M_2 (Bit 2)                                         */
+ #define R_LPS_DPDIMR6_D6M_2_Msk      (0x4UL)        /*!< D6M_2 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR6_D6M_1_Pos      (1UL)          /*!< D6M_1 (Bit 1)                                         */
+ #define R_LPS_DPDIMR6_D6M_1_Msk      (0x2UL)        /*!< D6M_1 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR6_D6M_0_Pos      (0UL)          /*!< D6M_0 (Bit 0)                                         */
+ #define R_LPS_DPDIMR6_D6M_0_Msk      (0x1UL)        /*!< D6M_0 (Bitfield-Mask: 0x01)                           */
+/* ========================================================  DPDIMR7  ======================================================== */
+ #define R_LPS_DPDIMR7_D7M_7_Pos      (7UL)          /*!< D7M_7 (Bit 7)                                         */
+ #define R_LPS_DPDIMR7_D7M_7_Msk      (0x80UL)       /*!< D7M_7 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR7_D7M_6_Pos      (6UL)          /*!< D7M_6 (Bit 6)                                         */
+ #define R_LPS_DPDIMR7_D7M_6_Msk      (0x40UL)       /*!< D7M_6 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR7_D7M_5_Pos      (5UL)          /*!< D7M_5 (Bit 5)                                         */
+ #define R_LPS_DPDIMR7_D7M_5_Msk      (0x20UL)       /*!< D7M_5 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR7_D7M_4_Pos      (4UL)          /*!< D7M_4 (Bit 4)                                         */
+ #define R_LPS_DPDIMR7_D7M_4_Msk      (0x10UL)       /*!< D7M_4 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR7_D7M_3_Pos      (3UL)          /*!< D7M_3 (Bit 3)                                         */
+ #define R_LPS_DPDIMR7_D7M_3_Msk      (0x8UL)        /*!< D7M_3 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR7_D7M_2_Pos      (2UL)          /*!< D7M_2 (Bit 2)                                         */
+ #define R_LPS_DPDIMR7_D7M_2_Msk      (0x4UL)        /*!< D7M_2 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR7_D7M_1_Pos      (1UL)          /*!< D7M_1 (Bit 1)                                         */
+ #define R_LPS_DPDIMR7_D7M_1_Msk      (0x2UL)        /*!< D7M_1 (Bitfield-Mask: 0x01)                           */
+ #define R_LPS_DPDIMR7_D7M_0_Pos      (0UL)          /*!< D7M_0 (Bit 0)                                         */
+ #define R_LPS_DPDIMR7_D7M_0_Msk      (0x1UL)        /*!< D7M_0 (Bitfield-Mask: 0x01)                           */
+/* ========================================================  CNTVAL  ========================================================= */
+ #define R_LPS_CNTVAL_CNT1n_Pos       (8UL)          /*!< CNT1n (Bit 8)                                         */
+ #define R_LPS_CNTVAL_CNT1n_Msk       (0xff00UL)     /*!< CNT1n (Bitfield-Mask: 0xff)                           */
+/* =========================================================  SOSTR  ========================================================= */
+ #define R_LPS_SOSTR_SOF_Pos          (0UL)          /*!< SOF (Bit 0)                                           */
+ #define R_LPS_SOSTR_SOF_Msk          (0x1UL)        /*!< SOF (Bitfield-Mask: 0x01)                             */
+
+/* =========================================================================================================================== */
 /* ================                                          R_OTS0                                           ================ */
 /* =========================================================================================================================== */
 
@@ -165634,6 +171615,127 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_BARR_BR15SYNC5_BRSYNC_Msk    (0x1UL) /*!< BRSYNC (Bitfield-Mask: 0x01)                          */
 
 /* =========================================================================================================================== */
+/* ================                                          R_CADC                                           ================ */
+/* =========================================================================================================================== */
+
+/* =======================================================  CADCADGCR  ======================================================= */
+ #define R_CADC_CADCADGCR_CADCODDE_Pos     (5UL)    /*!< CADCODDE (Bit 5)                                      */
+ #define R_CADC_CADCADGCR_CADCODDE_Msk     (0x20UL) /*!< CADCODDE (Bitfield-Mask: 0x01)                        */
+ #define R_CADC_CADCADGCR_CADCODE_Pos      (4UL)    /*!< CADCODE (Bit 4)                                       */
+ #define R_CADC_CADCADGCR_CADCODE_Msk      (0x10UL) /*!< CADCODE (Bitfield-Mask: 0x01)                         */
+ #define R_CADC_CADCADGCR_CADCUNSND_Pos    (0UL)    /*!< CADCUNSND (Bit 0)                                     */
+ #define R_CADC_CADCADGCR_CADCUNSND_Msk    (0x1UL)  /*!< CADCUNSND (Bitfield-Mask: 0x01)                       */
+/* =======================================================  CADCTDCR  ======================================================== */
+ #define R_CADC_CADCTDCR_CADCTDE_Pos       (0UL)    /*!< CADCTDE (Bit 0)                                       */
+ #define R_CADC_CADCTDCR_CADCTDE_Msk       (0x1UL)  /*!< CADCTDE (Bitfield-Mask: 0x01)                         */
+
+/* =========================================================================================================================== */
+/* ================                                         R_CADC00                                          ================ */
+/* =========================================================================================================================== */
+
+/* =====================================================  CADC00ADSTCR  ====================================================== */
+ #define R_CADC00_CADC00ADSTCR_CADC00ADST_Pos      (0UL)          /*!< CADC00ADST (Bit 0)                                    */
+ #define R_CADC00_CADC00ADSTCR_CADC00ADST_Msk      (0x1UL)        /*!< CADC00ADST (Bitfield-Mask: 0x01)                      */
+/* =====================================================  CADC00ADENDCR  ===================================================== */
+ #define R_CADC00_CADC00ADENDCR_CADC00ADEND_Pos    (0UL)          /*!< CADC00ADEND (Bit 0)                                   */
+ #define R_CADC00_CADC00ADENDCR_CADC00ADEND_Msk    (0x1UL)        /*!< CADC00ADEND (Bitfield-Mask: 0x01)                     */
+/* =====================================================  CADC00CLBSTCR  ===================================================== */
+ #define R_CADC00_CADC00CLBSTCR_CADC00CLBST_Pos    (0UL)          /*!< CADC00CLBST (Bit 0)                                   */
+ #define R_CADC00_CADC00CLBSTCR_CADC00CLBST_Msk    (0x1UL)        /*!< CADC00CLBST (Bitfield-Mask: 0x01)                     */
+/* =====================================================  CADC00CLBEDCR  ===================================================== */
+ #define R_CADC00_CADC00CLBEDCR_CADCCLBEND_Pos     (0UL)          /*!< CADCCLBEND (Bit 0)                                    */
+ #define R_CADC00_CADC00CLBEDCR_CADCCLBEND_Msk     (0x1UL)        /*!< CADCCLBEND (Bitfield-Mask: 0x01)                      */
+/* ======================================================  CADC00ADTCR  ====================================================== */
+ #define R_CADC00_CADC00ADTCR_CADC00ENDTRGE_Pos    (1UL)          /*!< CADC00ENDTRGE (Bit 1)                                 */
+ #define R_CADC00_CADC00ADTCR_CADC00ENDTRGE_Msk    (0x2UL)        /*!< CADC00ENDTRGE (Bitfield-Mask: 0x01)                   */
+ #define R_CADC00_CADC00ADTCR_CADC00STTRGE_Pos     (0UL)          /*!< CADC00STTRGE (Bit 0)                                  */
+ #define R_CADC00_CADC00ADTCR_CADC00STTRGE_Msk     (0x1UL)        /*!< CADC00STTRGE (Bitfield-Mask: 0x01)                    */
+/* =======================================================  CADC00UCR  ======================================================= */
+ #define R_CADC00_CADC00UCR_CADC00VPRSTE_Pos       (29UL)         /*!< CADC00VPRSTE (Bit 29)                                 */
+ #define R_CADC00_CADC00UCR_CADC00VPRSTE_Msk       (0x20000000UL) /*!< CADC00VPRSTE (Bitfield-Mask: 0x01)                    */
+ #define R_CADC00_CADC00UCR_CADC00RDMA_Pos         (28UL)         /*!< CADC00RDMA (Bit 28)                                   */
+ #define R_CADC00_CADC00UCR_CADC00RDMA_Msk         (0x10000000UL) /*!< CADC00RDMA (Bitfield-Mask: 0x01)                      */
+ #define R_CADC00_CADC00UCR_CADC00DFMT_Pos         (8UL)          /*!< CADC00DFMT (Bit 8)                                    */
+ #define R_CADC00_CADC00UCR_CADC00DFMT_Msk         (0xf00UL)      /*!< CADC00DFMT (Bitfield-Mask: 0x0f)                      */
+ #define R_CADC00_CADC00UCR_CADC00VCEP_Pos         (0UL)          /*!< CADC00VCEP (Bit 0)                                    */
+ #define R_CADC00_CADC00UCR_CADC00VCEP_Msk         (0x7UL)        /*!< CADC00VCEP (Bitfield-Mask: 0x07)                      */
+/* =====================================================  CADC00VCPTRR  ====================================================== */
+ #define R_CADC00_CADC00VCPTRR_CADC00VCPTR_Pos     (0UL)          /*!< CADC00VCPTR (Bit 0)                                   */
+ #define R_CADC00_CADC00VCPTRR_CADC00VCPTR_Msk     (0x7UL)        /*!< CADC00VCPTR (Bitfield-Mask: 0x07)                     */
+/* ======================================================  CADC00ADSR  ======================================================= */
+ #define R_CADC00_CADC00ADSR_CADC00CLBACT_Pos      (1UL)          /*!< CADC00CLBACT (Bit 1)                                  */
+ #define R_CADC00_CADC00ADSR_CADC00CLBACT_Msk      (0x2UL)        /*!< CADC00CLBACT (Bitfield-Mask: 0x01)                    */
+ #define R_CADC00_CADC00ADSR_CADC00ADACT_Pos       (0UL)          /*!< CADC00ADACT (Bit 0)                                   */
+ #define R_CADC00_CADC00ADSR_CADC00ADACT_Msk       (0x1UL)        /*!< CADC00ADACT (Bitfield-Mask: 0x01)                     */
+/* =====================================================  CADC00UDPTRR  ====================================================== */
+ #define R_CADC00_CADC00UDPTRR_CADC00UDPTR_Pos     (0UL)          /*!< CADC00UDPTR (Bit 0)                                   */
+ #define R_CADC00_CADC00UDPTRR_CADC00UDPTR_Msk     (0x7UL)        /*!< CADC00UDPTR (Bitfield-Mask: 0x07)                     */
+/* ======================================================  CADC00UDIR  ======================================================= */
+ #define R_CADC00_CADC00UDIR_CADC00CHNUM_Pos       (29UL)         /*!< CADC00CHNUM (Bit 29)                                  */
+ #define R_CADC00_CADC00UDIR_CADC00CHNUM_Msk       (0xe0000000UL) /*!< CADC00CHNUM (Bitfield-Mask: 0x07)                     */
+ #define R_CADC00_CADC00UDIR_CADC00UIDEF_Pos       (26UL)         /*!< CADC00UIDEF (Bit 26)                                  */
+ #define R_CADC00_CADC00UDIR_CADC00UIDEF_Msk       (0x4000000UL)  /*!< CADC00UIDEF (Bitfield-Mask: 0x01)                     */
+ #define R_CADC00_CADC00UDIR_CADC00UWFLG_Pos       (25UL)         /*!< CADC00UWFLG (Bit 25)                                  */
+ #define R_CADC00_CADC00UDIR_CADC00UWFLG_Msk       (0x2000000UL)  /*!< CADC00UWFLG (Bitfield-Mask: 0x01)                     */
+ #define R_CADC00_CADC00UDIR_CADC00UPRTY_Pos       (24UL)         /*!< CADC00UPRTY (Bit 24)                                  */
+ #define R_CADC00_CADC00UDIR_CADC00UPRTY_Msk       (0x1000000UL)  /*!< CADC00UPRTY (Bitfield-Mask: 0x01)                     */
+ #define R_CADC00_CADC00UDIR_CADC00UDR_Pos         (0UL)          /*!< CADC00UDR (Bit 0)                                     */
+ #define R_CADC00_CADC00UDIR_CADC00UDR_Msk         (0xffffUL)     /*!< CADC00UDR (Bitfield-Mask: 0xffff)                     */
+/* ======================================================  CADC00SMPCR  ====================================================== */
+ #define R_CADC00_CADC00SMPCR_CADC00ODAV_Pos       (16UL)         /*!< CADC00ODAV (Bit 16)                                   */
+ #define R_CADC00_CADC00SMPCR_CADC00ODAV_Msk       (0x10000UL)    /*!< CADC00ODAV (Bitfield-Mask: 0x01)                      */
+/* ======================================================  CADC00SFTCR  ====================================================== */
+ #define R_CADC00_CADC00SFTCR_CADC00RDCLRE_Pos     (7UL)          /*!< CADC00RDCLRE (Bit 7)                                  */
+ #define R_CADC00_CADC00SFTCR_CADC00RDCLRE_Msk     (0x80UL)       /*!< CADC00RDCLRE (Bitfield-Mask: 0x01)                    */
+ #define R_CADC00_CADC00SFTCR_CADC00OWEIE_Pos      (2UL)          /*!< CADC00OWEIE (Bit 2)                                   */
+ #define R_CADC00_CADC00SFTCR_CADC00OWEIE_Msk      (0x4UL)        /*!< CADC00OWEIE (Bitfield-Mask: 0x01)                     */
+ #define R_CADC00_CADC00SFTCR_CADC00PEIE_Pos       (1UL)          /*!< CADC00PEIE (Bit 1)                                    */
+ #define R_CADC00_CADC00SFTCR_CADC00PEIE_Msk       (0x2UL)        /*!< CADC00PEIE (Bitfield-Mask: 0x01)                      */
+ #define R_CADC00_CADC00SFTCR_CADC00IDEIE_Pos      (0UL)          /*!< CADC00IDEIE (Bit 0)                                   */
+ #define R_CADC00_CADC00SFTCR_CADC00IDEIE_Msk      (0x1UL)        /*!< CADC00IDEIE (Bitfield-Mask: 0x01)                     */
+/* =======================================================  CADC00ECR  ======================================================= */
+ #define R_CADC00_CADC00ECR_CADC00ULEC_Pos         (4UL)          /*!< CADC00ULEC (Bit 4)                                    */
+ #define R_CADC00_CADC00ECR_CADC00ULEC_Msk         (0x10UL)       /*!< CADC00ULEC (Bitfield-Mask: 0x01)                      */
+ #define R_CADC00_CADC00ECR_CADC00LLEC_Pos         (3UL)          /*!< CADC00LLEC (Bit 3)                                    */
+ #define R_CADC00_CADC00ECR_CADC00LLEC_Msk         (0x8UL)        /*!< CADC00LLEC (Bitfield-Mask: 0x01)                      */
+ #define R_CADC00_CADC00ECR_CADC00OWEC_Pos         (2UL)          /*!< CADC00OWEC (Bit 2)                                    */
+ #define R_CADC00_CADC00ECR_CADC00OWEC_Msk         (0x4UL)        /*!< CADC00OWEC (Bitfield-Mask: 0x01)                      */
+ #define R_CADC00_CADC00ECR_CADC00PEC_Pos          (1UL)          /*!< CADC00PEC (Bit 1)                                     */
+ #define R_CADC00_CADC00ECR_CADC00PEC_Msk          (0x2UL)        /*!< CADC00PEC (Bitfield-Mask: 0x01)                       */
+/* =======================================================  CADC00ER  ======================================================== */
+ #define R_CADC00_CADC00ER_CADC00ULE_Pos           (31UL)         /*!< CADC00ULE (Bit 31)                                    */
+ #define R_CADC00_CADC00ER_CADC00ULE_Msk           (0x80000000UL) /*!< CADC00ULE (Bitfield-Mask: 0x01)                       */
+ #define R_CADC00_CADC00ER_CADC00LLE_Pos           (30UL)         /*!< CADC00LLE (Bit 30)                                    */
+ #define R_CADC00_CADC00ER_CADC00LLE_Msk           (0x40000000UL) /*!< CADC00LLE (Bitfield-Mask: 0x01)                       */
+ #define R_CADC00_CADC00ER_CADC00ULECAP_Pos        (24UL)         /*!< CADC00ULECAP (Bit 24)                                 */
+ #define R_CADC00_CADC00ER_CADC00ULECAP_Msk        (0x7000000UL)  /*!< CADC00ULECAP (Bitfield-Mask: 0x07)                    */
+ #define R_CADC00_CADC00ER_CADC00OWE_Pos           (23UL)         /*!< CADC00OWE (Bit 23)                                    */
+ #define R_CADC00_CADC00ER_CADC00OWE_Msk           (0x800000UL)   /*!< CADC00OWE (Bitfield-Mask: 0x01)                       */
+ #define R_CADC00_CADC00ER_CADC00OWECAP_Pos        (16UL)         /*!< CADC00OWECAP (Bit 16)                                 */
+ #define R_CADC00_CADC00ER_CADC00OWECAP_Msk        (0x70000UL)    /*!< CADC00OWECAP (Bitfield-Mask: 0x07)                    */
+ #define R_CADC00_CADC00ER_CADC00PE_Pos            (15UL)         /*!< CADC00PE (Bit 15)                                     */
+ #define R_CADC00_CADC00ER_CADC00PE_Msk            (0x8000UL)     /*!< CADC00PE (Bitfield-Mask: 0x01)                        */
+ #define R_CADC00_CADC00ER_CADC00PECAP_Pos         (8UL)          /*!< CADC00PECAP (Bit 8)                                   */
+ #define R_CADC00_CADC00ER_CADC00PECAP_Msk         (0x700UL)      /*!< CADC00PECAP (Bitfield-Mask: 0x07)                     */
+/* ======================================================  CADC00TDLVR  ====================================================== */
+ #define R_CADC00_CADC00TDLVR_CADC00AN3NLV_Pos     (7UL)          /*!< CADC00AN3NLV (Bit 7)                                  */
+ #define R_CADC00_CADC00TDLVR_CADC00AN3NLV_Msk     (0x80UL)       /*!< CADC00AN3NLV (Bitfield-Mask: 0x01)                    */
+ #define R_CADC00_CADC00TDLVR_CADC00AN3PLV_Pos     (6UL)          /*!< CADC00AN3PLV (Bit 6)                                  */
+ #define R_CADC00_CADC00TDLVR_CADC00AN3PLV_Msk     (0x40UL)       /*!< CADC00AN3PLV (Bitfield-Mask: 0x01)                    */
+ #define R_CADC00_CADC00TDLVR_CADC00AN2NLV_Pos     (5UL)          /*!< CADC00AN2NLV (Bit 5)                                  */
+ #define R_CADC00_CADC00TDLVR_CADC00AN2NLV_Msk     (0x20UL)       /*!< CADC00AN2NLV (Bitfield-Mask: 0x01)                    */
+ #define R_CADC00_CADC00TDLVR_CADC00AN2PLV_Pos     (4UL)          /*!< CADC00AN2PLV (Bit 4)                                  */
+ #define R_CADC00_CADC00TDLVR_CADC00AN2PLV_Msk     (0x10UL)       /*!< CADC00AN2PLV (Bitfield-Mask: 0x01)                    */
+ #define R_CADC00_CADC00TDLVR_CADC00AN1NLV_Pos     (3UL)          /*!< CADC00AN1NLV (Bit 3)                                  */
+ #define R_CADC00_CADC00TDLVR_CADC00AN1NLV_Msk     (0x8UL)        /*!< CADC00AN1NLV (Bitfield-Mask: 0x01)                    */
+ #define R_CADC00_CADC00TDLVR_CADC00AN1PLV_Pos     (2UL)          /*!< CADC00AN1PLV (Bit 2)                                  */
+ #define R_CADC00_CADC00TDLVR_CADC00AN1PLV_Msk     (0x4UL)        /*!< CADC00AN1PLV (Bitfield-Mask: 0x01)                    */
+ #define R_CADC00_CADC00TDLVR_CADC00AN0NLV_Pos     (1UL)          /*!< CADC00AN0NLV (Bit 1)                                  */
+ #define R_CADC00_CADC00TDLVR_CADC00AN0NLV_Msk     (0x2UL)        /*!< CADC00AN0NLV (Bitfield-Mask: 0x01)                    */
+ #define R_CADC00_CADC00TDLVR_CADC00AN0PLV_Pos     (0UL)          /*!< CADC00AN0PLV (Bit 0)                                  */
+ #define R_CADC00_CADC00TDLVR_CADC00AN0PLV_Msk     (0x1UL)        /*!< CADC00AN0PLV (Bitfield-Mask: 0x01)                    */
+
+/* =========================================================================================================================== */
 /* ================                                          R_CLMA0                                          ================ */
 /* =========================================================================================================================== */
 
@@ -165884,6 +171986,158 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_GUARD_DMAC0_DMAGPROT_CH_WG_Msk               (0x2UL)        /*!< WG (Bitfield-Mask: 0x01)                              */
  #define R_GUARD_DMAC0_DMAGPROT_CH_RG_Pos               (0UL)          /*!< RG (Bit 0)                                            */
  #define R_GUARD_DMAC0_DMAGPROT_CH_RG_Msk               (0x1UL)        /*!< RG (Bitfield-Mask: 0x01)                              */
+
+/* =========================================================================================================================== */
+/* ================                                          R_DSADC                                          ================ */
+/* =========================================================================================================================== */
+
+/* =====================================================  DSADCSYNSTCR  ====================================================== */
+ #define R_DSADC_DSADCSYNSTCR_ADSTART_Pos    (0UL)    /*!< ADSTART (Bit 0)                                       */
+ #define R_DSADC_DSADCSYNSTCR_ADSTART_Msk    (0x1UL)  /*!< ADSTART (Bitfield-Mask: 0x01)                         */
+/* ======================================================  DSADCADGCR  ======================================================= */
+ #define R_DSADC_DSADCADGCR_ODDE_Pos         (5UL)    /*!< ODDE (Bit 5)                                          */
+ #define R_DSADC_DSADCADGCR_ODDE_Msk         (0x20UL) /*!< ODDE (Bitfield-Mask: 0x01)                            */
+ #define R_DSADC_DSADCADGCR_ODE_Pos          (4UL)    /*!< ODE (Bit 4)                                           */
+ #define R_DSADC_DSADCADGCR_ODE_Msk          (0x10UL) /*!< ODE (Bitfield-Mask: 0x01)                             */
+ #define R_DSADC_DSADCADGCR_UNSND_Pos        (0UL)    /*!< UNSND (Bit 0)                                         */
+ #define R_DSADC_DSADCADGCR_UNSND_Msk        (0x1UL)  /*!< UNSND (Bitfield-Mask: 0x01)                           */
+/* =======================================================  DSADCTDCR  ======================================================= */
+ #define R_DSADC_DSADCTDCR_TDE_Pos           (0UL)    /*!< TDE (Bit 0)                                           */
+ #define R_DSADC_DSADCTDCR_TDE_Msk           (0x1UL)  /*!< TDE (Bitfield-Mask: 0x01)                             */
+
+/* =========================================================================================================================== */
+/* ================                                         R_DSADCn                                          ================ */
+/* =========================================================================================================================== */
+
+/* =====================================================  DSADCnADSTCR  ====================================================== */
+ #define R_DSADC00_DSADCnADSTCR_ADST_Pos       (0UL)          /*!< ADST (Bit 0)                                          */
+ #define R_DSADC00_DSADCnADSTCR_ADST_Msk       (0x1UL)        /*!< ADST (Bitfield-Mask: 0x01)                            */
+/* =====================================================  DSADCnADENDCR  ===================================================== */
+ #define R_DSADC00_DSADCnADENDCR_ADEND_Pos     (0UL)          /*!< ADEND (Bit 0)                                         */
+ #define R_DSADC00_DSADCnADENDCR_ADEND_Msk     (0x1UL)        /*!< ADEND (Bitfield-Mask: 0x01)                           */
+/* =====================================================  DSADCnCLBSTCR  ===================================================== */
+ #define R_DSADC00_DSADCnCLBSTCR_CLBST_Pos     (0UL)          /*!< CLBST (Bit 0)                                         */
+ #define R_DSADC00_DSADCnCLBSTCR_CLBST_Msk     (0x1UL)        /*!< CLBST (Bitfield-Mask: 0x01)                           */
+/* =====================================================  DSADCnCLBEDCR  ===================================================== */
+ #define R_DSADC00_DSADCnCLBEDCR_CLBEND_Pos    (0UL)          /*!< CLBEND (Bit 0)                                        */
+ #define R_DSADC00_DSADCnCLBEDCR_CLBEND_Msk    (0x1UL)        /*!< CLBEND (Bitfield-Mask: 0x01)                          */
+/* ======================================================  DSADCnADTCR  ====================================================== */
+ #define R_DSADC00_DSADCnADTCR_ADSTTE_Pos      (6UL)          /*!< ADSTTE (Bit 6)                                        */
+ #define R_DSADC00_DSADCnADTCR_ADSTTE_Msk      (0x40UL)       /*!< ADSTTE (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnADTCR_ENDTRGE_Pos     (1UL)          /*!< ENDTRGE (Bit 1)                                       */
+ #define R_DSADC00_DSADCnADTCR_ENDTRGE_Msk     (0x2UL)        /*!< ENDTRGE (Bitfield-Mask: 0x01)                         */
+ #define R_DSADC00_DSADCnADTCR_STTRGE_Pos      (0UL)          /*!< STTRGE (Bit 0)                                        */
+ #define R_DSADC00_DSADCnADTCR_STTRGE_Msk      (0x1UL)        /*!< STTRGE (Bitfield-Mask: 0x01)                          */
+/* =======================================================  DSADCnUCR  ======================================================= */
+ #define R_DSADC00_DSADCnUCR_VPRSTE_Pos        (29UL)         /*!< VPRSTE (Bit 29)                                       */
+ #define R_DSADC00_DSADCnUCR_VPRSTE_Msk        (0x20000000UL) /*!< VPRSTE (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnUCR_RDMA_Pos          (28UL)         /*!< RDMA (Bit 28)                                         */
+ #define R_DSADC00_DSADCnUCR_RDMA_Msk          (0x10000000UL) /*!< RDMA (Bitfield-Mask: 0x01)                            */
+ #define R_DSADC00_DSADCnUCR_RESO0_Pos         (26UL)         /*!< RESO0 (Bit 26)                                        */
+ #define R_DSADC00_DSADCnUCR_RESO0_Msk         (0x4000000UL)  /*!< RESO0 (Bitfield-Mask: 0x01)                           */
+ #define R_DSADC00_DSADCnUCR_DFES_Pos          (24UL)         /*!< DFES (Bit 24)                                         */
+ #define R_DSADC00_DSADCnUCR_DFES_Msk          (0x1000000UL)  /*!< DFES (Bitfield-Mask: 0x01)                            */
+ #define R_DSADC00_DSADCnUCR_DFMT_Pos          (8UL)          /*!< DFMT (Bit 8)                                          */
+ #define R_DSADC00_DSADCnUCR_DFMT_Msk          (0xf00UL)      /*!< DFMT (Bitfield-Mask: 0x0f)                            */
+ #define R_DSADC00_DSADCnUCR_VCEP_Pos          (0UL)          /*!< VCEP (Bit 0)                                          */
+ #define R_DSADC00_DSADCnUCR_VCEP_Msk          (0x7UL)        /*!< VCEP (Bitfield-Mask: 0x07)                            */
+/* =====================================================  DSADCnVCPTRR  ====================================================== */
+ #define R_DSADC00_DSADCnVCPTRR_VCPTR_Pos      (0UL)          /*!< VCPTR (Bit 0)                                         */
+ #define R_DSADC00_DSADCnVCPTRR_VCPTR_Msk      (0x7UL)        /*!< VCPTR (Bitfield-Mask: 0x07)                           */
+/* ======================================================  DSADCnADSR  ======================================================= */
+ #define R_DSADC00_DSADCnADSR_CLBACT_Pos       (1UL)          /*!< CLBACT (Bit 1)                                        */
+ #define R_DSADC00_DSADCnADSR_CLBACT_Msk       (0x2UL)        /*!< CLBACT (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnADSR_ADACT_Pos        (0UL)          /*!< ADACT (Bit 0)                                         */
+ #define R_DSADC00_DSADCnADSR_ADACT_Msk        (0x1UL)        /*!< ADACT (Bitfield-Mask: 0x01)                           */
+/* =====================================================  DSADCnUDPTRR  ====================================================== */
+ #define R_DSADC00_DSADCnUDPTRR_UDPTR_Pos      (0UL)          /*!< UDPTR (Bit 0)                                         */
+ #define R_DSADC00_DSADCnUDPTRR_UDPTR_Msk      (0x7UL)        /*!< UDPTR (Bitfield-Mask: 0x07)                           */
+/* ======================================================  DSADCnUDIR  ======================================================= */
+ #define R_DSADC00_DSADCnUDIR_CHNUM_Pos        (29UL)         /*!< CHNUM (Bit 29)                                        */
+ #define R_DSADC00_DSADCnUDIR_CHNUM_Msk        (0xe0000000UL) /*!< CHNUM (Bitfield-Mask: 0x07)                           */
+ #define R_DSADC00_DSADCnUDIR_UIDEF_Pos        (26UL)         /*!< UIDEF (Bit 26)                                        */
+ #define R_DSADC00_DSADCnUDIR_UIDEF_Msk        (0x4000000UL)  /*!< UIDEF (Bitfield-Mask: 0x01)                           */
+ #define R_DSADC00_DSADCnUDIR_UWFLG_Pos        (25UL)         /*!< UWFLG (Bit 25)                                        */
+ #define R_DSADC00_DSADCnUDIR_UWFLG_Msk        (0x2000000UL)  /*!< UWFLG (Bitfield-Mask: 0x01)                           */
+ #define R_DSADC00_DSADCnUDIR_UPRTY_Pos        (24UL)         /*!< UPRTY (Bit 24)                                        */
+ #define R_DSADC00_DSADCnUDIR_UPRTY_Msk        (0x1000000UL)  /*!< UPRTY (Bitfield-Mask: 0x01)                           */
+ #define R_DSADC00_DSADCnUDIR_UDR_Pos          (0UL)          /*!< UDR (Bit 0)                                           */
+ #define R_DSADC00_DSADCnUDIR_UDR_Msk          (0xffffUL)     /*!< UDR (Bitfield-Mask: 0xffff)                           */
+/* ======================================================  DSADCnTSVAL  ====================================================== */
+ #define R_DSADC00_DSADCnTSVAL_TSVAL_Pos       (16UL)         /*!< TSVAL (Bit 16)                                        */
+ #define R_DSADC00_DSADCnTSVAL_TSVAL_Msk       (0x1ff0000UL)  /*!< TSVAL (Bitfield-Mask: 0x1ff)                          */
+ #define R_DSADC00_DSADCnTSVAL_TSDR_Pos        (0UL)          /*!< TSDR (Bit 0)                                          */
+ #define R_DSADC00_DSADCnTSVAL_TSDR_Msk        (0xffffUL)     /*!< TSDR (Bitfield-Mask: 0xffff)                          */
+/* ======================================================  DSADCnSFTCR  ====================================================== */
+ #define R_DSADC00_DSADCnSFTCR_RDCLRE_Pos      (7UL)          /*!< RDCLRE (Bit 7)                                        */
+ #define R_DSADC00_DSADCnSFTCR_RDCLRE_Msk      (0x80UL)       /*!< RDCLRE (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnSFTCR_OWEIE_Pos       (2UL)          /*!< OWEIE (Bit 2)                                         */
+ #define R_DSADC00_DSADCnSFTCR_OWEIE_Msk       (0x4UL)        /*!< OWEIE (Bitfield-Mask: 0x01)                           */
+ #define R_DSADC00_DSADCnSFTCR_PEIE_Pos        (1UL)          /*!< PEIE (Bit 1)                                          */
+ #define R_DSADC00_DSADCnSFTCR_PEIE_Msk        (0x2UL)        /*!< PEIE (Bitfield-Mask: 0x01)                            */
+ #define R_DSADC00_DSADCnSFTCR_IDEIE_Pos       (0UL)          /*!< IDEIE (Bit 0)                                         */
+ #define R_DSADC00_DSADCnSFTCR_IDEIE_Msk       (0x1UL)        /*!< IDEIE (Bitfield-Mask: 0x01)                           */
+/* =======================================================  DSADCnECR  ======================================================= */
+ #define R_DSADC00_DSADCnECR_ULEC_Pos          (4UL)          /*!< ULEC (Bit 4)                                          */
+ #define R_DSADC00_DSADCnECR_ULEC_Msk          (0x10UL)       /*!< ULEC (Bitfield-Mask: 0x01)                            */
+ #define R_DSADC00_DSADCnECR_LLEC_Pos          (3UL)          /*!< LLEC (Bit 3)                                          */
+ #define R_DSADC00_DSADCnECR_LLEC_Msk          (0x8UL)        /*!< LLEC (Bitfield-Mask: 0x01)                            */
+ #define R_DSADC00_DSADCnECR_OWEC_Pos          (2UL)          /*!< OWEC (Bit 2)                                          */
+ #define R_DSADC00_DSADCnECR_OWEC_Msk          (0x4UL)        /*!< OWEC (Bitfield-Mask: 0x01)                            */
+ #define R_DSADC00_DSADCnECR_PEC_Pos           (1UL)          /*!< PEC (Bit 1)                                           */
+ #define R_DSADC00_DSADCnECR_PEC_Msk           (0x2UL)        /*!< PEC (Bitfield-Mask: 0x01)                             */
+/* =======================================================  DSADCnER  ======================================================== */
+ #define R_DSADC00_DSADCnER_ULE_Pos            (31UL)         /*!< ULE (Bit 31)                                          */
+ #define R_DSADC00_DSADCnER_ULE_Msk            (0x80000000UL) /*!< ULE (Bitfield-Mask: 0x01)                             */
+ #define R_DSADC00_DSADCnER_LLE_Pos            (30UL)         /*!< LLE (Bit 30)                                          */
+ #define R_DSADC00_DSADCnER_LLE_Msk            (0x40000000UL) /*!< LLE (Bitfield-Mask: 0x01)                             */
+ #define R_DSADC00_DSADCnER_ULECAP_Pos         (24UL)         /*!< ULECAP (Bit 24)                                       */
+ #define R_DSADC00_DSADCnER_ULECAP_Msk         (0x7000000UL)  /*!< ULECAP (Bitfield-Mask: 0x07)                          */
+ #define R_DSADC00_DSADCnER_OWE_Pos            (23UL)         /*!< OWE (Bit 23)                                          */
+ #define R_DSADC00_DSADCnER_OWE_Msk            (0x800000UL)   /*!< OWE (Bitfield-Mask: 0x01)                             */
+ #define R_DSADC00_DSADCnER_OWECAP_Pos         (16UL)         /*!< OWECAP (Bit 16)                                       */
+ #define R_DSADC00_DSADCnER_OWECAP_Msk         (0x70000UL)    /*!< OWECAP (Bitfield-Mask: 0x07)                          */
+ #define R_DSADC00_DSADCnER_PE_Pos             (15UL)         /*!< PE (Bit 15)                                           */
+ #define R_DSADC00_DSADCnER_PE_Msk             (0x8000UL)     /*!< PE (Bitfield-Mask: 0x01)                              */
+ #define R_DSADC00_DSADCnER_PECAP_Pos          (8UL)          /*!< PECAP (Bit 8)                                         */
+ #define R_DSADC00_DSADCnER_PECAP_Msk          (0x700UL)      /*!< PECAP (Bitfield-Mask: 0x07)                           */
+/* ======================================================  DSADCnTDLVR  ====================================================== */
+ #define R_DSADC00_DSADCnTDLVR_AN3NLV_Pos      (7UL)          /*!< AN3NLV (Bit 7)                                        */
+ #define R_DSADC00_DSADCnTDLVR_AN3NLV_Msk      (0x80UL)       /*!< AN3NLV (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnTDLVR_AN3PLV_Pos      (6UL)          /*!< AN3PLV (Bit 6)                                        */
+ #define R_DSADC00_DSADCnTDLVR_AN3PLV_Msk      (0x40UL)       /*!< AN3PLV (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnTDLVR_AN2NLV_Pos      (5UL)          /*!< AN2NLV (Bit 5)                                        */
+ #define R_DSADC00_DSADCnTDLVR_AN2NLV_Msk      (0x20UL)       /*!< AN2NLV (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnTDLVR_AN2PLV_Pos      (4UL)          /*!< AN2PLV (Bit 4)                                        */
+ #define R_DSADC00_DSADCnTDLVR_AN2PLV_Msk      (0x10UL)       /*!< AN2PLV (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnTDLVR_AN1NLV_Pos      (3UL)          /*!< AN1NLV (Bit 3)                                        */
+ #define R_DSADC00_DSADCnTDLVR_AN1NLV_Msk      (0x8UL)        /*!< AN1NLV (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnTDLVR_AN1PLV_Pos      (2UL)          /*!< AN1PLV (Bit 2)                                        */
+ #define R_DSADC00_DSADCnTDLVR_AN1PLV_Msk      (0x4UL)        /*!< AN1PLV (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnTDLVR_AN0NLV_Pos      (1UL)          /*!< AN0NLV (Bit 1)                                        */
+ #define R_DSADC00_DSADCnTDLVR_AN0NLV_Msk      (0x2UL)        /*!< AN0NLV (Bitfield-Mask: 0x01)                          */
+ #define R_DSADC00_DSADCnTDLVR_AN0PLV_Pos      (0UL)          /*!< AN0PLV (Bit 0)                                        */
+ #define R_DSADC00_DSADCnTDLVR_AN0PLV_Msk      (0x1UL)        /*!< AN0PLV (Bitfield-Mask: 0x01)                          */
+/* ======================================================  DSADCnTRCR  ======================================================= */
+ #define R_DSADC00_DSADCnTRCR_AN3NBSEN_Pos     (7UL)          /*!< AN3NBSEN (Bit 7)                                      */
+ #define R_DSADC00_DSADCnTRCR_AN3NBSEN_Msk     (0x80UL)       /*!< AN3NBSEN (Bitfield-Mask: 0x01)                        */
+ #define R_DSADC00_DSADCnTRCR_AN3PBSEN_Pos     (6UL)          /*!< AN3PBSEN (Bit 6)                                      */
+ #define R_DSADC00_DSADCnTRCR_AN3PBSEN_Msk     (0x40UL)       /*!< AN3PBSEN (Bitfield-Mask: 0x01)                        */
+ #define R_DSADC00_DSADCnTRCR_AN2NBSEN_Pos     (5UL)          /*!< AN2NBSEN (Bit 5)                                      */
+ #define R_DSADC00_DSADCnTRCR_AN2NBSEN_Msk     (0x20UL)       /*!< AN2NBSEN (Bitfield-Mask: 0x01)                        */
+ #define R_DSADC00_DSADCnTRCR_AN2PBSEN_Pos     (4UL)          /*!< AN2PBSEN (Bit 4)                                      */
+ #define R_DSADC00_DSADCnTRCR_AN2PBSEN_Msk     (0x10UL)       /*!< AN2PBSEN (Bitfield-Mask: 0x01)                        */
+ #define R_DSADC00_DSADCnTRCR_AN1NBSEN_Pos     (3UL)          /*!< AN1NBSEN (Bit 3)                                      */
+ #define R_DSADC00_DSADCnTRCR_AN1NBSEN_Msk     (0x8UL)        /*!< AN1NBSEN (Bitfield-Mask: 0x01)                        */
+ #define R_DSADC00_DSADCnTRCR_AN1PBSEN_Pos     (2UL)          /*!< AN1PBSEN (Bit 2)                                      */
+ #define R_DSADC00_DSADCnTRCR_AN1PBSEN_Msk     (0x4UL)        /*!< AN1PBSEN (Bitfield-Mask: 0x01)                        */
+ #define R_DSADC00_DSADCnTRCR_AN0NBSEN_Pos     (1UL)          /*!< AN0NBSEN (Bit 1)                                      */
+ #define R_DSADC00_DSADCnTRCR_AN0NBSEN_Msk     (0x2UL)        /*!< AN0NBSEN (Bitfield-Mask: 0x01)                        */
+ #define R_DSADC00_DSADCnTRCR_AN0PBSEN_Pos     (0UL)          /*!< AN0PBSEN (Bit 0)                                      */
+ #define R_DSADC00_DSADCnTRCR_AN0PBSEN_Msk     (0x1UL)        /*!< AN0PBSEN (Bitfield-Mask: 0x01)                        */
+/* =====================================================  DSADCnVBIASR  ====================================================== */
+ #define R_DSADC00_DSADCnVBIASR_VBIASEN_Pos    (0UL)          /*!< VBIASEN (Bit 0)                                       */
+ #define R_DSADC00_DSADCnVBIASR_VBIASEN_Msk    (0x1UL)        /*!< VBIASEN (Bitfield-Mask: 0x01)                         */
 
 /* =========================================================================================================================== */
 /* ================                                        R_DTSTRGSEL                                        ================ */
@@ -173344,533 +179598,456 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_PORT_LVDSCTRLF_LVDSCTRLF4_Msk     (0x10UL)       /*!< LVDSCTRLF4 (Bitfield-Mask: 0x01)                      */
 
 /* =========================================================================================================================== */
+/* ================                                          R_IPIR                                           ================ */
+/* =========================================================================================================================== */
+
+/* ========================================================  IPI0ENS  ======================================================== */
+ #define R_IPIR_IPI0ENS_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI0ENS_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI1ENS  ======================================================== */
+ #define R_IPIR_IPI1ENS_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI1ENS_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI2ENS  ======================================================== */
+ #define R_IPIR_IPI2ENS_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI2ENS_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI3ENS  ======================================================== */
+ #define R_IPIR_IPI3ENS_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI3ENS_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* =======================================================  IPI0FLGS  ======================================================== */
+ #define R_IPIR_IPI0FLGS_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI0FLGS_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1FLGS  ======================================================== */
+ #define R_IPIR_IPI1FLGS_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI1FLGS_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2FLGS  ======================================================== */
+ #define R_IPIR_IPI2FLGS_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI2FLGS_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3FLGS  ======================================================== */
+ #define R_IPIR_IPI3FLGS_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI3FLGS_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0FCLRS  ======================================================= */
+ #define R_IPIR_IPI0FCLRS_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0FCLRS_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1FCLRS  ======================================================= */
+ #define R_IPIR_IPI1FCLRS_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1FCLRS_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2FCLRS  ======================================================= */
+ #define R_IPIR_IPI2FCLRS_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2FCLRS_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3FCLRS  ======================================================= */
+ #define R_IPIR_IPI3FCLRS_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3FCLRS_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0REQS  ======================================================== */
+ #define R_IPIR_IPI0REQS_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI0REQS_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1REQS  ======================================================== */
+ #define R_IPIR_IPI1REQS_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI1REQS_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2REQS  ======================================================== */
+ #define R_IPIR_IPI2REQS_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI2REQS_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3REQS  ======================================================== */
+ #define R_IPIR_IPI3REQS_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI3REQS_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0RCLRS  ======================================================= */
+ #define R_IPIR_IPI0RCLRS_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0RCLRS_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1RCLRS  ======================================================= */
+ #define R_IPIR_IPI1RCLRS_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1RCLRS_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2RCLRS  ======================================================= */
+ #define R_IPIR_IPI2RCLRS_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2RCLRS_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3RCLRS  ======================================================= */
+ #define R_IPIR_IPI3RCLRS_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3RCLRS_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* ========================================================  IPI0EN0  ======================================================== */
+ #define R_IPIR_IPI0EN0_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI0EN0_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI1EN0  ======================================================== */
+ #define R_IPIR_IPI1EN0_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI1EN0_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI2EN0  ======================================================== */
+ #define R_IPIR_IPI2EN0_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI2EN0_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI3EN0  ======================================================== */
+ #define R_IPIR_IPI3EN0_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI3EN0_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI0EN1  ======================================================== */
+ #define R_IPIR_IPI0EN1_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI0EN1_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI1EN1  ======================================================== */
+ #define R_IPIR_IPI1EN1_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI1EN1_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI2EN1  ======================================================== */
+ #define R_IPIR_IPI2EN1_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI2EN1_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI3EN1  ======================================================== */
+ #define R_IPIR_IPI3EN1_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI3EN1_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI0EN2  ======================================================== */
+ #define R_IPIR_IPI0EN2_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI0EN2_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI1EN2  ======================================================== */
+ #define R_IPIR_IPI1EN2_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI1EN2_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI2EN2  ======================================================== */
+ #define R_IPIR_IPI2EN2_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI2EN2_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI3EN2  ======================================================== */
+ #define R_IPIR_IPI3EN2_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI3EN2_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI0EN3  ======================================================== */
+ #define R_IPIR_IPI0EN3_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI0EN3_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI1EN3  ======================================================== */
+ #define R_IPIR_IPI1EN3_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI1EN3_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI2EN3  ======================================================== */
+ #define R_IPIR_IPI2EN3_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI2EN3_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI3EN3  ======================================================== */
+ #define R_IPIR_IPI3EN3_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI3EN3_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI0EN4  ======================================================== */
+ #define R_IPIR_IPI0EN4_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI0EN4_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI1EN4  ======================================================== */
+ #define R_IPIR_IPI1EN4_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI1EN4_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI2EN4  ======================================================== */
+ #define R_IPIR_IPI2EN4_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI2EN4_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI3EN4  ======================================================== */
+ #define R_IPIR_IPI3EN4_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI3EN4_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI0EN5  ======================================================== */
+ #define R_IPIR_IPI0EN5_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI0EN5_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI1EN5  ======================================================== */
+ #define R_IPIR_IPI1EN5_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI1EN5_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI2EN5  ======================================================== */
+ #define R_IPIR_IPI2EN5_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI2EN5_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ========================================================  IPI3EN5  ======================================================== */
+ #define R_IPIR_IPI3EN5_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_IPI3EN5_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* =======================================================  IPI0FLG0  ======================================================== */
+ #define R_IPIR_IPI0FLG0_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI0FLG0_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1FLG0  ======================================================== */
+ #define R_IPIR_IPI1FLG0_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI1FLG0_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2FLG0  ======================================================== */
+ #define R_IPIR_IPI2FLG0_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI2FLG0_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3FLG0  ======================================================== */
+ #define R_IPIR_IPI3FLG0_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI3FLG0_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0FLG1  ======================================================== */
+ #define R_IPIR_IPI0FLG1_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI0FLG1_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1FLG1  ======================================================== */
+ #define R_IPIR_IPI1FLG1_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI1FLG1_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2FLG1  ======================================================== */
+ #define R_IPIR_IPI2FLG1_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI2FLG1_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3FLG1  ======================================================== */
+ #define R_IPIR_IPI3FLG1_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI3FLG1_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0FLG2  ======================================================== */
+ #define R_IPIR_IPI0FLG2_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI0FLG2_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1FLG2  ======================================================== */
+ #define R_IPIR_IPI1FLG2_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI1FLG2_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2FLG2  ======================================================== */
+ #define R_IPIR_IPI2FLG2_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI2FLG2_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3FLG2  ======================================================== */
+ #define R_IPIR_IPI3FLG2_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI3FLG2_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0FLG3  ======================================================== */
+ #define R_IPIR_IPI0FLG3_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI0FLG3_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1FLG3  ======================================================== */
+ #define R_IPIR_IPI1FLG3_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI1FLG3_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2FLG3  ======================================================== */
+ #define R_IPIR_IPI2FLG3_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI2FLG3_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3FLG3  ======================================================== */
+ #define R_IPIR_IPI3FLG3_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI3FLG3_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0FLG4  ======================================================== */
+ #define R_IPIR_IPI0FLG4_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI0FLG4_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1FLG4  ======================================================== */
+ #define R_IPIR_IPI1FLG4_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI1FLG4_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2FLG4  ======================================================== */
+ #define R_IPIR_IPI2FLG4_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI2FLG4_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3FLG4  ======================================================== */
+ #define R_IPIR_IPI3FLG4_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI3FLG4_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0FLG5  ======================================================== */
+ #define R_IPIR_IPI0FLG5_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI0FLG5_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1FLG5  ======================================================== */
+ #define R_IPIR_IPI1FLG5_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI1FLG5_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2FLG5  ======================================================== */
+ #define R_IPIR_IPI2FLG5_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI2FLG5_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3FLG5  ======================================================== */
+ #define R_IPIR_IPI3FLG5_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_IPI3FLG5_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0FCLR0  ======================================================= */
+ #define R_IPIR_IPI0FCLR0_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0FCLR0_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1FCLR0  ======================================================= */
+ #define R_IPIR_IPI1FCLR0_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1FCLR0_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2FCLR0  ======================================================= */
+ #define R_IPIR_IPI2FCLR0_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2FCLR0_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3FCLR0  ======================================================= */
+ #define R_IPIR_IPI3FCLR0_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3FCLR0_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0FCLR1  ======================================================= */
+ #define R_IPIR_IPI0FCLR1_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0FCLR1_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1FCLR1  ======================================================= */
+ #define R_IPIR_IPI1FCLR1_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1FCLR1_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2FCLR1  ======================================================= */
+ #define R_IPIR_IPI2FCLR1_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2FCLR1_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3FCLR1  ======================================================= */
+ #define R_IPIR_IPI3FCLR1_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3FCLR1_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0FCLR2  ======================================================= */
+ #define R_IPIR_IPI0FCLR2_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0FCLR2_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1FCLR2  ======================================================= */
+ #define R_IPIR_IPI1FCLR2_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1FCLR2_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2FCLR2  ======================================================= */
+ #define R_IPIR_IPI2FCLR2_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2FCLR2_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3FCLR2  ======================================================= */
+ #define R_IPIR_IPI3FCLR2_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3FCLR2_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0FCLR3  ======================================================= */
+ #define R_IPIR_IPI0FCLR3_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0FCLR3_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1FCLR3  ======================================================= */
+ #define R_IPIR_IPI1FCLR3_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1FCLR3_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2FCLR3  ======================================================= */
+ #define R_IPIR_IPI2FCLR3_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2FCLR3_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3FCLR3  ======================================================= */
+ #define R_IPIR_IPI3FCLR3_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3FCLR3_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0FCLR4  ======================================================= */
+ #define R_IPIR_IPI0FCLR4_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0FCLR4_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1FCLR4  ======================================================= */
+ #define R_IPIR_IPI1FCLR4_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1FCLR4_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2FCLR4  ======================================================= */
+ #define R_IPIR_IPI2FCLR4_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2FCLR4_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3FCLR4  ======================================================= */
+ #define R_IPIR_IPI3FCLR4_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3FCLR4_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0FCLR5  ======================================================= */
+ #define R_IPIR_IPI0FCLR5_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0FCLR5_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1FCLR5  ======================================================= */
+ #define R_IPIR_IPI1FCLR5_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1FCLR5_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2FCLR5  ======================================================= */
+ #define R_IPIR_IPI2FCLR5_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2FCLR5_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3FCLR5  ======================================================= */
+ #define R_IPIR_IPI3FCLR5_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3FCLR5_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0REQ0  ======================================================== */
+ #define R_IPIR_IPI0REQ0_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI0REQ0_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1REQ0  ======================================================== */
+ #define R_IPIR_IPI1REQ0_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI1REQ0_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2REQ0  ======================================================== */
+ #define R_IPIR_IPI2REQ0_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI2REQ0_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3REQ0  ======================================================== */
+ #define R_IPIR_IPI3REQ0_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI3REQ0_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0REQ1  ======================================================== */
+ #define R_IPIR_IPI0REQ1_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI0REQ1_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1REQ1  ======================================================== */
+ #define R_IPIR_IPI1REQ1_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI1REQ1_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2REQ1  ======================================================== */
+ #define R_IPIR_IPI2REQ1_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI2REQ1_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3REQ1  ======================================================== */
+ #define R_IPIR_IPI3REQ1_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI3REQ1_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0REQ2  ======================================================== */
+ #define R_IPIR_IPI0REQ2_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI0REQ2_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1REQ2  ======================================================== */
+ #define R_IPIR_IPI1REQ2_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI1REQ2_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2REQ2  ======================================================== */
+ #define R_IPIR_IPI2REQ2_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI2REQ2_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3REQ2  ======================================================== */
+ #define R_IPIR_IPI3REQ2_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI3REQ2_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0REQ3  ======================================================== */
+ #define R_IPIR_IPI0REQ3_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI0REQ3_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1REQ3  ======================================================== */
+ #define R_IPIR_IPI1REQ3_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI1REQ3_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2REQ3  ======================================================== */
+ #define R_IPIR_IPI2REQ3_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI2REQ3_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3REQ3  ======================================================== */
+ #define R_IPIR_IPI3REQ3_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI3REQ3_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0REQ4  ======================================================== */
+ #define R_IPIR_IPI0REQ4_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI0REQ4_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1REQ4  ======================================================== */
+ #define R_IPIR_IPI1REQ4_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI1REQ4_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2REQ4  ======================================================== */
+ #define R_IPIR_IPI2REQ4_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI2REQ4_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3REQ4  ======================================================== */
+ #define R_IPIR_IPI3REQ4_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI3REQ4_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0REQ5  ======================================================== */
+ #define R_IPIR_IPI0REQ5_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI0REQ5_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI1REQ5  ======================================================== */
+ #define R_IPIR_IPI1REQ5_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI1REQ5_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI2REQ5  ======================================================== */
+ #define R_IPIR_IPI2REQ5_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI2REQ5_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI3REQ5  ======================================================== */
+ #define R_IPIR_IPI3REQ5_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_IPI3REQ5_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =======================================================  IPI0RCLR0  ======================================================= */
+ #define R_IPIR_IPI0RCLR0_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0RCLR0_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1RCLR0  ======================================================= */
+ #define R_IPIR_IPI1RCLR0_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1RCLR0_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2RCLR0  ======================================================= */
+ #define R_IPIR_IPI2RCLR0_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2RCLR0_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3RCLR0  ======================================================= */
+ #define R_IPIR_IPI3RCLR0_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3RCLR0_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0RCLR1  ======================================================= */
+ #define R_IPIR_IPI0RCLR1_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0RCLR1_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1RCLR1  ======================================================= */
+ #define R_IPIR_IPI1RCLR1_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1RCLR1_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2RCLR1  ======================================================= */
+ #define R_IPIR_IPI2RCLR1_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2RCLR1_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3RCLR1  ======================================================= */
+ #define R_IPIR_IPI3RCLR1_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3RCLR1_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0RCLR2  ======================================================= */
+ #define R_IPIR_IPI0RCLR2_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0RCLR2_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1RCLR2  ======================================================= */
+ #define R_IPIR_IPI1RCLR2_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1RCLR2_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2RCLR2  ======================================================= */
+ #define R_IPIR_IPI2RCLR2_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2RCLR2_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3RCLR2  ======================================================= */
+ #define R_IPIR_IPI3RCLR2_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3RCLR2_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0RCLR3  ======================================================= */
+ #define R_IPIR_IPI0RCLR3_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0RCLR3_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1RCLR3  ======================================================= */
+ #define R_IPIR_IPI1RCLR3_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1RCLR3_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2RCLR3  ======================================================= */
+ #define R_IPIR_IPI2RCLR3_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2RCLR3_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3RCLR3  ======================================================= */
+ #define R_IPIR_IPI3RCLR3_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3RCLR3_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0RCLR4  ======================================================= */
+ #define R_IPIR_IPI0RCLR4_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0RCLR4_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1RCLR4  ======================================================= */
+ #define R_IPIR_IPI1RCLR4_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1RCLR4_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2RCLR4  ======================================================= */
+ #define R_IPIR_IPI2RCLR4_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2RCLR4_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3RCLR4  ======================================================= */
+ #define R_IPIR_IPI3RCLR4_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3RCLR4_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI0RCLR5  ======================================================= */
+ #define R_IPIR_IPI0RCLR5_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI0RCLR5_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI1RCLR5  ======================================================= */
+ #define R_IPIR_IPI1RCLR5_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI1RCLR5_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI2RCLR5  ======================================================= */
+ #define R_IPIR_IPI2RCLR5_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI2RCLR5_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+/* =======================================================  IPI3RCLR5  ======================================================= */
+ #define R_IPIR_IPI3RCLR5_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_IPI3RCLR5_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+
+/* =========================================================================================================================== */
 /* ================                                          R_JPORT                                          ================ */
 /* =========================================================================================================================== */
 
 /* =========================================================================================================================== */
-/* ================                                           R_LPS                                           ================ */
+/* ================                                          R_LTSC                                           ================ */
 /* =========================================================================================================================== */
 
-/* =========================================================  SCTLR  ========================================================= */
- #define R_LPS_SCTLR_TJIS2_Pos        (7UL)          /*!< TJIS2 (Bit 7)                                         */
- #define R_LPS_SCTLR_TJIS2_Msk        (0x80UL)       /*!< TJIS2 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_SCTLR_NUMDP2_Pos       (6UL)          /*!< NUMDP2 (Bit 6)                                        */
- #define R_LPS_SCTLR_NUMDP2_Msk       (0x40UL)       /*!< NUMDP2 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_SCTLR_NUMDP1_Pos       (5UL)          /*!< NUMDP1 (Bit 5)                                        */
- #define R_LPS_SCTLR_NUMDP1_Msk       (0x20UL)       /*!< NUMDP1 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_SCTLR_NUMDP0_Pos       (4UL)          /*!< NUMDP0 (Bit 4)                                        */
- #define R_LPS_SCTLR_NUMDP0_Msk       (0x10UL)       /*!< NUMDP0 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_SCTLR_TJIS1_Pos        (3UL)          /*!< TJIS1 (Bit 3)                                         */
- #define R_LPS_SCTLR_TJIS1_Msk        (0x8UL)        /*!< TJIS1 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_SCTLR_TJIS0_Pos        (2UL)          /*!< TJIS0 (Bit 2)                                         */
- #define R_LPS_SCTLR_TJIS0_Msk        (0x4UL)        /*!< TJIS0 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_SCTLR_ADEN_Pos         (1UL)          /*!< ADEN (Bit 1)                                          */
- #define R_LPS_SCTLR_ADEN_Msk         (0x2UL)        /*!< ADEN (Bitfield-Mask: 0x01)                            */
- #define R_LPS_SCTLR_DPEN_Pos         (0UL)          /*!< DPEN (Bit 0)                                          */
- #define R_LPS_SCTLR_DPEN_Msk         (0x1UL)        /*!< DPEN (Bitfield-Mask: 0x01)                            */
-/* =========================================================  EVFR  ========================================================== */
- #define R_LPS_EVFR_DINEVF_Pos        (0UL)          /*!< DINEVF (Bit 0)                                        */
- #define R_LPS_EVFR_DINEVF_Msk        (0x1UL)        /*!< DINEVF (Bitfield-Mask: 0x01)                          */
-/* ========================================================  DPSELR0  ======================================================== */
- #define R_LPS_DPSELR0_D0EN_23_Pos    (23UL)         /*!< D0EN_23 (Bit 23)                                      */
- #define R_LPS_DPSELR0_D0EN_23_Msk    (0x800000UL)   /*!< D0EN_23 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_22_Pos    (22UL)         /*!< D0EN_22 (Bit 22)                                      */
- #define R_LPS_DPSELR0_D0EN_22_Msk    (0x400000UL)   /*!< D0EN_22 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_21_Pos    (21UL)         /*!< D0EN_21 (Bit 21)                                      */
- #define R_LPS_DPSELR0_D0EN_21_Msk    (0x200000UL)   /*!< D0EN_21 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_20_Pos    (20UL)         /*!< D0EN_20 (Bit 20)                                      */
- #define R_LPS_DPSELR0_D0EN_20_Msk    (0x100000UL)   /*!< D0EN_20 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_19_Pos    (19UL)         /*!< D0EN_19 (Bit 19)                                      */
- #define R_LPS_DPSELR0_D0EN_19_Msk    (0x80000UL)    /*!< D0EN_19 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_18_Pos    (18UL)         /*!< D0EN_18 (Bit 18)                                      */
- #define R_LPS_DPSELR0_D0EN_18_Msk    (0x40000UL)    /*!< D0EN_18 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_17_Pos    (17UL)         /*!< D0EN_17 (Bit 17)                                      */
- #define R_LPS_DPSELR0_D0EN_17_Msk    (0x20000UL)    /*!< D0EN_17 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_16_Pos    (16UL)         /*!< D0EN_16 (Bit 16)                                      */
- #define R_LPS_DPSELR0_D0EN_16_Msk    (0x10000UL)    /*!< D0EN_16 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_15_Pos    (15UL)         /*!< D0EN_15 (Bit 15)                                      */
- #define R_LPS_DPSELR0_D0EN_15_Msk    (0x8000UL)     /*!< D0EN_15 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_14_Pos    (14UL)         /*!< D0EN_14 (Bit 14)                                      */
- #define R_LPS_DPSELR0_D0EN_14_Msk    (0x4000UL)     /*!< D0EN_14 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_13_Pos    (13UL)         /*!< D0EN_13 (Bit 13)                                      */
- #define R_LPS_DPSELR0_D0EN_13_Msk    (0x2000UL)     /*!< D0EN_13 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_12_Pos    (12UL)         /*!< D0EN_12 (Bit 12)                                      */
- #define R_LPS_DPSELR0_D0EN_12_Msk    (0x1000UL)     /*!< D0EN_12 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_11_Pos    (11UL)         /*!< D0EN_11 (Bit 11)                                      */
- #define R_LPS_DPSELR0_D0EN_11_Msk    (0x800UL)      /*!< D0EN_11 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_10_Pos    (10UL)         /*!< D0EN_10 (Bit 10)                                      */
- #define R_LPS_DPSELR0_D0EN_10_Msk    (0x400UL)      /*!< D0EN_10 (Bitfield-Mask: 0x01)                         */
- #define R_LPS_DPSELR0_D0EN_9_Pos     (9UL)          /*!< D0EN_9 (Bit 9)                                        */
- #define R_LPS_DPSELR0_D0EN_9_Msk     (0x200UL)      /*!< D0EN_9 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELR0_D0EN_8_Pos     (8UL)          /*!< D0EN_8 (Bit 8)                                        */
- #define R_LPS_DPSELR0_D0EN_8_Msk     (0x100UL)      /*!< D0EN_8 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELR0_D0EN_7_Pos     (7UL)          /*!< D0EN_7 (Bit 7)                                        */
- #define R_LPS_DPSELR0_D0EN_7_Msk     (0x80UL)       /*!< D0EN_7 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELR0_D0EN_6_Pos     (6UL)          /*!< D0EN_6 (Bit 6)                                        */
- #define R_LPS_DPSELR0_D0EN_6_Msk     (0x40UL)       /*!< D0EN_6 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELR0_D0EN_5_Pos     (5UL)          /*!< D0EN_5 (Bit 5)                                        */
- #define R_LPS_DPSELR0_D0EN_5_Msk     (0x20UL)       /*!< D0EN_5 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELR0_D0EN_4_Pos     (4UL)          /*!< D0EN_4 (Bit 4)                                        */
- #define R_LPS_DPSELR0_D0EN_4_Msk     (0x10UL)       /*!< D0EN_4 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELR0_D0EN_3_Pos     (3UL)          /*!< D0EN_3 (Bit 3)                                        */
- #define R_LPS_DPSELR0_D0EN_3_Msk     (0x8UL)        /*!< D0EN_3 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELR0_D0EN_2_Pos     (2UL)          /*!< D0EN_2 (Bit 2)                                        */
- #define R_LPS_DPSELR0_D0EN_2_Msk     (0x4UL)        /*!< D0EN_2 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELR0_D0EN_1_Pos     (1UL)          /*!< D0EN_1 (Bit 1)                                        */
- #define R_LPS_DPSELR0_D0EN_1_Msk     (0x2UL)        /*!< D0EN_1 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELR0_D0EN_0_Pos     (0UL)          /*!< D0EN_0 (Bit 0)                                        */
- #define R_LPS_DPSELR0_D0EN_0_Msk     (0x1UL)        /*!< D0EN_0 (Bitfield-Mask: 0x01)                          */
-/* ========================================================  DPSELRM  ======================================================== */
- #define R_LPS_DPSELRM_D4EN_7_Pos     (31UL)         /*!< D4EN_7 (Bit 31)                                       */
- #define R_LPS_DPSELRM_D4EN_7_Msk     (0x80000000UL) /*!< D4EN_7 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D4EN_6_Pos     (30UL)         /*!< D4EN_6 (Bit 30)                                       */
- #define R_LPS_DPSELRM_D4EN_6_Msk     (0x40000000UL) /*!< D4EN_6 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D4EN_5_Pos     (29UL)         /*!< D4EN_5 (Bit 29)                                       */
- #define R_LPS_DPSELRM_D4EN_5_Msk     (0x20000000UL) /*!< D4EN_5 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D4EN_4_Pos     (28UL)         /*!< D4EN_4 (Bit 28)                                       */
- #define R_LPS_DPSELRM_D4EN_4_Msk     (0x10000000UL) /*!< D4EN_4 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D4EN_3_Pos     (27UL)         /*!< D4EN_3 (Bit 27)                                       */
- #define R_LPS_DPSELRM_D4EN_3_Msk     (0x8000000UL)  /*!< D4EN_3 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D4EN_2_Pos     (26UL)         /*!< D4EN_2 (Bit 26)                                       */
- #define R_LPS_DPSELRM_D4EN_2_Msk     (0x4000000UL)  /*!< D4EN_2 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D4EN_1_Pos     (25UL)         /*!< D4EN_1 (Bit 25)                                       */
- #define R_LPS_DPSELRM_D4EN_1_Msk     (0x2000000UL)  /*!< D4EN_1 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D4EN_0_Pos     (24UL)         /*!< D4EN_0 (Bit 24)                                       */
- #define R_LPS_DPSELRM_D4EN_0_Msk     (0x1000000UL)  /*!< D4EN_0 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D3EN_7_Pos     (23UL)         /*!< D3EN_7 (Bit 23)                                       */
- #define R_LPS_DPSELRM_D3EN_7_Msk     (0x800000UL)   /*!< D3EN_7 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D3EN_6_Pos     (22UL)         /*!< D3EN_6 (Bit 22)                                       */
- #define R_LPS_DPSELRM_D3EN_6_Msk     (0x400000UL)   /*!< D3EN_6 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D3EN_5_Pos     (21UL)         /*!< D3EN_5 (Bit 21)                                       */
- #define R_LPS_DPSELRM_D3EN_5_Msk     (0x200000UL)   /*!< D3EN_5 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D3EN_4_Pos     (20UL)         /*!< D3EN_4 (Bit 20)                                       */
- #define R_LPS_DPSELRM_D3EN_4_Msk     (0x100000UL)   /*!< D3EN_4 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D3EN_3_Pos     (19UL)         /*!< D3EN_3 (Bit 19)                                       */
- #define R_LPS_DPSELRM_D3EN_3_Msk     (0x80000UL)    /*!< D3EN_3 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D3EN_2_Pos     (18UL)         /*!< D3EN_2 (Bit 18)                                       */
- #define R_LPS_DPSELRM_D3EN_2_Msk     (0x40000UL)    /*!< D3EN_2 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D3EN_1_Pos     (17UL)         /*!< D3EN_1 (Bit 17)                                       */
- #define R_LPS_DPSELRM_D3EN_1_Msk     (0x20000UL)    /*!< D3EN_1 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D3EN_0_Pos     (16UL)         /*!< D3EN_0 (Bit 16)                                       */
- #define R_LPS_DPSELRM_D3EN_0_Msk     (0x10000UL)    /*!< D3EN_0 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D2EN_7_Pos     (15UL)         /*!< D2EN_7 (Bit 15)                                       */
- #define R_LPS_DPSELRM_D2EN_7_Msk     (0x8000UL)     /*!< D2EN_7 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D2EN_6_Pos     (14UL)         /*!< D2EN_6 (Bit 14)                                       */
- #define R_LPS_DPSELRM_D2EN_6_Msk     (0x4000UL)     /*!< D2EN_6 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D2EN_5_Pos     (13UL)         /*!< D2EN_5 (Bit 13)                                       */
- #define R_LPS_DPSELRM_D2EN_5_Msk     (0x2000UL)     /*!< D2EN_5 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D2EN_4_Pos     (12UL)         /*!< D2EN_4 (Bit 12)                                       */
- #define R_LPS_DPSELRM_D2EN_4_Msk     (0x1000UL)     /*!< D2EN_4 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D2EN_3_Pos     (11UL)         /*!< D2EN_3 (Bit 11)                                       */
- #define R_LPS_DPSELRM_D2EN_3_Msk     (0x800UL)      /*!< D2EN_3 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D2EN_2_Pos     (10UL)         /*!< D2EN_2 (Bit 10)                                       */
- #define R_LPS_DPSELRM_D2EN_2_Msk     (0x400UL)      /*!< D2EN_2 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D2EN_1_Pos     (9UL)          /*!< D2EN_1 (Bit 9)                                        */
- #define R_LPS_DPSELRM_D2EN_1_Msk     (0x200UL)      /*!< D2EN_1 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D2EN_0_Pos     (8UL)          /*!< D2EN_0 (Bit 8)                                        */
- #define R_LPS_DPSELRM_D2EN_0_Msk     (0x100UL)      /*!< D2EN_0 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D1EN_7_Pos     (7UL)          /*!< D1EN_7 (Bit 7)                                        */
- #define R_LPS_DPSELRM_D1EN_7_Msk     (0x80UL)       /*!< D1EN_7 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D1EN_6_Pos     (6UL)          /*!< D1EN_6 (Bit 6)                                        */
- #define R_LPS_DPSELRM_D1EN_6_Msk     (0x40UL)       /*!< D1EN_6 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D1EN_5_Pos     (5UL)          /*!< D1EN_5 (Bit 5)                                        */
- #define R_LPS_DPSELRM_D1EN_5_Msk     (0x20UL)       /*!< D1EN_5 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D1EN_4_Pos     (4UL)          /*!< D1EN_4 (Bit 4)                                        */
- #define R_LPS_DPSELRM_D1EN_4_Msk     (0x10UL)       /*!< D1EN_4 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D1EN_3_Pos     (3UL)          /*!< D1EN_3 (Bit 3)                                        */
- #define R_LPS_DPSELRM_D1EN_3_Msk     (0x8UL)        /*!< D1EN_3 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D1EN_2_Pos     (2UL)          /*!< D1EN_2 (Bit 2)                                        */
- #define R_LPS_DPSELRM_D1EN_2_Msk     (0x4UL)        /*!< D1EN_2 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D1EN_1_Pos     (1UL)          /*!< D1EN_1 (Bit 1)                                        */
- #define R_LPS_DPSELRM_D1EN_1_Msk     (0x2UL)        /*!< D1EN_1 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRM_D1EN_0_Pos     (0UL)          /*!< D1EN_0 (Bit 0)                                        */
- #define R_LPS_DPSELRM_D1EN_0_Msk     (0x1UL)        /*!< D1EN_0 (Bitfield-Mask: 0x01)                          */
-/* ========================================================  DPSELRH  ======================================================== */
- #define R_LPS_DPSELRH_D7EN_7_Pos     (23UL)         /*!< D7EN_7 (Bit 23)                                       */
- #define R_LPS_DPSELRH_D7EN_7_Msk     (0x800000UL)   /*!< D7EN_7 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D7EN_6_Pos     (22UL)         /*!< D7EN_6 (Bit 22)                                       */
- #define R_LPS_DPSELRH_D7EN_6_Msk     (0x400000UL)   /*!< D7EN_6 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D7EN_5_Pos     (21UL)         /*!< D7EN_5 (Bit 21)                                       */
- #define R_LPS_DPSELRH_D7EN_5_Msk     (0x200000UL)   /*!< D7EN_5 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D7EN_4_Pos     (20UL)         /*!< D7EN_4 (Bit 20)                                       */
- #define R_LPS_DPSELRH_D7EN_4_Msk     (0x100000UL)   /*!< D7EN_4 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D7EN_3_Pos     (19UL)         /*!< D7EN_3 (Bit 19)                                       */
- #define R_LPS_DPSELRH_D7EN_3_Msk     (0x80000UL)    /*!< D7EN_3 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D7EN_2_Pos     (18UL)         /*!< D7EN_2 (Bit 18)                                       */
- #define R_LPS_DPSELRH_D7EN_2_Msk     (0x40000UL)    /*!< D7EN_2 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D7EN_1_Pos     (17UL)         /*!< D7EN_1 (Bit 17)                                       */
- #define R_LPS_DPSELRH_D7EN_1_Msk     (0x20000UL)    /*!< D7EN_1 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D7EN_0_Pos     (16UL)         /*!< D7EN_0 (Bit 16)                                       */
- #define R_LPS_DPSELRH_D7EN_0_Msk     (0x10000UL)    /*!< D7EN_0 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D6EN_7_Pos     (15UL)         /*!< D6EN_7 (Bit 15)                                       */
- #define R_LPS_DPSELRH_D6EN_7_Msk     (0x8000UL)     /*!< D6EN_7 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D6EN_6_Pos     (14UL)         /*!< D6EN_6 (Bit 14)                                       */
- #define R_LPS_DPSELRH_D6EN_6_Msk     (0x4000UL)     /*!< D6EN_6 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D6EN_5_Pos     (13UL)         /*!< D6EN_5 (Bit 13)                                       */
- #define R_LPS_DPSELRH_D6EN_5_Msk     (0x2000UL)     /*!< D6EN_5 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D6EN_4_Pos     (12UL)         /*!< D6EN_4 (Bit 12)                                       */
- #define R_LPS_DPSELRH_D6EN_4_Msk     (0x1000UL)     /*!< D6EN_4 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D6EN_3_Pos     (11UL)         /*!< D6EN_3 (Bit 11)                                       */
- #define R_LPS_DPSELRH_D6EN_3_Msk     (0x800UL)      /*!< D6EN_3 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D6EN_2_Pos     (10UL)         /*!< D6EN_2 (Bit 10)                                       */
- #define R_LPS_DPSELRH_D6EN_2_Msk     (0x400UL)      /*!< D6EN_2 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D6EN_1_Pos     (9UL)          /*!< D6EN_1 (Bit 9)                                        */
- #define R_LPS_DPSELRH_D6EN_1_Msk     (0x200UL)      /*!< D6EN_1 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D6EN_0_Pos     (8UL)          /*!< D6EN_0 (Bit 8)                                        */
- #define R_LPS_DPSELRH_D6EN_0_Msk     (0x100UL)      /*!< D6EN_0 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D5EN_7_Pos     (7UL)          /*!< D5EN_7 (Bit 7)                                        */
- #define R_LPS_DPSELRH_D5EN_7_Msk     (0x80UL)       /*!< D5EN_7 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D5EN_6_Pos     (6UL)          /*!< D5EN_6 (Bit 6)                                        */
- #define R_LPS_DPSELRH_D5EN_6_Msk     (0x40UL)       /*!< D5EN_6 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D5EN_5_Pos     (5UL)          /*!< D5EN_5 (Bit 5)                                        */
- #define R_LPS_DPSELRH_D5EN_5_Msk     (0x20UL)       /*!< D5EN_5 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D5EN_4_Pos     (4UL)          /*!< D5EN_4 (Bit 4)                                        */
- #define R_LPS_DPSELRH_D5EN_4_Msk     (0x10UL)       /*!< D5EN_4 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D5EN_3_Pos     (3UL)          /*!< D5EN_3 (Bit 3)                                        */
- #define R_LPS_DPSELRH_D5EN_3_Msk     (0x8UL)        /*!< D5EN_3 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D5EN_2_Pos     (2UL)          /*!< D5EN_2 (Bit 2)                                        */
- #define R_LPS_DPSELRH_D5EN_2_Msk     (0x4UL)        /*!< D5EN_2 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D5EN_1_Pos     (1UL)          /*!< D5EN_1 (Bit 1)                                        */
- #define R_LPS_DPSELRH_D5EN_1_Msk     (0x2UL)        /*!< D5EN_1 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPSELRH_D5EN_0_Pos     (0UL)          /*!< D5EN_0 (Bit 0)                                        */
- #define R_LPS_DPSELRH_D5EN_0_Msk     (0x1UL)        /*!< D5EN_0 (Bitfield-Mask: 0x01)                          */
-/* ========================================================  DPDSR0  ========================================================= */
- #define R_LPS_DPDSR0_D0_23_Pos       (23UL)         /*!< D0_23 (Bit 23)                                        */
- #define R_LPS_DPDSR0_D0_23_Msk       (0x800000UL)   /*!< D0_23 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_22_Pos       (22UL)         /*!< D0_22 (Bit 22)                                        */
- #define R_LPS_DPDSR0_D0_22_Msk       (0x400000UL)   /*!< D0_22 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_21_Pos       (21UL)         /*!< D0_21 (Bit 21)                                        */
- #define R_LPS_DPDSR0_D0_21_Msk       (0x200000UL)   /*!< D0_21 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_20_Pos       (20UL)         /*!< D0_20 (Bit 20)                                        */
- #define R_LPS_DPDSR0_D0_20_Msk       (0x100000UL)   /*!< D0_20 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_19_Pos       (19UL)         /*!< D0_19 (Bit 19)                                        */
- #define R_LPS_DPDSR0_D0_19_Msk       (0x80000UL)    /*!< D0_19 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_18_Pos       (18UL)         /*!< D0_18 (Bit 18)                                        */
- #define R_LPS_DPDSR0_D0_18_Msk       (0x40000UL)    /*!< D0_18 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_17_Pos       (17UL)         /*!< D0_17 (Bit 17)                                        */
- #define R_LPS_DPDSR0_D0_17_Msk       (0x20000UL)    /*!< D0_17 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_16_Pos       (16UL)         /*!< D0_16 (Bit 16)                                        */
- #define R_LPS_DPDSR0_D0_16_Msk       (0x10000UL)    /*!< D0_16 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_15_Pos       (15UL)         /*!< D0_15 (Bit 15)                                        */
- #define R_LPS_DPDSR0_D0_15_Msk       (0x8000UL)     /*!< D0_15 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_14_Pos       (14UL)         /*!< D0_14 (Bit 14)                                        */
- #define R_LPS_DPDSR0_D0_14_Msk       (0x4000UL)     /*!< D0_14 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_13_Pos       (13UL)         /*!< D0_13 (Bit 13)                                        */
- #define R_LPS_DPDSR0_D0_13_Msk       (0x2000UL)     /*!< D0_13 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_12_Pos       (12UL)         /*!< D0_12 (Bit 12)                                        */
- #define R_LPS_DPDSR0_D0_12_Msk       (0x1000UL)     /*!< D0_12 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_11_Pos       (11UL)         /*!< D0_11 (Bit 11)                                        */
- #define R_LPS_DPDSR0_D0_11_Msk       (0x800UL)      /*!< D0_11 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_10_Pos       (10UL)         /*!< D0_10 (Bit 10)                                        */
- #define R_LPS_DPDSR0_D0_10_Msk       (0x400UL)      /*!< D0_10 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDSR0_D0_9_Pos        (9UL)          /*!< D0_9 (Bit 9)                                          */
- #define R_LPS_DPDSR0_D0_9_Msk        (0x200UL)      /*!< D0_9 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSR0_D0_8_Pos        (8UL)          /*!< D0_8 (Bit 8)                                          */
- #define R_LPS_DPDSR0_D0_8_Msk        (0x100UL)      /*!< D0_8 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSR0_D0_7_Pos        (7UL)          /*!< D0_7 (Bit 7)                                          */
- #define R_LPS_DPDSR0_D0_7_Msk        (0x80UL)       /*!< D0_7 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSR0_D0_6_Pos        (6UL)          /*!< D0_6 (Bit 6)                                          */
- #define R_LPS_DPDSR0_D0_6_Msk        (0x40UL)       /*!< D0_6 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSR0_D0_5_Pos        (5UL)          /*!< D0_5 (Bit 5)                                          */
- #define R_LPS_DPDSR0_D0_5_Msk        (0x20UL)       /*!< D0_5 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSR0_D0_4_Pos        (4UL)          /*!< D0_4 (Bit 4)                                          */
- #define R_LPS_DPDSR0_D0_4_Msk        (0x10UL)       /*!< D0_4 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSR0_D0_3_Pos        (3UL)          /*!< D0_3 (Bit 3)                                          */
- #define R_LPS_DPDSR0_D0_3_Msk        (0x8UL)        /*!< D0_3 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSR0_D0_2_Pos        (2UL)          /*!< D0_2 (Bit 2)                                          */
- #define R_LPS_DPDSR0_D0_2_Msk        (0x4UL)        /*!< D0_2 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSR0_D0_1_Pos        (1UL)          /*!< D0_1 (Bit 1)                                          */
- #define R_LPS_DPDSR0_D0_1_Msk        (0x2UL)        /*!< D0_1 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSR0_D0_0_Pos        (0UL)          /*!< D0_0 (Bit 0)                                          */
- #define R_LPS_DPDSR0_D0_0_Msk        (0x1UL)        /*!< D0_0 (Bitfield-Mask: 0x01)                            */
-/* ========================================================  DPDSRM  ========================================================= */
- #define R_LPS_DPDSRM_D4_7_Pos        (31UL)         /*!< D4_7 (Bit 31)                                         */
- #define R_LPS_DPDSRM_D4_7_Msk        (0x80000000UL) /*!< D4_7 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D4_6_Pos        (30UL)         /*!< D4_6 (Bit 30)                                         */
- #define R_LPS_DPDSRM_D4_6_Msk        (0x40000000UL) /*!< D4_6 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D4_5_Pos        (29UL)         /*!< D4_5 (Bit 29)                                         */
- #define R_LPS_DPDSRM_D4_5_Msk        (0x20000000UL) /*!< D4_5 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D4_4_Pos        (28UL)         /*!< D4_4 (Bit 28)                                         */
- #define R_LPS_DPDSRM_D4_4_Msk        (0x10000000UL) /*!< D4_4 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D4_3_Pos        (27UL)         /*!< D4_3 (Bit 27)                                         */
- #define R_LPS_DPDSRM_D4_3_Msk        (0x8000000UL)  /*!< D4_3 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D4_2_Pos        (26UL)         /*!< D4_2 (Bit 26)                                         */
- #define R_LPS_DPDSRM_D4_2_Msk        (0x4000000UL)  /*!< D4_2 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D4_1_Pos        (25UL)         /*!< D4_1 (Bit 25)                                         */
- #define R_LPS_DPDSRM_D4_1_Msk        (0x2000000UL)  /*!< D4_1 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D4_0_Pos        (24UL)         /*!< D4_0 (Bit 24)                                         */
- #define R_LPS_DPDSRM_D4_0_Msk        (0x1000000UL)  /*!< D4_0 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D3_7_Pos        (23UL)         /*!< D3_7 (Bit 23)                                         */
- #define R_LPS_DPDSRM_D3_7_Msk        (0x800000UL)   /*!< D3_7 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D3_6_Pos        (22UL)         /*!< D3_6 (Bit 22)                                         */
- #define R_LPS_DPDSRM_D3_6_Msk        (0x400000UL)   /*!< D3_6 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D3_5_Pos        (21UL)         /*!< D3_5 (Bit 21)                                         */
- #define R_LPS_DPDSRM_D3_5_Msk        (0x200000UL)   /*!< D3_5 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D3_4_Pos        (20UL)         /*!< D3_4 (Bit 20)                                         */
- #define R_LPS_DPDSRM_D3_4_Msk        (0x100000UL)   /*!< D3_4 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D3_3_Pos        (19UL)         /*!< D3_3 (Bit 19)                                         */
- #define R_LPS_DPDSRM_D3_3_Msk        (0x80000UL)    /*!< D3_3 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D3_2_Pos        (18UL)         /*!< D3_2 (Bit 18)                                         */
- #define R_LPS_DPDSRM_D3_2_Msk        (0x40000UL)    /*!< D3_2 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D3_1_Pos        (17UL)         /*!< D3_1 (Bit 17)                                         */
- #define R_LPS_DPDSRM_D3_1_Msk        (0x20000UL)    /*!< D3_1 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D3_0_Pos        (16UL)         /*!< D3_0 (Bit 16)                                         */
- #define R_LPS_DPDSRM_D3_0_Msk        (0x10000UL)    /*!< D3_0 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D2_7_Pos        (15UL)         /*!< D2_7 (Bit 15)                                         */
- #define R_LPS_DPDSRM_D2_7_Msk        (0x8000UL)     /*!< D2_7 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D2_6_Pos        (14UL)         /*!< D2_6 (Bit 14)                                         */
- #define R_LPS_DPDSRM_D2_6_Msk        (0x4000UL)     /*!< D2_6 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D2_5_Pos        (13UL)         /*!< D2_5 (Bit 13)                                         */
- #define R_LPS_DPDSRM_D2_5_Msk        (0x2000UL)     /*!< D2_5 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D2_4_Pos        (12UL)         /*!< D2_4 (Bit 12)                                         */
- #define R_LPS_DPDSRM_D2_4_Msk        (0x1000UL)     /*!< D2_4 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D2_3_Pos        (11UL)         /*!< D2_3 (Bit 11)                                         */
- #define R_LPS_DPDSRM_D2_3_Msk        (0x800UL)      /*!< D2_3 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D2_2_Pos        (10UL)         /*!< D2_2 (Bit 10)                                         */
- #define R_LPS_DPDSRM_D2_2_Msk        (0x400UL)      /*!< D2_2 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D2_1_Pos        (9UL)          /*!< D2_1 (Bit 9)                                          */
- #define R_LPS_DPDSRM_D2_1_Msk        (0x200UL)      /*!< D2_1 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D2_0_Pos        (8UL)          /*!< D2_0 (Bit 8)                                          */
- #define R_LPS_DPDSRM_D2_0_Msk        (0x100UL)      /*!< D2_0 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D1_7_Pos        (7UL)          /*!< D1_7 (Bit 7)                                          */
- #define R_LPS_DPDSRM_D1_7_Msk        (0x80UL)       /*!< D1_7 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D1_6_Pos        (6UL)          /*!< D1_6 (Bit 6)                                          */
- #define R_LPS_DPDSRM_D1_6_Msk        (0x40UL)       /*!< D1_6 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D1_5_Pos        (5UL)          /*!< D1_5 (Bit 5)                                          */
- #define R_LPS_DPDSRM_D1_5_Msk        (0x20UL)       /*!< D1_5 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D1_4_Pos        (4UL)          /*!< D1_4 (Bit 4)                                          */
- #define R_LPS_DPDSRM_D1_4_Msk        (0x10UL)       /*!< D1_4 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D1_3_Pos        (3UL)          /*!< D1_3 (Bit 3)                                          */
- #define R_LPS_DPDSRM_D1_3_Msk        (0x8UL)        /*!< D1_3 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D1_2_Pos        (2UL)          /*!< D1_2 (Bit 2)                                          */
- #define R_LPS_DPDSRM_D1_2_Msk        (0x4UL)        /*!< D1_2 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D1_1_Pos        (1UL)          /*!< D1_1 (Bit 1)                                          */
- #define R_LPS_DPDSRM_D1_1_Msk        (0x2UL)        /*!< D1_1 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRM_D1_0_Pos        (0UL)          /*!< D1_0 (Bit 0)                                          */
- #define R_LPS_DPDSRM_D1_0_Msk        (0x1UL)        /*!< D1_0 (Bitfield-Mask: 0x01)                            */
-/* ========================================================  DPDSRH  ========================================================= */
- #define R_LPS_DPDSRH_D7_7_Pos        (23UL)         /*!< D7_7 (Bit 23)                                         */
- #define R_LPS_DPDSRH_D7_7_Msk        (0x800000UL)   /*!< D7_7 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D7_6_Pos        (22UL)         /*!< D7_6 (Bit 22)                                         */
- #define R_LPS_DPDSRH_D7_6_Msk        (0x400000UL)   /*!< D7_6 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D7_5_Pos        (21UL)         /*!< D7_5 (Bit 21)                                         */
- #define R_LPS_DPDSRH_D7_5_Msk        (0x200000UL)   /*!< D7_5 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D7_4_Pos        (20UL)         /*!< D7_4 (Bit 20)                                         */
- #define R_LPS_DPDSRH_D7_4_Msk        (0x100000UL)   /*!< D7_4 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D7_3_Pos        (19UL)         /*!< D7_3 (Bit 19)                                         */
- #define R_LPS_DPDSRH_D7_3_Msk        (0x80000UL)    /*!< D7_3 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D7_2_Pos        (18UL)         /*!< D7_2 (Bit 18)                                         */
- #define R_LPS_DPDSRH_D7_2_Msk        (0x40000UL)    /*!< D7_2 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D7_1_Pos        (17UL)         /*!< D7_1 (Bit 17)                                         */
- #define R_LPS_DPDSRH_D7_1_Msk        (0x20000UL)    /*!< D7_1 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D7_0_Pos        (16UL)         /*!< D7_0 (Bit 16)                                         */
- #define R_LPS_DPDSRH_D7_0_Msk        (0x10000UL)    /*!< D7_0 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D6_7_Pos        (15UL)         /*!< D6_7 (Bit 15)                                         */
- #define R_LPS_DPDSRH_D6_7_Msk        (0x8000UL)     /*!< D6_7 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D6_6_Pos        (14UL)         /*!< D6_6 (Bit 14)                                         */
- #define R_LPS_DPDSRH_D6_6_Msk        (0x4000UL)     /*!< D6_6 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D6_5_Pos        (13UL)         /*!< D6_5 (Bit 13)                                         */
- #define R_LPS_DPDSRH_D6_5_Msk        (0x2000UL)     /*!< D6_5 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D6_4_Pos        (12UL)         /*!< D6_4 (Bit 12)                                         */
- #define R_LPS_DPDSRH_D6_4_Msk        (0x1000UL)     /*!< D6_4 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D6_3_Pos        (11UL)         /*!< D6_3 (Bit 11)                                         */
- #define R_LPS_DPDSRH_D6_3_Msk        (0x800UL)      /*!< D6_3 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D6_2_Pos        (10UL)         /*!< D6_2 (Bit 10)                                         */
- #define R_LPS_DPDSRH_D6_2_Msk        (0x400UL)      /*!< D6_2 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D6_1_Pos        (9UL)          /*!< D6_1 (Bit 9)                                          */
- #define R_LPS_DPDSRH_D6_1_Msk        (0x200UL)      /*!< D6_1 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D6_0_Pos        (8UL)          /*!< D6_0 (Bit 8)                                          */
- #define R_LPS_DPDSRH_D6_0_Msk        (0x100UL)      /*!< D6_0 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D5_7_Pos        (7UL)          /*!< D5_7 (Bit 7)                                          */
- #define R_LPS_DPDSRH_D5_7_Msk        (0x80UL)       /*!< D5_7 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D5_6_Pos        (6UL)          /*!< D5_6 (Bit 6)                                          */
- #define R_LPS_DPDSRH_D5_6_Msk        (0x40UL)       /*!< D5_6 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D5_5_Pos        (5UL)          /*!< D5_5 (Bit 5)                                          */
- #define R_LPS_DPDSRH_D5_5_Msk        (0x20UL)       /*!< D5_5 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D5_4_Pos        (4UL)          /*!< D5_4 (Bit 4)                                          */
- #define R_LPS_DPDSRH_D5_4_Msk        (0x10UL)       /*!< D5_4 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D5_3_Pos        (3UL)          /*!< D5_3 (Bit 3)                                          */
- #define R_LPS_DPDSRH_D5_3_Msk        (0x8UL)        /*!< D5_3 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D5_2_Pos        (2UL)          /*!< D5_2 (Bit 2)                                          */
- #define R_LPS_DPDSRH_D5_2_Msk        (0x4UL)        /*!< D5_2 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D5_1_Pos        (1UL)          /*!< D5_1 (Bit 1)                                          */
- #define R_LPS_DPDSRH_D5_1_Msk        (0x2UL)        /*!< D5_1 (Bitfield-Mask: 0x01)                            */
- #define R_LPS_DPDSRH_D5_0_Pos        (0UL)          /*!< D5_0 (Bit 0)                                          */
- #define R_LPS_DPDSRH_D5_0_Msk        (0x1UL)        /*!< D5_0 (Bitfield-Mask: 0x01)                            */
-/* ========================================================  DPDIMR0  ======================================================== */
- #define R_LPS_DPDIMR0_D0M_23_Pos     (23UL)         /*!< D0M_23 (Bit 23)                                       */
- #define R_LPS_DPDIMR0_D0M_23_Msk     (0x800000UL)   /*!< D0M_23 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_22_Pos     (22UL)         /*!< D0M_22 (Bit 22)                                       */
- #define R_LPS_DPDIMR0_D0M_22_Msk     (0x400000UL)   /*!< D0M_22 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_21_Pos     (21UL)         /*!< D0M_21 (Bit 21)                                       */
- #define R_LPS_DPDIMR0_D0M_21_Msk     (0x200000UL)   /*!< D0M_21 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_20_Pos     (20UL)         /*!< D0M_20 (Bit 20)                                       */
- #define R_LPS_DPDIMR0_D0M_20_Msk     (0x100000UL)   /*!< D0M_20 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_19_Pos     (19UL)         /*!< D0M_19 (Bit 19)                                       */
- #define R_LPS_DPDIMR0_D0M_19_Msk     (0x80000UL)    /*!< D0M_19 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_18_Pos     (18UL)         /*!< D0M_18 (Bit 18)                                       */
- #define R_LPS_DPDIMR0_D0M_18_Msk     (0x40000UL)    /*!< D0M_18 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_17_Pos     (17UL)         /*!< D0M_17 (Bit 17)                                       */
- #define R_LPS_DPDIMR0_D0M_17_Msk     (0x20000UL)    /*!< D0M_17 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_16_Pos     (16UL)         /*!< D0M_16 (Bit 16)                                       */
- #define R_LPS_DPDIMR0_D0M_16_Msk     (0x10000UL)    /*!< D0M_16 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_15_Pos     (15UL)         /*!< D0M_15 (Bit 15)                                       */
- #define R_LPS_DPDIMR0_D0M_15_Msk     (0x8000UL)     /*!< D0M_15 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_14_Pos     (14UL)         /*!< D0M_14 (Bit 14)                                       */
- #define R_LPS_DPDIMR0_D0M_14_Msk     (0x4000UL)     /*!< D0M_14 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_13_Pos     (13UL)         /*!< D0M_13 (Bit 13)                                       */
- #define R_LPS_DPDIMR0_D0M_13_Msk     (0x2000UL)     /*!< D0M_13 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_12_Pos     (12UL)         /*!< D0M_12 (Bit 12)                                       */
- #define R_LPS_DPDIMR0_D0M_12_Msk     (0x1000UL)     /*!< D0M_12 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_11_Pos     (11UL)         /*!< D0M_11 (Bit 11)                                       */
- #define R_LPS_DPDIMR0_D0M_11_Msk     (0x800UL)      /*!< D0M_11 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_10_Pos     (10UL)         /*!< D0M_10 (Bit 10)                                       */
- #define R_LPS_DPDIMR0_D0M_10_Msk     (0x400UL)      /*!< D0M_10 (Bitfield-Mask: 0x01)                          */
- #define R_LPS_DPDIMR0_D0M_9_Pos      (9UL)          /*!< D0M_9 (Bit 9)                                         */
- #define R_LPS_DPDIMR0_D0M_9_Msk      (0x200UL)      /*!< D0M_9 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR0_D0M_8_Pos      (8UL)          /*!< D0M_8 (Bit 8)                                         */
- #define R_LPS_DPDIMR0_D0M_8_Msk      (0x100UL)      /*!< D0M_8 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR0_D0M_7_Pos      (7UL)          /*!< D0M_7 (Bit 7)                                         */
- #define R_LPS_DPDIMR0_D0M_7_Msk      (0x80UL)       /*!< D0M_7 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR0_D0M_6_Pos      (6UL)          /*!< D0M_6 (Bit 6)                                         */
- #define R_LPS_DPDIMR0_D0M_6_Msk      (0x40UL)       /*!< D0M_6 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR0_D0M_5_Pos      (5UL)          /*!< D0M_5 (Bit 5)                                         */
- #define R_LPS_DPDIMR0_D0M_5_Msk      (0x20UL)       /*!< D0M_5 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR0_D0M_4_Pos      (4UL)          /*!< D0M_4 (Bit 4)                                         */
- #define R_LPS_DPDIMR0_D0M_4_Msk      (0x10UL)       /*!< D0M_4 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR0_D0M_3_Pos      (3UL)          /*!< D0M_3 (Bit 3)                                         */
- #define R_LPS_DPDIMR0_D0M_3_Msk      (0x8UL)        /*!< D0M_3 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR0_D0M_2_Pos      (2UL)          /*!< D0M_2 (Bit 2)                                         */
- #define R_LPS_DPDIMR0_D0M_2_Msk      (0x4UL)        /*!< D0M_2 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR0_D0M_1_Pos      (1UL)          /*!< D0M_1 (Bit 1)                                         */
- #define R_LPS_DPDIMR0_D0M_1_Msk      (0x2UL)        /*!< D0M_1 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR0_D0M_0_Pos      (0UL)          /*!< D0M_0 (Bit 0)                                         */
- #define R_LPS_DPDIMR0_D0M_0_Msk      (0x1UL)        /*!< D0M_0 (Bitfield-Mask: 0x01)                           */
-/* ========================================================  DPDIMR1  ======================================================== */
- #define R_LPS_DPDIMR1_D1M_7_Pos      (7UL)          /*!< D1M_7 (Bit 7)                                         */
- #define R_LPS_DPDIMR1_D1M_7_Msk      (0x80UL)       /*!< D1M_7 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR1_D1M_6_Pos      (6UL)          /*!< D1M_6 (Bit 6)                                         */
- #define R_LPS_DPDIMR1_D1M_6_Msk      (0x40UL)       /*!< D1M_6 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR1_D1M_5_Pos      (5UL)          /*!< D1M_5 (Bit 5)                                         */
- #define R_LPS_DPDIMR1_D1M_5_Msk      (0x20UL)       /*!< D1M_5 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR1_D1M_4_Pos      (4UL)          /*!< D1M_4 (Bit 4)                                         */
- #define R_LPS_DPDIMR1_D1M_4_Msk      (0x10UL)       /*!< D1M_4 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR1_D1M_3_Pos      (3UL)          /*!< D1M_3 (Bit 3)                                         */
- #define R_LPS_DPDIMR1_D1M_3_Msk      (0x8UL)        /*!< D1M_3 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR1_D1M_2_Pos      (2UL)          /*!< D1M_2 (Bit 2)                                         */
- #define R_LPS_DPDIMR1_D1M_2_Msk      (0x4UL)        /*!< D1M_2 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR1_D1M_1_Pos      (1UL)          /*!< D1M_1 (Bit 1)                                         */
- #define R_LPS_DPDIMR1_D1M_1_Msk      (0x2UL)        /*!< D1M_1 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR1_D1M_0_Pos      (0UL)          /*!< D1M_0 (Bit 0)                                         */
- #define R_LPS_DPDIMR1_D1M_0_Msk      (0x1UL)        /*!< D1M_0 (Bitfield-Mask: 0x01)                           */
-/* ========================================================  DPDIMR2  ======================================================== */
- #define R_LPS_DPDIMR2_D2M_7_Pos      (7UL)          /*!< D2M_7 (Bit 7)                                         */
- #define R_LPS_DPDIMR2_D2M_7_Msk      (0x80UL)       /*!< D2M_7 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR2_D2M_6_Pos      (6UL)          /*!< D2M_6 (Bit 6)                                         */
- #define R_LPS_DPDIMR2_D2M_6_Msk      (0x40UL)       /*!< D2M_6 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR2_D2M_5_Pos      (5UL)          /*!< D2M_5 (Bit 5)                                         */
- #define R_LPS_DPDIMR2_D2M_5_Msk      (0x20UL)       /*!< D2M_5 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR2_D2M_4_Pos      (4UL)          /*!< D2M_4 (Bit 4)                                         */
- #define R_LPS_DPDIMR2_D2M_4_Msk      (0x10UL)       /*!< D2M_4 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR2_D2M_3_Pos      (3UL)          /*!< D2M_3 (Bit 3)                                         */
- #define R_LPS_DPDIMR2_D2M_3_Msk      (0x8UL)        /*!< D2M_3 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR2_D2M_2_Pos      (2UL)          /*!< D2M_2 (Bit 2)                                         */
- #define R_LPS_DPDIMR2_D2M_2_Msk      (0x4UL)        /*!< D2M_2 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR2_D2M_1_Pos      (1UL)          /*!< D2M_1 (Bit 1)                                         */
- #define R_LPS_DPDIMR2_D2M_1_Msk      (0x2UL)        /*!< D2M_1 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR2_D2M_0_Pos      (0UL)          /*!< D2M_0 (Bit 0)                                         */
- #define R_LPS_DPDIMR2_D2M_0_Msk      (0x1UL)        /*!< D2M_0 (Bitfield-Mask: 0x01)                           */
-/* ========================================================  DPDIMR3  ======================================================== */
- #define R_LPS_DPDIMR3_D3M_7_Pos      (7UL)          /*!< D3M_7 (Bit 7)                                         */
- #define R_LPS_DPDIMR3_D3M_7_Msk      (0x80UL)       /*!< D3M_7 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR3_D3M_6_Pos      (6UL)          /*!< D3M_6 (Bit 6)                                         */
- #define R_LPS_DPDIMR3_D3M_6_Msk      (0x40UL)       /*!< D3M_6 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR3_D3M_5_Pos      (5UL)          /*!< D3M_5 (Bit 5)                                         */
- #define R_LPS_DPDIMR3_D3M_5_Msk      (0x20UL)       /*!< D3M_5 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR3_D3M_4_Pos      (4UL)          /*!< D3M_4 (Bit 4)                                         */
- #define R_LPS_DPDIMR3_D3M_4_Msk      (0x10UL)       /*!< D3M_4 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR3_D3M_3_Pos      (3UL)          /*!< D3M_3 (Bit 3)                                         */
- #define R_LPS_DPDIMR3_D3M_3_Msk      (0x8UL)        /*!< D3M_3 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR3_D3M_2_Pos      (2UL)          /*!< D3M_2 (Bit 2)                                         */
- #define R_LPS_DPDIMR3_D3M_2_Msk      (0x4UL)        /*!< D3M_2 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR3_D3M_1_Pos      (1UL)          /*!< D3M_1 (Bit 1)                                         */
- #define R_LPS_DPDIMR3_D3M_1_Msk      (0x2UL)        /*!< D3M_1 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR3_D3M_0_Pos      (0UL)          /*!< D3M_0 (Bit 0)                                         */
- #define R_LPS_DPDIMR3_D3M_0_Msk      (0x1UL)        /*!< D3M_0 (Bitfield-Mask: 0x01)                           */
-/* ========================================================  DPDIMR4  ======================================================== */
- #define R_LPS_DPDIMR4_D4M_7_Pos      (7UL)          /*!< D4M_7 (Bit 7)                                         */
- #define R_LPS_DPDIMR4_D4M_7_Msk      (0x80UL)       /*!< D4M_7 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR4_D4M_6_Pos      (6UL)          /*!< D4M_6 (Bit 6)                                         */
- #define R_LPS_DPDIMR4_D4M_6_Msk      (0x40UL)       /*!< D4M_6 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR4_D4M_5_Pos      (5UL)          /*!< D4M_5 (Bit 5)                                         */
- #define R_LPS_DPDIMR4_D4M_5_Msk      (0x20UL)       /*!< D4M_5 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR4_D4M_4_Pos      (4UL)          /*!< D4M_4 (Bit 4)                                         */
- #define R_LPS_DPDIMR4_D4M_4_Msk      (0x10UL)       /*!< D4M_4 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR4_D4M_3_Pos      (3UL)          /*!< D4M_3 (Bit 3)                                         */
- #define R_LPS_DPDIMR4_D4M_3_Msk      (0x8UL)        /*!< D4M_3 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR4_D4M_2_Pos      (2UL)          /*!< D4M_2 (Bit 2)                                         */
- #define R_LPS_DPDIMR4_D4M_2_Msk      (0x4UL)        /*!< D4M_2 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR4_D4M_1_Pos      (1UL)          /*!< D4M_1 (Bit 1)                                         */
- #define R_LPS_DPDIMR4_D4M_1_Msk      (0x2UL)        /*!< D4M_1 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR4_D4M_0_Pos      (0UL)          /*!< D4M_0 (Bit 0)                                         */
- #define R_LPS_DPDIMR4_D4M_0_Msk      (0x1UL)        /*!< D4M_0 (Bitfield-Mask: 0x01)                           */
-/* ========================================================  DPDIMR5  ======================================================== */
- #define R_LPS_DPDIMR5_D5M_7_Pos      (7UL)          /*!< D5M_7 (Bit 7)                                         */
- #define R_LPS_DPDIMR5_D5M_7_Msk      (0x80UL)       /*!< D5M_7 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR5_D5M_6_Pos      (6UL)          /*!< D5M_6 (Bit 6)                                         */
- #define R_LPS_DPDIMR5_D5M_6_Msk      (0x40UL)       /*!< D5M_6 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR5_D5M_5_Pos      (5UL)          /*!< D5M_5 (Bit 5)                                         */
- #define R_LPS_DPDIMR5_D5M_5_Msk      (0x20UL)       /*!< D5M_5 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR5_D5M_4_Pos      (4UL)          /*!< D5M_4 (Bit 4)                                         */
- #define R_LPS_DPDIMR5_D5M_4_Msk      (0x10UL)       /*!< D5M_4 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR5_D5M_3_Pos      (3UL)          /*!< D5M_3 (Bit 3)                                         */
- #define R_LPS_DPDIMR5_D5M_3_Msk      (0x8UL)        /*!< D5M_3 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR5_D5M_2_Pos      (2UL)          /*!< D5M_2 (Bit 2)                                         */
- #define R_LPS_DPDIMR5_D5M_2_Msk      (0x4UL)        /*!< D5M_2 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR5_D5M_1_Pos      (1UL)          /*!< D5M_1 (Bit 1)                                         */
- #define R_LPS_DPDIMR5_D5M_1_Msk      (0x2UL)        /*!< D5M_1 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR5_D5M_0_Pos      (0UL)          /*!< D5M_0 (Bit 0)                                         */
- #define R_LPS_DPDIMR5_D5M_0_Msk      (0x1UL)        /*!< D5M_0 (Bitfield-Mask: 0x01)                           */
-/* ========================================================  DPDIMR6  ======================================================== */
- #define R_LPS_DPDIMR6_D6M_7_Pos      (7UL)          /*!< D6M_7 (Bit 7)                                         */
- #define R_LPS_DPDIMR6_D6M_7_Msk      (0x80UL)       /*!< D6M_7 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR6_D6M_6_Pos      (6UL)          /*!< D6M_6 (Bit 6)                                         */
- #define R_LPS_DPDIMR6_D6M_6_Msk      (0x40UL)       /*!< D6M_6 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR6_D6M_5_Pos      (5UL)          /*!< D6M_5 (Bit 5)                                         */
- #define R_LPS_DPDIMR6_D6M_5_Msk      (0x20UL)       /*!< D6M_5 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR6_D6M_4_Pos      (4UL)          /*!< D6M_4 (Bit 4)                                         */
- #define R_LPS_DPDIMR6_D6M_4_Msk      (0x10UL)       /*!< D6M_4 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR6_D6M_3_Pos      (3UL)          /*!< D6M_3 (Bit 3)                                         */
- #define R_LPS_DPDIMR6_D6M_3_Msk      (0x8UL)        /*!< D6M_3 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR6_D6M_2_Pos      (2UL)          /*!< D6M_2 (Bit 2)                                         */
- #define R_LPS_DPDIMR6_D6M_2_Msk      (0x4UL)        /*!< D6M_2 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR6_D6M_1_Pos      (1UL)          /*!< D6M_1 (Bit 1)                                         */
- #define R_LPS_DPDIMR6_D6M_1_Msk      (0x2UL)        /*!< D6M_1 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR6_D6M_0_Pos      (0UL)          /*!< D6M_0 (Bit 0)                                         */
- #define R_LPS_DPDIMR6_D6M_0_Msk      (0x1UL)        /*!< D6M_0 (Bitfield-Mask: 0x01)                           */
-/* ========================================================  DPDIMR7  ======================================================== */
- #define R_LPS_DPDIMR7_D7M_7_Pos      (7UL)          /*!< D7M_7 (Bit 7)                                         */
- #define R_LPS_DPDIMR7_D7M_7_Msk      (0x80UL)       /*!< D7M_7 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR7_D7M_6_Pos      (6UL)          /*!< D7M_6 (Bit 6)                                         */
- #define R_LPS_DPDIMR7_D7M_6_Msk      (0x40UL)       /*!< D7M_6 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR7_D7M_5_Pos      (5UL)          /*!< D7M_5 (Bit 5)                                         */
- #define R_LPS_DPDIMR7_D7M_5_Msk      (0x20UL)       /*!< D7M_5 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR7_D7M_4_Pos      (4UL)          /*!< D7M_4 (Bit 4)                                         */
- #define R_LPS_DPDIMR7_D7M_4_Msk      (0x10UL)       /*!< D7M_4 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR7_D7M_3_Pos      (3UL)          /*!< D7M_3 (Bit 3)                                         */
- #define R_LPS_DPDIMR7_D7M_3_Msk      (0x8UL)        /*!< D7M_3 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR7_D7M_2_Pos      (2UL)          /*!< D7M_2 (Bit 2)                                         */
- #define R_LPS_DPDIMR7_D7M_2_Msk      (0x4UL)        /*!< D7M_2 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR7_D7M_1_Pos      (1UL)          /*!< D7M_1 (Bit 1)                                         */
- #define R_LPS_DPDIMR7_D7M_1_Msk      (0x2UL)        /*!< D7M_1 (Bitfield-Mask: 0x01)                           */
- #define R_LPS_DPDIMR7_D7M_0_Pos      (0UL)          /*!< D7M_0 (Bit 0)                                         */
- #define R_LPS_DPDIMR7_D7M_0_Msk      (0x1UL)        /*!< D7M_0 (Bitfield-Mask: 0x01)                           */
-/* ========================================================  CNTVAL  ========================================================= */
- #define R_LPS_CNTVAL_CNT1n_Pos       (8UL)          /*!< CNT1n (Bit 8)                                         */
- #define R_LPS_CNTVAL_CNT1n_Msk       (0xff00UL)     /*!< CNT1n (Bitfield-Mask: 0xff)                           */
-/* =========================================================  SOSTR  ========================================================= */
- #define R_LPS_SOSTR_SOF_Pos          (0UL)          /*!< SOF (Bit 0)                                           */
- #define R_LPS_SOSTR_SOF_Msk          (0x1UL)        /*!< SOF (Bitfield-Mask: 0x01)                             */
+/* ==========================================================  TCS  ========================================================== */
+ #define R_LTSC_TCS_TS_Pos       (0UL)          /*!< TS (Bit 0)                                            */
+ #define R_LTSC_TCS_TS_Msk       (0x1UL)        /*!< TS (Bitfield-Mask: 0x01)                              */
+/* ==========================================================  TCT  ========================================================== */
+ #define R_LTSC_TCT_TT_Pos       (0UL)          /*!< TT (Bit 0)                                            */
+ #define R_LTSC_TCT_TT_Msk       (0x1UL)        /*!< TT (Bitfield-Mask: 0x01)                              */
+/* =========================================================  CSTR  ========================================================== */
+ #define R_LTSC_CSTR_CST_Pos     (0UL)          /*!< CST (Bit 0)                                           */
+ #define R_LTSC_CSTR_CST_Msk     (0x1UL)        /*!< CST (Bitfield-Mask: 0x01)                             */
+/* =========================================================  RMSK  ========================================================== */
+ #define R_LTSC_RMSK_RM_Pos      (0UL)          /*!< RM (Bit 0)                                            */
+ #define R_LTSC_RMSK_RM_Msk      (0x1UL)        /*!< RM (Bitfield-Mask: 0x01)                              */
+/* =========================================================  CNTL  ========================================================== */
+ #define R_LTSC_CNTL_CNTL_Pos    (0UL)          /*!< CNTL (Bit 0)                                          */
+ #define R_LTSC_CNTL_CNTL_Msk    (0xffffffffUL) /*!< CNTL (Bitfield-Mask: 0xffffffff)                      */
+/* =========================================================  CNTH  ========================================================== */
+ #define R_LTSC_CNTH_CNTH_Pos    (0UL)          /*!< CNTH (Bit 0)                                          */
+ #define R_LTSC_CNTH_CNTH_Msk    (0xffffffffUL) /*!< CNTH (Bitfield-Mask: 0xffffffff)                      */
 
 /* =========================================================================================================================== */
 /* ================                                         R_DNFACTL                                         ================ */
@@ -179210,6 +185387,10 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
 /* =======================================================  LM3_SPID  ======================================================== */
  #define R_QOSCNT_FL_PE0CL0_LM3_SPID_SPID_Pos          (0UL)          /*!< SPID (Bit 0)                                          */
  #define R_QOSCNT_FL_PE0CL0_LM3_SPID_SPID_Msk          (0xffffffffUL) /*!< SPID (Bitfield-Mask: 0xffffffff)                      */
+
+/* =========================================================================================================================== */
+/* ================                                         R_RDC3ASn                                         ================ */
+/* =========================================================================================================================== */
 
 /* =========================================================================================================================== */
 /* ================                                          R_RLN30                                          ================ */

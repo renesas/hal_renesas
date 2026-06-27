@@ -43,7 +43,7 @@ extern "C" {
  #if (BSP_MCU_GROUP_RH850U2Bx)
   #include "r7f7025x.h"
  #elif (BSP_MCU_GROUP_RH850U2Ax)
-  #include "r7f70230x.h"
+  #include "r7f7023x.h"
  #elif (BSP_MCU_GROUP_RH850U2Cx)
   #include "r7f7026x.h"
  #else
