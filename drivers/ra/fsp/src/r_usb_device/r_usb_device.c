@@ -756,14 +756,14 @@ static inline uint16_t edpt_max_packet_size (usbd_instance_ctrl_t * const p_ctrl
     {
         R_USB_HS0->PIPESEL = num;
 
-        mps = R_USB_HS0->PIPEMAXP;
+        mps = R_USB_HS0->PIPEMAXP & 0x3FF;
     }
     else
 #endif
     {
         R_USB_FS0->PIPESEL = num;
 
-        mps = R_USB_FS0->PIPEMAXP;
+        mps = R_USB_FS0->PIPEMAXP & 0x1FF;
     }
 
     return mps;
@@ -965,7 +965,7 @@ static inline bool pipe_xfer_in (usbd_instance_ctrl_t * const p_ctrl, uint8_t nu
         pipe->buf = (uint8_t *) buf + len;
     }
 
-    if (len < mps)
+    if (len < mps || len == mps)
     {
         *d0fifoctr = R_USB_D0FIFOCTR_BVAL_Msk;
     }
@@ -1016,7 +1016,7 @@ static inline bool pipe_xfer_out (usbd_instance_ctrl_t * const p_ctrl, uint8_t n
         pipe->buf = (uint8_t *) buf + len;
     }
 
-    if (len < mps)
+    if (len < mps || len == mps)
     {
         *d0fifoctr = R_USB_D0FIFOCTR_BCLR_Msk;
     }
@@ -1253,10 +1253,10 @@ static inline fsp_err_t process_pipe_xfer (usbd_instance_ctrl_t * const p_ctrl,
             /* ZLP */
             *d0fifosel = num;
 
-            if ((*d0fifoctr & R_USB_CFIFOCTR_BVAL_Msk) != 0)
-            {
-                *d0fifoctr = R_USB_CFIFOCTR_BVAL_Msk;
-            }
+            /* if CURPIPE bits changes, check written value */
+            FSP_HARDWARE_REGISTER_WAIT((*d0fifosel & R_USB_D0FIFOSEL_CURPIPE_Msk), num);
+
+            *d0fifoctr = R_USB_CFIFOCTR_BVAL_Msk | R_USB_CFIFOCTR_BCLR_Msk;
 
             *d0fifosel = 0;
 
