@@ -696,7 +696,13 @@
 #define R_USB_FIFOSEL_MBW_16BIT            (1U << R_USB_CFIFOSEL_MBW_Pos)    /* 16-bit width */
 #define R_USB_FIFOSEL_MBW_32BIT            (2U << R_USB_CFIFOSEL_MBW_Pos)    /* 32-bit width */
 
-#define R_USB_INTSTS0_CTSQ_CTRL_RDATA      (1U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_IDLE              (0U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_RDATA             (1U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_RSTATUS           (2U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_WDATA             (3U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_WSTATUS           (4U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_WSTATUS_NODATA    (5U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_ERROR             (6U << R_USB_INTSTS0_CTSQ_Pos)
 
 #define R_USB_INTSTS0_DVSQ_STATE_DEF       (1U << R_USB_INTSTS0_DVSQ_Pos)    /* Default state */
 #define R_USB_INTSTS0_DVSQ_STATE_ADDR      (2U << R_USB_INTSTS0_DVSQ_Pos)    /* Address state */
@@ -757,7 +763,13 @@ typedef struct
 #define R_USB_FIFOSEL_MBW_16BIT           (1U << R_USB_CFIFOSEL_MBW_Pos)    /* 16-bit width */
 #define R_USB_FIFOSEL_MBW_32BIT           (2U << R_USB_CFIFOSEL_MBW_Pos)    /* 32-bit width */
 
-#define R_USB_INTSTS0_CTSQ_CTRL_RDATA     (1U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_IDLE             (0U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_RDATA            (1U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_RSTATUS          (2U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_WDATA            (3U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_WSTATUS          (4U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_WSTATUS_NODATA   (5U << R_USB_INTSTS0_CTSQ_Pos)
+#define R_USB_INTSTS0_CTSQ_CTRL_ERROR            (6U << R_USB_INTSTS0_CTSQ_Pos)
 
 #define R_USB_INTSTS0_DVSQ_STATE_DEF      (1U << R_USB_INTSTS0_DVSQ_Pos)    /* Default state */
 #define R_USB_INTSTS0_DVSQ_STATE_ADDR     (2U << R_USB_INTSTS0_DVSQ_Pos)    /* Address state */

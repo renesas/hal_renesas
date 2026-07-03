@@ -80,6 +80,15 @@ typedef struct st_usb_pipe_cfg
     uint8_t      ep[2][16];            /* a lookup table for a pipe index from an endpoint address */
 } usb_pipe_cfg_t;
 
+typedef enum e_usb_control_stage
+{
+    USB_CONTROL_STAGE_IDLE   = 0,
+    USB_CONTROL_STAGE_SETUP  = 0,
+    USB_CONTROL_STAGE_DATA   = 1,
+    USB_CONTROL_STAGE_STATUS = 2,
+    USB_CONTROL_STAGE_ERROR  = 3,
+} usb_control_stage_t;
+
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
@@ -129,6 +138,7 @@ static inline void process_pipe_brdy(usbd_instance_ctrl_t * const p_ctrl, uint32
 static inline bool check_vbus_stable (usbd_instance_ctrl_t * p_ctrl);
 static inline void process_bus_reset(usbd_instance_ctrl_t * const p_ctrl);
 static inline void process_set_address(usbd_instance_ctrl_t * const p_ctrl);
+static usb_control_stage_t dcp_get_current_stage(usbd_instance_ctrl_t * p_ctrl);
 static inline void physical_init(usbd_instance_ctrl_t * const p_ctrl, usbd_cfg_t const * const p_cfg);
 static inline void control_pipe_setup(usbd_instance_ctrl_t * const p_ctrl);
 static inline void usb_interrupt_configure(usbd_instance_ctrl_t * p_ctrl, usbd_cfg_t const * p_cfg);
@@ -406,7 +416,20 @@ fsp_err_t R_USBD_EdptOpen (usbd_ctrl_t * const p_api_ctrl, usbd_desc_endpoint_t 
 
     if (xfer == USB_XFER_TYPE_BULK)
     {
-        cfg |= (R_USB_PIPECFG_TYPE_BULK | R_USB_PIPECFG_SHTNAK_Msk | R_USB_PIPECFG_DBLB_Msk);
+        if (USB_EP_IN_DIR == dir)
+        {
+            /* IN: DBLB lets the CPU fill one plane while the SIE transmits from the other. */
+            cfg |= (R_USB_PIPECFG_TYPE_BULK | R_USB_PIPECFG_DBLB_Msk);
+        }
+        else
+        {
+            /* OUT: SHTNAK NAKs the pipe after a short/ZLP packet.  Do NOT use DBLB —
+             * HWM §BCLR: with DBLB, BCLR clears only the CPU-side plane; if the SIE-side
+             * plane already holds the next transaction's data (possible before SHTNAK takes
+             * effect), the following pipe_xfer_out() sees DTLN=1 instead of 0 for the ZLP,
+             * reporting one extra byte and causing CDC-NCM "block len" mismatch. */
+            cfg |= (R_USB_PIPECFG_TYPE_BULK | R_USB_PIPECFG_SHTNAK_Msk);
+        }
     }
     else if (xfer == USB_XFER_TYPE_INT)
     {
@@ -1261,6 +1284,43 @@ static inline void process_status_completion (usbd_instance_ctrl_t * const p_ctr
     r_usb_device_call_callback(p_ctrl, &event);
 }
 
+/* read CTSQ from INTSTS0 without clearing any interrupt status bits */
+static usb_control_stage_t dcp_get_current_stage (usbd_instance_ctrl_t * p_ctrl)
+{
+#ifdef USB_HIGH_SPEED_MODULE
+    uint16_t ctsq = (USB_IS_USBHS(p_ctrl->p_cfg->module_number) ?
+                     R_USB_HS0->INTSTS0 : R_USB_FS0->INTSTS0) & R_USB_INTSTS0_CTSQ_Msk;
+#else
+    uint16_t ctsq = R_USB_FS0->INTSTS0 & R_USB_INTSTS0_CTSQ_Msk;
+#endif
+
+    switch (ctsq)
+    {
+        case R_USB_INTSTS0_CTSQ_CTRL_RDATA:
+        case R_USB_INTSTS0_CTSQ_CTRL_WDATA:
+        {
+            return USB_CONTROL_STAGE_DATA;
+        }
+
+        case R_USB_INTSTS0_CTSQ_CTRL_RSTATUS:
+        case R_USB_INTSTS0_CTSQ_CTRL_WSTATUS:
+        case R_USB_INTSTS0_CTSQ_CTRL_WSTATUS_NODATA:
+        {
+            return USB_CONTROL_STAGE_STATUS;
+        }
+
+        case R_USB_INTSTS0_CTSQ_CTRL_ERROR:
+        {
+            return USB_CONTROL_STAGE_ERROR;
+        }
+
+        default:
+        {
+            return USB_CONTROL_STAGE_IDLE;
+        }
+    }
+}
+
 /* pipe0 transfer */
 static inline fsp_err_t process_pipe0_xfer (usbd_instance_ctrl_t * const p_ctrl,
                                             uint8_t                      ep_addr,
@@ -1271,9 +1331,11 @@ static inline fsp_err_t process_pipe0_xfer (usbd_instance_ctrl_t * const p_ctrl,
     bool                hs_module = USB_IS_USBHS(p_ctrl->p_cfg->module_number);
     volatile uint16_t * cfifosel  = hs_module ? &R_USB_HS0->CFIFOSEL : &R_USB_FS0->CFIFOSEL;
     volatile uint16_t * dcpctr    = hs_module ? &R_USB_HS0->DCPCTR : &R_USB_FS0->DCPCTR;
+    volatile uint16_t * cfifoctr  = hs_module ? &R_USB_HS0->CFIFOCTR : &R_USB_FS0->CFIFOCTR;
 #else
     volatile uint16_t * cfifosel = &R_USB_FS0->CFIFOSEL;
     volatile uint16_t * dcpctr   = &R_USB_FS0->DCPCTR;
+    volatile uint16_t * cfifoctr = &R_USB_FS0->CFIFOCTR;
 #endif
 
     const uint8_t dir = USB_GET_EP_DIR(ep_addr);
@@ -1312,7 +1374,17 @@ static inline fsp_err_t process_pipe0_xfer (usbd_instance_ctrl_t * const p_ctrl,
     {
         /* ZLP */
         pipe->buf = NULL;
-        *dcpctr   = R_USB_DCPCTR_CCPL_Msk | R_USB_PIPE_CTR_PID_BUF;
+
+        if (USB_CONTROL_STAGE_STATUS == dcp_get_current_stage(p_ctrl))
+        {
+            /* status stage: hardware will exchange the ZLP handshake automatically */
+            *dcpctr = R_USB_DCPCTR_CCPL_Msk | R_USB_PIPE_CTR_PID_BUF;
+        }
+        else
+        {
+            /* data stage ended on a packet boundary: send ZLP to signal end of data */
+            *cfifoctr |= R_USB_CFIFOCTR_BVAL_Msk;
+        }
     }
 
     return FSP_SUCCESS;
@@ -1672,7 +1744,7 @@ static inline void physical_init (usbd_instance_ctrl_t * const p_ctrl, usbd_cfg_
         /* High-speed selection */
         R_USB_HS0->SYSCFG_b.HSE = (p_cfg->usb_speed == USBD_SPEED_HS) ? 1 : 0;
 
-        /* PLLRESET bit is 1 after a reset, 
+        /* PLLRESET bit is 1 after a reset,
          * changing the setting after release from the reset state is not required */
         /* R_USB_HS0->PHYSET_b.PLLRESET = 1; */
 
@@ -2380,6 +2452,10 @@ void usb_device_isr (void)
 
     uint16_t intsts0 = get_active_bit_intsts0(p_ctrl);
 
+    /* Clear pending IRQ immediately after reading status so that any new interrupt
+     * arriving during this ISR's execution re-pends at the ICU level and is not lost. */
+    R_BSP_IrqStatusClear(irq);
+
     /* VBUS changes */
     if (intsts0 & R_USB_INTSTS0_VBINT_Msk)
     {
@@ -2439,19 +2515,28 @@ void usb_device_isr (void)
     /* Control transfer stage changes */
     if (intsts0 & R_USB_INTSTS0_CTRT_Msk)
     {
-        if (intsts0 & R_USB_INTSTS0_CTSQ_CTRL_RDATA)
+        switch (intsts0 & R_USB_INTSTS0_CTSQ_Msk)
         {
-            /* A setup packet has been received. */
-            process_setup_packet(p_ctrl);
-        }
-        else if (0 == (intsts0 & R_USB_INTSTS0_CTSQ_Msk))
-        {
-            /* A ZLP has been sent/received. */
-            process_status_completion(p_ctrl);
-        }
-        else
-        {
-            /* Data stage finish -> current is status stage -> sent/received ZLP */
+            case R_USB_INTSTS0_CTSQ_CTRL_RDATA:
+            case R_USB_INTSTS0_CTSQ_CTRL_WDATA:
+            case R_USB_INTSTS0_CTSQ_CTRL_WSTATUS_NODATA:
+            {
+                /* A setup packet has been received. */
+                process_setup_packet(p_ctrl);
+                break;
+            }
+
+            case R_USB_INTSTS0_CTSQ_CTRL_IDLE:
+            {
+                /* A ZLP has been sent/received — status stage complete. */
+                process_status_completion(p_ctrl);
+                break;
+            }
+
+            default:
+            {
+                break;
+            }
         }
     }
 
@@ -2466,9 +2551,6 @@ void usb_device_isr (void)
     {
         process_brdy_event(p_ctrl);
     }
-
-    /* Clear pending IRQ to make sure it doesn't fire again after exiting */
-    R_BSP_IrqStatusClear(irq);
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE
