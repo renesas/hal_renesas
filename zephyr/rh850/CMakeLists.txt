@@ -9,6 +9,7 @@ zephyr_include_directories(portable/inc)
 zephyr_library_sources_ifdef(
   CONFIG_CLOCK_CONTROL_RENESAS_RH850_CGC
   portable/src/bsp/rp_bsp_module_standby.c
+  portable/src/bsp/rp_bsp_clock_control.c
 )
 
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_CRC

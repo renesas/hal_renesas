@@ -1,0 +1,1901 @@
+/*
+ * Copyright (c) 2026 Renesas Electronics Corporation
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+#include "rp_bsp_clock_control.h"
+#include "rp_bsp_module_standby.h"
+#include "bsp_clock_cfg.h"
+#include <zephyr/autoconf.h>
+#include "zephyr/dt-bindings/clock/renesas_rh850_clock_common.h"
+
+#ifndef FSP_HARDWARE_REGISTER_WAIT
+#define FSP_HARDWARE_REGISTER_WAIT(reg, required_value) \
+	do { \
+		while ((reg) != (required_value)) { \
+		} \
+	} while (0)
+#endif /* !defined(FSP_HARDWARE_REGISTER_WAIT) */
+
+#define RP_BSP_FIELD_PREP(mask, pos, value) \
+	((((uint32_t)(value)) << (uint32_t)(pos)) & (uint32_t)(mask))
+
+#define RP_BSP_FIELD_FITS(mask, pos, value) \
+	((((uint32_t)(value)) << (uint32_t)(pos)) == RP_BSP_FIELD_PREP(mask, pos, value))
+
+#ifndef BSP_PRV_KEYCODE_ENABLE
+#define BSP_PRV_KEYCODE_ENABLE  0xA5A5A501UL
+#endif /* !defined(BSP_PRV_KEYCODE_ENABLE) */
+
+#ifndef BSP_PRV_KEYCODE_DISABLE
+#define BSP_PRV_KEYCODE_DISABLE 0xA5A5A500UL
+#endif /* !defined(BSP_PRV_KEYCODE_DISABLE) */
+
+/*
+ * Private selector encodings used by the RH850 U2x clock selector registers.
+ * Keep these values in the HAL helper instead of dt-bindings/DTS so the DTS
+ * only describes logical clock-tree parents with clock-source phandles.
+ *
+ * The values mirror the selector encodings used by the FSP BSP clock startup
+ * code for the corresponding U2A/U2B/U2C CKS/CKSC registers. They are not a
+ * public Zephyr binding contract.
+ */
+#define RP_BSP_RH850_U2A_MSPI_SRC_CLKC_HSB          1U
+#define RP_BSP_RH850_U2BC_MSPI_SRC_CLKC_HSB         2U
+#define RP_BSP_RH850_CANFD_C_SRC_CLKC_HSB           1U
+#define RP_BSP_RH850_CANFD_XIN_SRC_MOSC             1U
+#define RP_BSP_RH850_CANXL_SRC_CLKC_HSB             1U
+#define RP_BSP_RH850_CANXL_SRC_CLKC_UHSB            4U
+#define RP_BSP_RH850_U2BC_EXTCLK_SRC_CLKC_HSB       5U
+#define RP_BSP_RH850_SWDT_SRC_HSIOSC_DIV_20         0U
+#define RP_BSP_RH850_U2A_ADC_SRC_CLKC_LSB           1U
+#define RP_BSP_RH850_CLKA_ADC_SRC_MOSC              RP_BSP_SELECT_AADC(RH850_CLOCK_MOSC)
+#define RP_BSP_RH850_CLKA_ADC_SRC_HSIOSC_DIV20      RP_BSP_SELECT_AADC(RH850_CLOCK_HSIOSC)
+#define RP_BSP_RH850_CLKA_ADC_SRC_LSB               RP_BSP_SELECT_AADC(RP_BSP_CLOCK_LSB)
+#if defined(CONFIG_SOC_SERIES_RH850U2A)
+#define RP_BSP_RH850_CLKA_TAUJ_SRC_LSIOSC           0U
+#define RP_BSP_RH850_CLKA_TAUJ_SRC_HSIOSC_DIV20     1U
+#define RP_BSP_RH850_CLKA_TAUJ_SRC_MOSC             2U
+#define RP_BSP_RH850_CLKA_TAUJ_SRC_HSB              3U
+#else
+#define RP_BSP_RH850_CLKA_TAUJ_SRC_EMG              0U
+#define RP_BSP_RH850_CLKA_TAUJ_SRC_LSIOSC           1U
+#define RP_BSP_RH850_CLKA_TAUJ_SRC_HSIOSC_DIV20     2U
+#define RP_BSP_RH850_CLKA_TAUJ_SRC_MOSC             3U
+#define RP_BSP_RH850_CLKA_TAUJ_SRC_HSB              4U
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2A) */
+#define RP_BSP_RH850_CLKA_RTCA_SRC_OSC              1U
+/* CLK_WDT(B) selector IDs encode a fixed HSIOSC divider, not a source. */
+#define RP_BSP_RH850_WDT_SRC_HSIOSC_DIV20           0U
+#define RP_BSP_RH850_WDT_SRC_HSIOSC_DIV640          1U
+#define RP_BSP_RH850_WDT_SRC_HSIOSC_DIV800          2U
+#define RP_BSP_RH850_AWDT_SRC_LSIOSC                1U
+#define RP_BSP_RH850_U2A_EXTCLK_SRC_HSB             1U
+#define RP_BSP_RH850_U2BC_EXTCLK_SRC_HSB            4U
+
+static fsp_err_t rp_bsp_clock_validate_field(uint32_t mask, uint32_t pos, uint32_t value)
+{
+	return RP_BSP_FIELD_FITS(mask, pos, value) ? FSP_SUCCESS : FSP_ERR_INVALID_ARGUMENT;
+}
+
+static void rp_bsp_clock_protect_unlock(void)
+{
+	R_SYS0_CLOCK->CLKKCPROT1 = BSP_PRV_KEYCODE_ENABLE;
+}
+
+static void rp_bsp_clock_protect_lock(void)
+{
+	R_SYS0_CLOCK->CLKKCPROT1 = BSP_PRV_KEYCODE_DISABLE;
+}
+
+#define RP_BSP_CLOCK_RETURN_LOCKED(result) \
+	do { \
+		rp_bsp_clock_protect_lock(); \
+		return (result); \
+	} while (0)
+
+static fsp_err_t rp_bsp_clock_configure_extclk(uint32_t clock_id,
+					       uint32_t clk_source,
+					       uint32_t div)
+{
+	switch (clock_id) {
+	case RH850_CLOCK_EXTCLK0O:
+#if defined(R_SYS0_A_CLOCK_CKSC_FOUT0C_FOUT0SCSID_Msk)
+		/* U2A: FOUT0/EXTCLK0 output selector/divider. */
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKSC_FOUT0C_FOUT0SCSID_Msk,
+							   R_SYS0_A_CLOCK_CKSC_FOUT0C_FOUT0SCSID_Pos,
+							   clk_source) != FSP_SUCCESS) {
+			return FSP_ERR_INVALID_ARGUMENT;
+		}
+		R_SYS0_A_CLOCK->CLKD_FOUT0C = 0U;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0S,
+					   R_SYS0_A_CLOCK_CLKD_FOUT0S_FOUT0SYNC_Msk);
+		if (div == 0U) {
+			return FSP_SUCCESS;
+		}
+
+		R_SYS0_A_CLOCK->CKSC_FOUT0C = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_FOUT0S,
+					   clk_source);
+
+		/* Confirm clock divider is stable */
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0S_b.FOUT0SYNC,
+					   1U);
+		R_SYS0_A_CLOCK->CLKD_FOUT0C = div;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0S,
+					   R_SYS0_A_CLOCK_CLKD_FOUT0S_FOUT0SYNC_Msk |
+					   R_SYS0_A_CLOCK_CLKD_FOUT0S_FOUT0CLKACT_Msk);
+		return FSP_SUCCESS;
+#elif defined(R_SYS0_A_CLOCK_CKS_EXTCLK0C_EXTCLK0SCSID_Msk)
+		/* U2B/U2C: EXTCLK0 output selector/divider. */
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKS_EXTCLK0C_EXTCLK0SCSID_Msk,
+							   R_SYS0_A_CLOCK_CKS_EXTCLK0C_EXTCLK0SCSID_Pos,
+							   clk_source) != FSP_SUCCESS) {
+			return FSP_ERR_INVALID_ARGUMENT;
+		}
+		R_SYS0_A_CLOCK->CKD_EXTCLK0C = 0U;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S,
+					   R_SYS0_A_CLOCK_CKD_EXTCLK0S_EXTCLK0SYNC_Msk);
+		if (div == 0U) {
+			return FSP_SUCCESS;
+		}
+
+		R_SYS0_A_CLOCK->CKS_EXTCLK0C = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK0S,
+					   clk_source);
+
+		/* Confirm clock divider is stable */
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S_b.EXTCLK0SYNC,
+					   1U);
+		R_SYS0_A_CLOCK->CKD_EXTCLK0C = div;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S,
+					   R_SYS0_A_CLOCK_CKD_EXTCLK0S_EXTCLK0SYNC_Msk |
+					   R_SYS0_A_CLOCK_CKD_EXTCLK0S_EXTCLK0CLKACT_Msk);
+		return FSP_SUCCESS;
+#else
+		return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_FOUT0C_FOUT0SCSID_Msk) */
+
+	case RH850_CLOCK_EXTCLK1O:
+#if defined(R_SYS0_A_CLOCK_CKSC_FOUT1C_FOUT1SCSID_Msk)
+		/* U2A: FOUT1/EXTCLK1 output selector/divider. */
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKSC_FOUT1C_FOUT1SCSID_Msk,
+							   R_SYS0_A_CLOCK_CKSC_FOUT1C_FOUT1SCSID_Pos,
+							   clk_source) != FSP_SUCCESS) {
+			return FSP_ERR_INVALID_ARGUMENT;
+		}
+		R_SYS0_A_CLOCK->CLKD_FOUT1C = 0U;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1S,
+					   R_SYS0_A_CLOCK_CLKD_FOUT1S_FOUT1SYNC_Msk);
+		if (div == 0U) {
+			return FSP_SUCCESS;
+		}
+
+		R_SYS0_A_CLOCK->CKSC_FOUT1C = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_FOUT1S,
+					   clk_source);
+
+		/* Confirm clock divider is stable */
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1S_b.FOUT1SYNC,
+					   1U);
+		R_SYS0_A_CLOCK->CLKD_FOUT1C = div;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1S,
+					   R_SYS0_A_CLOCK_CLKD_FOUT1S_FOUT1SYNC_Msk |
+					   R_SYS0_A_CLOCK_CLKD_FOUT1S_FOUT1CLKACT_Msk);
+		return FSP_SUCCESS;
+#elif defined(R_SYS0_A_CLOCK_CKS_EXTCLK1C_EXTCLK1SCSID_Msk)
+		/* U2B/U2C: EXTCLK1 output selector/divider. */
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKS_EXTCLK1C_EXTCLK1SCSID_Msk,
+							   R_SYS0_A_CLOCK_CKS_EXTCLK1C_EXTCLK1SCSID_Pos,
+							   clk_source) != FSP_SUCCESS) {
+			return FSP_ERR_INVALID_ARGUMENT;
+		}
+		R_SYS0_A_CLOCK->CKD_EXTCLK1C = 0U;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S,
+					   R_SYS0_A_CLOCK_CKD_EXTCLK1S_EXTCLK1SYNC_Msk);
+		if (div == 0U) {
+			return FSP_SUCCESS;
+		}
+
+		R_SYS0_A_CLOCK->CKS_EXTCLK1C = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK1S,
+					   clk_source);
+
+					   /* Confirm clock divider is stable */
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S_b.EXTCLK1SYNC,
+					   1U);
+		R_SYS0_A_CLOCK->CKD_EXTCLK1C = div;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S,
+					   R_SYS0_A_CLOCK_CKD_EXTCLK1S_EXTCLK1SYNC_Msk |
+					   R_SYS0_A_CLOCK_CKD_EXTCLK1S_EXTCLK1CLKACT_Msk);
+		return FSP_SUCCESS;
+#else
+		return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_FOUT1C_FOUT1SCSID_Msk) */
+
+	default:
+		return FSP_ERR_UNSUPPORTED;
+	}
+}
+
+static fsp_err_t rp_bsp_clock_source_to_selector(uint32_t clock_id,
+						 uint32_t source_clock_id,
+						 uint32_t div,
+						 uint32_t *clk_source)
+{
+	int selector;
+
+	switch (clock_id) {
+	case RH850_CLOCK_RLIN:
+	case RH850_CLOCK_RLIN3:
+		selector = RP_BSP_SELECT_RLIN3_DIV(source_clock_id, div);
+		break;
+	case RH850_CLOCK_CH23_RLIN3:
+	case RH850_CLOCK_RLIN323:
+		selector = RP_BSP_SELECT_RLIN323_DIV(source_clock_id, div);
+		break;
+	case RH850_CLOCK_MSPI:
+		selector = RP_BSP_SELECT_MSPI(source_clock_id);
+		break;
+	case RH850_CLOCK_CANFD_C:
+		selector = RP_BSP_SELECT_CANFD(source_clock_id);
+		break;
+	case RH850_CLOCK_CANXL_CH0:
+	case RH850_CLOCK_CANXL_CH1:
+		selector = RP_BSP_SELECT_CANXL(source_clock_id);
+		break;
+	case RH850_CLOCK_CANFD_XIN:
+	case RH850_CLOCK_RCANOSC:
+		selector = RP_BSP_SELECT_CAN_XIN(source_clock_id);
+		break;
+	case RH850_CLOCK_SWDT:
+	case RH850_CLOCK_CLKC_SWDT:
+		selector = RP_BSP_SELECT_SWDT(source_clock_id);
+		break;
+	case RH850_CLOCK_ADC:
+		selector = RP_BSP_SELECT_ADC(source_clock_id);
+		break;
+	case RH850_CLOCK_CLKA_ADC:
+		selector = RP_BSP_SELECT_AADC(source_clock_id);
+		break;
+	case RH850_CLOCK_TAUJ:
+	case RH850_CLOCK_CLKA_TAUJ:
+		selector = RP_BSP_SELECT_TAUJ(source_clock_id);
+		break;
+	case RH850_CLOCK_RTCA:
+	case RH850_CLOCK_CLKA_RTCA:
+		selector = RP_BSP_SELECT_RTCA(source_clock_id);
+		break;
+	case RH850_CLOCK_EXTCLK0O:
+	case RH850_CLOCK_EXTCLK1O:
+		selector = RP_BSP_SELECT_EXTCLK(source_clock_id);
+		break;
+	case RP_BSP_CLOCK_HSI_WDT:
+		selector = (source_clock_id == RH850_CLOCK_HSIOSC) ? 0 : -1;
+		break;
+	case RP_BSP_CLOCK_LSI_WDT:
+	case RH850_CLOCK_WDTBA:
+		selector = RP_BSP_SELECT_AWDT(source_clock_id);
+		break;
+	default:
+		return FSP_ERR_UNSUPPORTED;
+	}
+
+	if (selector < 0) {
+		return FSP_ERR_UNSUPPORTED;
+	}
+	*clk_source = (uint32_t)selector;
+	return FSP_SUCCESS;
+}
+
+static fsp_err_t rp_bsp_clock_validate_divider(uint32_t clock_id, uint32_t div)
+{
+	switch (clock_id) {
+	case RH850_CLOCK_RLIN:
+	case RH850_CLOCK_RLIN3:
+	case RH850_CLOCK_CH23_RLIN3:
+	case RH850_CLOCK_RLIN323:
+		return (div == 0U || div == 1U || div == 4U || div == 8U) ?
+			FSP_SUCCESS : FSP_ERR_UNSUPPORTED;
+	case RH850_CLOCK_EXTCLK0O:
+	case RH850_CLOCK_EXTCLK1O:
+		/* EXTCLK/FOUT divider is a direct divide-by-N value; 0 stops output. */
+		return (div <= 0x3ffU) ? FSP_SUCCESS : FSP_ERR_INVALID_ARGUMENT;
+	case RP_BSP_CLOCK_HSI_WDT:
+#if defined(CONFIG_SOC_SERIES_RH850U2A)
+		/* U2A: 0=/20, 1=/640. */
+		return (div <= RP_BSP_RH850_WDT_SRC_HSIOSC_DIV640) ?
+			FSP_SUCCESS : FSP_ERR_UNSUPPORTED;
+#else
+		/* U2B/U2C: 0=/20, 1=/640, 2=/800. */
+		return (div <= RP_BSP_RH850_WDT_SRC_HSIOSC_DIV800) ?
+			FSP_SUCCESS : FSP_ERR_UNSUPPORTED;
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2A) */
+#if defined(R_SYS0_A_CLOCK_CLKD_AADCC_AADCDCSID_Msk)
+	case RH850_CLOCK_CLKA_ADC:
+		return rp_bsp_clock_validate_field(
+			R_SYS0_A_CLOCK_CLKD_AADCC_AADCDCSID_Msk,
+			R_SYS0_A_CLOCK_CLKD_AADCC_AADCDCSID_Pos, div);
+#endif /* defined(R_SYS0_A_CLOCK_CLKD_AADCC_AADCDCSID_Msk) */
+	default:
+		return (div == 0U) ? FSP_SUCCESS : FSP_ERR_UNSUPPORTED;
+	}
+}
+
+fsp_err_t RP_BSP_PeripheralClockDividerEncode(uint32_t clock_id, uint32_t source_clock_id,
+					   uint32_t factor, uint32_t *div)
+{
+	uint32_t encoded = 0U;
+	uint32_t prescaler = 1U;
+	uint32_t selector;
+	fsp_err_t err;
+	bool fixed_divider = true;
+
+	if ((div == NULL) || ((factor == 0U) && (clock_id != RH850_CLOCK_EXTCLK0O) &&
+			     (clock_id != RH850_CLOCK_EXTCLK1O))) {
+		return FSP_ERR_INVALID_ARGUMENT;
+	}
+
+	switch (clock_id) {
+	case RH850_CLOCK_RLIN:
+	case RH850_CLOCK_RLIN3:
+	case RH850_CLOCK_CH23_RLIN3:
+	case RH850_CLOCK_RLIN323:
+		fixed_divider = false;
+		encoded = factor;
+		break;
+	case RP_BSP_CLOCK_HSI_WDT:
+		fixed_divider = false;
+		if (factor == 20U) {
+			encoded = RP_BSP_RH850_WDT_SRC_HSIOSC_DIV20;
+		} else if (factor == 640U) {
+			encoded = RP_BSP_RH850_WDT_SRC_HSIOSC_DIV640;
+#if !defined(CONFIG_SOC_SERIES_RH850U2A)
+		} else if (factor == 800U) {
+			encoded = RP_BSP_RH850_WDT_SRC_HSIOSC_DIV800;
+#endif
+		} else {
+			return FSP_ERR_INVALID_ARGUMENT;
+		}
+		break;
+	case RH850_CLOCK_EXTCLK0O:
+	case RH850_CLOCK_EXTCLK1O:
+		fixed_divider = false;
+		prescaler = (source_clock_id == RH850_CLOCK_HSIOSC) ? 20U : 1U;
+		if ((factor % prescaler) != 0U) {
+			return FSP_ERR_INVALID_ARGUMENT;
+		}
+		encoded = factor / prescaler;
+		break;
+	case RH850_CLOCK_CLKA_ADC:
+		fixed_divider = false;
+		prescaler = (source_clock_id == RH850_CLOCK_HSIOSC) ? 20U : 1U;
+#if defined(CONFIG_SOC_SERIES_RH850U2A)
+		if (factor == prescaler) {
+			encoded = 1U;
+		} else if (factor == 2U * prescaler) {
+			encoded = 0U;
+		} else {
+			return FSP_ERR_INVALID_ARGUMENT;
+		}
+#else
+		if (factor != prescaler) {
+			return FSP_ERR_INVALID_ARGUMENT;
+		}
+#endif
+		break;
+	case RP_BSP_CLOCK_LSI_WDT:
+	case RH850_CLOCK_WDTBA:
+		prescaler = 128U;
+		break;
+	case RH850_CLOCK_ADC:
+		prescaler = 2U;
+		break;
+	case RH850_CLOCK_SWDT:
+	case RH850_CLOCK_CLKC_SWDT:
+		prescaler = 20U;
+		break;
+	case RH850_CLOCK_TAUJ:
+	case RH850_CLOCK_CLKA_TAUJ:
+		prescaler = (source_clock_id == RH850_CLOCK_HSIOSC) ? 20U : 1U;
+		break;
+	default:
+		break;
+	}
+
+	/* Clocks without a programmable divider accept only their fixed ratio. */
+	if (fixed_divider && (factor != prescaler)) {
+		return FSP_ERR_INVALID_ARGUMENT;
+	}
+
+	err = rp_bsp_clock_source_to_selector(clock_id, source_clock_id, encoded, &selector);
+	if (err != FSP_SUCCESS) {
+		return err;
+	}
+	err = rp_bsp_clock_validate_divider(clock_id, encoded);
+	if (err != FSP_SUCCESS) {
+		return err;
+	}
+
+	*div = encoded;
+	return FSP_SUCCESS;
+}
+
+fsp_err_t RP_BSP_PeripheralClockConfigure(uint32_t clock_id,
+					 uint32_t source_clock_id,
+					 uint32_t div)
+{
+	uint32_t clk_source;
+	fsp_err_t err;
+
+	err = rp_bsp_clock_source_to_selector(clock_id, source_clock_id, div,
+						 &clk_source);
+	if (err != FSP_SUCCESS) {
+		return err;
+	}
+
+	err = rp_bsp_clock_validate_divider(clock_id, div);
+	if (err != FSP_SUCCESS) {
+		return err;
+	}
+
+	if (clock_id == RP_BSP_CLOCK_HSI_WDT) {
+		/* For CLK_WDT(B), the selector field itself encodes the divider. */
+		clk_source = div;
+	}
+
+	/* All runtime selector/divider writes use the clock protection key. */
+	rp_bsp_clock_protect_unlock();
+
+	switch (clock_id) {
+#if defined(R_SYS0_CLOCK_CKS_RLINC_RLINSCSID_Msk) && defined(R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk)
+	case RH850_CLOCK_RLIN:
+	case RH850_CLOCK_RLIN3: {
+		const uint32_t value = RP_BSP_FIELD_PREP(R_SYS0_CLOCK_CKS_RLINC_RLINSCSID_Msk,
+							 R_SYS0_CLOCK_CKS_RLINC_RLINSCSID_Pos,
+							 clk_source);
+		if (rp_bsp_clock_validate_field(R_SYS0_CLOCK_CKS_RLINC_RLINSCSID_Msk,
+						   R_SYS0_CLOCK_CKS_RLINC_RLINSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_CLOCK->CKS_RLINC = (R_SYS0_CLOCK->CKS_RLINC &
+					     ~R_SYS0_CLOCK_CKS_RLINC_RLINSCSID_Msk) | value;
+		FSP_HARDWARE_REGISTER_WAIT((R_SYS0_CLOCK->CKS_RLINS &
+					    R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk),
+					   RP_BSP_FIELD_PREP(R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk,
+							     R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Pos,
+							     clk_source));
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+	}
+#endif /* defined(R_SYS0_CLOCK_CKS_RLINC_RLINSCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Msk) && defined(R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk)
+	case RH850_CLOCK_CH23_RLIN3:
+	case RH850_CLOCK_RLIN323: {
+		const uint32_t value = RP_BSP_FIELD_PREP(R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Msk,
+							 R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Pos,
+							 clk_source);
+		if (rp_bsp_clock_validate_field(R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Msk,
+						   R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_CLOCK->CKS_RLINC = (R_SYS0_CLOCK->CKS_RLINC &
+					     ~R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Msk) | value;
+		FSP_HARDWARE_REGISTER_WAIT((R_SYS0_CLOCK->CKS_RLINS &
+					    R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk),
+					   RP_BSP_FIELD_PREP(R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk,
+							     R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos,
+							     clk_source));
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+	}
+#endif /* defined(R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_MSPIC_MSPISCSID_Msk) && \
+	defined(R_SYS0_CLOCK_CKS_MSPIS_MSPISACT_Msk)
+	case RH850_CLOCK_MSPI: {
+		const uint32_t ctrl_value = RP_BSP_FIELD_PREP(
+			R_SYS0_CLOCK_CKS_MSPIC_MSPISCSID_Msk,
+			R_SYS0_CLOCK_CKS_MSPIC_MSPISCSID_Pos,
+			clk_source);
+		const uint32_t stat_value = RP_BSP_FIELD_PREP(
+			R_SYS0_CLOCK_CKS_MSPIS_MSPISACT_Msk,
+			R_SYS0_CLOCK_CKS_MSPIS_MSPISACT_Pos,
+			clk_source);
+
+		if (rp_bsp_clock_validate_field(R_SYS0_CLOCK_CKS_MSPIC_MSPISCSID_Msk,
+						   R_SYS0_CLOCK_CKS_MSPIC_MSPISCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+
+#if defined(CONFIG_SOC_SERIES_RH850U2B)
+		/*
+		 * U2B CKS_MSPI registers contain fields other than the source
+		 * selector. Preserve unrelated control bits and compare only the
+		 * active-source status field. U2C keeps the same field-based
+		 * operation, so this does not alter its selector semantics.
+		 */
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2B) */
+		R_SYS0_CLOCK->CKS_MSPIC =
+			(R_SYS0_CLOCK->CKS_MSPIC &
+			 ~R_SYS0_CLOCK_CKS_MSPIC_MSPISCSID_Msk) |
+			ctrl_value;
+		FSP_HARDWARE_REGISTER_WAIT(
+			R_SYS0_CLOCK->CKS_MSPIS &
+				R_SYS0_CLOCK_CKS_MSPIS_MSPISACT_Msk,
+			stat_value);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+	}
+#endif /* defined(R_SYS0_CLOCK_CKS_MSPIC_MSPISCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKS_MSPIS_MSPISACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_RCANC_RCANXINSCSID_Msk) && defined(R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk)
+	case RH850_CLOCK_CANFD_XIN: {
+		const uint32_t value = RP_BSP_FIELD_PREP(R_SYS0_CLOCK_CKS_RCANC_RCANXINSCSID_Msk,
+							 R_SYS0_CLOCK_CKS_RCANC_RCANXINSCSID_Pos,
+							 clk_source);
+		if (rp_bsp_clock_validate_field(R_SYS0_CLOCK_CKS_RCANC_RCANXINSCSID_Msk,
+						   R_SYS0_CLOCK_CKS_RCANC_RCANXINSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_CLOCK->CKS_RCANC = (R_SYS0_CLOCK->CKS_RCANC &
+					     ~R_SYS0_CLOCK_CKS_RCANC_RCANXINSCSID_Msk) | value;
+		FSP_HARDWARE_REGISTER_WAIT((R_SYS0_CLOCK->CKS_RCANS &
+					    R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk),
+					   RP_BSP_FIELD_PREP(R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk,
+							     R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Pos,
+							     clk_source));
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+	}
+#endif /* defined(R_SYS0_CLOCK_CKS_RCANC_RCANXINSCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_RCANC_RCANCSCSID_Msk) && defined(R_SYS0_CLOCK_CKS_RCANS_RCANCSACT_Msk)
+	case RH850_CLOCK_CANFD_C: {
+		const uint32_t value = RP_BSP_FIELD_PREP(R_SYS0_CLOCK_CKS_RCANC_RCANCSCSID_Msk,
+							 R_SYS0_CLOCK_CKS_RCANC_RCANCSCSID_Pos,
+							 clk_source);
+		if (rp_bsp_clock_validate_field(R_SYS0_CLOCK_CKS_RCANC_RCANCSCSID_Msk,
+						   R_SYS0_CLOCK_CKS_RCANC_RCANCSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_CLOCK->CKS_RCANC = (R_SYS0_CLOCK->CKS_RCANC &
+					     ~R_SYS0_CLOCK_CKS_RCANC_RCANCSCSID_Msk) | value;
+		FSP_HARDWARE_REGISTER_WAIT((R_SYS0_CLOCK->CKS_RCANS &
+					    R_SYS0_CLOCK_CKS_RCANS_RCANCSACT_Msk),
+					   RP_BSP_FIELD_PREP(R_SYS0_CLOCK_CKS_RCANS_RCANCSACT_Msk,
+							     R_SYS0_CLOCK_CKS_RCANS_RCANCSACT_Pos,
+							     clk_source));
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+	}
+#endif /* defined(R_SYS0_CLOCK_CKS_RCANC_RCANCSCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKS_RCANS_RCANCSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKSC_RCANC_RCANSCSID_Msk) && defined(R_SYS0_CLOCK_CKSC_RCANS_RCANSACT_Msk)
+	case RH850_CLOCK_RCANOSC:
+		if (rp_bsp_clock_validate_field(R_SYS0_CLOCK_CKSC_RCANC_RCANSCSID_Msk,
+						   R_SYS0_CLOCK_CKSC_RCANC_RCANSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_CLOCK->CKSC_RCANC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKSC_RCANS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#endif /* defined(R_SYS0_CLOCK_CKSC_RCANC_RCANSCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKSC_RCANS_RCANSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKSC_ADCC_ADCSCSID_Msk) && defined(R_SYS0_CLOCK_CKSC_ADCS_ADCSACT_Msk)
+	case RH850_CLOCK_ADC:
+		if (rp_bsp_clock_validate_field(R_SYS0_CLOCK_CKSC_ADCC_ADCSCSID_Msk,
+						   R_SYS0_CLOCK_CKSC_ADCC_ADCSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_CLOCK->CKSC_ADCC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKSC_ADCS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#endif /* defined(R_SYS0_CLOCK_CKSC_ADCC_ADCSCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKSC_ADCS_ADCSACT_Msk) */
+
+#if defined(R_SYS0_A_CLOCK_CKSC_AADCC_AADCSCSID_Msk) && \
+	defined(R_SYS0_A_CLOCK_CKSC_AADCS_AADCSACT_Msk)
+	case RH850_CLOCK_CLKA_ADC:
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKSC_AADCC_AADCSCSID_Msk,
+						   R_SYS0_A_CLOCK_CKSC_AADCC_AADCSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+
+		/* U2B uses the CKSC_AADC selector/status register pair. */
+		R_SYS0_A_CLOCK->CKSC_AADCC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_AADCS, clk_source);
+#if defined(R_SYS0_A_CLOCK_CLKD_AADCC_AADCDCSID_Msk) && \
+	defined(R_SYS0_A_CLOCK_CLKD_AADCS_AADCDACT_Msk)
+		R_SYS0_A_CLOCK->CLKD_AADCC = RP_BSP_FIELD_PREP(
+			R_SYS0_A_CLOCK_CLKD_AADCC_AADCDCSID_Msk,
+			R_SYS0_A_CLOCK_CLKD_AADCC_AADCDCSID_Pos, div);
+		FSP_HARDWARE_REGISTER_WAIT(
+			(R_SYS0_A_CLOCK->CLKD_AADCS &
+			 R_SYS0_A_CLOCK_CLKD_AADCS_AADCDACT_Msk),
+			RP_BSP_FIELD_PREP(R_SYS0_A_CLOCK_CLKD_AADCS_AADCDACT_Msk,
+					      R_SYS0_A_CLOCK_CLKD_AADCS_AADCDACT_Pos, div));
+#endif /* defined(R_SYS0_A_CLOCK_CLKD_AADCC_AADCDCSID_Msk) &&
+        * defined(R_SYS0_A_CLOCK_CLKD_AADCS_AADCDACT_Msk) */
+
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#elif defined(R_SYS0_A_CLOCK_CKS_AADCC_AADCSCSID_Msk) && \
+	defined(R_SYS0_A_CLOCK_CKS_AADCS_AADCSACT_Msk)
+	case RH850_CLOCK_CLKA_ADC:
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKS_AADCC_AADCSCSID_Msk,
+						   R_SYS0_A_CLOCK_CKS_AADCC_AADCSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+
+		/* U2C exposes the CLKA_ADC selector through CKS_AADC. */
+		R_SYS0_A_CLOCK->CKS_AADCC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_AADCS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_AADCC_AADCSCSID_Msk) &&
+        * defined(R_SYS0_A_CLOCK_CKSC_AADCS_AADCSACT_Msk) */
+
+#if defined(R_SYS0_A_CLOCK_CKSC_ATAUJC_ATAUJSCSID_Msk) && defined(R_SYS0_A_CLOCK_CKSC_ATAUJS_ATAUJSACT_Msk)
+	case RH850_CLOCK_TAUJ:
+	case RH850_CLOCK_CLKA_TAUJ:
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKSC_ATAUJC_ATAUJSCSID_Msk,
+						   R_SYS0_A_CLOCK_CKSC_ATAUJC_ATAUJSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_A_CLOCK->CKSC_ATAUJC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_ATAUJS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#elif defined(R_SYS0_A_CLOCK_CKS_ATAUJC_ATAUJSCSID_Msk) && defined(R_SYS0_A_CLOCK_CKS_ATAUJS_ATAUJSACT_Msk)
+	case RH850_CLOCK_TAUJ:
+	case RH850_CLOCK_CLKA_TAUJ:
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKS_ATAUJC_ATAUJSCSID_Msk,
+						   R_SYS0_A_CLOCK_CKS_ATAUJC_ATAUJSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_A_CLOCK->CKS_ATAUJC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ATAUJS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_ATAUJC_ATAUJSCSID_Msk) &&
+        * defined(R_SYS0_A_CLOCK_CKSC_ATAUJS_ATAUJSACT_Msk) */
+
+#if defined(R_SYS0_A_CLOCK_CKSC_ARTCAC_ARTCASCSID_Msk) && defined(R_SYS0_A_CLOCK_CKSC_ARTCAS_ARTCASACT_Msk)
+	case RH850_CLOCK_RTCA:
+	case RH850_CLOCK_CLKA_RTCA:
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKSC_ARTCAC_ARTCASCSID_Msk,
+						   R_SYS0_A_CLOCK_CKSC_ARTCAC_ARTCASCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_A_CLOCK->CKSC_ARTCAC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_ARTCAS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#elif defined(R_SYS0_A_CLOCK_CKS_ARTCAC_ARTCASCSID_Msk) && defined(R_SYS0_A_CLOCK_CKS_ARTCAS_ARTCASACT_Msk)
+	case RH850_CLOCK_RTCA:
+	case RH850_CLOCK_CLKA_RTCA:
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKS_ARTCAC_ARTCASCSID_Msk,
+						   R_SYS0_A_CLOCK_CKS_ARTCAC_ARTCASCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_A_CLOCK->CKS_ARTCAC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ARTCAS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_ARTCAC_ARTCASCSID_Msk) &&
+        * defined(R_SYS0_A_CLOCK_CKSC_ARTCAS_ARTCASACT_Msk) */
+
+#if defined(R_SYS0_A_CLOCK_CKSC_AWDTC_AWDTSCSID_Msk) && defined(R_SYS0_A_CLOCK_CKSC_AWDTS_AWDTSACT_Msk)
+	case RP_BSP_CLOCK_LSI_WDT:
+	case RH850_CLOCK_WDTBA:
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKSC_AWDTC_AWDTSCSID_Msk,
+						   R_SYS0_A_CLOCK_CKSC_AWDTC_AWDTSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_A_CLOCK->CKSC_AWDTC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_AWDTS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#elif defined(R_SYS0_A_CLOCK_CKS_AWDTC_AWDTSCSID_Msk) && defined(R_SYS0_A_CLOCK_CKS_AWDTS_AWDTSACT_Msk)
+	case RH850_CLOCK_WDTBA:
+	case RP_BSP_CLOCK_LSI_WDT:
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKS_AWDTC_AWDTSCSID_Msk,
+						   R_SYS0_A_CLOCK_CKS_AWDTC_AWDTSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_A_CLOCK->CKS_AWDTC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_AWDTS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_AWDTC_AWDTSCSID_Msk) &&
+        * defined(R_SYS0_A_CLOCK_CKSC_AWDTS_AWDTSACT_Msk) */
+
+#if defined(R_SYS0_A_CLOCK_CKSC_WDTC_WDTSCSID_Msk) && defined(R_SYS0_A_CLOCK_CKSC_WDTS_WDTSACT_Msk)
+	case RP_BSP_CLOCK_HSI_WDT:
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKSC_WDTC_WDTSCSID_Msk,
+						   R_SYS0_A_CLOCK_CKSC_WDTC_WDTSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_A_CLOCK->CKSC_WDTC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_WDTS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#elif defined(R_SYS0_A_CLOCK_CKS_WDTC_WDTSCSID_Msk) && defined(R_SYS0_A_CLOCK_CKS_WDTS_WDTSACT_Msk)
+	case RP_BSP_CLOCK_HSI_WDT:
+		if (rp_bsp_clock_validate_field(R_SYS0_A_CLOCK_CKS_WDTC_WDTSCSID_Msk,
+						   R_SYS0_A_CLOCK_CKS_WDTC_WDTSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_A_CLOCK->CKS_WDTC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_WDTS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_WDTC_WDTSCSID_Msk) &&
+        * defined(R_SYS0_A_CLOCK_CKSC_WDTS_WDTSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_SWDTC_SWDTSCSID_Msk) && defined(R_SYS0_CLOCK_CKS_SWDTS_SWDTACT_Msk)
+	case RH850_CLOCK_SWDT:
+	case RH850_CLOCK_CLKC_SWDT:
+		if (rp_bsp_clock_validate_field(R_SYS0_CLOCK_CKS_SWDTC_SWDTSCSID_Msk,
+						   R_SYS0_CLOCK_CKS_SWDTC_SWDTSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_CLOCK->CKS_SWDTC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_SWDTS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#elif defined(R_SYS0_CLOCK_CKS_SWDTC_SWDTSCSID_Msk) && defined(R_SYS0_CLOCK_CKS_SWDTS_SWDTSACT_Msk)
+	case RH850_CLOCK_SWDT:
+	case RH850_CLOCK_CLKC_SWDT:
+		if (rp_bsp_clock_validate_field(R_SYS0_CLOCK_CKS_SWDTC_SWDTSCSID_Msk,
+						   R_SYS0_CLOCK_CKS_SWDTC_SWDTSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_CLOCK->CKS_SWDTC = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_SWDTS, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#endif /* defined(R_SYS0_CLOCK_CKS_SWDTC_SWDTSCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKS_SWDTS_SWDTACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_CANXL0C_CANXLSCSID_Msk) && defined(R_SYS0_CLOCK_CKS_CANXL0S_CANXLSACT_Msk)
+	case RH850_CLOCK_CANXL_CH0:
+		if (rp_bsp_clock_validate_field(R_SYS0_CLOCK_CKS_CANXL0C_CANXLSCSID_Msk,
+						   R_SYS0_CLOCK_CKS_CANXL0C_CANXLSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_CLOCK->CKS_CANXL0C = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_CANXL0S, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#endif /* defined(R_SYS0_CLOCK_CKS_CANXL0C_CANXLSCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKS_CANXL0S_CANXLSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_CANXL1C_CANXLSCSID_Msk) && defined(R_SYS0_CLOCK_CKS_CANXL1S_CANXLSACT_Msk)
+	case RH850_CLOCK_CANXL_CH1:
+		if (rp_bsp_clock_validate_field(R_SYS0_CLOCK_CKS_CANXL1C_CANXLSCSID_Msk,
+						   R_SYS0_CLOCK_CKS_CANXL1C_CANXLSCSID_Pos,
+						   clk_source) != FSP_SUCCESS) {
+			RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_INVALID_ARGUMENT);
+		}
+		R_SYS0_CLOCK->CKS_CANXL1C = clk_source;
+		FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_CANXL1S, clk_source);
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_SUCCESS);
+#endif /* defined(R_SYS0_CLOCK_CKS_CANXL1C_CANXLSCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKS_CANXL1S_CANXLSACT_Msk) */
+
+	case RH850_CLOCK_EXTCLK0O:
+	case RH850_CLOCK_EXTCLK1O:
+		err = rp_bsp_clock_configure_extclk(clock_id, clk_source, div);
+		RP_BSP_CLOCK_RETURN_LOCKED(err);
+
+	default:
+		RP_BSP_CLOCK_RETURN_LOCKED(FSP_ERR_UNSUPPORTED);
+	}
+}
+
+/* --------------------------------------------------------------------------
+ * Runtime clock readback and module/clock ID translation
+ * -------------------------------------------------------------------------- */
+
+#define RP_BSP_FIELD_GET(mask, pos, value) (((uint32_t)(value) & (uint32_t)(mask)) >> (uint32_t)(pos))
+
+static fsp_err_t rp_bsp_return_rate(uint32_t *rate, uint32_t hz)
+{
+    if ((rate == NULL) || (hz == 0U)) { return FSP_ERR_INVALID_ARGUMENT; }
+    *rate = hz;
+    return FSP_SUCCESS;
+}
+
+struct rp_bsp_module_map {
+	uint32_t module;
+	bsp_module_standby_t fsp_module;
+};
+
+
+static const struct rp_bsp_module_map rp_bsp_module_map[] = {
+#if defined(CONFIG_SOC_SERIES_RH850U2A)
+	{ RH850_MODULE_RSCFD, BSP_MODULE_STANDBY_MSR_RSCFD },
+	{ RH850_MODULE_FLXA, BSP_MODULE_STANDBY_MSR_FLXA },
+	{ RH850_MODULE_GTM, BSP_MODULE_STANDBY_MSR_GTM },
+#if defined(BSP_FEATURE_ETNB_IS_AVAILABLE) && BSP_FEATURE_ETNB_IS_AVAILABLE
+	{ RH850_MODULE_ETNB, BSP_MODULE_STANDBY_MSR_ETNB },
+#endif /* defined(BSP_FEATURE_ETNB_IS_AVAILABLE) && BSP_FEATURE_ETNB_IS_AVAILABLE */
+	{ RH850_MODULE_RSENT, BSP_MODULE_STANDBY_MSR_RSENT },
+	{ RH850_MODULE_MSPI, BSP_MODULE_STANDBY_MSR_MSPI },
+	{ RH850_MODULE_RLIN3, BSP_MODULE_STANDBY_MSR_RLIN3 },
+	{ RH850_MODULE_ADCJ_ISO, BSP_MODULE_STANDBY_MSR_ADCJ_ISO },
+#if defined(BSP_FEATURE_CXPI_IS_AVAILABLE) && BSP_FEATURE_CXPI_IS_AVAILABLE
+	{ RH850_MODULE_CXPI, BSP_MODULE_STANDBY_MSR_CXPI },
+#endif /* defined(BSP_FEATURE_CXPI_IS_AVAILABLE) && BSP_FEATURE_CXPI_IS_AVAILABLE */
+#if defined(BSP_FEATURE_MMCA_IS_AVAILABLE) && BSP_FEATURE_MMCA_IS_AVAILABLE
+	{ RH850_MODULE_MMCA, BSP_MODULE_STANDBY_MSR_MMCA },
+#endif /* defined(BSP_FEATURE_MMCA_IS_AVAILABLE) && BSP_FEATURE_MMCA_IS_AVAILABLE */
+#if defined(BSP_FEATURE_ENCA_IS_AVAILABLE) && BSP_FEATURE_ENCA_IS_AVAILABLE
+	{ RH850_MODULE_ENCA, BSP_MODULE_STANDBY_MSR_ENCA },
+#endif /* defined(BSP_FEATURE_ENCA_IS_AVAILABLE) && BSP_FEATURE_ENCA_IS_AVAILABLE */
+	{ RH850_MODULE_PSI5, BSP_MODULE_STANDBY_MSR_PSI5 },
+	{ RH850_MODULE_PSI5S, BSP_MODULE_STANDBY_MSR_PSI5S },
+	{ RH850_MODULE_PWMD, BSP_MODULE_STANDBY_MSR_PWMD },
+#if defined(BSP_FEATURE_RHSIF_IS_AVAILABLE) && BSP_FEATURE_RHSIF_IS_AVAILABLE
+	{ RH850_MODULE_RHSIF, BSP_MODULE_STANDBY_MSR_RHSIF },
+#endif /* defined(BSP_FEATURE_RHSIF_IS_AVAILABLE) && BSP_FEATURE_RHSIF_IS_AVAILABLE */
+	{ RH850_MODULE_RIIC, BSP_MODULE_STANDBY_MSR_RIIC },
+#if defined(BSP_FEATURE_SCI3_IS_AVAILABLE) && BSP_FEATURE_SCI3_IS_AVAILABLE
+	{ RH850_MODULE_SCI3, BSP_MODULE_STANDBY_MSR_SCI3 },
+#endif /* defined(BSP_FEATURE_SCI3_IS_AVAILABLE) && BSP_FEATURE_SCI3_IS_AVAILABLE */
+	{ RH850_MODULE_TAPA, BSP_MODULE_STANDBY_MSR_TAPA },
+	{ RH850_MODULE_TAUD, BSP_MODULE_STANDBY_MSR_TAUD },
+	{ RH850_MODULE_TAUJ_ISO, BSP_MODULE_STANDBY_MSR_TAUJ_ISO },
+	{ RH850_MODULE_TPBA, BSP_MODULE_STANDBY_MSR_TPBA },
+	{ RH850_MODULE_TSG3, BSP_MODULE_STANDBY_MSR_TSG3 },
+	{ RH850_MODULE_OSTM, BSP_MODULE_STANDBY_MSR_OSTM },
+	{ RH850_MODULE_ADCJ_AWO, BSP_MODULE_STANDBY_MSR_ADCJ_AWO },
+	{ RH850_MODULE_RTCA, BSP_MODULE_STANDBY_MSR_RTCA },
+	{ RH850_MODULE_TAUJ_AWO, BSP_MODULE_STANDBY_MSR_TAUJ_AWO },
+	{ RH850_MODULE_WDTB_AWO, BSP_MODULE_STANDBY_MSR_WDTB_AWO },
+#elif defined(CONFIG_SOC_SERIES_RH850U2B)
+	{ RH850_MODULE_RSCFD, BSP_MODULE_STANDBY_MSR_RSCFD },
+	{ RH850_MODULE_FLXA, BSP_MODULE_STANDBY_MSR_FLXA },
+	{ RH850_MODULE_GTM, BSP_MODULE_STANDBY_MSR_GTM },
+	{ RH850_MODULE_ETN, BSP_MODULE_STANDBY_MSR_ETN },
+	{ RH850_MODULE_RSENT, BSP_MODULE_STANDBY_MSR_RSENT },
+	{ RH850_MODULE_MSPI, BSP_MODULE_STANDBY_MSR_MSPI },
+	{ RH850_MODULE_RLIN3, BSP_MODULE_STANDBY_MSR_RLIN3 },
+	{ RH850_MODULE_DSADC_CADC, BSP_MODULE_STANDBY_MSR_DSADC_CADC },
+	{ RH850_MODULE_ADCK_ISO, BSP_MODULE_STANDBY_MSR_ADCK_ISO },
+#if defined(BSP_FEATURE_MMCA_IS_AVAILABLE) && BSP_FEATURE_MMCA_IS_AVAILABLE
+	{ RH850_MODULE_MMCA, BSP_MODULE_STANDBY_MSR_MMCA },
+#endif /* defined(BSP_FEATURE_MMCA_IS_AVAILABLE) && BSP_FEATURE_MMCA_IS_AVAILABLE */
+	{ RH850_MODULE_ENCA, BSP_MODULE_STANDBY_MSR_ENCA },
+#if defined(BSP_FEATURE_PSI5_IS_AVAILABLE) && BSP_FEATURE_PSI5_IS_AVAILABLE
+	{ RH850_MODULE_PSI5, BSP_MODULE_STANDBY_MSR_PSI5 },
+#endif /* defined(BSP_FEATURE_PSI5_IS_AVAILABLE) && BSP_FEATURE_PSI5_IS_AVAILABLE */
+#if defined(BSP_FEATURE_PSI5S_IS_AVAILABLE) && BSP_FEATURE_PSI5S_IS_AVAILABLE
+	{ RH850_MODULE_PSI5S, BSP_MODULE_STANDBY_MSR_PSI5S },
+#endif /* defined(BSP_FEATURE_PSI5S_IS_AVAILABLE) && BSP_FEATURE_PSI5S_IS_AVAILABLE */
+#if defined(BSP_FEATURE_RHSIF_IS_AVAILABLE) && BSP_FEATURE_RHSIF_IS_AVAILABLE
+	{ RH850_MODULE_RHSIF, BSP_MODULE_STANDBY_MSR_RHSIF },
+#endif /* defined(BSP_FEATURE_RHSIF_IS_AVAILABLE) && BSP_FEATURE_RHSIF_IS_AVAILABLE */
+	{ RH850_MODULE_RHSB, BSP_MODULE_STANDBY_MSR_RHSB },
+#if defined(BSP_FEATURE_RIIC_IS_AVAILABLE) && BSP_FEATURE_RIIC_IS_AVAILABLE
+	{ RH850_MODULE_RIIC, BSP_MODULE_STANDBY_MSR_RIIC },
+#endif /* defined(BSP_FEATURE_RIIC_IS_AVAILABLE) && BSP_FEATURE_RIIC_IS_AVAILABLE */
+	{ RH850_MODULE_SFMA, BSP_MODULE_STANDBY_MSR_SFMA },
+	{ RH850_MODULE_TAPA, BSP_MODULE_STANDBY_MSR_TAPA },
+	{ RH850_MODULE_TAUD, BSP_MODULE_STANDBY_MSR_TAUD },
+	{ RH850_MODULE_TPBA, BSP_MODULE_STANDBY_MSR_TPBA },
+	{ RH850_MODULE_TSG3, BSP_MODULE_STANDBY_MSR_TSG3 },
+	{ RH850_MODULE_OSTM, BSP_MODULE_STANDBY_MSR_OSTM },
+	{ RH850_MODULE_ATU, BSP_MODULE_STANDBY_MSR_ATU },
+	{ RH850_MODULE_DFE, BSP_MODULE_STANDBY_MSR_DFE },
+#if defined(BSP_FEATURE_DFP_IS_AVAILABLE) && BSP_FEATURE_DFP_IS_AVAILABLE
+	{ RH850_MODULE_DFP, BSP_MODULE_STANDBY_MSR_DFP },
+#endif /* defined(BSP_FEATURE_DFP_IS_AVAILABLE) && BSP_FEATURE_DFP_IS_AVAILABLE */
+	{ RH850_MODULE_RDC, BSP_MODULE_STANDBY_MSR_RDC },
+	{ RH850_MODULE_FCOMP, BSP_MODULE_STANDBY_MSR_FCOMP },
+#if defined(BSP_FEATURE_TSG3_EMU3S_IS_AVAILABLE) && BSP_FEATURE_TSG3_EMU3S_IS_AVAILABLE
+	{ RH850_MODULE_EMU, BSP_MODULE_STANDBY_MSR_EMU },
+#endif /* defined(BSP_FEATURE_TSG3_EMU3S_IS_AVAILABLE) && BSP_FEATURE_TSG3_EMU3S_IS_AVAILABLE */
+	{ RH850_MODULE_HRPWM, BSP_MODULE_STANDBY_MSR_HRPWM },
+#if defined(BSP_FEATURE_DSMIF_IS_AVAILABLE) && BSP_FEATURE_DSMIF_IS_AVAILABLE
+	{ RH850_MODULE_DSMIF, BSP_MODULE_STANDBY_MSR_DSMIF },
+#endif /* defined(BSP_FEATURE_DSMIF_IS_AVAILABLE) && BSP_FEATURE_DSMIF_IS_AVAILABLE */
+#elif defined(CONFIG_SOC_SERIES_RH850U2BE)
+	{ RH850_MODULE_RSCFD, BSP_MODULE_STANDBY_MSR_RSCFD },
+	{ RH850_MODULE_FLXA, BSP_MODULE_STANDBY_MSR_FLXA },
+	{ RH850_MODULE_GTM, BSP_MODULE_STANDBY_MSR_GTM },
+	{ RH850_MODULE_ETN, BSP_MODULE_STANDBY_MSR_ETN },
+	{ RH850_MODULE_ETNF, BSP_MODULE_STANDBY_MSR_ETNF },
+	{ RH850_MODULE_RSENT, BSP_MODULE_STANDBY_MSR_RSENT },
+	{ RH850_MODULE_MSPI, BSP_MODULE_STANDBY_MSR_MSPI },
+	{ RH850_MODULE_RLIN3, BSP_MODULE_STANDBY_MSR_RLIN3 },
+	{ RH850_MODULE_DSADC_CADC, BSP_MODULE_STANDBY_MSR_DSADC_CADC },
+	{ RH850_MODULE_ADCK_ISO, BSP_MODULE_STANDBY_MSR_ADCK_ISO },
+#if defined(BSP_FEATURE_MMCA_IS_AVAILABLE) && BSP_FEATURE_MMCA_IS_AVAILABLE
+	{ RH850_MODULE_MMCA, BSP_MODULE_STANDBY_MSR_MMCA },
+#endif /* defined(BSP_FEATURE_MMCA_IS_AVAILABLE) && BSP_FEATURE_MMCA_IS_AVAILABLE */
+#if defined(BSP_FEATURE_ENCA_IS_AVAILABLE) && BSP_FEATURE_ENCA_IS_AVAILABLE
+	{ RH850_MODULE_ENCA, BSP_MODULE_STANDBY_MSR_ENCA },
+#endif /* defined(BSP_FEATURE_ENCA_IS_AVAILABLE) && BSP_FEATURE_ENCA_IS_AVAILABLE */
+	{ RH850_MODULE_PSI5, BSP_MODULE_STANDBY_MSR_PSI5 },
+#if defined(BSP_FEATURE_PSI5S_IS_AVAILABLE) && BSP_FEATURE_PSI5S_IS_AVAILABLE
+	{ RH850_MODULE_PSI5S, BSP_MODULE_STANDBY_MSR_PSI5S },
+#endif /* defined(BSP_FEATURE_PSI5S_IS_AVAILABLE) && BSP_FEATURE_PSI5S_IS_AVAILABLE */
+	{ RH850_MODULE_RHSIF, BSP_MODULE_STANDBY_MSR_RHSIF },
+	{ RH850_MODULE_RHSB, BSP_MODULE_STANDBY_MSR_RHSB },
+	{ RH850_MODULE_RIIC, BSP_MODULE_STANDBY_MSR_RIIC },
+#if defined(BSP_FEATURE_SFMA_IS_AVAILABLE) && BSP_FEATURE_SFMA_IS_AVAILABLE
+	{ RH850_MODULE_SFMA, BSP_MODULE_STANDBY_MSR_SFMA },
+#endif /* defined(BSP_FEATURE_SFMA_IS_AVAILABLE) && BSP_FEATURE_SFMA_IS_AVAILABLE */
+#if defined(BSP_FEATURE_TAPA_IS_AVAILABLE) && BSP_FEATURE_TAPA_IS_AVAILABLE
+	{ RH850_MODULE_TAPA, BSP_MODULE_STANDBY_MSR_TAPA },
+#endif /* defined(BSP_FEATURE_TAPA_IS_AVAILABLE) && BSP_FEATURE_TAPA_IS_AVAILABLE */
+#if defined(BSP_FEATURE_TAUD_IS_AVAILABLE) && BSP_FEATURE_TAUD_IS_AVAILABLE
+	{ RH850_MODULE_TAUD, BSP_MODULE_STANDBY_MSR_TAUD },
+#endif /* defined(BSP_FEATURE_TAUD_IS_AVAILABLE) && BSP_FEATURE_TAUD_IS_AVAILABLE */
+#if defined(BSP_FEATURE_TPBA_IS_AVAILABLE) && BSP_FEATURE_TPBA_IS_AVAILABLE
+	{ RH850_MODULE_TPBA, BSP_MODULE_STANDBY_MSR_TPBA },
+#endif /* defined(BSP_FEATURE_TPBA_IS_AVAILABLE) && BSP_FEATURE_TPBA_IS_AVAILABLE */
+	{ RH850_MODULE_TSG3, BSP_MODULE_STANDBY_MSR_TSG3 },
+	{ RH850_MODULE_OSTM, BSP_MODULE_STANDBY_MSR_OSTM },
+	{ RH850_MODULE_DFE, BSP_MODULE_STANDBY_MSR_DFE },
+	{ RH850_MODULE_RDC, BSP_MODULE_STANDBY_MSR_RDC },
+	{ RH850_MODULE_FCOMP, BSP_MODULE_STANDBY_MSR_FCOMP },
+	{ RH850_MODULE_HRPWM, BSP_MODULE_STANDBY_MSR_HRPWM },
+#if defined(BSP_FEATURE_DFA_IS_AVAILABLE) && BSP_FEATURE_DFA_IS_AVAILABLE
+	{ RH850_MODULE_DFA, BSP_MODULE_STANDBY_MSR_DFA },
+#endif /* defined(BSP_FEATURE_DFA_IS_AVAILABLE) && BSP_FEATURE_DFA_IS_AVAILABLE */
+	{ RH850_MODULE_DSMIF, BSP_MODULE_STANDBY_MSR_DSMIF },
+	{ RH850_MODULE_RTCA, BSP_MODULE_STANDBY_MSR_RTCA },
+	{ RH850_MODULE_TAUJ_AWO, BSP_MODULE_STANDBY_MSR_TAUJ_AWO },
+	{ RH850_MODULE_WDTB_AWO, BSP_MODULE_STANDBY_MSR_WDTB_AWO },
+#elif defined(CONFIG_SOC_SERIES_RH850U2C)
+	{ RH850_MODULE_RSCFD, BSP_MODULE_STANDBY_MSR_RSCFD },
+#if defined(BSP_FEATURE_FLXA_IS_AVAILABLE) && BSP_FEATURE_FLXA_IS_AVAILABLE
+	{ RH850_MODULE_FLXA, BSP_MODULE_STANDBY_MSR_FLXA },
+#endif /* defined(BSP_FEATURE_FLXA_IS_AVAILABLE) && BSP_FEATURE_FLXA_IS_AVAILABLE */
+	{ RH850_MODULE_GTM, BSP_MODULE_STANDBY_MSR_GTM },
+#if defined(BSP_FEATURE_ETND_IS_AVAILABLE) && BSP_FEATURE_ETND_IS_AVAILABLE
+	{ RH850_MODULE_ETND, BSP_MODULE_STANDBY_MSR_ETND },
+#endif /* defined(BSP_FEATURE_ETND_IS_AVAILABLE) && BSP_FEATURE_ETND_IS_AVAILABLE */
+	{ RH850_MODULE_ETNF, BSP_MODULE_STANDBY_MSR_ETNF },
+	{ RH850_MODULE_RSENT, BSP_MODULE_STANDBY_MSR_RSENT },
+	{ RH850_MODULE_MSPI, BSP_MODULE_STANDBY_MSR_MSPI },
+	{ RH850_MODULE_RLIN3, BSP_MODULE_STANDBY_MSR_RLIN3 },
+	{ RH850_MODULE_ADCK_ISO, BSP_MODULE_STANDBY_MSR_ADCK_ISO },
+	{ RH850_MODULE_CXPI, BSP_MODULE_STANDBY_MSR_CXPI },
+#if defined(BSP_FEATURE_MMCA_IS_AVAILABLE) && BSP_FEATURE_MMCA_IS_AVAILABLE
+	{ RH850_MODULE_MMCA, BSP_MODULE_STANDBY_MSR_MMCA },
+#endif /* defined(BSP_FEATURE_MMCA_IS_AVAILABLE) && BSP_FEATURE_MMCA_IS_AVAILABLE */
+	{ RH850_MODULE_ENCA, BSP_MODULE_STANDBY_MSR_ENCA },
+	{ RH850_MODULE_PSI5, BSP_MODULE_STANDBY_MSR_PSI5 },
+#if defined(BSP_FEATURE_PSI5S_IS_AVAILABLE) && BSP_FEATURE_PSI5S_IS_AVAILABLE
+	{ RH850_MODULE_PSI5S, BSP_MODULE_STANDBY_MSR_PSI5S },
+#endif /* defined(BSP_FEATURE_PSI5S_IS_AVAILABLE) && BSP_FEATURE_PSI5S_IS_AVAILABLE */
+	{ RH850_MODULE_PWMD, BSP_MODULE_STANDBY_MSR_PWMD },
+	{ RH850_MODULE_SFMA, BSP_MODULE_STANDBY_MSR_SFMA },
+	{ RH850_MODULE_TAPA, BSP_MODULE_STANDBY_MSR_TAPA },
+	{ RH850_MODULE_TAUD, BSP_MODULE_STANDBY_MSR_TAUD },
+	{ RH850_MODULE_TAUJ_ISO, BSP_MODULE_STANDBY_MSR_TAUJ_ISO },
+	{ RH850_MODULE_TSG3, BSP_MODULE_STANDBY_MSR_TSG3 },
+	{ RH850_MODULE_OSTM, BSP_MODULE_STANDBY_MSR_OSTM },
+	{ RH850_MODULE_RI3C, BSP_MODULE_STANDBY_MSR_RI3C },
+	{ RH850_MODULE_SSIF, BSP_MODULE_STANDBY_MSR_SSIF },
+	{ RH850_MODULE_ADCK_AWO, BSP_MODULE_STANDBY_MSR_ADCK_AWO },
+	{ RH850_MODULE_RTCA, BSP_MODULE_STANDBY_MSR_RTCA },
+	{ RH850_MODULE_TAUJ_AWO, BSP_MODULE_STANDBY_MSR_TAUJ_AWO },
+	{ RH850_MODULE_WDTB_AWO, BSP_MODULE_STANDBY_MSR_WDTB_AWO },
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2A) */
+};
+
+
+static fsp_err_t rp_bsp_module_to_fsp(uint32_t module_id, bsp_module_standby_t *fsp_module)
+{
+    if (fsp_module == NULL) { return FSP_ERR_INVALID_ARGUMENT; }
+    for (size_t i = 0; i < (sizeof(rp_bsp_module_map) / sizeof(rp_bsp_module_map[0])); ++i) {
+        if (rp_bsp_module_map[i].module == module_id) {
+            *fsp_module = rp_bsp_module_map[i].fsp_module;
+            return FSP_SUCCESS;
+        }
+    }
+    return FSP_ERR_UNSUPPORTED;
+}
+
+fsp_err_t RP_BSP_ModuleStandbyEnableById(uint32_t module_id, uint32_t channel)
+{
+    bsp_module_standby_t module;
+    fsp_err_t err = rp_bsp_module_to_fsp(module_id, &module);
+    if (err != FSP_SUCCESS) { return err; }
+    R_BSP_ModuleStandbyEnable(module, channel);
+    return FSP_SUCCESS;
+}
+
+fsp_err_t RP_BSP_ModuleStandbyDisableById(uint32_t module_id, uint32_t channel)
+{
+    bsp_module_standby_t module;
+    fsp_err_t err = rp_bsp_module_to_fsp(module_id, &module);
+    if (err != FSP_SUCCESS) { return err; }
+    R_BSP_ModuleStandbyDisable(module, channel);
+    return FSP_SUCCESS;
+}
+
+fsp_err_t RP_BSP_ModuleStandbyStatusGetById(uint32_t module_id, uint32_t channel, bool *standby)
+{
+    bsp_module_standby_t module;
+    fsp_err_t err;
+    if (standby == NULL) { return FSP_ERR_INVALID_ARGUMENT; }
+    err = rp_bsp_module_to_fsp(module_id, &module);
+    if (err != FSP_SUCCESS) { return err; }
+    return RP_BSP_ModuleStandbyGet(module, channel, standby);
+}
+
+/*
+ * Map logical Zephyr IDs to native FSP clocks; FSP owns rate calculation.
+ * Optional entries follow the feature guards on the native FSP enum, rather
+ * than depending on the presence of generated BSP_CFG_CLOCK_*_HZ macros.
+ * Devices sharing a native clock interface reuse the same entries. Add only
+ * interface differences here when introducing another series.
+ */
+struct rp_bsp_clock_rate_map {
+	uint32_t clock_id;
+	fsp_priv_clock_t fsp_clock;
+};
+
+static const struct rp_bsp_clock_rate_map rp_bsp_clock_rate_map[] = {
+	{ RH850_CLOCK_MOSC, FSP_PRIV_CLOCK_CLK_MOSC },
+	{ RH850_CLOCK_HSIOSC, FSP_PRIV_CLOCK_CLK_HSIOSC },
+	{ RH850_CLOCK_LSIOSC, FSP_PRIV_CLOCK_CLK_LSIOSC },
+	{ RH850_CLOCK_PLL, FSP_PRIV_CLOCK_CLK_PLL },
+	{ RH850_CLOCK_IOSC, FSP_PRIV_CLOCK_CLK_IOSC },
+	{ RH850_CLOCK_CPU, FSP_PRIV_CLOCK_CLK_CPU },
+	{ RH850_CLOCK_SBUS, FSP_PRIV_CLOCK_CLK_SBUS },
+	{ RH850_CLOCK_HBUS, FSP_PRIV_CLOCK_CLK_HBUS },
+	{ RH850_CLOCK_UHSB, FSP_PRIV_CLOCK_CLK_UHSB },
+	{ RH850_CLOCK_HSB, FSP_PRIV_CLOCK_CLK_HSB },
+	{ RH850_CLOCK_LSB, FSP_PRIV_CLOCK_CLK_LSB },
+	{ RH850_CLOCK_MSPI, FSP_PRIV_CLOCK_CLK_MSPI },
+	{ RH850_CLOCK_ECMCNT, FSP_PRIV_CLOCK_CLK_ECMCNT },
+	{ RH850_CLOCK_EMCCNT, FSP_PRIV_CLOCK_CLK_ECMCNT },
+	{ RH850_CLOCK_EXTCLK0O, FSP_PRIV_CLOCK_EXTCLK0O },
+	{ RH850_CLOCK_EXTCLK1O, FSP_PRIV_CLOCK_EXTCLK1O },
+#if defined(CONFIG_SOC_SERIES_RH850U2A)
+	/* U2A has one system/bus path; CLKC IDs retain their bus aliases. */
+	{ RH850_CLOCK_HVIOSC, FSP_PRIV_CLOCK_CLK_HVIOSC },
+	{ RH850_CLOCK_PLLO, FSP_PRIV_CLOCK_CLK_PLLO },
+	{ RH850_CLOCK_SYS, FSP_PRIV_CLOCK_CLK_SYS },
+	{ RH850_CLOCK_SYS_CLEAN, FSP_PRIV_CLOCK_CLK_SYS },
+	{ RH850_CLOCK_CLKC_CPU, FSP_PRIV_CLOCK_CLK_CPU },
+	{ RH850_CLOCK_CLKC_SBUS, FSP_PRIV_CLOCK_CLK_SBUS },
+	{ RH850_CLOCK_CLKC_HBUS, FSP_PRIV_CLOCK_CLK_HBUS },
+	{ RH850_CLOCK_CLKC_UHSB, FSP_PRIV_CLOCK_CLK_UHSB },
+	{ RH850_CLOCK_CLKC_HSB, FSP_PRIV_CLOCK_CLK_HSB },
+	{ RH850_CLOCK_CLKC_LSB, FSP_PRIV_CLOCK_CLK_LSB },
+	{ RH850_CLOCK_RLIN, FSP_PRIV_CLOCK_CLK_RLIN },
+	{ RH850_CLOCK_RLIN3, FSP_PRIV_CLOCK_CLK_RLIN },
+	{ RH850_CLOCK_RCANOSC, FSP_PRIV_CLOCK_CLK_RCANOSC },
+	{ RH850_CLOCK_CANFD_C, FSP_PRIV_CLOCK_CLK_RCANOSC },
+	{ RH850_CLOCK_CANFD_XIN, FSP_PRIV_CLOCK_CLK_RCANOSC },
+	{ RH850_CLOCK_ADC, FSP_PRIV_CLOCK_CLK_ADC },
+	{ RH850_CLOCK_WDT, FSP_PRIV_CLOCK_CLK_WDT },
+	{ RH850_CLOCK_WDTB, FSP_PRIV_CLOCK_CLK_WDT },
+	{ RH850_CLOCK_WDTBA, FSP_PRIV_CLOCK_CLKA_WDT },
+	{ RH850_CLOCK_CLKA_WDT, FSP_PRIV_CLOCK_CLKA_WDT },
+	{ RH850_CLOCK_CLKA_WDTBA, FSP_PRIV_CLOCK_CLKA_WDT },
+	{ RH850_CLOCK_TAUJ, FSP_PRIV_CLOCK_CLKA_TAUJ },
+	{ RH850_CLOCK_CLKA_TAUJ, FSP_PRIV_CLOCK_CLKA_TAUJ },
+	{ RH850_CLOCK_RTCA, FSP_PRIV_CLOCK_CLKA_RTCA },
+	{ RH850_CLOCK_CLKA_RTCA, FSP_PRIV_CLOCK_CLKA_RTCA },
+	{ RH850_CLOCK_LPS, FSP_PRIV_CLOCK_CLKA_LPS },
+	{ RH850_CLOCK_CLKA_LPS, FSP_PRIV_CLOCK_CLKA_LPS },
+#if BSP_FEATURE_ADCKA_IS_AVAILABLE
+	{ RH850_CLOCK_CLKA_ADC, FSP_PRIV_CLOCK_CLKA_ADC },
+#endif /* BSP_FEATURE_ADCKA_IS_AVAILABLE */
+#elif defined(CONFIG_SOC_SERIES_RH850U2B) || defined(CONFIG_SOC_SERIES_RH850U2C) || \
+	defined(CONFIG_SOC_SERIES_RH850U2BE)
+	/* CLKC clean outputs are distinct from ordinary CLK bus outputs. */
+	{ RH850_CLOCK_CLKC_SBUS, FSP_PRIV_CLOCK_CLKC_SBUS },
+	{ RH850_CLOCK_CLKC_HBUS, FSP_PRIV_CLOCK_CLKC_HBUS },
+	{ RH850_CLOCK_CLKC_UHSB, FSP_PRIV_CLOCK_CLKC_UHSB },
+	{ RH850_CLOCK_CLKC_HSB, FSP_PRIV_CLOCK_CLKC_HSB },
+	{ RH850_CLOCK_CLKC_LSB, FSP_PRIV_CLOCK_CLKC_LSB },
+	{ RH850_CLOCK_PLLO, FSP_PRIV_CLOCK_CLK_PLL },
+	{ RH850_CLOCK_EMG, FSP_PRIV_CLOCK_CLK_EMG },
+	{ RH850_CLOCK_SYS, FSP_PRIV_CLOCK_CLK_SYS_CLEAN },
+	{ RH850_CLOCK_SYS_CLEAN, FSP_PRIV_CLOCK_CLK_SYS_CLEAN },
+	{ RH850_CLOCK_SSCG, FSP_PRIV_CLOCK_CLK_SSCG },
+	{ RH850_CLOCK_SYS_SSCG, FSP_PRIV_CLOCK_CLK_SYS_SSCG },
+	{ RH850_CLOCK_RLIN, FSP_PRIV_CLOCK_CLK_RLIN3 },
+	{ RH850_CLOCK_RLIN3, FSP_PRIV_CLOCK_CLK_RLIN3 },
+	{ RH850_CLOCK_CANFD_C, FSP_PRIV_CLOCK_CLK_CANFD_C },
+	{ RH850_CLOCK_CANFD_XIN, FSP_PRIV_CLOCK_CLK_CANFD_XIN },
+	{ RH850_CLOCK_RCANOSC, FSP_PRIV_CLOCK_CLK_CANFD_XIN },
+	{ RH850_CLOCK_WDT, FSP_PRIV_CLOCK_CLK_WDTB },
+	{ RH850_CLOCK_WDTB, FSP_PRIV_CLOCK_CLK_WDTB },
+	{ RH850_CLOCK_GTM, FSP_PRIV_CLOCK_CLK_GTM },
+#if defined(CONFIG_SOC_SERIES_RH850U2C)
+	/* U2C exposes no separate native CLKC_CPU; keep the legacy alias. */
+	{ RH850_CLOCK_CLKC_CPU, FSP_PRIV_CLOCK_CLK_CPU },
+	{ RH850_CLOCK_SYS_IOSC, FSP_PRIV_CLOCK_CLK_SYS_IOSC },
+	{ RH850_CLOCK_SOSC, FSP_PRIV_CLOCK_CLK_SOSC },
+	{ RH850_CLOCK_FLI, FSP_PRIV_CLOCK_CLK_FLI },
+	{ RH850_CLOCK_FACI, FSP_PRIV_CLOCK_CLK_FACI },
+	{ RH850_CLOCK_RLIN323, FSP_PRIV_CLOCK_CLK_RLIN323 },
+	{ RH850_CLOCK_CH23_RLIN3, FSP_PRIV_CLOCK_CLK_RLIN323 },
+	{ RH850_CLOCK_CLKA_ADC, FSP_PRIV_CLOCK_CLKA_ADC },
+#else
+	{ RH850_CLOCK_CLKC_CPU, FSP_PRIV_CLOCK_CLKC_CPU },
+	{ RH850_CLOCK_CLKC_SHSB, FSP_PRIV_CLOCK_CLKC_SHSB },
+	{ RH850_CLOCK_HVIOSC, FSP_PRIV_CLOCK_CLK_HVIOSC },
+	{ RH850_CLOCK_SYS_IOSC, FSP_PRIV_CLOCK_CLK_IOSC },
+#if defined(CONFIG_SOC_SERIES_RH850U2B)
+	{ RH850_CLOCK_RLIN323, FSP_PRIV_CLOCK_CLK_CH23_RLIN3 },
+	{ RH850_CLOCK_CH23_RLIN3, FSP_PRIV_CLOCK_CLK_CH23_RLIN3 },
+#if BSP_FEATURE_DFP_IS_AVAILABLE
+	{ RH850_CLOCK_SSCG1, FSP_PRIV_CLOCK_CLK_SSCG1 },
+	{ RH850_CLOCK_SYS_SSCG1, FSP_PRIV_CLOCK_CLK_SYS_SSCG1 },
+	{ RH850_CLOCK_DFP, FSP_PRIV_CLOCK_CLK_DFP },
+	{ RH850_CLOCK_DFP_DIV_2, FSP_PRIV_CLOCK_CLK_DFP_DIV_2 },
+#endif /* BSP_FEATURE_DFP_IS_AVAILABLE */
+#elif defined(CONFIG_SOC_SERIES_RH850U2BE)
+	{ RH850_CLOCK_RLIN323, FSP_PRIV_CLOCK_CLK_RLIN3_CH23 },
+	{ RH850_CLOCK_CH23_RLIN3, FSP_PRIV_CLOCK_CLK_RLIN3_CH23 },
+	{ RH850_CLOCK_SSCG1, FSP_PRIV_CLOCK_CLK_SSCG1 },
+	{ RH850_CLOCK_SYS_SSCG1, FSP_PRIV_CLOCK_CLK_SYS_SSCG1 },
+#if BSP_FEATURE_DFA_IS_AVAILABLE
+	{ RH850_CLOCK_DFA, FSP_PRIV_CLOCK_CLK_DFA },
+#endif /* BSP_FEATURE_DFA_IS_AVAILABLE */
+#if BSP_FEATURE_OSPI_IS_AVAILABLE
+	{ RH850_CLOCK_OSPI, FSP_PRIV_CLOCK_CLK_OSPI },
+	{ RH850_CLOCK_OSPIX2, FSP_PRIV_CLOCK_CLK_OSPIX2 },
+#endif /* BSP_FEATURE_OSPI_IS_AVAILABLE */
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2B) */
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2C) */
+#if defined(CONFIG_SOC_SERIES_RH850U2B)
+	{ RH850_CLOCK_SWDT, FSP_PRIV_CLOCK_CLKC_SWDT },
+	{ RH850_CLOCK_CLKC_SWDT, FSP_PRIV_CLOCK_CLKC_SWDT },
+#else /* U2C/U2BE */
+	{ RH850_CLOCK_SWDT, FSP_PRIV_CLOCK_CLK_SWDT },
+	{ RH850_CLOCK_CLKC_SWDT, FSP_PRIV_CLOCK_CLK_SWDT },
+	{ RH850_CLOCK_WDTBA, FSP_PRIV_CLOCK_CLKA_WDTBA },
+	{ RH850_CLOCK_CLKA_WDT, FSP_PRIV_CLOCK_CLKA_WDTBA },
+	{ RH850_CLOCK_CLKA_WDTBA, FSP_PRIV_CLOCK_CLKA_WDTBA },
+	{ RH850_CLOCK_TAUJ, FSP_PRIV_CLOCK_CLKA_TAUJ },
+	{ RH850_CLOCK_CLKA_TAUJ, FSP_PRIV_CLOCK_CLKA_TAUJ },
+	{ RH850_CLOCK_RTCA, FSP_PRIV_CLOCK_CLKA_RTCA },
+	{ RH850_CLOCK_CLKA_RTCA, FSP_PRIV_CLOCK_CLKA_RTCA },
+	{ RH850_CLOCK_LPS, FSP_PRIV_CLOCK_CLKA_LPS },
+	{ RH850_CLOCK_CLKA_LPS, FSP_PRIV_CLOCK_CLKA_LPS },
+	{ RH850_CLOCK_CANXL_CH0, FSP_PRIV_CLOCK_CLKC_CANXL_CH0 },
+#if BSP_FEATURE_CANXL_CH1_IS_AVAILABLE
+	{ RH850_CLOCK_CANXL_CH1, FSP_PRIV_CLOCK_CLKC_CANXL_CH1 },
+#endif /* BSP_FEATURE_CANXL_CH1_IS_AVAILABLE */
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2B) */
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2A) */
+};
+
+static fsp_err_t rp_bsp_configured_clock_hz_get(uint32_t clock_id, uint32_t *rate)
+{
+	if (rate == NULL) {
+		return FSP_ERR_INVALID_ARGUMENT;
+	}
+
+	for (size_t i = 0U; i < sizeof(rp_bsp_clock_rate_map) /
+				 sizeof(rp_bsp_clock_rate_map[0]); ++i) {
+		if (rp_bsp_clock_rate_map[i].clock_id == clock_id) {
+			*rate = R_FSP_SystemClockHzGet(rp_bsp_clock_rate_map[i].fsp_clock);
+			return FSP_SUCCESS;
+		}
+	}
+
+	return FSP_ERR_UNSUPPORTED;
+}
+
+/* Reverse the shared selector map, retaining the distinction between buses. */
+static fsp_err_t rp_bsp_clock_extclk_source_get(uint32_t selector, uint32_t *source)
+{
+    static const uint32_t parents[] = {
+        RH850_CLOCK_MOSC, RH850_CLOCK_LSIOSC, RH850_CLOCK_HSIOSC,
+        RH850_CLOCK_HSB, RH850_CLOCK_CLKC_HSB, RH850_CLOCK_SOSC,
+    };
+
+    for (uint32_t i = 0U; i < sizeof(parents) / sizeof(parents[0]); ++i) {
+        int value = RP_BSP_SELECT_EXTCLK(parents[i]);
+
+        if (value >= 0 && (uint32_t)value == selector) {
+            *source = parents[i];
+            return FSP_SUCCESS;
+        }
+    }
+    return FSP_ERR_UNSUPPORTED;
+}
+
+static fsp_err_t rp_bsp_clock_rlin_source_get(uint32_t clock_id, uint32_t selector,
+					   uint32_t *source, uint32_t *div)
+{
+	const bool ch23 = (clock_id == RH850_CLOCK_CH23_RLIN3 ||
+			   clock_id == RH850_CLOCK_RLIN323);
+	const uint32_t parents[] = {
+		ch23 ? RH850_CLOCK_CLKC_HBUS : RP_BSP_CLOCK_HSB,
+		RH850_CLOCK_EMG, RH850_CLOCK_MOSC,
+	};
+	static const uint32_t divisors[] = {0U, 4U, 8U};
+
+	for (uint32_t i = 0U; i < sizeof(parents) / sizeof(parents[0]); ++i) {
+		for (uint32_t j = 0U; j < sizeof(divisors) / sizeof(divisors[0]); ++j) {
+			int value = ch23 ? RP_BSP_SELECT_RLIN323_DIV(parents[i], divisors[j]) :
+					  RP_BSP_SELECT_RLIN3_DIV(parents[i], divisors[j]);
+
+			if (value >= 0 && (uint32_t)value == selector) {
+				*source = parents[i];
+				*div = divisors[j];
+				return FSP_SUCCESS;
+			}
+		}
+	}
+	return FSP_ERR_UNSUPPORTED;
+}
+
+/*
+ * Decode the active peripheral clock selector and divider directly from the
+ * hardware status registers. This is the inverse of
+ * RP_BSP_PeripheralClockConfigure(); both paths intentionally live in this
+ * file so selector mappings cannot drift apart.
+ */
+fsp_err_t RP_BSP_PeripheralClockConfigGet(uint32_t clock_id,
+                                          uint32_t *source_clock_id,
+                                          uint32_t *div)
+{
+    uint32_t selector;
+
+    if ((source_clock_id == NULL) || (div == NULL)) {
+        return FSP_ERR_INVALID_ARGUMENT;
+    }
+
+    *div = 0U;
+
+    switch (clock_id) {
+#if defined(R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk)
+    case RH850_CLOCK_RLIN:
+    case RH850_CLOCK_RLIN3:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk,
+                                    R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Pos,
+                                    R_SYS0_CLOCK->CKS_RLINS);
+        return rp_bsp_clock_rlin_source_get(clock_id, selector, source_clock_id, div);
+#endif /* defined(R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk)
+    case RH850_CLOCK_CH23_RLIN3:
+    case RH850_CLOCK_RLIN323:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk,
+                                    R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos,
+                                    R_SYS0_CLOCK->CKS_RLINS);
+        return rp_bsp_clock_rlin_source_get(clock_id, selector, source_clock_id, div);
+#endif /* defined(R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_MSPIS_MSPISACT_Msk)
+    case RH850_CLOCK_MSPI:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_MSPIS_MSPISACT_Msk,
+                                    R_SYS0_CLOCK_CKS_MSPIS_MSPISACT_Pos,
+                                    R_SYS0_CLOCK->CKS_MSPIS);
+        if (selector == RP_BSP_SELECT_MSPI(RH850_CLOCK_MOSC)) {
+            *source_clock_id = RH850_CLOCK_MOSC;
+            return FSP_SUCCESS;
+        }
+#if !defined(CONFIG_SOC_SERIES_RH850U2A)
+        if (selector == RP_BSP_SELECT_MSPI(RH850_CLOCK_EMG)) {
+            *source_clock_id = RH850_CLOCK_EMG;
+            return FSP_SUCCESS;
+        }
+#endif /* !defined(CONFIG_SOC_SERIES_RH850U2A) */
+#if defined(CONFIG_SOC_SERIES_RH850U2A)
+        if (selector == RP_BSP_RH850_U2A_MSPI_SRC_CLKC_HSB)
+#else
+        if (selector == RP_BSP_RH850_U2BC_MSPI_SRC_CLKC_HSB)
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2A) */
+        {
+            *source_clock_id = RP_BSP_CLOCK_HSB;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_CLOCK_CKS_MSPIS_MSPISACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_RCANS_RCANCSACT_Msk)
+    case RH850_CLOCK_CANFD_C:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_RCANS_RCANCSACT_Msk,
+                                    R_SYS0_CLOCK_CKS_RCANS_RCANCSACT_Pos,
+                                    R_SYS0_CLOCK->CKS_RCANS);
+        if (selector == RP_BSP_RH850_CANFD_C_SRC_CLKC_HSB) {
+            *source_clock_id = RP_BSP_CLOCK_HSB;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_CLOCK_CKS_RCANS_RCANCSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk)
+    case RH850_CLOCK_CANFD_XIN:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk,
+                                    R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Pos,
+                                    R_SYS0_CLOCK->CKS_RCANS);
+        if (selector == RP_BSP_RH850_CANFD_XIN_SRC_MOSC) {
+            *source_clock_id = RH850_CLOCK_MOSC;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKSC_RCANS_RCANSACT_Msk)
+    case RH850_CLOCK_RCANOSC:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKSC_RCANS_RCANSACT_Msk,
+                                    R_SYS0_CLOCK_CKSC_RCANS_RCANSACT_Pos,
+                                    R_SYS0_CLOCK->CKSC_RCANS);
+        if (selector == RP_BSP_RH850_CANFD_XIN_SRC_MOSC) {
+            *source_clock_id = RH850_CLOCK_MOSC;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_CLOCK_CKSC_RCANS_RCANSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKSC_ADCS_ADCSACT_Msk)
+    case RH850_CLOCK_ADC:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKSC_ADCS_ADCSACT_Msk,
+                                    R_SYS0_CLOCK_CKSC_ADCS_ADCSACT_Pos,
+                                    R_SYS0_CLOCK->CKSC_ADCS);
+        if (selector == RP_BSP_RH850_U2A_ADC_SRC_CLKC_LSB) {
+            *source_clock_id = RP_BSP_CLOCK_LSB;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_CLOCK_CKSC_ADCS_ADCSACT_Msk) */
+
+#if defined(R_SYS0_A_CLOCK_CKSC_AADCS_AADCSACT_Msk)
+    case RH850_CLOCK_CLKA_ADC:
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKSC_AADCS_AADCSACT_Msk,
+                                    R_SYS0_A_CLOCK_CKSC_AADCS_AADCSACT_Pos,
+                                    R_SYS0_A_CLOCK->CKSC_AADCS);
+#if defined(R_SYS0_A_CLOCK_CLKD_AADCS_AADCDACT_Msk)
+        *div = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CLKD_AADCS_AADCDACT_Msk,
+                                R_SYS0_A_CLOCK_CLKD_AADCS_AADCDACT_Pos,
+                                R_SYS0_A_CLOCK->CLKD_AADCS);
+#endif /* defined(R_SYS0_A_CLOCK_CLKD_AADCS_AADCDACT_Msk) */
+        if (selector == RP_BSP_RH850_CLKA_ADC_SRC_MOSC) {
+            *source_clock_id = RH850_CLOCK_MOSC;
+            return FSP_SUCCESS;
+        }
+        if (selector == RP_BSP_RH850_CLKA_ADC_SRC_HSIOSC_DIV20) {
+            *source_clock_id = RH850_CLOCK_HSIOSC;
+            return FSP_SUCCESS;
+        }
+        if (selector == RP_BSP_RH850_CLKA_ADC_SRC_LSB) {
+            *source_clock_id = RP_BSP_CLOCK_LSB;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_AADCS_AADCSACT_Msk) */
+
+#if defined(R_SYS0_A_CLOCK_CKS_AADCS_AADCSACT_Msk)
+    case RH850_CLOCK_CLKA_ADC:
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKS_AADCS_AADCSACT_Msk,
+                                    R_SYS0_A_CLOCK_CKS_AADCS_AADCSACT_Pos,
+                                    R_SYS0_A_CLOCK->CKS_AADCS);
+#if defined(CONFIG_SOC_SERIES_RH850U2C)
+        if (selector == RP_BSP_SELECT_AADC(RH850_CLOCK_EMG)) {
+            *source_clock_id = RH850_CLOCK_EMG;
+            return FSP_SUCCESS;
+        }
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2C) */
+        if (selector == RP_BSP_RH850_CLKA_ADC_SRC_MOSC) {
+            *source_clock_id = RH850_CLOCK_MOSC;
+            return FSP_SUCCESS;
+        }
+        if (selector == RP_BSP_RH850_CLKA_ADC_SRC_HSIOSC_DIV20) {
+            *source_clock_id = RH850_CLOCK_HSIOSC;
+            return FSP_SUCCESS;
+        }
+        if (selector == RP_BSP_RH850_CLKA_ADC_SRC_LSB) {
+            *source_clock_id = RP_BSP_CLOCK_LSB;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_A_CLOCK_CKS_AADCS_AADCSACT_Msk) */
+
+#if defined(R_SYS0_A_CLOCK_CKSC_ATAUJS_ATAUJSACT_Msk)
+    case RH850_CLOCK_TAUJ:
+    case RH850_CLOCK_CLKA_TAUJ:
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKSC_ATAUJS_ATAUJSACT_Msk,
+                                    R_SYS0_A_CLOCK_CKSC_ATAUJS_ATAUJSACT_Pos,
+                                    R_SYS0_A_CLOCK->CKSC_ATAUJS);
+        switch (selector) {
+        case RP_BSP_RH850_CLKA_TAUJ_SRC_LSIOSC:
+            *source_clock_id = RH850_CLOCK_LSIOSC;
+            return FSP_SUCCESS;
+        case RP_BSP_RH850_CLKA_TAUJ_SRC_HSIOSC_DIV20:
+            *source_clock_id = RH850_CLOCK_HSIOSC;
+            return FSP_SUCCESS;
+        case RP_BSP_RH850_CLKA_TAUJ_SRC_MOSC:
+            *source_clock_id = RH850_CLOCK_MOSC;
+            return FSP_SUCCESS;
+        case RP_BSP_RH850_CLKA_TAUJ_SRC_HSB:
+            *source_clock_id = RH850_CLOCK_HSB;
+            return FSP_SUCCESS;
+        default:
+            return FSP_ERR_UNSUPPORTED;
+        }
+#elif defined(R_SYS0_A_CLOCK_CKS_ATAUJS_ATAUJSACT_Msk)
+    case RH850_CLOCK_TAUJ:
+    case RH850_CLOCK_CLKA_TAUJ:
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKS_ATAUJS_ATAUJSACT_Msk,
+                                    R_SYS0_A_CLOCK_CKS_ATAUJS_ATAUJSACT_Pos,
+                                    R_SYS0_A_CLOCK->CKS_ATAUJS);
+        switch (selector) {
+        case RP_BSP_RH850_CLKA_TAUJ_SRC_EMG:
+            *source_clock_id = RH850_CLOCK_EMG;
+            return FSP_SUCCESS;
+        case RP_BSP_RH850_CLKA_TAUJ_SRC_LSIOSC:
+            *source_clock_id = RH850_CLOCK_LSIOSC;
+            return FSP_SUCCESS;
+        case RP_BSP_RH850_CLKA_TAUJ_SRC_HSIOSC_DIV20:
+            *source_clock_id = RH850_CLOCK_HSIOSC;
+            return FSP_SUCCESS;
+        case RP_BSP_RH850_CLKA_TAUJ_SRC_MOSC:
+            *source_clock_id = RH850_CLOCK_MOSC;
+            return FSP_SUCCESS;
+        case RP_BSP_RH850_CLKA_TAUJ_SRC_HSB:
+            *source_clock_id = RP_BSP_CLOCK_HSB;
+            return FSP_SUCCESS;
+        default:
+            return FSP_ERR_UNSUPPORTED;
+        }
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_ATAUJS_ATAUJSACT_Msk) */
+
+#if defined(R_SYS0_A_CLOCK_CKSC_ARTCAS_ARTCASACT_Msk)
+    case RH850_CLOCK_RTCA:
+    case RH850_CLOCK_CLKA_RTCA:
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKSC_ARTCAS_ARTCASACT_Msk,
+                                    R_SYS0_A_CLOCK_CKSC_ARTCAS_ARTCASACT_Pos,
+                                    R_SYS0_A_CLOCK->CKSC_ARTCAS);
+        if (selector == RP_BSP_RH850_CLKA_RTCA_SRC_OSC) {
+            *source_clock_id = RH850_CLOCK_LSIOSC;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#elif defined(R_SYS0_A_CLOCK_CKS_ARTCAS_ARTCASACT_Msk)
+    case RH850_CLOCK_RTCA:
+    case RH850_CLOCK_CLKA_RTCA:
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKS_ARTCAS_ARTCASACT_Msk,
+                                    R_SYS0_A_CLOCK_CKS_ARTCAS_ARTCASACT_Pos,
+                                    R_SYS0_A_CLOCK->CKS_ARTCAS);
+        if (selector == RP_BSP_RH850_CLKA_RTCA_SRC_OSC) {
+            *source_clock_id = RH850_CLOCK_LSIOSC;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_ARTCAS_ARTCASACT_Msk) */
+
+#if defined(R_SYS0_A_CLOCK_CKSC_AWDTS_AWDTSACT_Msk)
+    case RP_BSP_CLOCK_LSI_WDT:
+    case RH850_CLOCK_WDTBA:
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKSC_AWDTS_AWDTSACT_Msk,
+                                    R_SYS0_A_CLOCK_CKSC_AWDTS_AWDTSACT_Pos,
+                                    R_SYS0_A_CLOCK->CKSC_AWDTS);
+        if (selector == RP_BSP_RH850_AWDT_SRC_LSIOSC) {
+            *source_clock_id = RH850_CLOCK_LSIOSC;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#elif defined(R_SYS0_A_CLOCK_CKS_AWDTS_AWDTSACT_Msk)
+    case RH850_CLOCK_WDTBA:
+    case RP_BSP_CLOCK_LSI_WDT:
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKS_AWDTS_AWDTSACT_Msk,
+                                    R_SYS0_A_CLOCK_CKS_AWDTS_AWDTSACT_Pos,
+                                    R_SYS0_A_CLOCK->CKS_AWDTS);
+        if (selector == RP_BSP_RH850_AWDT_SRC_LSIOSC) {
+            *source_clock_id = RH850_CLOCK_LSIOSC;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_AWDTS_AWDTSACT_Msk) */
+
+#if defined(R_SYS0_A_CLOCK_CKSC_WDTS_WDTSACT_Msk)
+    case RP_BSP_CLOCK_HSI_WDT:
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKSC_WDTS_WDTSACT_Msk,
+                                    R_SYS0_A_CLOCK_CKSC_WDTS_WDTSACT_Pos,
+                                    R_SYS0_A_CLOCK->CKSC_WDTS);
+        if (selector <= RP_BSP_WDT_MAX_DIV) {
+            *source_clock_id = RH850_CLOCK_HSIOSC;
+            *div = selector;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#elif defined(R_SYS0_A_CLOCK_CKS_WDTS_WDTSACT_Msk)
+    case RP_BSP_CLOCK_HSI_WDT:
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKS_WDTS_WDTSACT_Msk,
+                                    R_SYS0_A_CLOCK_CKS_WDTS_WDTSACT_Pos,
+                                    R_SYS0_A_CLOCK->CKS_WDTS);
+        if (selector <= RP_BSP_WDT_MAX_DIV) {
+            *source_clock_id = RH850_CLOCK_HSIOSC;
+            *div = selector;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_WDTS_WDTSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_SWDTS_SWDTACT_Msk)
+    case RH850_CLOCK_SWDT:
+    case RH850_CLOCK_CLKC_SWDT:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_SWDTS_SWDTACT_Msk,
+                                    R_SYS0_CLOCK_CKS_SWDTS_SWDTACT_Pos,
+                                    R_SYS0_CLOCK->CKS_SWDTS);
+        if (selector == RP_BSP_RH850_SWDT_SRC_HSIOSC_DIV_20) {
+            *source_clock_id = RH850_CLOCK_HSIOSC;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#elif defined(R_SYS0_CLOCK_CKS_SWDTS_SWDTSACT_Msk)
+    case RH850_CLOCK_SWDT:
+    case RH850_CLOCK_CLKC_SWDT:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_SWDTS_SWDTSACT_Msk,
+                                    R_SYS0_CLOCK_CKS_SWDTS_SWDTSACT_Pos,
+                                    R_SYS0_CLOCK->CKS_SWDTS);
+        if (selector == RP_BSP_RH850_SWDT_SRC_HSIOSC_DIV_20) {
+            *source_clock_id = RH850_CLOCK_HSIOSC;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_CLOCK_CKS_SWDTS_SWDTACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_CANXL0S_CANXLSACT_Msk)
+    case RH850_CLOCK_CANXL_CH0:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_CANXL0S_CANXLSACT_Msk,
+                                    R_SYS0_CLOCK_CKS_CANXL0S_CANXLSACT_Pos,
+                                    R_SYS0_CLOCK->CKS_CANXL0S);
+        if (selector == RP_BSP_RH850_CANXL_SRC_CLKC_HSB) {
+            *source_clock_id = RP_BSP_CLOCK_HSB;
+            return FSP_SUCCESS;
+        }
+        if (selector == RP_BSP_RH850_CANXL_SRC_CLKC_UHSB) {
+            *source_clock_id = RH850_CLOCK_CLKC_UHSB;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_CLOCK_CKS_CANXL0S_CANXLSACT_Msk) */
+
+#if defined(R_SYS0_CLOCK_CKS_CANXL1S_CANXLSACT_Msk)
+    case RH850_CLOCK_CANXL_CH1:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_CANXL1S_CANXLSACT_Msk,
+                                    R_SYS0_CLOCK_CKS_CANXL1S_CANXLSACT_Pos,
+                                    R_SYS0_CLOCK->CKS_CANXL1S);
+        if (selector == RP_BSP_RH850_CANXL_SRC_CLKC_HSB) {
+            *source_clock_id = RP_BSP_CLOCK_HSB;
+            return FSP_SUCCESS;
+        }
+        if (selector == RP_BSP_RH850_CANXL_SRC_CLKC_UHSB) {
+            *source_clock_id = RH850_CLOCK_CLKC_UHSB;
+            return FSP_SUCCESS;
+        }
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_CLOCK_CKS_CANXL1S_CANXLSACT_Msk) */
+
+    case RH850_CLOCK_EXTCLK0O:
+#if defined(R_SYS0_A_CLOCK_CKSC_FOUT0S_FOUT0SACT_Msk)
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKSC_FOUT0S_FOUT0SACT_Msk,
+                                    R_SYS0_A_CLOCK_CKSC_FOUT0S_FOUT0SACT_Pos,
+                                    R_SYS0_A_CLOCK->CKSC_FOUT0S);
+        *div = R_SYS0_A_CLOCK->CLKD_FOUT0C;
+        return rp_bsp_clock_extclk_source_get(selector, source_clock_id);
+#elif defined(R_SYS0_A_CLOCK_CKS_EXTCLK0S_EXTCLK0SACT_Msk)
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKS_EXTCLK0S_EXTCLK0SACT_Msk,
+                                    R_SYS0_A_CLOCK_CKS_EXTCLK0S_EXTCLK0SACT_Pos,
+                                    R_SYS0_A_CLOCK->CKS_EXTCLK0S);
+        *div = R_SYS0_A_CLOCK->CKD_EXTCLK0C;
+        return rp_bsp_clock_extclk_source_get(selector, source_clock_id);
+#else
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_FOUT0S_FOUT0SACT_Msk) */
+
+    case RH850_CLOCK_EXTCLK1O:
+#if defined(R_SYS0_A_CLOCK_CKSC_FOUT1S_FOUT1SACT_Msk)
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKSC_FOUT1S_FOUT1SACT_Msk,
+                                    R_SYS0_A_CLOCK_CKSC_FOUT1S_FOUT1SACT_Pos,
+                                    R_SYS0_A_CLOCK->CKSC_FOUT1S);
+        *div = R_SYS0_A_CLOCK->CLKD_FOUT1C;
+        return rp_bsp_clock_extclk_source_get(selector, source_clock_id);
+#elif defined(R_SYS0_A_CLOCK_CKS_EXTCLK1S_EXTCLK1SACT_Msk)
+        selector = RP_BSP_FIELD_GET(R_SYS0_A_CLOCK_CKS_EXTCLK1S_EXTCLK1SACT_Msk,
+                                    R_SYS0_A_CLOCK_CKS_EXTCLK1S_EXTCLK1SACT_Pos,
+                                    R_SYS0_A_CLOCK->CKS_EXTCLK1S);
+        *div = R_SYS0_A_CLOCK->CKD_EXTCLK1C;
+        return rp_bsp_clock_extclk_source_get(selector, source_clock_id);
+#else
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_A_CLOCK_CKSC_FOUT1S_FOUT1SACT_Msk) */
+
+    default:
+        return FSP_ERR_UNSUPPORTED;
+    }
+}
+
+static uint32_t rp_bsp_clock_divisor_get(uint32_t clock_id,
+                                         uint32_t source_clock_id,
+                                         uint32_t raw_div)
+{
+    switch (clock_id) {
+    case RP_BSP_CLOCK_HSI_WDT:
+        switch (raw_div) {
+        case RP_BSP_RH850_WDT_SRC_HSIOSC_DIV20:
+            return 20U;
+        case RP_BSP_RH850_WDT_SRC_HSIOSC_DIV640:
+            return 640U;
+#if !defined(CONFIG_SOC_SERIES_RH850U2A)
+        case RP_BSP_RH850_WDT_SRC_HSIOSC_DIV800:
+            return 800U;
+#endif /* !defined(CONFIG_SOC_SERIES_RH850U2A) */
+        default:
+            return 0U;
+        }
+
+    case RH850_CLOCK_SWDT:
+    case RH850_CLOCK_CLKC_SWDT:
+        return 20U;
+
+    case RP_BSP_CLOCK_LSI_WDT:
+    case RH850_CLOCK_WDTBA:
+        return 128U;
+
+    case RH850_CLOCK_ADC:
+        return 2U;
+
+    case RH850_CLOCK_CLKA_ADC: {
+        uint32_t divider = 1U;
+
+#if defined(CONFIG_SOC_SERIES_RH850U2A)
+        /* U2A AADC encoding: 0=/2, 1=/1. U2B/U2C have no AADC divider. */
+        divider = (raw_div == 0U) ? 2U : ((raw_div == 1U) ? 1U : 0U);
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2A) */
+        return divider * ((source_clock_id == RH850_CLOCK_HSIOSC) ? 20U : 1U);
+    }
+
+    case RH850_CLOCK_TAUJ:
+    case RH850_CLOCK_CLKA_TAUJ:
+        /* HSIOSC is connected to CLKA_TAUJ through a fixed divide-by-20 path. */
+        return (source_clock_id == RH850_CLOCK_HSIOSC) ? 20U : 1U;
+
+    case RH850_CLOCK_EXTCLK0O:
+    case RH850_CLOCK_EXTCLK1O:
+        /* EXTCLK/FOUT uses a direct divide-by-N encoding. */
+        return raw_div * ((source_clock_id == RH850_CLOCK_HSIOSC) ? 20U : 1U);
+
+    default:
+        return 1U;
+    }
+}
+
+/** Maximum number of selectable clock stages accepted in one path. */
+#define RP_BSP_CLOCK_TREE_MAX_DEPTH (8U)
+
+typedef struct st_rp_bsp_clock_path_entry
+{
+    uint32_t clock_id;
+    uint32_t parent_id;
+    uint32_t multiplier;
+    uint32_t divider;
+} rp_bsp_clock_path_entry_t;
+
+static fsp_err_t rp_bsp_pll_gear_factor_get(volatile uint32_t const *p_ctrl,
+                                             volatile uint32_t const *p_stat,
+                                             uint32_t sync_mask,
+                                             uint32_t field_mask,
+                                             uint32_t field_pos,
+                                             uint32_t *multiplier,
+                                             uint32_t *divider)
+{
+    uint32_t raw;
+
+    if ((p_ctrl == NULL) || (p_stat == NULL) || (multiplier == NULL) || (divider == NULL)) {
+        return FSP_ERR_INVALID_ARGUMENT;
+    }
+    if ((*p_stat & sync_mask) == 0U) {
+        return FSP_ERR_CGC_NOT_STABILIZED;
+    }
+
+    raw = RP_BSP_FIELD_GET(field_mask, field_pos, *p_ctrl);
+    if (raw == 0U) {
+        *multiplier = 1U;
+        *divider = 1U;
+        return FSP_SUCCESS;
+    }
+    if (raw <= 15U) {
+        *multiplier = raw;
+        *divider = 16U;
+        return FSP_SUCCESS;
+    }
+    return FSP_ERR_UNSUPPORTED;
+}
+
+/* Resolve active PLL/SSCG output gear and system selector from hardware. */
+static fsp_err_t rp_bsp_system_clock_config_get(uint32_t clock_id,
+                                                 uint32_t *parent_id,
+                                                 uint32_t *multiplier,
+                                                 uint32_t *divider)
+{
+    uint32_t selector;
+
+    if ((parent_id == NULL) || (multiplier == NULL) || (divider == NULL)) {
+        return FSP_ERR_INVALID_ARGUMENT;
+    }
+    *multiplier = 1U;
+    *divider = 1U;
+
+    switch (clock_id) {
+#if defined(R_SYS0_CLOCK_CKD_PLLC_PLLCLKDCSID_Msk) && defined(R_SYS0_CLOCK_CKD_PLLS_PLLCLKDSYNC_Msk)
+    case RH850_CLOCK_PLLO:
+        *parent_id = RH850_CLOCK_PLL;
+        return rp_bsp_pll_gear_factor_get(&R_SYS0_CLOCK->CKD_PLLC,
+                                           &R_SYS0_CLOCK->CKD_PLLS,
+                                           R_SYS0_CLOCK_CKD_PLLS_PLLCLKDSYNC_Msk,
+                                           R_SYS0_CLOCK_CKD_PLLC_PLLCLKDCSID_Msk,
+                                           R_SYS0_CLOCK_CKD_PLLC_PLLCLKDCSID_Pos,
+                                           multiplier, divider);
+#endif /* defined(R_SYS0_CLOCK_CKD_PLLC_PLLCLKDCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKD_PLLS_PLLCLKDSYNC_Msk) */
+#if defined(R_SYS0_CLOCK_CKSC_CPUS_CPUCLKSACT_Msk)
+    case RH850_CLOCK_SYS:
+#if defined(CONFIG_SOC_SERIES_RH850U2A)
+        /*
+         * U2A exposes CKSC_CPUS as the active source value itself.
+         * Match the FSP CGC implementation: 0 selects PLLO and 1 selects
+         * IOSC. Using the generic field extraction here can include a
+         * different register layout and report PLLO after a successful
+         * gear-down, which makes runtime get_rate() return the 2 GHz PLLO
+         * source instead of the effective 200 MHz IOSC system clock.
+         */
+        selector = R_SYS0_CLOCK->CKSC_CPUS;
+#else
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKSC_CPUS_CPUCLKSACT_Msk,
+                                    R_SYS0_CLOCK_CKSC_CPUS_CPUCLKSACT_Pos,
+                                    R_SYS0_CLOCK->CKSC_CPUS);
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2A) */
+        if (selector == 0U) {
+            *parent_id = RH850_CLOCK_PLLO;
+#if defined(CONFIG_SOC_SERIES_RH850U2A) && \
+    defined(R_SYS0_CLOCK_CKD_PLLC_PLLCLKDCSID_Msk) && \
+    defined(R_SYS0_CLOCK_CKD_PLLS_PLLCLKDSYNC_Msk)
+            /*
+             * U2A SYS remains sourced from PLLO while gear changes update
+             * CKD_PLLC. Include the active PLL divider so get_rate(SYS)
+             * returns the effective system rate instead of the raw PLLO rate.
+             */
+            return rp_bsp_pll_gear_factor_get(
+                &R_SYS0_CLOCK->CKD_PLLC, &R_SYS0_CLOCK->CKD_PLLS,
+                R_SYS0_CLOCK_CKD_PLLS_PLLCLKDSYNC_Msk,
+                R_SYS0_CLOCK_CKD_PLLC_PLLCLKDCSID_Msk,
+                R_SYS0_CLOCK_CKD_PLLC_PLLCLKDCSID_Pos,
+                multiplier, divider);
+#else
+            return FSP_SUCCESS;
+#endif /* defined(CONFIG_SOC_SERIES_RH850U2A) && defined(R_SYS0_CLOCK_CKD_PLLC_PLLCLKDCSID_Msk)
+        * && defined(R_SYS0_CLOCK_CKD_PLLS_PLLCLKDSYNC_Msk) */
+        }
+
+        if (selector == 1U) {
+            *parent_id = RH850_CLOCK_IOSC;
+            return FSP_SUCCESS;
+        }
+
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_CLOCK_CKSC_CPUS_CPUCLKSACT_Msk) */
+#if defined(R_SYS0_CLOCK_CKS_CLEANS_SYSCLKSACT_Msk)
+    case RH850_CLOCK_SYS_CLEAN:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_CLEANS_SYSCLKSACT_Msk,
+                                    R_SYS0_CLOCK_CKS_CLEANS_SYSCLKSACT_Pos,
+                                    R_SYS0_CLOCK->CKS_CLEANS);
+        *parent_id = (selector == 0U) ? RH850_CLOCK_PLLO : RH850_CLOCK_SYS_IOSC;
+        return (selector <= 1U) ? FSP_SUCCESS : FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_CLOCK_CKS_CLEANS_SYSCLKSACT_Msk) */
+#if defined(R_SYS0_CLOCK_CKD_SSCGC_PLLCLKDCSID_Msk) && defined(R_SYS0_CLOCK_CKD_SSCGS_PLLCLKDSYNC_Msk)
+    case RH850_CLOCK_SYS_SSCG:
+#if defined(R_SYS0_CLOCK_CKS_SSCGS_SYSCLKSACT_Msk)
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_SSCGS_SYSCLKSACT_Msk,
+                                    R_SYS0_CLOCK_CKS_SSCGS_SYSCLKSACT_Pos,
+                                    R_SYS0_CLOCK->CKS_SSCGS);
+        if (selector == 1U) {
+            *parent_id = RH850_CLOCK_SYS_IOSC;
+            return FSP_SUCCESS;
+        }
+        if (selector != 0U) {
+            return FSP_ERR_UNSUPPORTED;
+        }
+#endif /* defined(R_SYS0_CLOCK_CKS_SSCGS_SYSCLKSACT_Msk) */
+        *parent_id = RH850_CLOCK_SSCG;
+        return rp_bsp_pll_gear_factor_get(&R_SYS0_CLOCK->CKD_SSCGC,
+                                           &R_SYS0_CLOCK->CKD_SSCGS,
+                                           R_SYS0_CLOCK_CKD_SSCGS_PLLCLKDSYNC_Msk,
+                                           R_SYS0_CLOCK_CKD_SSCGC_PLLCLKDCSID_Msk,
+                                           R_SYS0_CLOCK_CKD_SSCGC_PLLCLKDCSID_Pos,
+                                           multiplier, divider);
+#endif /* defined(R_SYS0_CLOCK_CKD_SSCGC_PLLCLKDCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKD_SSCGS_PLLCLKDSYNC_Msk) */
+#if defined(R_SYS0_CLOCK_CKS_SSCG1S_SYSCLKSACT_Msk)
+    case RH850_CLOCK_SYS_SSCG1:
+        selector = RP_BSP_FIELD_GET(R_SYS0_CLOCK_CKS_SSCG1S_SYSCLKSACT_Msk,
+                                    R_SYS0_CLOCK_CKS_SSCG1S_SYSCLKSACT_Pos,
+                                    R_SYS0_CLOCK->CKS_SSCG1S);
+        if (selector == 1U) {
+            *parent_id = RH850_CLOCK_IOSC;
+            return FSP_SUCCESS;
+        }
+        if (selector != 0U) {
+            return FSP_ERR_UNSUPPORTED;
+        }
+        *parent_id = RH850_CLOCK_SSCG1;
+#if defined(R_SYS0_CLOCK_CKD_SSCG1C_SSCGCLKDCSID_Msk) && defined(R_SYS0_CLOCK_CKD_SSCG1S_SSCGCLKDSYNC_Msk)
+        return rp_bsp_pll_gear_factor_get(&R_SYS0_CLOCK->CKD_SSCG1C,
+                                           &R_SYS0_CLOCK->CKD_SSCG1S,
+                                           R_SYS0_CLOCK_CKD_SSCG1S_SSCGCLKDSYNC_Msk,
+                                           R_SYS0_CLOCK_CKD_SSCG1C_SSCGCLKDCSID_Msk,
+                                           R_SYS0_CLOCK_CKD_SSCG1C_SSCGCLKDCSID_Pos,
+                                           multiplier, divider);
+#else
+        return FSP_ERR_UNSUPPORTED;
+#endif /* defined(R_SYS0_CLOCK_CKD_SSCG1C_SSCGCLKDCSID_Msk) &&
+        * defined(R_SYS0_CLOCK_CKD_SSCG1S_SSCGCLKDSYNC_Msk) */
+#endif /* defined(R_SYS0_CLOCK_CKS_SSCG1S_SYSCLKSACT_Msk) */
+    default:
+        return FSP_ERR_UNSUPPORTED;
+    }
+}
+
+static bool rp_bsp_clock_requires_runtime_readback(uint32_t clock_id)
+{
+    switch (clock_id) {
+    case RH850_CLOCK_PLLO:
+    case RH850_CLOCK_SYS:
+    case RH850_CLOCK_SYS_CLEAN:
+    case RH850_CLOCK_SYS_SSCG:
+    case RH850_CLOCK_SYS_SSCG1:
+    case RH850_CLOCK_RLIN:
+    case RH850_CLOCK_RLIN3:
+    case RH850_CLOCK_CH23_RLIN3:
+    case RH850_CLOCK_RLIN323:
+    case RH850_CLOCK_MSPI:
+    case RH850_CLOCK_CANFD_C:
+    case RH850_CLOCK_CANFD_XIN:
+    case RH850_CLOCK_RCANOSC:
+    case RH850_CLOCK_ADC:
+    case RH850_CLOCK_CLKA_ADC:
+    case RH850_CLOCK_TAUJ:
+    case RH850_CLOCK_CLKA_TAUJ:
+    case RH850_CLOCK_RTCA:
+    case RH850_CLOCK_CLKA_RTCA:
+    case RH850_CLOCK_WDT:
+    case RH850_CLOCK_WDTB:
+    case RH850_CLOCK_WDTBA:
+    case RH850_CLOCK_CLKA_WDT:
+    case RH850_CLOCK_CLKA_WDTBA:
+    case RH850_CLOCK_SWDT:
+    case RH850_CLOCK_CLKC_SWDT:
+    case RH850_CLOCK_CANXL_CH0:
+    case RH850_CLOCK_CANXL_CH1:
+    case RH850_CLOCK_EXTCLK0O:
+    case RH850_CLOCK_EXTCLK1O:
+        return true;
+    default:
+        return false;
+    }
+}
+
+fsp_err_t RP_BSP_ClockHzGet(uint32_t clock_id, uint32_t *rate_hz)
+{
+	return rp_bsp_configured_clock_hz_get(clock_id, rate_hz);
+}
