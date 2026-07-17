@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #ifndef R_CANFDG_H
 #define R_CANFDG_H
@@ -293,10 +279,17 @@ typedef struct st_canfdg_afl_entry_t
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            can_id_mode_t    id_mode    : 1;  ///< ID mode (Standard or Extended)
+            can_frame_type_t frame_type : 1;  ///< Frame type (Data or Remote)
+            uint32_t                    : 1;
+            uint32_t id                 : 29; ///< ID to match against
+#else
             uint32_t id                 : 29; ///< ID to match against
             uint32_t                    : 1;
             can_frame_type_t frame_type : 1;  ///< Frame type (Data or Remote)
             can_id_mode_t    id_mode    : 1;  ///< ID mode (Standard or Extended)
+#endif
         } id;
     };
 
@@ -306,10 +299,17 @@ typedef struct st_canfdg_afl_entry_t
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t mask_id_mode    : 1;  ///< Only accept frames with the configured ID mode
+            uint32_t mask_frame_type : 1;  ///< Only accept frames with the configured frame type
+            uint32_t                 : 1;
+            uint32_t mask_id         : 29; ///< ID Mask
+#else
             uint32_t mask_id         : 29; ///< ID Mask
             uint32_t                 : 1;
             uint32_t mask_frame_type : 1;  ///< Only accept frames with the configured frame type
             uint32_t mask_id_mode    : 1;  ///< Only accept frames with the configured ID mode
+#endif
         } mask;
     };
 
@@ -319,10 +319,17 @@ typedef struct st_canfdg_afl_entry_t
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                         : 16;
+            canfdg_rx_mb_t rx_buffer         : 8; ///< RX Message Buffer to receive messages accepted by this rule
+            uint32_t                         : 4;
+            canfdg_minimum_dlc_t minimum_dlc : 4; ///< Minimum DLC value to accept (valid when DLC Check is enabled)
+#else
             canfdg_minimum_dlc_t minimum_dlc : 4; ///< Minimum DLC value to accept (valid when DLC Check is enabled)
             uint32_t                         : 4;
             canfdg_rx_mb_t rx_buffer         : 8; ///< RX Message Buffer to receive messages accepted by this rule
             uint32_t                         : 16;
+#endif
             canfdg_rx_fifo_t fifo_select_flags;   ///< RX FIFO(s) to receive messages accepted by this rule
         } destination;
     };

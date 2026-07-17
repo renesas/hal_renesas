@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /*******************************************************************************************************************//**
  * @ingroup RENESAS_NETWORKING_INTERFACES
@@ -25,7 +11,7 @@
  *
  * @section ETHER_PHY_API_Summary Summary
  * The Ethernet PHY module (r_ether_phy) provides an API for standard Ethernet PHY communications applications that use
- * the ETHERC peripheral.
+ * the Ethernet peripheral.
  *
  * The Ethernet PHY interface supports the following features:
  * - Auto negotiation support
@@ -62,7 +48,7 @@ FSP_HEADER
 /** Phy LSI */
 typedef enum e_ether_phy_lsi_type
 {
-    ETHER_PHY_LSI_TYPE_DEFAULT    = 0,     ///< Select default configuration. This type dose not change Phy LSI default setting by strapping option.
+    ETHER_PHY_LSI_TYPE_DEFAULT    = 0,     ///< Select default configuration. This type does not change Phy LSI default setting by strapping option.
     ETHER_PHY_LSI_TYPE_KSZ8091RNB = 1,     ///< Select configuration for KSZ8091RNB.
     ETHER_PHY_LSI_TYPE_KSZ8041    = 2,     ///< Select configuration for KSZ8041.
     ETHER_PHY_LSI_TYPE_DP83620    = 3,     ///< Select configuration for DP83620.
@@ -72,6 +58,26 @@ typedef enum e_ether_phy_lsi_type
     ETHER_PHY_LSI_TYPE_CUSTOM     = 0xFFU, ///< Select configuration for User custom.
 } ether_phy_lsi_type_t;
 #endif
+
+/** Transmit /Receive Timing Skew (RGMII) */
+typedef enum e_ether_phy_lsi_clk_delay
+{
+    ETHER_PHY_LSI_CLK_DELAY_0_0_NS  = 0,      ///< 0.0 ns
+    ETHER_PHY_LSI_CLK_DELAY_0_2_NS  = 1,      ///< 0.2 ns
+    ETHER_PHY_LSI_CLK_DELAY_0_5_NS  = 2,      ///< 0.5 ns
+    ETHER_PHY_LSI_CLK_DELAY_0_8_NS  = 3,      ///< 0.8 ns
+    ETHER_PHY_LSI_CLK_DELAY_1_0_NS  = 4,      ///< 1.0 ns
+    ETHER_PHY_LSI_CLK_DELAY_1_1_NS  = 5,      ///< 1.1 ns
+    ETHER_PHY_LSI_CLK_DELAY_1_5_NS  = 6,      ///< 1.5 ns
+    ETHER_PHY_LSI_CLK_DELAY_1_7_NS  = 7,      ///< 1.7 ns
+    ETHER_PHY_LSI_CLK_DELAY_2_0_NS  = 8,      ///< 2.0 ns
+    ETHER_PHY_LSI_CLK_DELAY_2_3_NS  = 9,      ///< 2.3 ns
+    ETHER_PHY_LSI_CLK_DELAY_2_5_NS  = 10,     ///< 2.5 ns
+    ETHER_PHY_LSI_CLK_DELAY_2_6_NS  = 11,     ///< 2.6 ns
+    ETHER_PHY_LSI_CLK_DELAY_3_0_NS  = 12,     ///< 3.0 ns
+    ETHER_PHY_LSI_CLK_DELAY_3_4_NS  = 13,     ///< 3.4 ns
+    ETHER_PHY_LSI_CLK_DELAY_3_5_NS  = 14      ///< 3.5 ns
+} ether_phy_lsi_clk_delay_t;
 
 /** Flow control functionality  */
 typedef enum e_ether_phy_flow_control
@@ -101,6 +107,25 @@ typedef enum e_ether_phy_mii_type
     ETHER_PHY_MII_TYPE_RGMII = 3       ///< RGMII
 } ether_phy_mii_type_t;
 
+/** Event code of callback function */
+typedef enum e_ether_phy_event
+{
+    /* Frame preemption events. */
+    ETHER_PHY_EVENT_PREEMPTION_LINK_VERIFY_FAIL,    ///< Preemption link verification failed.
+    ETHER_PHY_EVENT_PREEMPTION_LINK_VERIFY_SUCCESS, ///< Preemption link verification succeeded.
+    ETHER_PHY_EVENT_PREEMPTION_LINK_VERIFY_RECEIVE, ///< Preemption link verification frame received.
+} ether_phy_event_t;
+
+/** Callback function parameter data */
+typedef struct st_ether_phy_callback_args
+{
+    uint32_t          channel;         ///< Device channel number
+    uint32_t          port;            ///< Device port number
+    ether_phy_event_t event;           ///< Event code
+
+    void * p_context;                  ///< Placeholder for user data. Set in @ref ether_api_t::open function in @ref ether_cfg_t.
+} ether_phy_callback_args_t;
+
 /** Control block.  Allocate an instance specific control block to pass into the API calls.
  */
 typedef void ether_phy_ctrl_t;
@@ -116,7 +141,7 @@ typedef struct st_ether_phy_cfg
     ether_phy_lsi_type_t phy_lsi_type;             ///< DEPRECATED Phy LSI type
 
     ether_phy_flow_control_t flow_control;         ///< Flow control functionally enable or disable
-    ether_phy_mii_type_t     mii_type;             ///< Interface type is MII or RMII
+    ether_phy_mii_type_t     mii_type;             ///< Interface type: MII, RMII, GMII, or RGMII
 
     /** Placeholder for user data.  Passed to the user callback in ether_phy_callback_args_t. */
     void       * p_context;
@@ -126,8 +151,10 @@ typedef struct st_ether_phy_cfg
 /** PHY LSI configuration. */
 typedef struct st_ether_phy_lsi_cfg
 {
-    uint8_t              address;      ///< Address of PHY-LSI
-    ether_phy_lsi_type_t type;         ///< Phy LSI type
+    uint8_t                    address;           ///< Address of PHY-LSI
+    ether_phy_lsi_type_t       type;              ///< Phy LSI type
+    ether_phy_lsi_clk_delay_t  tx_clk_delay;      ///< Transmit Timing Skew (RGMII)
+    ether_phy_lsi_clk_delay_t  rx_clk_delay;      ///< Receive Timing Skew (RGMII)
 } ether_phy_lsi_cfg_t;
 
 /** Functions implemented at the HAL layer will follow this API. */

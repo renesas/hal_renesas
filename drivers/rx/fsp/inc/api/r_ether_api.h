@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /*******************************************************************************************************************//**
  * @ingroup RENESAS_NETWORKING_INTERFACES
@@ -104,7 +90,7 @@ typedef enum e_ether_padding
 
 #ifndef BSP_OVERRIDE_ETHER_EVENT_T
 
-/** Event code of callback function */
+/** Event code of callback function */
 typedef enum e_ether_event
 {
     ETHER_EVENT_WAKEON_LAN,            ///< Magic packet detection event
@@ -120,29 +106,27 @@ typedef enum e_ether_event
 } ether_event_t;
 #endif
 
-/** Network interface device infomation */
+/** Network interface device information */
 typedef struct st_ether_nic_info
 {
-    uint8_t     * p_mac_address;        ///< MAC address
+    uint8_t * p_mac_address;           ///< MAC address
 } ether_nic_info_t;
 
 #ifndef BSP_OVERRIDE_ETHER_CALLBACK_ARGS_T
 
-/** Callback function parameter data */
+/** Callback Function Parameter Data */
 typedef struct st_ether_callback_args
 {
-    uint32_t            channel;        ///< Device channel number
-    ether_event_t       event;          ///< Event code
-    uint32_t            status_ecsr;    ///< ETHERC status register for interrupt handler
-    uint32_t            status_eesr;    ///< ETHERC/EDMAC status register for interrupt handler
-    ether_nic_info_t    * p_nic_info;   ///< Pointer of NIC info
-
-    void                * p_context;    ///< Placeholder for user data.  Set in @ref ether_api_t::open function in @ref ether_cfg_t.
+    uint32_t           channel;        ///< Device channel number
+    ether_event_t      event;          ///< Event code
+    uint32_t           status_ecsr;    ///< ETHERC status register for interrupt handler
+    uint32_t           status_eesr;    ///< ETHERC/EDMAC status register for interrupt handler
+    ether_nic_info_t * p_nic_info;     ///< Pointer of NIC info
+    void             * p_context;      ///< Placeholder for user data.  Set in @ref ether_api_t::open function in @ref ether_cfg_t.
 } ether_callback_args_t;
 #endif
 
-/** Control block.  Allocate an instance specific control block to pass into the API calls.
- */
+/** Control block.  Allocate an instance specific control block to pass into the API calls. */
 typedef void ether_ctrl_t;
 
 /** Configuration parameters. */
@@ -157,19 +141,13 @@ typedef struct st_ether_cfg
     uint32_t             padding_offset;                 ///< Offset of the padding inserted into the received Ethernet frame.
     uint32_t             broadcast_filter;               ///< Limit of the number of broadcast frames received continuously
     uint8_t            * p_mac_address;                  ///< Pointer of MAC address
-
-    uint8_t num_tx_descriptors;                          ///< Number of transmission descriptor
-    uint8_t num_rx_descriptors;                          ///< Number of receive descriptor
-
-    uint8_t ** pp_ether_buffers;                         ///< Transmit and receive buffer
-
-    uint32_t ether_buffer_size;                          ///< Size of transmit and receive buffer
-
-    IRQn_Type irq;                                       ///< Interrupt number
-    uint32_t  interrupt_priority;                        ///< Interrupt priority
-
+    uint8_t              num_tx_descriptors;             ///< Number of transmission descriptor
+    uint8_t              num_rx_descriptors;             ///< Number of receive descriptor
+    uint8_t           ** pp_ether_buffers;               ///< Transmit and receive buffer
+    uint32_t             ether_buffer_size;              ///< Size of transmit and receive buffer
+    IRQn_Type            irq;                            ///< Interrupt number
+    uint32_t             interrupt_priority;             ///< Interrupt priority
     void (* p_callback)(ether_callback_args_t * p_args); ///< Callback provided when an ISR occurs.
-
     ether_phy_instance_t const * p_ether_phy_instance;   ///< Pointer to ETHER_PHY instance
 
     /** Placeholder for user data.  Passed to the user callback in ether_callback_args_t. */
@@ -195,9 +173,9 @@ typedef struct st_ether_api
 
     /** Read packet if data is available.
      *
-     * @param[in]  p_ctrl       Pointer to control structure.
-     * @param[in]  p_buffer     Pointer to where to store read data.
-     * @param[in]  length_bytes Number of bytes in buffer
+     * @param[in]      p_ctrl       Pointer to control structure.
+     * @param[in]      p_buffer     Pointer to where to store read data.
+     * @param[in,out]  length_bytes Number of bytes in buffer
      */
     fsp_err_t (* read)(ether_ctrl_t * const p_ctrl, void * const p_buffer, uint32_t * const length_bytes);
 
@@ -269,4 +247,4 @@ typedef struct st_ether_instance
 /* Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER
 
-#endif                                 /* R_ETHERNET_API_H */
+#endif                                 /* R_ETHER_API_H */
