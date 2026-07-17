@@ -1951,8 +1951,6 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
     const uint32_t access_bytes = 2;
 #endif
 
-    r_usbh_pipe_wait_for_ready(p_ctrl, num);
-
     volatile uint16_t * p_reg_d0fifosel;
     volatile uint16_t * p_reg_d0fifoctr;
     volatile void     * p_reg_d0fifo;
@@ -1989,6 +1987,8 @@ static bool r_usbh_pipe_xfer_out (usbh_instance_ctrl_t * const p_ctrl, uint32_t 
     }
 
     *p_reg_d0fifosel |= (num << R_USB_D0FIFOSEL_CURPIPE_Pos);
+
+    r_usbh_pipe_wait_for_ready(p_ctrl, num);
 
     if (len)
     {
