@@ -130,7 +130,7 @@
 #define BSP_CFG_BCLK_OUTPUT                                                    \
   (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(bclkout), clk_out_div, 2))
 #define BSP_CFG_BCLKA_DIV RX_CGC_CLK_DIV(DT_NODELABEL(bclka), div, 6)
-#define BSP_CFG_MRPCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(mrpclk), div, 32)
+#define BSP_CFG_FCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(mrpclk), div, 32)
 #define BSP_CFG_CLKOUT_DIV RX_CGC_CLK_DIV(DT_NODELABEL(clkout), div, 1)
 #define BSP_CFG_SCICLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(sciclk), div, 4)
 #define BSP_CFG_SPICLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(spiclk), div, 8)

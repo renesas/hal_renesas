@@ -1,13 +1,18 @@
-/* generated configuration header file - do not edit */
+/*
+* Copyright (c) 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
+
 #ifndef R_ADC_B_CFG_H_
 #define R_ADC_B_CFG_H_
 #ifdef __cplusplus
-                        extern "C" {
-                        #endif
+extern "C" {
+#endif
 
 #define ADC_B_CFG_PARAM_CHECKING_ENABLE (BSP_CFG_PARAM_CHECKING_ENABLE)
 
 #ifdef __cplusplus
-                        }
-                        #endif
+}
+#endif
 #endif /* R_ADC_B_CFG_H_ */
