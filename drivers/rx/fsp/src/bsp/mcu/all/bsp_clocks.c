@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
@@ -130,7 +116,7 @@
 #define BSP_PRV_STARTUP_SCKDIVCR_PCLKB_BITS      ((BSP_CFG_PCLKB_DIV & 0xFU) << 8U)
 #define BSP_PRV_STARTUP_SCKDIVCR_PCLKA_BITS      ((BSP_CFG_PCLKA_DIV & 0xFU) << 12U)
 #define BSP_PRV_STARTUP_SCKDIVCR_BCLK_BITS       ((BSP_CFG_BCLK_DIV & 0xFU) << 16U)
-#define BSP_PRV_STARTUP_SCKDIVCR_MRPCLK_BITS     ((BSP_CFG_MRPCLK_DIV & 0xFU) << 28U)
+#define BSP_PRV_STARTUP_SCKDIVCR_MRPCLK_BITS     ((BSP_CFG_FCLK_DIV & 0xFU) << 28U)
 #define BSP_PRV_STARTUP_SCKDIVCR                 (BSP_PRV_STARTUP_SCKDIVCR_ICLK_BITS |  \
                                                   BSP_PRV_STARTUP_SCKDIVCR_PCLKE_BITS | \
                                                   BSP_PRV_STARTUP_SCKDIVCR_PCLKD_BITS | \
@@ -373,7 +359,8 @@
  #define BSP_PRV_LOCO_USED                         (1)
 #elif defined(BSP_CFG_ADCCLK_SOURCE) && (BSP_CFG_ADCCLK_SOURCE == BSP_CLOCKS_SOURCE_CLOCK_LOCO)
  #define BSP_PRV_LOCO_USED                         (1)
-#elif defined(BSP_CLOCK_CFG_SUBCLOCK_POPULATED) && (BSP_CLOCK_CFG_SUBCLOCK_POPULATED == 0) && \
+#elif ((defined(BSP_CFG_RTCSCLK_ENABLE) && (BSP_CFG_RTCSCLK_ENABLE == 0)) ||                   \
+    (defined(BSP_CLOCK_CFG_SUBCLOCK_POPULATED) && (BSP_CLOCK_CFG_SUBCLOCK_POPULATED == 0))) && \
     (BSP_FEATURE_CGC_HAS_SOSC == 1U)
  #define BSP_PRV_LOCO_USED                         (1)
 #else
@@ -478,7 +465,7 @@ void bsp_soft_reset_prepare(void);
 
 #endif
 
-#if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_VBTICTLR
+#if (BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_VBTICTLR)
 static void bsp_prv_init_rtc(void);
 
 #endif
@@ -629,6 +616,24 @@ void prv_clock_dividers_set (uint32_t sckdivcr, uint16_t sckdivcr2)
 #if BSP_FEATURE_CGC_SCKDIVCR2_HAS_EXTRA_CLOCKS
 
 /*******************************************************************************************************************//**
+ * Disable the PFB for MRAM.
+ **********************************************************************************************************************/
+void bsp_prv_clear_pfb (void)
+{
+    /* Disable MRAM pre-fetch buffer */
+    R_MRAM->MRCPFB = 0x00;
+}
+
+/*******************************************************************************************************************//**
+ * Enable the PFB for MRAM.
+ **********************************************************************************************************************/
+void bsp_prv_set_pfb (void)
+{
+    /* Enable MRAM pre-fetch buffer */
+    R_MRAM->MRCPFB = 0x01;
+}
+
+/*******************************************************************************************************************//**
  * Sets the wait states for MRAM.
  **********************************************************************************************************************/
 __STATIC_INLINE void bsp_prv_set_wait_state_frequency (uint32_t mriclk_frequency_hz, uint32_t mrpclk_frequency_hz)
@@ -697,6 +702,13 @@ void bsp_prv_clock_set (uint32_t clock, uint32_t sckdivcr, uint16_t sckdivcr2)
 
     uint32_t mrpclk_freq_post_change = g_clock_freq[clock] / BSP_PRV_SCKDIVCR_DIV_VALUE(mrpclk_div);
 
+#if BSP_FEATURE_CGC_SCKDIVCR2_HAS_EXTRA_CLOCKS && BSP_CFG_PREFETCH_BUFFER_ENABLE
+
+    /* Clear the PFB before doing any clock changes according to Frequency Change Procedure. */
+
+    bsp_prv_clear_pfb();
+#endif
+
     /* Switching to a faster source clock. */
     if (g_clock_freq[clock] >= g_clock_freq[R_SYSTEM->SCKSCR])
     {
@@ -710,6 +722,8 @@ void bsp_prv_clock_set (uint32_t clock, uint32_t sckdivcr, uint16_t sckdivcr2)
 
         /* Switch to the new clock source. */
         R_SYSTEM->SCKSCR = (uint8_t) clock;
+
+        SystemCoreClockUpdate();
 
         /* Wait for settling delay. */
         R_BSP_SoftwareDelay(BSP_CFG_CLOCK_SETTLING_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
@@ -755,6 +769,10 @@ void bsp_prv_clock_set (uint32_t clock, uint32_t sckdivcr, uint16_t sckdivcr2)
          * set is lower than previous. */
         bsp_clock_set_postchange(clock_freq_hz_post_change, 0);
     }
+
+#if BSP_FEATURE_CGC_SCKDIVCR2_HAS_EXTRA_CLOCKS && BSP_CFG_PREFETCH_BUFFER_ENABLE
+    bsp_prv_set_pfb();
+#endif
 
     /* Clock is now at requested frequency. */
 
@@ -809,6 +827,13 @@ static void bsp_prv_clock_set_hard_reset (void)
 {
     /* Wait states in SRAMWTSC are set after hard reset. No change required here. */
 
+ #if BSP_FEATURE_CGC_SCKDIVCR2_HAS_EXTRA_CLOCKS && BSP_CFG_PREFETCH_BUFFER_ENABLE
+
+    /* Clear the PFB before doing any clock changes according to Frequency Change Procedure. */
+
+    bsp_prv_clear_pfb();
+ #endif
+
     /* New source clock will be faster so set wait state frequency before changing clock frequency
      * according to Frequency Change Procedure. */
     bsp_prv_set_wait_state_frequency(BSP_STARTUP_MRICLK_HZ, BSP_STARTUP_MRPCLK_HZ);
@@ -836,10 +861,13 @@ static void bsp_prv_clock_set_hard_reset (void)
     /* Set the system source clock */
     R_SYSTEM->SCKSCR = BSP_CFG_CLOCK_SOURCE;
 
-    R_BSP_SoftwareDelay(BSP_CFG_CLOCK_SETTLING_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
-
     /* Update the CMSIS core clock variable so that it reflects the new ICLK frequency. */
     SystemCoreClockUpdate();
+    R_BSP_SoftwareDelay(BSP_CFG_CLOCK_SETTLING_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
+
+ #if BSP_FEATURE_CGC_SCKDIVCR2_HAS_EXTRA_CLOCKS && BSP_CFG_PREFETCH_BUFFER_ENABLE
+    bsp_prv_set_pfb();
+ #endif
 
     /* Clocks are now at requested frequencies. */
 }
@@ -1486,13 +1514,13 @@ static void bsp_clock_set_postchange (uint32_t updated_freq_hz, uint8_t new_rom_
 #if BSP_FEATURE_CGC_HAS_SRAMWTSC
 
     /* Wait states for SRAM (SRAM0, SRAM1 and SRAM0 (DED)). */
-    if (updated_freq_hz > BSP_FEATURE_BSP_SYS_CLOCK_FREQ_NO_RAM_WAITS)
+    if (updated_freq_hz <= BSP_FEATURE_BSP_SYS_CLOCK_FREQ_NO_RAM_WAITS)
     {
         /* Unlock SRAM protecti control register. */
         R_SRAM->SRAMPRCR_S = BSP_PRV_SRAM_UNLOCK;
 
         /* Set SRAM Wait Control register */
-        R_SRAM->SRAMWTSC = BSP_FEATURE_SRAM_SRAMWTSC_WAIT_CYCLE_ENABLE;
+        R_SRAM->SRAMWTSC = BSP_PRV_SRAMWTSC_WAIT_CYCLES_DISABLE;
 
         /* Lock SRAM protecti control register. */
         R_SRAM->SRAMPRCR_S = BSP_PRV_SRAM_LOCK;
@@ -1508,19 +1536,27 @@ static void bsp_prv_sosc_init (void)
 #if BSP_FEATURE_CGC_HAS_SOSC
  #if BSP_CLOCK_CFG_SUBCLOCK_POPULATED
     {
+        /* Refer to "Initialization procedure" in the RTC section of the relevant hardware manual */
+
+        /* RCKSEL bit is not initialized after reset.
+         * Initialize RCKSEL bit When sub-clock is set as the RTC count source.
+         */
   #if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_VBTICTLR
-   #if !BSP_PRV_LOCO_USED
-        volatile uint8_t dummy_read;
-
-        /* Sses SOSC as clock source, or there is no clock source. */
-        R_RTC->RCR4 = 0;
-
-        /* Dummy read four times following the procedure from
-         * "30.6.5 Notes on Writing to and Reading from Registers" in the RX74M manual R01UH1055. */
-        for (uint32_t i = 0; i < 4; i++)
+   #if BSP_CFG_RTCSCLK_ENABLE
+        if (0 == R_SYSTEM->RSTSR2_b.CWSF)
         {
-            dummy_read = R_RTC->RCR4;
-            FSP_PARAMETER_NOT_USED(dummy_read);
+            volatile uint8_t dummy_read;
+
+            /* Sses SOSC as clock source, or there is no clock source. */
+            R_RTC->RCR4 = 0;
+
+            /* When four read operations are performed after writing, the register is reflected.
+             * (see "Notes on Writing to and Reading from Registers" description in RTC section of the relevant hardware manual). */
+            for (uint32_t i = 0; i < 4; i++)
+            {
+                dummy_read = R_RTC->RCR4;
+                FSP_PARAMETER_NOT_USED(dummy_read);
+            }
         }
    #endif
   #endif
@@ -1561,13 +1597,18 @@ static void bsp_prv_sosc_init (void)
              * After setting the SOSTP bit to 0, use the sub-clock only after the sub-clock
              * oscillation stabilization time has elapsed.
              */
-  #if (BSP_CLOCKS_SOURCE_CLOCK_SUBCLOCK == BSP_CFG_CLOCK_SOURCE) || (BSP_PRV_HOCO_USE_FLL)
+  #if (BSP_CLOCKS_SOURCE_CLOCK_SUBCLOCK == BSP_CFG_CLOCK_SOURCE) || \
+            (BSP_CFG_RTCSCLK_ENABLE) || (BSP_PRV_HOCO_USE_FLL)
             R_BSP_SubClockStabilizeWait(BSP_CLOCK_CFG_SUBCLOCK_STABILIZATION_MS);
   #endif
 
+            /* Initialize RTC when RTC Count Source is set to Sub-clock and RTC is not used. */
   #if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_VBTICTLR
-   #if !BSP_PRV_LOCO_USED
-            bsp_prv_init_rtc();
+   #if BSP_CFG_RTCSCLK_ENABLE
+            if (0 == R_SYSTEM->RSTSR2_b.CWSF)
+            {
+                bsp_prv_init_rtc();
+            }
    #endif
   #endif
         }
@@ -1680,7 +1721,6 @@ uint32_t R_BSP_SourceClockHzGet (fsp_priv_source_clock_t clock)
 static void bsp_prv_init_rtc (void)
 {
  #if !BSP_CFG_RTC_USED
-  #if BSP_PRV_LOCO_USED || (BSP_FEATURE_CGC_HAS_SOSC && BSP_CLOCK_CFG_SUBCLOCK_POPULATED)
     uint8_t dummy_read = 0;
 
     /* Wait for 6 RTC count source clcok cycle.
@@ -1690,11 +1730,11 @@ static void bsp_prv_init_rtc (void)
      */
     R_BSP_SoftwareDelay(BSP_PRV_RTC_RESET_DELAY_US, BSP_DELAY_UNITS_MICROSECONDS);
 
+    /* Clear the RCR2 register */
     R_RTC->RCR2 = 0;
 
-    /* Dummy read four times following the procedure from
-     * "30.6.5 Notes on Writing to and Reading from Registers" in the RX74M manual R01UH1055.
-     */
+    /* When four read operations are performed after writing, the register is reflected.
+     * (see "Notes on Writing to and Reading from Registers" description in RTC section of the relevant hardware manual). */
     for (uint32_t i = 0; i < 4; i++)
     {
         dummy_read = R_RTC->RCR2;
@@ -1703,6 +1743,7 @@ static void bsp_prv_init_rtc (void)
 
     FSP_HARDWARE_REGISTER_WAIT(R_RTC->RCR2, 0);
 
+    /* Reset RTC module */
     R_RTC->RCR2_b.RESET = 1;
     FSP_HARDWARE_REGISTER_WAIT(R_RTC->RCR2_b.RESET, 0);
 
@@ -1710,10 +1751,9 @@ static void bsp_prv_init_rtc (void)
     R_RTC->RCR1 = 0;
 
     /* When the RCR1 register is modified, check that all the bits are updated before proceeding
-     * (see section 30.2.17 "RTC Control Register 1 (RCR1)" of the RX74M manual R01UH1055)
-     */
+     * (see "RTC Control Register 1 (RCR1)" description in the RTC section of the relevant hardware manual)*/
+
     FSP_HARDWARE_REGISTER_WAIT(R_RTC->RCR1, 0);
-  #endif
 
   #if BSP_FEATURE_RTC_HAS_TCEN
     for (uint8_t index = 0U; index < BSP_FEATURE_RTC_RTCCR_CHANNELS; index++)
@@ -1742,26 +1782,29 @@ static void bsp_prv_init_rtc (void)
  **********************************************************************************************************************/
 void R_BSP_Init_RTC (void)
 {
-    /* RX74M UM r01uh1055jj: Figure 30.17 and 30.18 Initialization procedure */
+    /* Refer to "Initialization procedure" in the RTC section of the relevant hardware manual */
 
-    /* RCKSEL bit is not initialized after reset. Use LOCO as the default
-     * clock source if it is available. Note RCR4.ROPSEL is also cleared.
+    /* RCKSEL bit is not initialized after reset.
+     * Initialize RTC When LOCO is set as the RTC count source and RTC is not used
      */
- #if BSP_PRV_LOCO_USED
-  #if !BSP_CFG_RTC_USED
-    volatile uint8_t dummy_read;
-
-    R_RTC->RCR4 = 1 << R_RTC_RCR4_RCKSEL_Pos;
-
-    /* Dummy read four times following the procedure from
-     * "30.6.5 Notes on Writing to and Reading from Registers" in the RX74M manual R01UH1055. */
-    for (uint32_t i = 0; i < 4; i++)
+ #if !BSP_CFG_RTCSCLK_ENABLE || !((BSP_FEATURE_CGC_HAS_SOSC == 1) && (BSP_CLOCK_CFG_SUBCLOCK_POPULATED == 1))
+    if (0 == R_SYSTEM->RSTSR2_b.CWSF)
     {
-        dummy_read = R_RTC->RCR4;
-        FSP_PARAMETER_NOT_USED(dummy_read);
-    }
+  #if !BSP_CFG_RTC_USED
+        volatile uint8_t dummy_read;
+
+        R_RTC->RCR4 = 1 << R_RTC_RCR4_RCKSEL_Pos;
+
+        /* When four read operations are performed after writing, the register is reflected.
+         * (see "Notes on Writing to and Reading from Registers" description in RTC section of the relevant hardware manual). */
+        for (uint32_t i = 0; i < 4; i++)
+        {
+            dummy_read = R_RTC->RCR4;
+            FSP_PARAMETER_NOT_USED(dummy_read);
+        }
   #endif
-    bsp_prv_init_rtc();
+        bsp_prv_init_rtc();
+    }
  #endif
 
  #if BSP_FEATURE_SYSC_HAS_VBTICTLR

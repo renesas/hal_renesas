@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
@@ -26,6 +12,7 @@
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
+#define BSP_PRV_NMIER_T    uint32_t
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -38,10 +25,6 @@
 /***********************************************************************************************************************
  * Private global variables and functions
  **********************************************************************************************************************/
-uint32_t bsp_group_irq_get_table_index(icu_event_t irq);
-
-static void * gp_renesas_group_irq_context[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS][BSP_FEATURE_GROUP_IRQ_NUM_FACTORS];
-
 const icu_event_t g_group_irq_table[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS] =
 {
 #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
@@ -80,6 +63,8 @@ const icu_event_t g_group_irq_table[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS] =
 #endif
 };
 
+void * gp_renesas_group_irq_context[BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS][BSP_FEATURE_GROUP_IRQ_NUM_FACTORS];
+
 /** This array holds callback functions. */
 bsp_grp_irq_nmi_cb_t g_bsp_group_irq_sources[BSP_FEATURE_ICU_NMIER_MAX_INDEX + 1] BSP_SECTION_EARLY_INIT;
 
@@ -92,6 +77,8 @@ void NMI_Handler(void);
 
 #endif
 void bsp_nmi_handler(void);
+
+static void bsp_group_irq_call(bsp_grp_irq_nmi_t irq);
 
 /*******************************************************************************************************************//**
  * Calls the callback function for an interrupt if a callback has been registered.
@@ -118,659 +105,6 @@ static void bsp_group_irq_call (bsp_grp_irq_nmi_t irq)
  *
  * @{
  **********************************************************************************************************************/
-void R_BSP_GroupIrqContextSet (uint8_t irq, uint8_t factor, void * p_context) {
-    uint32_t group = bsp_group_irq_get_table_index((icu_event_t) irq);
-
-    gp_renesas_group_irq_context[group][factor] = p_context;
-}
-
-uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq) {
-    uint32_t status = 0;
-
-    /* Returns the active interrupt factor which is enabled. */
-    switch (irq)
-    {
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
-
-        /* For IL0 */
-        case BSP_GRP_IRQ_IL0:
-        {
-            status  = R_ICU->GRPIL0;
-            status &= R_ICU->GENIL0;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
-
-        /* For BL0 */
-        case BSP_GRP_IRQ_BL0:
-        {
-            status  = R_ICU->GRPBL0;
-            status &= R_ICU->GENBL0;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
-
-        /* For BL1 */
-        case BSP_GRP_IRQ_BL1:
-        {
-            status  = R_ICU->GRPBL1;
-            status &= R_ICU->GENBL1;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
-
-        /* For AL0 */
-        case BSP_GRP_IRQ_AL0:
-        {
-            status  = R_ICU->GRPAL0;
-            status &= R_ICU->GENAL0;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
-
-        /* For AL1 */
-        case BSP_GRP_IRQ_AL1:
-        {
-            status  = R_ICU->GRPAL1;
-            status &= R_ICU->GENAL1;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
-
-        /* For AL2 */
-        case BSP_GRP_IRQ_AL2:
-        {
-            status  = R_ICU->GRPAL2;
-            status &= R_ICU->GENAL2;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
-
-        /* For AL3 */
-        case BSP_GRP_IRQ_AL3:
-        {
-            status  = R_ICU->GRPAL3;
-            status &= R_ICU->GENAL3;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
-
-        /* For AL4 */
-        case BSP_GRP_IRQ_AL4:
-        {
-            status  = R_ICU->GRPAL4;
-            status &= R_ICU->GENAL4;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
-
-        /* For AL5 */
-        case BSP_GRP_IRQ_AL5:
-        {
-            status  = R_ICU->GRPAL5;
-            status &= R_ICU->GENAL5;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
-
-        /* For AL6 */
-        case BSP_GRP_IRQ_AL6:
-        {
-            status  = R_ICU->GRPAL6;
-            status &= R_ICU->GENAL6;
-            break;
-        }
-#endif
-        default:
-        {
-            status = 0;
-            break;
-        }
-    }
-
-    return status;
-}
-
-uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq) {
-    uint32_t cfg = 0;
-
-    /* Returns the active interrupt factor which is enabled. */
-    switch (irq)
-    {
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
-
-        /* For IL0 */
-        case BSP_GRP_IRQ_IL0:
-        {
-            cfg = R_ICU->GENIL0;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
-
-        /* For BL0 */
-        case BSP_GRP_IRQ_BL0:
-        {
-            cfg = R_ICU->GENBL0;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
-
-        /* For BL1 */
-        case BSP_GRP_IRQ_BL1:
-        {
-            cfg = R_ICU->GENBL1;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
-
-        /* For AL0 */
-        case BSP_GRP_IRQ_AL0:
-        {
-            cfg = R_ICU->GENAL0;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
-
-        /* For AL1 */
-        case BSP_GRP_IRQ_AL1:
-        {
-            cfg = R_ICU->GENAL1;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
-
-        /* For AL2 */
-        case BSP_GRP_IRQ_AL2:
-        {
-            cfg = R_ICU->GENAL2;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
-
-        /* For AL3 */
-        case BSP_GRP_IRQ_AL3:
-        {
-            cfg = R_ICU->GENAL3;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
-
-        /* For AL4 */
-        case BSP_GRP_IRQ_AL4:
-        {
-            cfg = R_ICU->GENAL4;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
-
-        /* For AL5 */
-        case BSP_GRP_IRQ_AL5:
-        {
-            cfg = R_ICU->GENAL5;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
-
-        /* For AL6 */
-        case BSP_GRP_IRQ_AL6:
-        {
-            cfg = R_ICU->GENAL6;
-            break;
-        }
-#endif
-        default:
-        {
-            cfg = 0;
-            break;
-        }
-    }
-
-    return cfg;
-}
-
-void R_BSP_GroupIrqStatusClear (uint8_t irq, uint8_t factor) {
-    /* Clear interrupt status (Edge only). */
-    switch (irq)
-    {
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
-
-        /* For IL0 */
-        case BSP_GRP_IRQ_IL0:
-        {
-            FSP_PARAMETER_NOT_USED(factor);
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
-
-        /* For BL0 */
-        case BSP_GRP_IRQ_BL0:
-        {
-            FSP_PARAMETER_NOT_USED(factor);
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
-
-        /* For BL1 */
-        case BSP_GRP_IRQ_BL1:
-        {
-            FSP_PARAMETER_NOT_USED(factor);
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
-
-        /* For AL0 */
-        case BSP_GRP_IRQ_AL0:
-        {
-            FSP_PARAMETER_NOT_USED(factor);
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
-
-        /* For AL1 */
-        case BSP_GRP_IRQ_AL1:
-        {
-            FSP_PARAMETER_NOT_USED(factor);
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
-
-        /* For AL2 */
-        case BSP_GRP_IRQ_AL2:
-        {
-            FSP_PARAMETER_NOT_USED(factor);
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
-
-        /* For AL3 */
-        case BSP_GRP_IRQ_AL3:
-        {
-            FSP_PARAMETER_NOT_USED(factor);
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
-
-        /* For AL4 */
-        case BSP_GRP_IRQ_AL4:
-        {
-            FSP_PARAMETER_NOT_USED(factor);
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
-
-        /* For AL5 */
-        case BSP_GRP_IRQ_AL5:
-        {
-            FSP_PARAMETER_NOT_USED(factor);
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
-
-        /* For AL6 */
-        case BSP_GRP_IRQ_AL6:
-        {
-            FSP_PARAMETER_NOT_USED(factor);
-            break;
-        }
-#endif
-        default:
-        {
-            FSP_PARAMETER_NOT_USED(factor);
-            break;
-        }
-    }
-}
-
-void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor) {
-    uint32_t group_irq_bitmask = 1UL << factor;
-
-    /* Enabled interrupt for the specified factor. */
-    switch (irq)
-    {
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
-
-        /* For IL0 */
-        case BSP_GRP_IRQ_IL0:
-        {
-            R_ICU->GENIL0 = R_ICU->GENIL0 | group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
-
-        /* For BL0 */
-        case BSP_GRP_IRQ_BL0:
-        {
-            R_ICU->GENBL0 = R_ICU->GENBL0 | group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
-
-        /* For BL1 */
-        case BSP_GRP_IRQ_BL1:
-        {
-            R_ICU->GENBL1 = R_ICU->GENBL1 | group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
-
-        /* For AL0 */
-        case BSP_GRP_IRQ_AL0:
-        {
-            R_ICU->GENAL0 = R_ICU->GENAL0 | group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
-
-        /* For AL1 */
-        case BSP_GRP_IRQ_AL1:
-        {
-            R_ICU->GENAL1 = R_ICU->GENAL1 | group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
-
-        /* For AL2 */
-        case BSP_GRP_IRQ_AL2:
-        {
-            R_ICU->GENAL2 = R_ICU->GENAL2 | group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
-
-        /* For AL3 */
-        case BSP_GRP_IRQ_AL3:
-        {
-            R_ICU->GENAL3 = R_ICU->GENAL3 | group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
-
-        /* For AL4 */
-        case BSP_GRP_IRQ_AL4:
-        {
-            R_ICU->GENAL4 = R_ICU->GENAL4 | group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
-
-        /* For AL5 */
-        case BSP_GRP_IRQ_AL5:
-        {
-            R_ICU->GENAL5 = R_ICU->GENAL5 | group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
-
-        /* For AL6 */
-        case BSP_GRP_IRQ_AL6:
-        {
-            R_ICU->GENAL6 = R_ICU->GENAL6 | group_irq_bitmask;
-            break;
-        }
-#endif
-        default:
-        {
-            break;
-        }
-    }
-}
-
-void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
-    uint32_t group_irq_bitmask = ~(1UL << factor);
-
-    /* Disabled interrupt for the specified factor. */
-    switch (irq)
-    {
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
-
-        /* For IL0 */
-        case BSP_GRP_IRQ_IL0:
-        {
-            R_ICU->GENIL0 = R_ICU->GENIL0 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
-
-        /* For BL0 */
-        case BSP_GRP_IRQ_BL0:
-        {
-            R_ICU->GENBL0 = R_ICU->GENBL0 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
-
-        /* For BL1 */
-        case BSP_GRP_IRQ_BL1:
-        {
-            R_ICU->GENBL1 = R_ICU->GENBL1 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
-
-        /* For AL0 */
-        case BSP_GRP_IRQ_AL0:
-        {
-            R_ICU->GENAL0 = R_ICU->GENAL0 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
-
-        /* For AL1 */
-        case BSP_GRP_IRQ_AL1:
-        {
-            R_ICU->GENAL1 = R_ICU->GENAL1 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
-
-        /* For AL2 */
-        case BSP_GRP_IRQ_AL2:
-        {
-            R_ICU->GENAL2 = R_ICU->GENAL2 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
-
-        /* For AL3 */
-        case BSP_GRP_IRQ_AL3:
-        {
-            R_ICU->GENAL3 = R_ICU->GENAL3 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
-
-        /* For AL4 */
-        case BSP_GRP_IRQ_AL4:
-        {
-            R_ICU->GENAL4 = R_ICU->GENAL4 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
-
-        /* For AL5 */
-        case BSP_GRP_IRQ_AL5:
-        {
-            R_ICU->GENAL5 = R_ICU->GENAL5 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
-
-        /* For AL6 */
-        case BSP_GRP_IRQ_AL6:
-        {
-            R_ICU->GENAL6 = R_ICU->GENAL6 & group_irq_bitmask;
-            break;
-        }
-#endif
-        default:
-        {
-            break;
-        }
-    }
-}
-
-uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor) {
-    uint32_t group_irq_bitmask = 1UL << factor;
-    uint32_t ret               = 0;
-
-    /* Get interrupt request enable status for the specified factor. */
-    switch (irq)
-    {
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
-
-        /* For IL0 */
-        case BSP_GRP_IRQ_IL0:
-        {
-            ret = R_ICU->GENIL0 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
-
-        /* For BL0 */
-        case BSP_GRP_IRQ_BL0:
-        {
-            ret = R_ICU->GENBL0 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
-
-        /* For BL1 */
-        case BSP_GRP_IRQ_BL1:
-        {
-            ret = R_ICU->GENBL1 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
-
-        /* For AL0 */
-        case BSP_GRP_IRQ_AL0:
-        {
-            ret = R_ICU->GENAL0 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
-
-        /* For AL1 */
-        case BSP_GRP_IRQ_AL1:
-        {
-            ret = R_ICU->GENAL1 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
-
-        /* For AL2 */
-        case BSP_GRP_IRQ_AL2:
-        {
-            ret = R_ICU->GENAL2 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
-
-        /* For AL3 */
-        case BSP_GRP_IRQ_AL3:
-        {
-            ret = R_ICU->GENAL3 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
-
-        /* For AL4 */
-        case BSP_GRP_IRQ_AL4:
-        {
-            ret = R_ICU->GENAL4 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
-
-        /* For AL5 */
-        case BSP_GRP_IRQ_AL5:
-        {
-            ret = R_ICU->GENAL5 & group_irq_bitmask;
-            break;
-        }
-#endif
-#if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
-
-        /* For AL6 */
-        case BSP_GRP_IRQ_AL6:
-        {
-            ret = R_ICU->GENAL6 & group_irq_bitmask;
-            break;
-        }
-#endif
-        default:
-        {
-            break;
-        }
-    }
-
-    if (0 != ret)
-    {
-        /* IRQ enable. */
-        ret = 1;
-    }
-
-    return ret;
-}
-
-void * R_BSP_GroupIrqContextGet (uint8_t irq, uint8_t factor) {
-    uint32_t group = bsp_group_irq_get_table_index((icu_event_t) irq);
-
-    return gp_renesas_group_irq_context[group][factor];
-}
 
 /*******************************************************************************************************************//**
  * Register a callback function for supported interrupts. If NULL is passed for the callback argument then any
@@ -797,6 +131,37 @@ fsp_err_t R_BSP_GroupIrqWrite (bsp_grp_irq_nmi_t irq, void (* p_callback)(bsp_gr
 }
 
 /*******************************************************************************************************************//**
+ * Non-maskable interrupt handler. This exception is defined by the BSP, unlike other system exceptions, because
+ * there are many sources that map to the NMI exception.
+ **********************************************************************************************************************/
+void bsp_nmi_handler (void)
+{
+    /* NMISR is masked by NMIER to prevent iterating over NMI status flags that are not enabled. */
+    BSP_PRV_NMIER_T nmier = R_ICU->NMIER;
+    BSP_PRV_NMIER_T nmisr = R_ICU->NMISR & nmier;
+
+    /* Loop over all NMI status flags */
+    for (bsp_grp_irq_nmi_t irq = BSP_GRP_IRQ_IWDT_ERROR;
+         irq <= (bsp_grp_irq_nmi_t) (BSP_FEATURE_ICU_NMIER_MAX_INDEX);
+         irq++)
+    {
+        /* If the current irq status register is set call the irq callback. */
+        if (0U != (nmisr & (1U << irq)))
+        {
+            (void) bsp_group_irq_call(irq);
+        }
+    }
+
+    /* Clear status flags that have been handled. */
+    R_ICU->NMICLR = nmisr;
+
+    /* Wait for NMISR to be cleared before exiting the ISR to prevent the IRQ from being regenerated.
+     * See section "15.2.10 NMICLR : Non-Maskable Interrupt Status Clear Register" in the RX74M manual
+     * R01UH1055EJ00100 */
+    FSP_HARDWARE_REGISTER_WAIT((R_ICU->NMISR & nmisr), 0);
+}
+
+/*******************************************************************************************************************//**
  * Non-maskable interrupt handler.
  **********************************************************************************************************************/
 #if defined(__GNUC__) || defined(__ICCRX__)
@@ -820,36 +185,673 @@ BSP_ATTRIBUTE_STACKLESS void NMI_Handler (void)
 
 #endif
 
-/*******************************************************************************************************************//**
- * Non-maskable interrupt handler. This exception is defined by the BSP, unlike other system exceptions, because
- * there are many sources that map to the NMI exception.
- **********************************************************************************************************************/
-void bsp_nmi_handler (void)
-{
-    /* NMISR is masked by NMIER to prevent iterating over NMI status flags that are not enabled. */
-    uint32_t nmier = R_ICU->NMIER;
-    uint32_t nmisr = R_ICU->NMISR & nmier;
+#if 0 == BSP_CFG_INLINE_IRQ_FUNCTIONS
 
-    /* Loop over all NMI status flags */
-    for (bsp_grp_irq_nmi_t irq = BSP_GRP_IRQ_IWDT_ERROR;
-         irq <= (bsp_grp_irq_nmi_t) (BSP_FEATURE_ICU_NMIER_MAX_INDEX);
-         irq++)
+bool R_BSP_GroupIrqCheck (uint8_t irq)
+{
+    bool result = false;
+
+    for (uint8_t group = 0; group < BSP_FEATURE_GROUP_IRQ_NUM_INTERRUPTS; group++)
     {
-        /* If the current irq status register is set call the irq callback. */
-        if (0U != (nmisr & (1U << irq)))
+        /* Check if the interrupt is a group interrupt. */
+        if (irq == g_group_irq_table[group])
         {
-            (void) bsp_group_irq_call(irq);
+            result = true;
+            break;
         }
     }
 
-    /* Clear status flags that have been handled. */
-    R_ICU->NMICLR = nmisr;
-
-    /* Wait for NMISR to be cleared before exiting the ISR to prevent the IRQ from being regenerated.
-     * See section "15.2.10 NMICLR : Non-Maskable Interrupt Status Clear Register" in the RX74M manual
-     * R01UH1055EJ00100 */
-    FSP_HARDWARE_REGISTER_WAIT((R_ICU->NMISR & nmisr), 0);
+    return result;
 }
+
+uint32_t R_BSP_GroupIrqIsEnabled (uint8_t irq, uint8_t factor)
+{
+    uint32_t group_irq_bitmask = 1UL << factor;
+    uint32_t ret               = 0;
+
+    /* Get interrupt request enable status for the specified factor. */
+    switch (irq)
+    {
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
+
+        /* For IL0 */
+        case BSP_GRP_IRQ_IL0:
+        {
+            ret = R_ICU->GENIL0 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
+
+        /* For BL0 */
+        case BSP_GRP_IRQ_BL0:
+        {
+            ret = R_ICU->GENBL0 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
+
+        /* For BL1 */
+        case BSP_GRP_IRQ_BL1:
+        {
+            ret = R_ICU->GENBL1 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
+
+        /* For AL0 */
+        case BSP_GRP_IRQ_AL0:
+        {
+            ret = R_ICU->GENAL0 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
+
+        /* For AL1 */
+        case BSP_GRP_IRQ_AL1:
+        {
+            ret = R_ICU->GENAL1 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
+
+        /* For AL2 */
+        case BSP_GRP_IRQ_AL2:
+        {
+            ret = R_ICU->GENAL2 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
+
+        /* For AL3 */
+        case BSP_GRP_IRQ_AL3:
+        {
+            ret = R_ICU->GENAL3 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
+
+        /* For AL4 */
+        case BSP_GRP_IRQ_AL4:
+        {
+            ret = R_ICU->GENAL4 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
+
+        /* For AL5 */
+        case BSP_GRP_IRQ_AL5:
+        {
+            ret = R_ICU->GENAL5 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
+
+        /* For AL6 */
+        case BSP_GRP_IRQ_AL6:
+        {
+            ret = R_ICU->GENAL6 & group_irq_bitmask;
+            break;
+        }
+ #endif
+        default:
+        {
+            break;
+        }
+    }
+
+    if (0 != ret)
+    {
+        /* IRQ enable. */
+        ret = 1;
+    }
+
+    return ret;
+}
+
+uint32_t R_BSP_GroupIrqStatusGet (uint8_t irq)
+{
+    uint32_t status = 0;
+
+    /* Returns the active interrupt factor which is enabled. */
+    switch (irq)
+    {
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
+
+        /* For IL0 */
+        case BSP_GRP_IRQ_IL0:
+        {
+            status  = R_ICU->GRPIL0;
+            status &= R_ICU->GENIL0;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
+
+        /* For BL0 */
+        case BSP_GRP_IRQ_BL0:
+        {
+            status  = R_ICU->GRPBL0;
+            status &= R_ICU->GENBL0;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
+
+        /* For BL1 */
+        case BSP_GRP_IRQ_BL1:
+        {
+            status  = R_ICU->GRPBL1;
+            status &= R_ICU->GENBL1;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
+
+        /* For AL0 */
+        case BSP_GRP_IRQ_AL0:
+        {
+            status  = R_ICU->GRPAL0;
+            status &= R_ICU->GENAL0;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
+
+        /* For AL1 */
+        case BSP_GRP_IRQ_AL1:
+        {
+            status  = R_ICU->GRPAL1;
+            status &= R_ICU->GENAL1;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
+
+        /* For AL2 */
+        case BSP_GRP_IRQ_AL2:
+        {
+            status  = R_ICU->GRPAL2;
+            status &= R_ICU->GENAL2;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
+
+        /* For AL3 */
+        case BSP_GRP_IRQ_AL3:
+        {
+            status  = R_ICU->GRPAL3;
+            status &= R_ICU->GENAL3;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
+
+        /* For AL4 */
+        case BSP_GRP_IRQ_AL4:
+        {
+            status  = R_ICU->GRPAL4;
+            status &= R_ICU->GENAL4;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
+
+        /* For AL5 */
+        case BSP_GRP_IRQ_AL5:
+        {
+            status  = R_ICU->GRPAL5;
+            status &= R_ICU->GENAL5;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
+
+        /* For AL6 */
+        case BSP_GRP_IRQ_AL6:
+        {
+            status  = R_ICU->GRPAL6;
+            status &= R_ICU->GENAL6;
+            break;
+        }
+ #endif
+        default:
+        {
+            status = 0;
+            break;
+        }
+    }
+
+    return status;
+}
+
+uint32_t R_BSP_GroupIrqCfgGet (uint8_t irq)
+{
+    uint32_t cfg = 0;
+
+    /* Returns the active interrupt factor which is enabled. */
+    switch (irq)
+    {
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
+
+        /* For IL0 */
+        case BSP_GRP_IRQ_IL0:
+        {
+            cfg = R_ICU->GENIL0;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
+
+        /* For BL0 */
+        case BSP_GRP_IRQ_BL0:
+        {
+            cfg = R_ICU->GENBL0;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
+
+        /* For BL1 */
+        case BSP_GRP_IRQ_BL1:
+        {
+            cfg = R_ICU->GENBL1;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
+
+        /* For AL0 */
+        case BSP_GRP_IRQ_AL0:
+        {
+            cfg = R_ICU->GENAL0;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
+
+        /* For AL1 */
+        case BSP_GRP_IRQ_AL1:
+        {
+            cfg = R_ICU->GENAL1;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
+
+        /* For AL2 */
+        case BSP_GRP_IRQ_AL2:
+        {
+            cfg = R_ICU->GENAL2;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
+
+        /* For AL3 */
+        case BSP_GRP_IRQ_AL3:
+        {
+            cfg = R_ICU->GENAL3;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
+
+        /* For AL4 */
+        case BSP_GRP_IRQ_AL4:
+        {
+            cfg = R_ICU->GENAL4;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
+
+        /* For AL5 */
+        case BSP_GRP_IRQ_AL5:
+        {
+            cfg = R_ICU->GENAL5;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
+
+        /* For AL6 */
+        case BSP_GRP_IRQ_AL6:
+        {
+            cfg = R_ICU->GENAL6;
+            break;
+        }
+ #endif
+        default:
+        {
+            cfg = 0;
+            break;
+        }
+    }
+
+    return cfg;
+}
+
+void R_BSP_GroupIrqStatusClear (uint8_t irq, uint8_t factor)
+{
+    /* Clear interrupt status (Edge only). */
+    switch (irq)
+    {
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
+
+        /* For IL0 */
+        case BSP_GRP_IRQ_IL0:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
+
+        /* For BL0 */
+        case BSP_GRP_IRQ_BL0:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
+
+        /* For BL1 */
+        case BSP_GRP_IRQ_BL1:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
+
+        /* For AL0 */
+        case BSP_GRP_IRQ_AL0:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
+
+        /* For AL1 */
+        case BSP_GRP_IRQ_AL1:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
+
+        /* For AL2 */
+        case BSP_GRP_IRQ_AL2:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
+
+        /* For AL3 */
+        case BSP_GRP_IRQ_AL3:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
+
+        /* For AL4 */
+        case BSP_GRP_IRQ_AL4:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
+
+        /* For AL5 */
+        case BSP_GRP_IRQ_AL5:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
+
+        /* For AL6 */
+        case BSP_GRP_IRQ_AL6:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+ #endif
+        default:
+        {
+            FSP_PARAMETER_NOT_USED(factor);
+            break;
+        }
+    }
+}
+
+void R_BSP_GroupIrqEnableNoClear (uint8_t irq, uint8_t factor)
+{
+    uint32_t group_irq_bitmask = 1UL << factor;
+
+    /* Enabled interrupt for the specified factor. */
+    switch (irq)
+    {
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
+
+        /* For IL0 */
+        case BSP_GRP_IRQ_IL0:
+        {
+            R_ICU->GENIL0 = R_ICU->GENIL0 | group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
+
+        /* For BL0 */
+        case BSP_GRP_IRQ_BL0:
+        {
+            R_ICU->GENBL0 = R_ICU->GENBL0 | group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
+
+        /* For BL1 */
+        case BSP_GRP_IRQ_BL1:
+        {
+            R_ICU->GENBL1 = R_ICU->GENBL1 | group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
+
+        /* For AL0 */
+        case BSP_GRP_IRQ_AL0:
+        {
+            R_ICU->GENAL0 = R_ICU->GENAL0 | group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
+
+        /* For AL1 */
+        case BSP_GRP_IRQ_AL1:
+        {
+            R_ICU->GENAL1 = R_ICU->GENAL1 | group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
+
+        /* For AL2 */
+        case BSP_GRP_IRQ_AL2:
+        {
+            R_ICU->GENAL2 = R_ICU->GENAL2 | group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
+
+        /* For AL3 */
+        case BSP_GRP_IRQ_AL3:
+        {
+            R_ICU->GENAL3 = R_ICU->GENAL3 | group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
+
+        /* For AL4 */
+        case BSP_GRP_IRQ_AL4:
+        {
+            R_ICU->GENAL4 = R_ICU->GENAL4 | group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
+
+        /* For AL5 */
+        case BSP_GRP_IRQ_AL5:
+        {
+            R_ICU->GENAL5 = R_ICU->GENAL5 | group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
+
+        /* For AL6 */
+        case BSP_GRP_IRQ_AL6:
+        {
+            R_ICU->GENAL6 = R_ICU->GENAL6 | group_irq_bitmask;
+            break;
+        }
+ #endif
+        default:
+        {
+            break;
+        }
+    }
+}
+
+void R_BSP_GroupIrqDisable (uint8_t irq, uint8_t factor) {
+    uint32_t group_irq_bitmask = ~(1UL << factor);
+
+    /* Disabled interrupt for the specified factor. */
+    switch (irq)
+    {
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPIL0
+
+        /* For IL0 */
+        case BSP_GRP_IRQ_IL0:
+        {
+            R_ICU->GENIL0 = R_ICU->GENIL0 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL0
+
+        /* For BL0 */
+        case BSP_GRP_IRQ_BL0:
+        {
+            R_ICU->GENBL0 = R_ICU->GENBL0 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPBL1
+
+        /* For BL1 */
+        case BSP_GRP_IRQ_BL1:
+        {
+            R_ICU->GENBL1 = R_ICU->GENBL1 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL0
+
+        /* For AL0 */
+        case BSP_GRP_IRQ_AL0:
+        {
+            R_ICU->GENAL0 = R_ICU->GENAL0 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL1
+
+        /* For AL1 */
+        case BSP_GRP_IRQ_AL1:
+        {
+            R_ICU->GENAL1 = R_ICU->GENAL1 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL2
+
+        /* For AL2 */
+        case BSP_GRP_IRQ_AL2:
+        {
+            R_ICU->GENAL2 = R_ICU->GENAL2 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL3
+
+        /* For AL3 */
+        case BSP_GRP_IRQ_AL3:
+        {
+            R_ICU->GENAL3 = R_ICU->GENAL3 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL4
+
+        /* For AL4 */
+        case BSP_GRP_IRQ_AL4:
+        {
+            R_ICU->GENAL4 = R_ICU->GENAL4 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL5
+
+        /* For AL5 */
+        case BSP_GRP_IRQ_AL5:
+        {
+            R_ICU->GENAL5 = R_ICU->GENAL5 & group_irq_bitmask;
+            break;
+        }
+ #endif
+ #if BSP_FEATURE_ICU_HAS_GRP_IRQ_GROUPAL6
+
+        /* For AL6 */
+        case BSP_GRP_IRQ_AL6:
+        {
+            R_ICU->GENAL6 = R_ICU->GENAL6 & group_irq_bitmask;
+            break;
+        }
+ #endif
+        default:
+        {
+            break;
+        }
+    }
+}
+
+#endif                                 // 0 == BSP_CFG_INLINE_IRQ_FUNCTIONS
 
 uint32_t bsp_group_irq_get_table_index (icu_event_t irq) {
     uint32_t index = 0;

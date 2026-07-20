@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /*******************************************************************************************************************//**
  * @addtogroup BSP_MCU
@@ -28,10 +14,54 @@
  **********************************************************************************************************************/
 #include <string.h>
 #include "bsp_api.h"
+#if BSP_CFG_DCACHE_ENABLED
+ #include "bsp_cache.h"
+#endif
 
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
+#if BSP_CFG_DCACHE_ENABLED
+ #define BSP_PRV_MPU_PAGE_SIZE       (0x20) // MPU page size
+ #define BSP_PRV_RSPAGE_DCA          (0x3)  // Enable D-Cache, write-back method
+ #define BSP_PRV_RSPAGE_ICA          (0x4)  // Enable I-Cache
+ #define BSP_PRV_REPAGE_V            (0x1)  // Enable area
+ #define BSP_PRV_REPAGE_UAC          (0xE)  // r, w, x permitted
+
+ #ifdef BSP_PARTITION_SDRAM_CPU0_S_START
+  #define BSP_PRV_SDRAM_START        (BSP_PARTITION_SDRAM_CPU0_S_START)
+  #define BSP_PRV_SDRAM_END          (BSP_PARTITION_SDRAM_CPU0_S_START + BSP_PARTITION_SDRAM_CPU0_S_SIZE)
+ #else
+  #define BSP_PRV_SDRAM_START        (BSP_FEATURE_SDRAM_START_ADDRESS)
+  #define BSP_PRV_SDRAM_END          (BSP_FEATURE_SDRAM_START_ADDRESS + BSP_FEATURE_SDRAM_SIZE)
+ #endif
+
+ #ifdef BSP_PARTITION_XSPI1_CS1_CPU0_S_START
+  #define BSP_PRV_XSPI1_CS1_START    (BSP_PARTITION_XSPI1_CS1_CPU0_S_START)
+  #define BSP_PRV_XSPI1_CS1_END      (BSP_PARTITION_XSPI1_CS1_CPU0_S_START + BSP_PARTITION_XSPI1_CS1_CPU0_S_SIZE)
+ #else
+  #define BSP_PRV_XSPI1_CS1_START    (BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_1_START_ADDRESS)
+  #define BSP_PRV_XSPI1_CS1_END      (BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_1_START_ADDRESS + \
+                                      BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_1_SIZE)
+ #endif
+
+ #ifdef BSP_PARTITION_XSPI1_CS0_CPU0_S_START
+  #define BSP_PRV_XSPI1_CS0_START    (BSP_PARTITION_XSPI1_CS0_CPU0_S_START)
+  #define BSP_PRV_XSPI1_CS0_END      (BSP_PARTITION_XSPI1_CS0_CPU0_S_START + BSP_PARTITION_XSPI1_CS0_CPU0_S_SIZE)
+ #else
+  #define BSP_PRV_XSPI1_CS0_START    (BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_0_START_ADDRESS)
+  #define BSP_PRV_XSPI1_CS0_END      (BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_0_START_ADDRESS + \
+                                      BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_0_SIZE)
+ #endif
+
+ #ifdef BSP_PARTITION_RAM_CPU0_S_START
+  #define BSP_PRV_RAM_START          (BSP_PARTITION_RAM_CPU0_S_START)
+  #define BSP_PRV_RAM_END            (BSP_PARTITION_RAM_CPU0_S_START + BSP_PARTITION_RAM_CPU0_S_SIZE)
+ #else
+  #define BSP_PRV_RAM_START          (BSP_FEATURE_RAM_START_ADDRESS)
+  #define BSP_PRV_RAM_END            (BSP_FEATURE_RAM_START_ADDRESS + BSP_FEATURE_RAM_START_SIZE)
+ #endif
+#endif
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -53,7 +83,6 @@ extern uint32_t __bss_start__;
 extern uint32_t __bss_end__;
 extern uint32_t __StackLimit;
 extern uint32_t __StackTop;
-
 #elif defined(__ICCRX__)
  #pragma section=".data16.bss"
  #pragma section=".data24.bss"
@@ -84,12 +113,76 @@ static void bsp_init_uninitialized_vars(void);
 
 #endif
 
+#if BSP_CFG_DCACHE_ENABLED
+static void bsp_init_mpu(void);
+
+#endif
+
+#if BSP_CFG_C_RUNTIME_INIT
+static void SystemRuntimeInit(const uint32_t external);
+
+#endif
+
+#if BSP_CFG_C_RUNTIME_INIT
+static void SystemRuntimeInit (const uint32_t external)
+{
+    /* Initialize C runtime environment. */
+    for (uint32_t i = 0; i < g_init_info.zero_count; i++)
+    {
+        if (external == g_init_info.p_zero_list[i].type.external)
+        {
+            memset(g_init_info.p_zero_list[i].p_base, 0U,
+                   ((uint32_t) g_init_info.p_zero_list[i].p_limit - (uint32_t) g_init_info.p_zero_list[i].p_base));
+        }
+    }
+
+    for (uint32_t i = 0; i < g_init_info.copy_count; i++)
+    {
+        if (external == g_init_info.p_copy_list[i].type.external)
+        {
+            memcpy(g_init_info.p_copy_list[i].p_base, g_init_info.p_copy_list[i].p_load,
+                   ((uint32_t) g_init_info.p_copy_list[i].p_limit - (uint32_t) g_init_info.p_copy_list[i].p_base));
+        }
+    }
+
+    for (uint32_t i = 0; i < g_init_info.code_copy_count; i++)
+    {
+        if (external == g_init_info.p_code_copy_list[i].type.external)
+        {
+ #if defined(__BIG) && defined(__ICCRX__)
+            uint8_t * p_base_addr = (uint8_t *) g_init_info.p_code_copy_list[i].p_base;
+            uint8_t * p_load_addr = (uint8_t *) g_init_info.p_code_copy_list[i].p_load;
+            for (uint32_t copied_size = 0;
+                 copied_size <
+                 ((uint32_t) g_init_info.p_code_copy_list[i].p_limit -
+                  (uint32_t) g_init_info.p_code_copy_list[i].p_base);
+                 copied_size += 4)
+            {
+                p_base_addr[copied_size]     = p_load_addr[copied_size + 3];
+                p_base_addr[copied_size + 1] = p_load_addr[copied_size + 2];
+                p_base_addr[copied_size + 2] = p_load_addr[copied_size + 1];
+                p_base_addr[copied_size + 3] = p_load_addr[copied_size];
+            }
+
+ #else
+            memcpy(g_init_info.p_code_copy_list[i].p_base,
+                   g_init_info.p_code_copy_list[i].p_load,
+                   ((uint32_t) g_init_info.p_code_copy_list[i].p_limit -
+                    (uint32_t) g_init_info.p_code_copy_list[i].p_base));
+ #endif
+        }
+    }
+}
+
+#endif
+
 /*******************************************************************************************************************//**
  * Initialize the MCU and the runtime environment.
  **********************************************************************************************************************/
 void SystemInit (void)
 {
 #if BSP_CFG_EARLY_INIT
+
     /* Initialize uninitialized BSP variables early for use in R_BSP_WarmStart. */
     bsp_init_uninitialized_vars();
 #endif
@@ -104,59 +197,44 @@ void SystemInit (void)
     R_BSP_WarmStart(BSP_WARM_START_POST_CLOCK);
 
 #if BSP_CFG_C_RUNTIME_INIT
-    /* Initialize C runtime environment. */
-    /* Zero out BSS */
- #if defined(__GNUC__) || defined(__CCRX__)
-    memset(&__bss_start__, 0U, ((uint32_t) &__bss_end__ - (uint32_t) &__bss_start__));
- #elif defined(__ICCRX__)
-    memset((uint32_t *) __section_begin(".data16.bss"), 0U, (uint32_t) __section_size(".data16.bss"));
-    memset((uint32_t *) __section_begin(".data24.bss"), 0U, (uint32_t) __section_size(".data24.bss"));
-    memset((uint32_t *) __section_begin(".data32.bss"), 0U, (uint32_t) __section_size(".data32.bss"));
- #endif
 
-    /* Copy initialized RAM data from ROM to RAM. */
- #if defined(__GNUC__) || defined(__CCRX__)
-    memcpy(&__data_start__, &__etext, ((uint32_t) &__data_end__ - (uint32_t) &__data_start__));
- #elif defined(__ICCRX__)
-    memcpy((uint32_t *) __section_begin(".data16.data"),
-           (uint32_t *) __section_begin(".data16.data_init"),
-           (uint32_t) __section_size(".data16.data"));
-    memcpy((uint32_t *) __section_begin(".data24.data"),
-           (uint32_t *) __section_begin(".data24.data_init"),
-           (uint32_t) __section_size(".data24.data"));
-    memcpy((uint32_t *) __section_begin(".data32.data"),
-           (uint32_t *) __section_begin(".data32.data_init"),
-           (uint32_t) __section_size(".data32.data"));
-
-    /* Copy functions to be executed from RAM. */
-  #pragma section=".code_in_ram"
-  #pragma section=".code_in_ram_init"
-    memcpy((uint32_t *) __section_begin(".code_in_ram"),
-           (uint32_t *) __section_begin(".code_in_ram_init"),
-           (uint32_t) __section_size(".code_in_ram"));
- #endif
-
-    /* Initialize static constructors */
-
-    /*
-     * int32_t count = __init_array_end - __init_array_start;
-     * for (int32_t i = 0; i < count; i++)
-     * {
-     *  __init_array_start[i]();
-     * }
-     */
-#endif                                 // BSP_CFG_C_RUNTIME_INIT
+    /* Initialize data placed in internal memories. */
+    SystemRuntimeInit(0);
+#endif
 
     /* Initialize SystemCoreClock variable. */
     SystemCoreClockUpdate();
 
 #if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_VBTICTLR
+
+    /* Perform RTC reset sequence to avoid unintended operation. */
     R_BSP_Init_RTC();
 #endif
 
 #if !BSP_CFG_PFS_PROTECT && defined(R_PMISC)
     R_PMISC->PWPRS = 0;                              ///< Clear BOWI bit - writing to PFSWE bit enabled
     R_PMISC->PWPRS = 1U << BSP_IO_PWPR_PFSWE_OFFSET; ///< Set PFSWE bit - writing to PFS register enabled
+#endif
+
+#if BSP_CFG_DCACHE_ENABLED
+
+    /* Initialize MPU */
+    bsp_init_mpu();
+
+    /* Invalidate I-Cache */
+    R_CACHE->IFCACTL = (uint32_t) ((R_CACHE->IFCACTL & ~R_CACHE_IFCACTL_FL_Msk) | (1U << R_CACHE_IFCACTL_FL_Pos));
+
+    /* Wait for the cache to flush. */
+    FSP_HARDWARE_REGISTER_WAIT(R_CACHE->IFCAFCT_b.FL, 0U);
+
+    /* Enable I-Cache. */
+    R_CACHE->IFCACTL = (uint32_t) ((R_CACHE->IFCACTL & ~R_CACHE_IFCACTL_EN_Msk) | (1U << R_CACHE_IFCACTL_EN_Pos));
+
+    /* Invalidate D-Cache */
+    R_BSP_CacheInvalidate();
+
+    /* Enable D-Cache. */
+    R_BSP_CacheEnable();
 #endif
 
 #if BSP_FEATURE_BSP_HAS_ESWM_DOMAIN
@@ -181,8 +259,21 @@ void SystemInit (void)
     /* Call Post C runtime initialization hook. */
     R_BSP_WarmStart(BSP_WARM_START_POST_C);
 
-    /* Initialize ELC events that will be used to trigger NVIC interrupts. */
+#if BSP_CFG_C_RUNTIME_INIT
 
+    /* Initialize data placed in external memories. */
+    SystemRuntimeInit(1);
+#endif
+
+    /* Initialize static constructors */
+
+    /*
+     * int32_t count = __init_array_end - __init_array_start;
+     * for (int32_t i = 0; i < count; i++)
+     * {
+     *  __init_array_start[i]();
+     * }
+     *//* Initialize ICU events that will be used to trigger ICU interrupts. */
     bsp_irq_cfg();
 
     /* Call any BSP specific code. No arguments are needed so NULL is sent. */
@@ -228,7 +319,7 @@ static void bsp_init_uninitialized_vars (void)
     g_protect_pfswe_counter = 0;
 
     extern volatile uint16_t g_protect_counters[];
-    for (uint32_t i = 0; i < 5; i++)
+    for (uint32_t i = 0; i < BSP_FEATURE_PRC_MAX_PROTECT_BITS; i++)
     {
         g_protect_counters[i] = 0;
     }
@@ -240,9 +331,68 @@ static void bsp_init_uninitialized_vars (void)
     }
 
  #if BSP_CFG_EARLY_INIT
+
     /* Set SystemCoreClock to MOCO */
     SystemCoreClock = BSP_MOCO_HZ;
  #endif
+}
+
+#endif
+
+#if BSP_CFG_DCACHE_ENABLED
+
+/*******************************************************************************************************************//**
+ * Initialize MPU.
+ **********************************************************************************************************************/
+static void bsp_init_mpu (void)
+{
+    /* Configure the cache area. */
+    /* Set the cacheable region within SDRAM */
+    R_MPU->RPAGE[0].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA | (BSP_PRV_SDRAM_START & R_MPU_RPAGE_ST_RSPN_Msk);
+    R_MPU->RPAGE[0].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC |
+                         (((uintptr_t) g_init_info.p_nocache_list[0].p_base & R_MPU_RPAGE_EN_REPN_Msk) -
+                          BSP_PRV_MPU_PAGE_SIZE);
+
+    R_MPU->RPAGE[1].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA |
+                         (((uintptr_t) g_init_info.p_nocache_list[0].p_limit & R_MPU_RPAGE_ST_RSPN_Msk) +
+                          BSP_PRV_MPU_PAGE_SIZE);
+    R_MPU->RPAGE[1].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC | (BSP_PRV_SDRAM_END & R_MPU_RPAGE_EN_REPN_Msk);
+
+    /* Set the cacheable region within XSPI1_CS1 */
+    R_MPU->RPAGE[2].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA | (BSP_PRV_XSPI1_CS1_START & R_MPU_RPAGE_ST_RSPN_Msk);
+    R_MPU->RPAGE[2].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC |
+                         (((uintptr_t) g_init_info.p_nocache_list[1].p_base & R_MPU_RPAGE_EN_REPN_Msk) -
+                          BSP_PRV_MPU_PAGE_SIZE);
+
+    R_MPU->RPAGE[3].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA |
+                         (((uintptr_t) g_init_info.p_nocache_list[1].p_limit & R_MPU_RPAGE_ST_RSPN_Msk) +
+                          BSP_PRV_MPU_PAGE_SIZE);
+    R_MPU->RPAGE[3].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC | (BSP_PRV_XSPI1_CS1_END & R_MPU_RPAGE_EN_REPN_Msk);
+
+    /* Set the cacheable region within XSPI1_CS0 */
+    R_MPU->RPAGE[4].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA | (BSP_PRV_XSPI1_CS0_START & R_MPU_RPAGE_ST_RSPN_Msk);
+    R_MPU->RPAGE[4].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC |
+                         (((uintptr_t) g_init_info.p_nocache_list[2].p_base & R_MPU_RPAGE_EN_REPN_Msk) -
+                          BSP_PRV_MPU_PAGE_SIZE);
+
+    R_MPU->RPAGE[5].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA |
+                         (((uintptr_t) g_init_info.p_nocache_list[2].p_limit & R_MPU_RPAGE_ST_RSPN_Msk) +
+                          BSP_PRV_MPU_PAGE_SIZE);
+    R_MPU->RPAGE[5].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC | (BSP_PRV_XSPI1_CS0_END & R_MPU_RPAGE_EN_REPN_Msk);
+
+    /* Set the cacheable region within Internal RAM */
+    R_MPU->RPAGE[6].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA | (BSP_PRV_RAM_START & R_MPU_RPAGE_ST_RSPN_Msk);
+    R_MPU->RPAGE[6].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC |
+                         (((uintptr_t) g_init_info.p_nocache_list[3].p_base & R_MPU_RPAGE_EN_REPN_Msk) -
+                          BSP_PRV_MPU_PAGE_SIZE);
+
+    R_MPU->RPAGE[7].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA |
+                         (((uintptr_t) g_init_info.p_nocache_list[3].p_limit & R_MPU_RPAGE_ST_RSPN_Msk) +
+                          BSP_PRV_MPU_PAGE_SIZE);
+    R_MPU->RPAGE[7].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC | (BSP_PRV_RAM_END & R_MPU_RPAGE_EN_REPN_Msk);
+
+    /* Enable memory protection. */
+    R_MPU->MPEN = 1;
 }
 
 #endif

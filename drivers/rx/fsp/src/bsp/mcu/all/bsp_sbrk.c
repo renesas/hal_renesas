@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
@@ -33,6 +19,17 @@
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
+#if defined(__GNUC__)
+ #define BSP_SBRK_RET_TYPE    caddr_t
+ #define BSP_SBRK_ARG_TYPE    int
+ #define BSP_SBRK_ARG_VAR     incr
+
+#else
+ #define BSP_SBRK_RET_TYPE    char *
+ #define BSP_SBRK_ARG_TYPE    size_t
+ #define BSP_SBRK_ARG_VAR     size
+
+#endif
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -45,14 +42,7 @@
 /***********************************************************************************************************************
  * Exported global variables (to be accessed by other files)
  **********************************************************************************************************************/
-
-#if defined(__GNUC__)
-caddr_t sbrk(int incr);
-
-#else
-char * sbrk(size_t size);
-
-#endif
+BSP_SBRK_RET_TYPE sbrk(BSP_SBRK_ARG_TYPE BSP_SBRK_ARG_VAR);
 
 /***********************************************************************************************************************
  * Private global variables and functions
@@ -62,6 +52,7 @@ char * sbrk(size_t size);
  * @addtogroup BSP_MCU
  * @{
  **********************************************************************************************************************/
+volatile char * current_block_address_test;
 
 /*******************************************************************************************************************//**
  * FSP implementation of the standard library _sbrk() function.
@@ -74,74 +65,34 @@ char * sbrk(size_t size);
  *       malloc() to be 4096. That requires that we have a HEAP of at least 4096 if we are to support malloc().
  * @retval        Address of allocated area if successful, -1 otherwise.
  **********************************************************************************************************************/
-#if defined(__GNUC__)
-caddr_t sbrk (int incr)
-#else
-char * sbrk (size_t size)
-#endif
+BSP_SBRK_RET_TYPE sbrk (BSP_SBRK_ARG_TYPE BSP_SBRK_ARG_VAR)
 {
-#if defined(__GNUC__)
-    extern char __Heap_Begin __asm("___HeapBase");  ///< Defined by the linker.
-
-    extern char __Heap_Limit __asm("___HeapLimit"); ///< Defined by the linker.
-
-    uint32_t      bytes            = (uint32_t) incr;
-    static char * current_heap_end = 0;
-    char        * current_block_address;
-
-    if (current_heap_end == 0)
-    {
-        current_heap_end = &__Heap_Begin;
-    }
-
-    current_block_address = current_heap_end;
+#if (BSP_CFG_HEAP_BYTES > 0)
+    extern uint8_t  g_heap[BSP_CFG_HEAP_BYTES];
+    static uint32_t current_block_offset = 0;
 
     /* The returned address must be aligned to a word boundary to prevent hard faults on cores that do not support
-     * unaligned access. We assume the heap starts on a word boundary and make sure all allocations are a multiple
-     * of 4. */
-    bytes = (bytes + 3U) & (~3U);
-    if (current_heap_end + bytes > &__Heap_Limit)
+     * unaligned access. The heap starts on a word boundary, and the required size BSP_SBRK_ARG_VAR is also aligned in malloc(). */
+
+    if (current_block_offset + (uint32_t) BSP_SBRK_ARG_VAR > BSP_CFG_HEAP_BYTES)
     {
         /** Heap has overflowed */
         errno = ENOMEM;
 
-        return (caddr_t) -1;
+        return (BSP_SBRK_RET_TYPE) -1;
     }
 
-    current_heap_end += bytes;
+    char * current_block_address = (char *) &g_heap[current_block_offset];
+    current_block_offset += (uint32_t) BSP_SBRK_ARG_VAR;
 
-    return (caddr_t) current_block_address;
+    return (BSP_SBRK_RET_TYPE) current_block_address;
 #else
-    extern char __HeapBase;            ///< Defined by the linker.
+    FSP_PARAMETER_NOT_USED(BSP_SBRK_ARG_VAR);
 
-    extern char __HeapLimit;           ///< Defined by the linker.
+    /** Heap not allocated!!! */
+    errno = ENOMEM;
 
-    uint32_t      bytes            = (uint32_t) size;
-    static char * current_heap_end = 0;
-    char        * current_block_address;
-
-    if (current_heap_end == 0)
-    {
-        current_heap_end = &__HeapBase;
-    }
-
-    current_block_address = current_heap_end;
-
-    /* The returned address must be aligned to a word boundary to prevent hard faults on cores that do not support
-     * unaligned access. We assume the heap starts on a word boundary and make sure all allocations are a multiple
-     * of 4. */
-    bytes = (bytes + 3U) & (~3U);
-    if (current_heap_end + bytes > &__HeapLimit)
-    {
-        /** Heap has overflowed */
-        errno = ENOMEM;
-
-        return (char *) -1;
-    }
-
-    current_heap_end += bytes;
-
-    return (char *) current_block_address;
+    return (BSP_SBRK_RET_TYPE) -1;
 #endif
 }
 

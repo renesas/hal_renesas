@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /*******************************************************************************************************************//**
  * @addtogroup BSP_MCU_RX74M
@@ -286,10 +272,20 @@ typedef struct st_cgc_divider_cfg
 {
     union
     {
-        uint32_t sckdivcr_w;                   ///< System clock Division control register
+        uint32_t sckdivcr_w;           ///< System clock Division control register
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            cgc_sys_clock_div_t fclk_div  : 4; ///< Divider value for FCLK
+            cgc_sys_clock_div_t iclk_div  : 4; ///< Divider value for ICLK
+            cgc_sys_clock_div_t pclke_div : 4; ///< Divider value for PCLKE
+            cgc_sys_clock_div_t bclk_div  : 4; ///< Divider value for BCLK
+            cgc_sys_clock_div_t pclka_div : 4; ///< Divider value for PCLKA
+            cgc_sys_clock_div_t pclkb_div : 4; ///< Divider value for PCLKB
+            cgc_sys_clock_div_t pclkc_div : 4; ///< Divider value for PCLKC
+            cgc_sys_clock_div_t pclkd_div : 4; ///< Divider value for PCLKD
+#else
             cgc_sys_clock_div_t pclkd_div : 4; ///< Divider value for PCLKD
             cgc_sys_clock_div_t pclkc_div : 4; ///< Divider value for PCLKC
             cgc_sys_clock_div_t pclkb_div : 4; ///< Divider value for PCLKB
@@ -298,18 +294,27 @@ typedef struct st_cgc_divider_cfg
             cgc_sys_clock_div_t pclke_div : 4; ///< Divider value for PCLKE
             cgc_sys_clock_div_t iclk_div  : 4; ///< Divider value for ICLK
             cgc_sys_clock_div_t fclk_div  : 4; ///< Divider value for FCLK
+#endif
         } sckdivcr_b;
     };
 
     union
     {
-        uint16_t sckdivcr2;                     ///< System clock Division control register 2
+        uint32_t sckdivcr2;            ///< System clock Division control register 2
 
         __PACKED_STRUCT
         {
-            cgc_sys_clock_div_t cpuclk_div : 4; ///< Divider value for CPUCLK0
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                       : 16; // Padding to align 32bits
+            cgc_sys_clock_div_t mriclk_div : 4;  ///< Divider value for MRICLK
             cgc_sys_clock_div_t reserved   : 8;
-            cgc_sys_clock_div_t mriclk_div : 4; ///< Divider value for MRICLK
+            cgc_sys_clock_div_t cpuclk_div : 4;  ///< Divider value for CPUCLK0
+#else
+            cgc_sys_clock_div_t cpuclk_div : 4;  ///< Divider value for CPUCLK0
+            cgc_sys_clock_div_t reserved   : 8;
+            cgc_sys_clock_div_t mriclk_div : 4;  ///< Divider value for MRICLK
+            uint32_t                       : 16; // Padding to align 32bits
+#endif
         } sckdivcr2_b;
     };
 } cgc_divider_cfg_t;

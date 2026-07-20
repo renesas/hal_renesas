@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #ifndef BSP_PERIPHERAL_H
 #define BSP_PERIPHERAL_H
@@ -50,7 +36,7 @@
 #define BSP_PERIPHERAL_CAN_PRESENT                     (0)
 #define BSP_PERIPHERAL_CAN_CHANNEL_MASK                (0x0U)
 #define BSP_PERIPHERAL_CANFD_PRESENT                   (1)
-#define BSP_PERIPHERAL_CANFD_CHANNEL_MASK              (0x7U)
+#define BSP_PERIPHERAL_CANFD_CHANNEL_MASK              (0x1U)
 #define BSP_PERIPHERAL_CEC_PRESENT                     (0)
 #define BSP_PERIPHERAL_CEU_PRESENT                     (0)
 #define BSP_PERIPHERAL_CGC_PRESENT                     (1)
@@ -80,8 +66,8 @@
 #define BSP_PERIPHERAL_DTC_PRESENT                     (1)
 #define BSP_PERIPHERAL_ECCAFL_PRESENT                  (0)
 #define BSP_PERIPHERAL_ECCAFL_CHANNEL_MASK             (0x0U)
-#define BSP_PERIPHERAL_ECCMB_PRESENT                   (1)
-#define BSP_PERIPHERAL_ECCMB_CHANNEL_MASK              (0x3U)
+#define BSP_PERIPHERAL_ECCMB_PRESENT                   (0)
+#define BSP_PERIPHERAL_ECCMB_CHANNEL_MASK              (0x0U)
 #define BSP_PERIPHERAL_ELC_PRESENT                     (1)
 #define BSP_PERIPHERAL_ELC_B_PRESENT                   (0)
 #define BSP_PERIPHERAL_ESWM_PRESENT                    (1)
@@ -117,8 +103,8 @@
 #define BSP_PERIPHERAL_ICU_EXT_IRQ_CHANNEL_MASK        (0xFFFFFFFFU)
 #define BSP_PERIPHERAL_IIC_PRESENT                     (0)
 #define BSP_PERIPHERAL_IIC_CHANNEL_MASK                (0x0U)
-#define BSP_PERIPHERAL_IIC_B_PRESENT                   (0)
-#define BSP_PERIPHERAL_IIC_B_CHANNEL_MASK              (0x0U)
+#define BSP_PERIPHERAL_IIC_B_PRESENT                   (1)
+#define BSP_PERIPHERAL_IIC_B_CHANNEL_MASK              (0x7U)
 #define BSP_PERIPHERAL_IIC0WU_PRESENT                  (0)
 #define BSP_PERIPHERAL_IIC0WU_B_PRESENT                (0)
 #define BSP_PERIPHERAL_IICA_PRESENT                    (0)
@@ -153,19 +139,19 @@
 #define BSP_PERIPHERAL_PDM_CHANNEL_MASK                (0x1U)
 #define BSP_PERIPHERAL_PFS_PRESENT                     (1)
 #define BSP_PERIPHERAL_PFS_B_PRESENT                   (0)
-#define BSP_PERIPHERAL_PMISC_PRESENT                   (0)
+#define BSP_PERIPHERAL_PMISC_PRESENT                   (1)
 #define BSP_PERIPHERAL_PORGA_PRESENT                   (0)
 #define BSP_PERIPHERAL_PORT_PRESENT                    (1)
-#define BSP_PERIPHERAL_PORT_CHANNEL_MASK               (0xFFFFU)
-#define BSP_PERIPHERAL_PSCU_PRESENT                    (0)
+#define BSP_PERIPHERAL_PORT_CHANNEL_MASK               (0x1FFFFU)
+#define BSP_PERIPHERAL_PSCU_PRESENT                    (1)
 #define BSP_PERIPHERAL_PTPEDMAC_PRESENT                (0)
 #define BSP_PERIPHERAL_QSPI_PRESENT                    (0)
 #define BSP_PERIPHERAL_RADIO_PRESENT                   (0)
 #define BSP_PERIPHERAL_RSIP_PRESENT                    (1)
 #define BSP_PERIPHERAL_RTC_PRESENT                     (1)
 #define BSP_PERIPHERAL_RTC_C_PRESENT                   (0)
-#define BSP_PERIPHERAL_SAU_PRESENT                     (0)
-#define BSP_PERIPHERAL_SAU_CHANNEL_MASK                (0x0U)
+#define BSP_PERIPHERAL_SAU_PRESENT                     (1)
+#define BSP_PERIPHERAL_SAU_CHANNEL_MASK                (0x1U)
 #define BSP_PERIPHERAL_SAU_I2C_PRESENT                 (0)
 #define BSP_PERIPHERAL_SAU_I2C_CHANNEL_MASK            (0x0U)
 #define BSP_PERIPHERAL_SAU_SPI_PRESENT                 (0)
@@ -223,8 +209,8 @@
 #define BSP_PERIPHERAL_CMT_CHANNEL_MASK                (0xFU)
 #define BSP_PERIPHERAL_CMTW_PRESENT                    (1)
 #define BSP_PERIPHERAL_CMTW_CHANNEL_MASK               (0x3U)
-#define BSP_PERIPHERAL_EXDMAC_PRESENT                  (1)
-#define BSP_PERIPHERAL_EXDMAC_CHANNEL_MASK             (0x3)
+#define BSP_PERIPHERAL_EXDMA_EXDMAC_PRESENT            (1)
+#define BSP_PERIPHERAL_EXDMA_EXDMAC_CHANNEL_MASK       (0x3U)
 #define BSP_PERIPHERAL_MTU_PRESENT                     (0)
 #define BSP_PERIPHERAL_MTU_CHANNEL_MASK                (0x0U)
 #define BSP_PERIPHERAL_TMR_PRESENT                     (1)

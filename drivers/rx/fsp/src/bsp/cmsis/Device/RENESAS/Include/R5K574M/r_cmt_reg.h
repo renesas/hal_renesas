@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #ifndef R_CMT_REG_H
 #define R_CMT_REG_H
@@ -40,10 +26,17 @@ typedef struct
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint16_t            : 9;
+            __IOM uint16_t CMIE : 1;   /*!< [6..6] CMIE                                                               */
+            uint16_t            : 4;
+            __IOM uint16_t CKS  : 2;   /*!< [1..0] CKS                                                                */
+#else
             __IOM uint16_t CKS  : 2;   /*!< [1..0] CKS                                                                */
             uint16_t            : 4;
             __IOM uint16_t CMIE : 1;   /*!< [6..6] CMIE                                                               */
             uint16_t            : 9;
+#endif
         } CR_b;
     };
     __IOM uint16_t CNT;                /*!< (@ 0x00000002) Compare Match Timer Counter                                */
@@ -61,9 +54,15 @@ typedef struct
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint16_t            : 14;
+            __IOM uint16_t STR1 : 1;   /*!< [1..1] Count Start 0                                                      */
+            __IOM uint16_t STR0 : 1;   /*!< [0..0] Count Start 1                                                      */
+#else
             __IOM uint16_t STR0 : 1;   /*!< [0..0] Count Start 1                                                      */
             __IOM uint16_t STR1 : 1;   /*!< [1..1] Count Start 0                                                      */
             uint16_t            : 14;
+#endif
         } CMSTR0_b;
     };
     __IOM R_CMT_UNT_CM_Type CM[2];     /*!< (@ 0x00000002) 2 Timer Start Register Pairs                               */

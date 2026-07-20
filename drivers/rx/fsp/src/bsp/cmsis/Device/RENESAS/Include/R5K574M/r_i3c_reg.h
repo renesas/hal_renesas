@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #ifndef R_I3C_REG_H
 #define R_I3C_REG_H
@@ -88,7 +74,7 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IOM uint32_t ICCCR;          /*!< (@ 0x00000010) Communication Clock Control Regsiter                       */
+        __IOM uint32_t ICCCR;          /*!< (@ 0x00000010) Communication Clock Control Register                       */
 
         struct
         {
@@ -234,7 +220,7 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IOM uint32_t ICFER;          /*!< (@ 0x00000060) Function Enable Regsiter                                   */
+        __IOM uint32_t ICFER;          /*!< (@ 0x00000060) Function Enable Register                                   */
 
         struct
         {
@@ -361,9 +347,42 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
             } ICHBR_b;
         };
     };
-    __IOM uint32_t ICBFTR;             /*!< (@ 0x0000007C) Bus Free Time Setting Register                             */
-    __IOM uint32_t ICBATR;             /*!< (@ 0x00000080) Bus Available Time Setting Register                        */
-    __IOM uint32_t ICBITR;             /*!< (@ 0x00000084) Bus Idle Time Setting Register                             */
+    union
+    {
+        __OM uint32_t ICBFTR;          /*!< (@ 0x0000007C) Bus Free Time Setting Register                             */
+
+        struct
+        {
+            __OM uint32_t ICBFTR : 9;  /*!< [8..0] This register specifies the time from when the STOP condition
+                                        *   is detected until ICBSR.BFREE flag is set to 1.                           */
+            uint32_t : 23;
+        } ICBFTR_b;
+    };
+
+    union
+    {
+        __OM uint32_t ICBATR;          /*!< (@ 0x00000080) Bus Available Time Setting Register                        */
+
+        struct
+        {
+            __OM uint32_t ICBATR : 9;  /*!< [8..0] This register specifies the time from when the STOP condition
+                                        *   is detected until the ICBSR.BAVL flag is set to 1.                        */
+            uint32_t : 23;
+        } ICBATR_b;
+    };
+
+    union
+    {
+        __OM uint32_t ICBITR;          /*!< (@ 0x00000084) Bus Idle Time Setting Register                             */
+
+        struct
+        {
+            __OM uint32_t ICBITR : 18; /*!< [17..0] This register specifies the time from when the STOP
+                                        *   condition is detected until the ICBSR.BIDL flag is set
+                                        *   to 1.                                                                     */
+            uint32_t : 14;
+        } ICBITR_b;
+    };
 
     union
     {
@@ -486,18 +505,18 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
 
     union
     {
-        __IOM uint32_t STCTL;          /*!< (@ 0x00000120) Synchronous Timiming Control Register                      */
+        __IOM uint32_t ICSYTCR;        /*!< (@ 0x00000120) Synchronous Timiming Control Register                      */
 
         struct
         {
             __IOM uint32_t STOE : 1;   /*!< [0..0] Synchronous Timing output Enable                                   */
             uint32_t            : 31;
-        } STCTL_b;
+        } ICSYTCR_b;
     };
 
     union
     {
-        __IOM uint32_t ICATCR;         /*!< (@ 0x00000124) Asynchronous Timimg Control Register                       */
+        __IOM uint32_t ICASTCR;        /*!< (@ 0x00000124) Asynchronous Timimg Control Register                       */
 
         struct
         {
@@ -507,29 +526,29 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
             uint32_t              : 5;
             __IOM uint32_t CDIV   : 8; /*!< [15..8] TCLK Counter Divide Setting                                       */
             uint32_t              : 16;
-        } ICATCR_b;
+        } ICASTCR_b;
     };
 
     union
     {
-        __IOM uint32_t ICATTR;         /*!< (@ 0x00000128) Asynchronous Timiming Trigger Register                     */
+        __IOM uint32_t ICASTTR;        /*!< (@ 0x00000128) Asynchronous Timiming Trigger Register                     */
 
         struct
         {
             __OM uint32_t ATSTRG : 1;  /*!< [0..0] Asynchronous Timing Software Trigger                               */
             uint32_t             : 31;
-        } ICATTR_b;
+        } ICASTTR_b;
     };
 
     union
     {
-        __IOM uint32_t ICATCCR;        /*!< (@ 0x0000012C) Asynchronous Timing Control Register                       */
+        __IOM uint32_t ICASTCCR;       /*!< (@ 0x0000012C) Asynchronous Timing Control Register                       */
 
         struct
         {
             __IOM uint32_t ATCE : 1;   /*!< [0..0] Asynchronous Timing Counter Enable                                 */
             uint32_t            : 31;
-        } ICATCCR_b;
+        } ICASTCCR_b;
     };
     __IM uint32_t RESERVED12[4];
 
@@ -882,7 +901,7 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
     {
         union
         {
-            __IOM uint32_t ICDAR[3];      /*!< (@ 0x000002B0) Device Address Register n (n = 0 - 2)                      */
+            __IOM uint32_t ICDAR0;        /*!< (@ 0x000002B0) Device Address Register 0                                    */
 
             struct
             {
@@ -892,19 +911,79 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
                 uint32_t            : 3;
                 __IOM uint32_t DADR : 7;  /*!< [22..16] Dynamic Address                                                  */
                 uint32_t            : 9;
-            } ICDAR_b[3];
+            } ICDAR0_b;
         };
 
         union
         {
-            __IOM uint32_t SAR[3];       /*!< (@ 0x000002B0) Slave Address Register n (n = 0 - 2)                       */
+            __IOM uint32_t SAR0;         /*!< (@ 0x000002B0) Slave Address Register 0                                     */
 
             struct
             {
                 __IOM uint32_t SVA : 10; /*!< [9..0] Slave Address                                                      */
                 __IOM uint32_t FS  : 1;  /*!< [10..10] Address Format Selection                                         */
                 uint32_t           : 21;
-            } SAR_b[3];
+            } SAR0_b;
+        };
+    };
+
+    union
+    {
+        union
+        {
+            __IOM uint32_t ICDAR1;        /*!< (@ 0x000002B4) Device Address Register 1                                    */
+
+            struct
+            {
+                __IOM uint32_t SADR : 10; /*!< [9..0] Static Address                                                     */
+                uint32_t            : 2;
+                __IM uint32_t IBIPL : 1;  /*!< [12..12] IBI Payload                                                      */
+                uint32_t            : 3;
+                __IOM uint32_t DADR : 7;  /*!< [22..16] Dynamic Address                                                  */
+                uint32_t            : 9;
+            } ICDAR1_b;
+        };
+
+        union
+        {
+            __IOM uint32_t SAR1;         /*!< (@ 0x000002B4) Slave Address Register 1                                     */
+
+            struct
+            {
+                __IOM uint32_t SVA : 10; /*!< [9..0] Slave Address                                                      */
+                __IOM uint32_t FS  : 1;  /*!< [10..10] Address Format Selection                                         */
+                uint32_t           : 21;
+            } SAR1_b;
+        };
+    };
+
+    union
+    {
+        union
+        {
+            __IOM uint32_t ICDAR2;        /*!< (@ 0x000002B8) Device Address Register 2                                    */
+
+            struct
+            {
+                __IOM uint32_t SADR : 10; /*!< [9..0] Static Address                                                     */
+                uint32_t            : 2;
+                __IM uint32_t IBIPL : 1;  /*!< [12..12] IBI Payload                                                      */
+                uint32_t            : 3;
+                __IOM uint32_t DADR : 7;  /*!< [22..16] Dynamic Address                                                  */
+                uint32_t            : 9;
+            } ICDAR2_b;
+        };
+
+        union
+        {
+            __IOM uint32_t SAR2;         /*!< (@ 0x000002B8) Slave Address Register 2                                     */
+
+            struct
+            {
+                __IOM uint32_t SVA : 10; /*!< [9..0] Slave Address                                                      */
+                __IOM uint32_t FS  : 1;  /*!< [10..10] Address Format Selection                                         */
+                uint32_t           : 21;
+            } SAR2_b;
         };
     };
     __IM uint32_t RESERVED23[5];
@@ -948,12 +1027,11 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
     __IOM uint32_t ICPIDLR;            /*!< (@ 0x00000324) Provisioned ID Low Register                                */
     __IOM uint32_t ICPIDHR;            /*!< (@ 0x00000328) Provisioned ID High Register                               */
     __IM uint32_t  RESERVED25;
-
     union
     {
         union
         {
-            __IM uint32_t ICDAMR[3];   /*!< (@ 0x00000330) Device Address Monitor Register                            */
+            __IM uint32_t ICDAMR0;     /*!< (@ 0x00000330) Device Address Monitor Register                                */
 
             struct
             {
@@ -962,12 +1040,12 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
                 uint32_t           : 4;
                 __IM uint32_t SAV  : 1;  /*!< [30..30] Static Address Valid Flag                                        */
                 __IM uint32_t DAV  : 1;  /*!< [31..31] Dynamic Address Valid Flag                                       */
-            } ICDAMR_b[3];
+            } ICDAMR0_b;
         };
 
         union
         {
-            __IM uint32_t SAMR[3];     /*!< (@ 0x00000330) Slave Address Monitor Register                             */
+            __IM uint32_t SAMR0;       /*!< (@ 0x00000330) Slave Address Monitor Register                                */
 
             struct
             {
@@ -978,7 +1056,73 @@ typedef struct                         /*!< (@ 0x8745F000) R_I3C Structure      
                 uint32_t          : 2;
                 __IM uint32_t SAV : 1;  /*!< [30..30] Slave Address Valid Flag                                         */
                 uint32_t          : 1;
-            } SAMR_b[3];
+            } SAMR0_b;
+        };
+    };
+
+    union
+    {
+        union
+        {
+            __IM uint32_t ICDAMR1;     /*!< (@ 0x00000334) Device Address Monitor Register                                */
+
+            struct
+            {
+                uint32_t           : 16;
+                __IM uint32_t TADR : 10; /*!< [25..16] Target Address                                                   */
+                uint32_t           : 4;
+                __IM uint32_t SAV  : 1;  /*!< [30..30] Static Address Valid Flag                                        */
+                __IM uint32_t DAV  : 1;  /*!< [31..31] Dynamic Address Valid Flag                                       */
+            } ICDAMR1_b;
+        };
+
+        union
+        {
+            __IM uint32_t SAMR1;       /*!< (@ 0x00000334) Slave Address Monitor Register                                */
+
+            struct
+            {
+                uint32_t          : 16;
+                __IM uint32_t SVA : 10; /*!< [25..16] Slave Address                                                    */
+                uint32_t          : 1;
+                __IM uint32_t FS  : 1;  /*!< [27..27] Address Format Flag                                              */
+                uint32_t          : 2;
+                __IM uint32_t SAV : 1;  /*!< [30..30] Slave Address Valid Flag                                         */
+                uint32_t          : 1;
+            } SAMR1_b;
+        };
+    };
+
+    union
+    {
+        union
+        {
+            __IM uint32_t ICDAMR2;     /*!< (@ 0x00000338) Device Address Monitor Register                                */
+
+            struct
+            {
+                uint32_t           : 16;
+                __IM uint32_t TADR : 10; /*!< [25..16] Target Address                                                   */
+                uint32_t           : 4;
+                __IM uint32_t SAV  : 1;  /*!< [30..30] Static Address Valid Flag                                        */
+                __IM uint32_t DAV  : 1;  /*!< [31..31] Dynamic Address Valid Flag                                       */
+            } ICDAMR2_b;
+        };
+
+        union
+        {
+            __IM uint32_t SAMR2;       /*!< (@ 0x00000338) Slave Address Monitor Register                                */
+
+            struct
+            {
+                uint32_t          : 16;
+                __IM uint32_t SVA : 10; /*!< [25..16] Slave Address                                                    */
+                uint32_t          : 1;
+                __IM uint32_t FS  : 1;  /*!< [27..27] Address Format Flag                                              */
+                uint32_t          : 2;
+                __IM uint32_t SAV : 1;  /*!< [30..30] Slave Address Valid Flag                                         */
+                uint32_t          : 1;
+            } SAMR2_b;
         };
     };
     __IM uint32_t RESERVED26[5];

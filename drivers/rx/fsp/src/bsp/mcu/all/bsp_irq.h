@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /** @} (end addtogroup BSP_MCU) */
 
@@ -41,21 +27,25 @@ FSP_HEADER
  #define BSP_ICU_IRQ_HANDLER(num, isr)                                                            \
     /* Push All register. */                                                                      \
     __asm volatile ("pushm  r1-r15                          \n"                                   \
-                    /* uint32_t previous_isr_number = g_current_isr_number; */                    \
+                                       /* uint32_t previous_isr_number = g_current_isr_number; */ \
                     "mov.l	%0, r7                          \n"                                   \
                     "mov.l	[r7], r10                       \n"                                   \
-                    /* g_current_isr_number = num; */                                             \
-                    "mov.l	%2 , [r7]                       \n"                                   \
-                    /* isr() */                                                                   \
-                    "mov.l	%1, r8                          \n"                                   \
+                                       /* g_current_isr_number = num; */                          \
+                    "mov.l	%1, [r7]                        \n"                                   \
+                                       /* Enable Nested interrupt. */                             \
+                    "setpsw i                               \n"                                   \
+                                       /* isr() */                                                \
+                    "mov.l	%2, r8                          \n"                                   \
                     "jsr    r8                              \n"                                   \
-                    /* g_current_isr_number = previous_isr_number; */                             \
+                                       /* g_current_isr_number = previous_isr_number; */          \
                     "mov.l	r10, [r7]                       \n"                                   \
-                    /* Pop All register. */                                                       \
-                    "popm   r1-r15                          \n":                                  \
+                                       /* Pop All register. */                                    \
+                    "popm   r1-r15                          \n"                                   \
+                                       /* Return from isr. */                                     \
+                    "rte" :                                                                       \
                     : "i" (&g_current_isr_number),                                                \
-                    "i" (&isr),                                                                   \
-                    "r" (num));
+                    "i" (num),                                                                    \
+                    "i" (&isr));                                                                  \
 
 #endif
 
@@ -69,6 +59,9 @@ FSP_HEADER
 
 #define BSP_CPU_INTERRUPT_ENABLE      (1U)
 #define BSP_CPU_INTERRUPT_DISABLE     (0U)
+
+/* This macro defines a mask for irq number. */
+#define BSP_PRV_IRQ_NUM_MASK          (0x00FFUL)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -95,7 +88,7 @@ void Reserved_Isr(void);
  **********************************************************************************************************************/
 __STATIC_INLINE void R_FSP_IsrContextSet (IRQn_Type const irq, void * p_context)
 {
-    uint8_t _irq = (uint8_t) ((uint32_t) irq & 0x00FFUL);
+    uint8_t _irq = (uint8_t) ((uint32_t) irq & BSP_PRV_IRQ_NUM_MASK);
 
     if (false == R_BSP_GroupIrqCheck(_irq))
     {
@@ -109,154 +102,6 @@ __STATIC_INLINE void R_FSP_IsrContextSet (IRQn_Type const irq, void * p_context)
 }
 
 /*******************************************************************************************************************//**
- * Clear the interrupt status flag (IR) for a given interrupt. When an interrupt is triggered the IR bit
- * is set. If it is not cleared in the ISR then the interrupt will trigger again immediately.
- *
- * @param[in] irq            Interrupt for which to clear the IR bit. Note that the enums listed for IRQn_Type are
- *                           only those for the Cortex Processor Exceptions Numbers.
- *
- * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
- **********************************************************************************************************************/
-__STATIC_INLINE void R_BSP_IrqStatusClear (IRQn_Type irq)
-{
-    uint8_t _irq = (uint8_t) ((uint32_t) irq & 0x00FFUL);
-
-    if (false == R_BSP_GroupIrqCheck(_irq))
-    {
-        R_ICU->IR[_irq].IR = 0U;
-    }
-    else
-    {
-        uint8_t _irq_factor = (uint8_t) (((uint32_t) irq) >> 8UL);
-        R_BSP_GroupIrqStatusClear(_irq, _irq_factor);
-    }
-}
-
-/*******************************************************************************************************************//**
- * Clear the interrupt status flag (IR) for a given interrupt and clear the NVIC pending interrupt.
- *
- * @param[in] irq            Interrupt for which to clear the IR bit. Note that the enums listed for IRQn_Type are
- *                           only those for the Cortex Processor Exceptions Numbers.
- *
- * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
- **********************************************************************************************************************/
-__STATIC_INLINE void R_BSP_IrqClearPending (IRQn_Type irq)
-{
-    /* Clear the IR bit in the selected IELSR register. */
-    R_BSP_IrqStatusClear(irq);
-}
-
-/*******************************************************************************************************************//**
- * Sets the interrupt priority and context.
- *
- * @param[in] irq            The IRQ to configure.
- * @param[in] priority       NVIC priority of the interrupt
- * @param[in] p_context      The interrupt context is a pointer to data required in the ISR.
- *
- * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
- **********************************************************************************************************************/
-__STATIC_INLINE void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void * p_context)
-{
-    /* Get the interrupt priority register number from the IRQ. */
-    uint8_t _irq = bsp_get_interrupt_priority((uint8_t) ((uint32_t) irq & 0x00FFUL));
-
-    /* Configure priority. */
-    R_ICU->IPR[_irq].IPR = (uint8_t) priority;
-
-    /* Store the context. The context is recovered in the ISR. */
-    R_FSP_IsrContextSet(irq, p_context);
-}
-
-/*******************************************************************************************************************//**
- * Enable the IRQ in the NVIC (Without clearing the pending bit).
- *
- * @param[in] irq            The IRQ to enable. Note that the enums listed for IRQn_Type are only those for the Cortex
- *                           Processor Exceptions Numbers.
- *
- * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
- **********************************************************************************************************************/
-__STATIC_INLINE void R_BSP_IrqEnableNoClear (IRQn_Type const irq)
-{
-    uint8_t _irq = (uint8_t) ((uint32_t) irq & 0x00FFUL);
-
-    if (false == R_BSP_GroupIrqCheck(_irq))
-    {
-        R_ICU->IER[(_irq >> 3UL)].IER = (uint8_t) (R_ICU->IER[(_irq >> 3UL)].IER | (1UL << (_irq & 0x0007UL)));
-    }
-    else
-    {
-        uint8_t _irq_factor = (uint8_t) (((uint32_t) irq) >> 8UL);
-
-        /* Enable group interrupt for passed interrupt factors. */
-        R_BSP_GroupIrqEnableNoClear(_irq, _irq_factor);
-
-        /* Enable group interrupts */
-        R_ICU->IER[(_irq >> 3UL)].IER = (uint8_t) (R_ICU->IER[(_irq >> 3UL)].IER | (1UL << (_irq & 0x0007UL)));
-    }
-}
-
-/*******************************************************************************************************************//**
- * Clears pending interrupts in both ICU and NVIC, then enables the interrupt.
- *
- * @param[in] irq            Interrupt for which to clear the IR bit and enable in the NVIC. Note that the enums listed
- *                           for IRQn_Type are only those for the Cortex Processor Exceptions Numbers.
- *
- * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
- **********************************************************************************************************************/
-__STATIC_INLINE void R_BSP_IrqEnable (IRQn_Type const irq)
-{
-    /* Clear pending interrupts in the ICU and NVIC. */
-    R_BSP_IrqClearPending(irq);
-
-    /* Enable the IRQ in the NVIC. */
-    R_BSP_IrqEnableNoClear(irq);
-}
-
-/*******************************************************************************************************************//**
- * Disables interrupts in the NVIC.
- *
- * @param[in] irq            The IRQ to disable in the NVIC. Note that the enums listed for IRQn_Type are
- *                           only those for the Cortex Processor Exceptions Numbers.
- *
- * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
- **********************************************************************************************************************/
-__STATIC_INLINE void R_BSP_IrqDisable (IRQn_Type const irq)
-{
-    uint8_t _irq = (uint8_t) ((uint32_t) irq & 0x00FFUL);
-
-    if (false == R_BSP_GroupIrqCheck(_irq))
-    {
-        R_ICU->IER[(_irq >> 3UL)].IER = (uint8_t) (R_ICU->IER[(_irq >> 3UL)].IER & ~(1UL << (_irq & 0x0007UL)));
-    }
-    else
-    {
-        uint8_t _irq_factor = (uint8_t) (((uint32_t) irq) >> 8UL);
-        R_BSP_GroupIrqDisable(_irq, _irq_factor);
-
-        /* If there is no registered group interrupt factor, disable interrupt. */
-        if (0 == R_BSP_GroupIrqCfgGet(_irq))
-        {
-            R_ICU->IER[(_irq >> 3UL)].IER = (uint8_t) (R_ICU->IER[(_irq >> 3UL)].IER & ~(1UL << (_irq & 0x0007UL)));
-        }
-    }
-}
-
-/*******************************************************************************************************************//**
- * Sets the interrupt priority and context, clears pending interrupts, then enables the interrupt.
- *
- * @param[in] irq            Interrupt number.
- * @param[in] priority       NVIC priority of the interrupt
- * @param[in] p_context      The interrupt context is a pointer to data required in the ISR.
- *
- * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
- **********************************************************************************************************************/
-__STATIC_INLINE void R_BSP_IrqCfgEnable (IRQn_Type const irq, uint32_t priority, void * p_context)
-{
-    R_BSP_IrqCfg(irq, priority, p_context);
-    R_BSP_IrqEnable(irq);
-}
-
-/*******************************************************************************************************************//**
  * @brief      Finds the ISR context associated with the requested IRQ.
  *
  * @param[in]  irq            IRQ number (parameter checking must ensure the IRQ number is valid before calling this
@@ -265,7 +110,7 @@ __STATIC_INLINE void R_BSP_IrqCfgEnable (IRQn_Type const irq, uint32_t priority,
  **********************************************************************************************************************/
 __STATIC_INLINE void * R_FSP_IsrContextGet (IRQn_Type const irq)
 {
-    uint8_t _irq      = (uint8_t) ((uint32_t) irq & 0x00FFUL);
+    uint8_t _irq      = (uint8_t) ((uint32_t) irq & BSP_PRV_IRQ_NUM_MASK);
     void  * p_context = NULL;
 
     if (false == R_BSP_GroupIrqCheck(_irq))
@@ -280,6 +125,8 @@ __STATIC_INLINE void * R_FSP_IsrContextGet (IRQn_Type const irq)
 
     return p_context;
 }
+
+#if 1 == BSP_CFG_INLINE_IRQ_FUNCTIONS
 
 /*******************************************************************************************************************//**
  * @brief  Provides the current I flag state on PSW register.
@@ -369,7 +216,7 @@ __STATIC_INLINE void R_BSP_SetIpl (uint32_t interrupt_mask_level)
  **********************************************************************************************************************/
 __STATIC_INLINE uint32_t R_BSP_IrqIsEnabled (IRQn_Type const irq)
 {
-    uint8_t  _irq = (uint8_t) ((uint32_t) irq & 0x00FFUL);
+    uint8_t  _irq = (uint8_t) ((uint32_t) irq & BSP_PRV_IRQ_NUM_MASK);
     uint32_t ret  = 0;
 
     if (false == R_BSP_GroupIrqCheck(_irq))
@@ -390,6 +237,170 @@ __STATIC_INLINE uint32_t R_BSP_IrqIsEnabled (IRQn_Type const irq)
 
     return ret;
 }
+
+/*******************************************************************************************************************//**
+ * Clear the interrupt status flag (IR) for a given interrupt. When an interrupt is triggered the IR bit
+ * is set. If it is not cleared in the ISR then the interrupt will trigger again immediately.
+ *
+ * @param[in] irq            Interrupt for which to clear the IR bit. Note that the enums listed for IRQn_Type are
+ *                           only those for the Cortex Processor Exceptions Numbers.
+ *
+ * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_IrqStatusClear (IRQn_Type irq)
+{
+    uint8_t _irq = (uint8_t) ((uint32_t) irq & BSP_PRV_IRQ_NUM_MASK);
+
+    if (false == R_BSP_GroupIrqCheck(_irq))
+    {
+        R_ICU->IR[_irq].IR = 0U;
+    }
+    else
+    {
+        uint8_t _irq_factor = (uint8_t) (((uint32_t) irq) >> 8UL);
+        R_BSP_GroupIrqStatusClear(_irq, _irq_factor);
+    }
+}
+
+/*******************************************************************************************************************//**
+ * Clear the interrupt status flag (IR) for a given interrupt and clear the ICU pending interrupt.
+ *
+ * @param[in] irq            Interrupt for which to clear the IR bit. Note that the enums listed for IRQn_Type are
+ *                           only those for the Cortex Processor Exceptions Numbers.
+ *
+ * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_IrqClearPending (IRQn_Type irq)
+{
+    /* Clear the IR bit in the selected IELSR register. */
+    R_BSP_IrqStatusClear(irq);
+}
+
+/*******************************************************************************************************************//**
+ * Sets the interrupt priority and context.
+ *
+ * @param[in] irq            The IRQ to configure.
+ * @param[in] priority       ICU priority of the interrupt
+ * @param[in] p_context      The interrupt context is a pointer to data required in the ISR.
+ *
+ * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void * p_context)
+{
+    /* Get the interrupt priority register number from the IRQ. */
+    uint8_t _irq = bsp_get_interrupt_priority((uint8_t) ((uint32_t) irq & BSP_PRV_IRQ_NUM_MASK));
+
+    /* Configure priority. */
+    R_ICU->IPR[_irq].IPR = (uint8_t) priority;
+
+    /* Store the context. The context is recovered in the ISR. */
+    R_FSP_IsrContextSet(irq, p_context);
+}
+
+/*******************************************************************************************************************//**
+ * Enable the IRQ in the ICU (Without clearing the pending bit).
+ *
+ * @param[in] irq            The IRQ to enable. Note that the enums listed for IRQn_Type are only those for the Cortex
+ *                           Processor Exceptions Numbers.
+ *
+ * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_IrqEnableNoClear (IRQn_Type const irq)
+{
+    uint8_t _irq = (uint8_t) ((uint32_t) irq & BSP_PRV_IRQ_NUM_MASK);
+
+    if (false == R_BSP_GroupIrqCheck(_irq))
+    {
+        R_ICU->IER[(_irq >> 3UL)].IER = (uint8_t) (R_ICU->IER[(_irq >> 3UL)].IER | (1UL << (_irq & 0x0007UL)));
+    }
+    else
+    {
+        uint8_t _irq_factor = (uint8_t) (((uint32_t) irq) >> 8UL);
+
+        /* Enable group interrupt for passed interrupt factors. */
+        R_BSP_GroupIrqEnableNoClear(_irq, _irq_factor);
+
+        /* Enable group interrupts */
+        R_ICU->IER[(_irq >> 3UL)].IER = (uint8_t) (R_ICU->IER[(_irq >> 3UL)].IER | (1UL << (_irq & 0x0007UL)));
+    }
+}
+
+/*******************************************************************************************************************//**
+ * Clears pending interrupts in the ICU, then enables the interrupt.
+ *
+ * @param[in] irq            Interrupt for which to clear the IR bit and enable in the ICU. Note that the enums listed
+ *                           for IRQn_Type are only those for the Cortex Processor Exceptions Numbers.
+ *
+ * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_IrqEnable (IRQn_Type const irq)
+{
+    /* Clear pending interrupts in the ICU. */
+    R_BSP_IrqClearPending(irq);
+
+    /* Enable the IRQ in the ICU. */
+    R_BSP_IrqEnableNoClear(irq);
+}
+
+/*******************************************************************************************************************//**
+ * Disables interrupts in the ICU.
+ *
+ * @param[in] irq            The IRQ to disable in the ICU. Note that the enums listed for IRQn_Type are
+ *                           only those for the Cortex Processor Exceptions Numbers.
+ *
+ * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_IrqDisable (IRQn_Type const irq)
+{
+    uint8_t _irq = (uint8_t) ((uint32_t) irq & BSP_PRV_IRQ_NUM_MASK);
+
+    if (false == R_BSP_GroupIrqCheck(_irq))
+    {
+        R_ICU->IER[(_irq >> 3UL)].IER = (uint8_t) (R_ICU->IER[(_irq >> 3UL)].IER & ~(1UL << (_irq & 0x0007UL)));
+    }
+    else
+    {
+        uint8_t _irq_factor = (uint8_t) (((uint32_t) irq) >> 8UL);
+        R_BSP_GroupIrqDisable(_irq, _irq_factor);
+
+        /* If there is no registered group interrupt factor, disable interrupt. */
+        if (0 == R_BSP_GroupIrqCfgGet(_irq))
+        {
+            R_ICU->IER[(_irq >> 3UL)].IER = (uint8_t) (R_ICU->IER[(_irq >> 3UL)].IER & ~(1UL << (_irq & 0x0007UL)));
+        }
+    }
+}
+
+/*******************************************************************************************************************//**
+ * Sets the interrupt priority and context, clears pending interrupts, then enables the interrupt.
+ *
+ * @param[in] irq            Interrupt number.
+ * @param[in] priority       ICU priority of the interrupt
+ * @param[in] p_context      The interrupt context is a pointer to data required in the ISR.
+ *
+ * @warning Do not call this function for system exceptions where the IRQn_Type value is < 0.
+ **********************************************************************************************************************/
+__STATIC_INLINE void R_BSP_IrqCfgEnable (IRQn_Type const irq, uint32_t priority, void * p_context)
+{
+    R_BSP_IrqCfg(irq, priority, p_context);
+    R_BSP_IrqEnable(irq);
+}
+
+#else
+uint32_t R_BSP_GetCurrentIFlagState(void);
+void     R_BSP_SetIFlagState(uint32_t interrupt_mask);
+uint32_t R_BSP_GetCurrentIpl(void);
+void     R_BSP_SetIpl(uint32_t interrupt_mask_level);
+uint32_t R_BSP_IrqIsEnabled(IRQn_Type const irq);
+void     R_BSP_IrqStatusClear(IRQn_Type irq);
+void     R_BSP_IrqClearPending(IRQn_Type irq);
+void     R_BSP_IrqCfg(IRQn_Type const irq, uint32_t priority, void * p_context);
+void     R_BSP_IrqEnableNoClear(IRQn_Type const irq);
+void     R_BSP_IrqEnable(IRQn_Type const irq);
+void     R_BSP_IrqDisable(IRQn_Type const irq);
+void     R_BSP_IrqCfgEnable(IRQn_Type const irq, uint32_t priority, void * p_context);
+
+#endif
 
 /*******************************************************************************************************************//**
  * @internal

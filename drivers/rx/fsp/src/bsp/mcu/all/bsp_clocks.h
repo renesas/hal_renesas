@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #ifndef BSP_CLOCKS_H
 #define BSP_CLOCKS_H
@@ -148,7 +134,7 @@ FSP_HEADER
 #define BSP_PRV_PCLKD_DIV_VALUE              BSP_PRV_SCKDIVCR_DIV_VALUE(BSP_CFG_PCLKD_DIV)
 #define BSP_PRV_PCLKE_DIV_VALUE              BSP_PRV_SCKDIVCR_DIV_VALUE(BSP_CFG_PCLKE_DIV)
 #define BSP_PRV_BCLK_DIV_VALUE               BSP_PRV_SCKDIVCR_DIV_VALUE(BSP_CFG_BCLK_DIV)
-#define BSP_PRV_MRPCLK_DIV_VALUE             BSP_PRV_SCKDIVCR_DIV_VALUE(BSP_CFG_MRPCLK_DIV)
+#define BSP_PRV_MRPCLK_DIV_VALUE             BSP_PRV_SCKDIVCR_DIV_VALUE(BSP_CFG_FCLK_DIV)
 #define BSP_PRV_MRICLK_DIV_VALUE             BSP_PRV_SCKDIVCR_DIV_VALUE(BSP_CFG_MRICLK_DIV)
 
 /* Startup clock frequency of each system clock. These macros are only helpful if the system clock and dividers have
@@ -1605,6 +1591,12 @@ void bsp_prv_clock_set(uint32_t clock, uint32_t sckdivcr, uint16_t sckdivcr2);
 /* RTC Initialization */
 #if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_VBTICTLR
 void R_BSP_Init_RTC(void);
+
+#endif
+
+#if BSP_FEATURE_CGC_SCKDIVCR2_HAS_EXTRA_CLOCKS
+void bsp_prv_clear_pfb(void);
+void bsp_prv_set_pfb(void);
 
 #endif
 

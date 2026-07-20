@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #ifndef R_SRAM_REG_H
 #define R_SRAM_REG_H
@@ -37,9 +23,15 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Code                                                    */
+            uint16_t          : 7;
+            __IOM uint16_t PR : 1;     /*!< [0..0] Register Write Control                                             */
+#else
             __IOM uint16_t PR : 1;     /*!< [0..0] Register Write Control                                             */
             uint16_t          : 7;
             __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Code                                                    */
+#endif
         } SRAMPRCR_S_b;
     };
     __IM uint16_t RESERVED;
@@ -51,8 +43,13 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint8_t            : 7;
+            __IOM uint8_t WTEN : 1;    /*!< [0..0] wait enable                                                        */
+#else
             __IOM uint8_t WTEN : 1;    /*!< [0..0] wait enable                                                        */
             uint8_t            : 7;
+#endif
         } SRAMWTSC_b;
     };
     __IM uint8_t  RESERVED2;
@@ -65,12 +62,21 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Test Enable / ECC Bypass Select                                */
+            uint8_t               : 2;
+            __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-Bit Error Information Update Enable                          */
+            __IOM uint8_t ECCMOD  : 2; /*!< [3..2] ECC Operating Mode Select                                          */
+            uint8_t               : 1;
+            __IOM uint8_t OAD     : 1; /*!< [0..0] Operation after error detection                                    */
+#else
             __IOM uint8_t OAD     : 1; /*!< [0..0] Operation after error detection                                    */
             uint8_t               : 1;
             __IOM uint8_t ECCMOD  : 2; /*!< [3..2] ECC Operating Mode Select                                          */
             __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-Bit Error Information Update Enable                          */
             uint8_t               : 2;
             __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Test Enable / ECC Bypass Select                                */
+#endif
         } SRAMCR0_b;
     };
     __IM uint8_t  RESERVED5;
@@ -82,12 +88,21 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Test Enable / ECC Bypass Select                                */
+            uint8_t               : 2;
+            __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-Bit Error Information Update Enable                          */
+            __IOM uint8_t ECCMOD  : 2; /*!< [3..2] ECC Operating Mode Select                                          */
+            uint8_t               : 1;
+            __IOM uint8_t OAD     : 1; /*!< [0..0] Operation after error detection                                    */
+#else
             __IOM uint8_t OAD     : 1; /*!< [0..0] Operation after error detection                                    */
             uint8_t               : 1;
             __IOM uint8_t ECCMOD  : 2; /*!< [3..2] ECC Operating Mode Select                                          */
             __IOM uint8_t E1STSEN : 1; /*!< [4..4] ECC 1-Bit Error Information Update Enable                          */
             uint8_t               : 2;
             __IOM uint8_t TSTBYP  : 1; /*!< [7..7] ECC Test Enable / ECC Bypass Select                                */
+#endif
         } SRAMCR1_b;
     };
     __IM uint8_t  RESERVED7;
@@ -100,8 +115,13 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint8_t              : 4;
+            __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target Region select                                           */
+#else
             __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target Region select                                           */
             uint8_t              : 4;
+#endif
         } SRAMECCRGN0_b;
     };
     __IM uint8_t  RESERVED10;
@@ -113,8 +133,13 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint8_t              : 4;
+            __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target Region select                                           */
+#else
             __IOM uint8_t ECCRGN : 4;  /*!< [3..0] ECC target Region select                                           */
             uint8_t              : 4;
+#endif
         } SRAMECCRGN1_b;
     };
     __IM uint8_t  RESERVED12;
@@ -127,11 +152,19 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint16_t            : 12;
+            __IM uint16_t ERR11 : 1;   /*!< [3..3] SRAM1 2-bit ECC Error Status                                       */
+            __IM uint16_t ERR10 : 1;   /*!< [2..2] SRAM1 1-bit ECC Error Status                                       */
+            __IM uint16_t ERR01 : 1;   /*!< [1..1] SRAM0 2-bit ECC Error Status                                       */
+            __IM uint16_t ERR00 : 1;   /*!< [0..0] SRAM0 1-bit ECC Error Status                                       */
+#else
             __IM uint16_t ERR00 : 1;   /*!< [0..0] SRAM0 1-bit ECC Error Status                                       */
             __IM uint16_t ERR01 : 1;   /*!< [1..1] SRAM0 2-bit ECC Error Status                                       */
             __IM uint16_t ERR10 : 1;   /*!< [2..2] SRAM1 1-bit ECC Error Status                                       */
             __IM uint16_t ERR11 : 1;   /*!< [3..3] SRAM1 2-bit ECC Error Status                                       */
             uint16_t            : 12;
+#endif
         } SRAMESR_b;
     };
     __IM uint16_t RESERVED15;
@@ -143,11 +176,19 @@ typedef struct                         /*!< (@ 0x8701C000) R_SRAM Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint16_t             : 12;
+            __IOM uint16_t CLR11 : 1;  /*!< [3..3] SRAM1 2-bit ECC Error Status Clear                                 */
+            __IOM uint16_t CLR10 : 1;  /*!< [2..2] SRAM1 1-bit ECC Error Status Clear                                 */
+            __IOM uint16_t CLR01 : 1;  /*!< [1..1] SRAM0 2-bit ECC Error Status Clear                                 */
+            __IOM uint16_t CLR00 : 1;  /*!< [0..0] SRAM0 1-bit ECC Error Status Clear                                 */
+#else
             __IOM uint16_t CLR00 : 1;  /*!< [0..0] SRAM0 1-bit ECC Error Status Clear                                 */
             __IOM uint16_t CLR01 : 1;  /*!< [1..1] SRAM0 2-bit ECC Error Status Clear                                 */
             __IOM uint16_t CLR10 : 1;  /*!< [2..2] SRAM1 1-bit ECC Error Status Clear                                 */
             __IOM uint16_t CLR11 : 1;  /*!< [3..3] SRAM1 2-bit ECC Error Status Clear                                 */
             uint16_t             : 12;
+#endif
         } SRAMESCLR_b;
     };
     __IM uint16_t RESERVED17;
@@ -177,9 +218,15 @@ typedef struct                         /*!< (@ 0x0701C000) R_SRAM_NS Structure  
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Code                                                    */
+            uint16_t          : 7;
+            __IOM uint16_t PR : 1;     /*!< [0..0] Register Write Control                                             */
+#else
             __IOM uint16_t PR : 1;     /*!< [0..0] Register Write Control                                             */
             uint16_t          : 7;
             __IOM uint16_t KW : 8;     /*!< [15..8] Write Key Code                                                    */
+#endif
         } SRAMPRCR_NS_b;
     };
 } R_SRAM_NS_Type;                      /*!< Size = 6 (0x6)                                                            */

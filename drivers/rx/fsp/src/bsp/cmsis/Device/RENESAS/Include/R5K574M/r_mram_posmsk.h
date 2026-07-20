@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2025] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #ifndef R_MRAM_POSMSK_H
 #define R_MRAM_POSMSK_H
@@ -68,11 +54,11 @@
 #define R_MRAM_MREDECC_ECCSELE_Msk       (0x2UL)        /*!< ECCSELE (Bitfield-Mask: 0x01)                         */
 #define R_MRAM_MREDECC_KEY_Pos           (8UL)          /*!< KEY (Bit 8)                                           */
 #define R_MRAM_MREDECC_KEY_Msk           (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
-/* =======================================================  MRERAINT  ======================================================== */
-#define R_MRAM_MRERAINT_INTENBDE_Pos     (0UL)          /*!< INTENBDE (Bit 0)                                      */
-#define R_MRAM_MRERAINT_INTENBDE_Msk     (0x1UL)        /*!< INTENBDE (Bitfield-Mask: 0x01)                        */
-#define R_MRAM_MRERAINT_INTENBTE_Pos     (1UL)          /*!< INTENBTE (Bit 1)                                      */
-#define R_MRAM_MRERAINT_INTENBTE_Msk     (0x2UL)        /*!< INTENBTE (Bitfield-Mask: 0x01)                        */
+/* =======================================================  MRERAEINT  ======================================================= */
+#define R_MRAM_MRERAEINT_INTENBDE_Pos    (0UL)          /*!< INTENBDE (Bit 0)                                      */
+#define R_MRAM_MRERAEINT_INTENBDE_Msk    (0x1UL)        /*!< INTENBDE (Bitfield-Mask: 0x01)                        */
+#define R_MRAM_MRERAEINT_INTENBTE_Pos    (1UL)          /*!< INTENBTE (Bit 1)                                      */
+#define R_MRAM_MRERAEINT_INTENBTE_Msk    (0x2UL)        /*!< INTENBTE (Bitfield-Mask: 0x01)                        */
 /* ========================================================  MRERAES  ======================================================== */
 #define R_MRAM_MRERAES_DECERRE_Pos       (0UL)          /*!< DECERRE (Bit 0)                                       */
 #define R_MRAM_MRERAES_DECERRE_Msk       (0x1UL)        /*!< DECERRE (Bitfield-Mask: 0x01)                         */
@@ -138,6 +124,12 @@
 /* =======================================================  MCNTSELR  ======================================================== */
 #define R_MRAM_MCNTSELR_CNTSEL_Pos       (0UL)          /*!< CNTSEL (Bit 0)                                        */
 #define R_MRAM_MCNTSELR_CNTSEL_Msk       (0x7UL)        /*!< CNTSEL (Bitfield-Mask: 0x07)                          */
+/* =======================================================  MCNTDTR0  ======================================================== */
+#define R_MRAM_MCNTDTR0_CNTRDAT_Pos      (0UL)          /*!< CNTRDAT (Bit 0)                                       */
+#define R_MRAM_MCNTDTR0_CNTRDAT_Msk      (0xffffffffUL) /*!< CNTRDAT (Bitfield-Mask: 0xffffffff)                   */
+/* =======================================================  MCNTDTR1  ======================================================== */
+#define R_MRAM_MCNTDTR1_CNTRDAT_Pos      (0UL)          /*!< CNTRDAT (Bit 0)                                       */
+#define R_MRAM_MCNTDTR1_CNTRDAT_Msk      (0xffffffffUL) /*!< CNTRDAT (Bitfield-Mask: 0xffffffff)                   */
 /* =======================================================  MCTRCNTR  ======================================================== */
 #define R_MRAM_MCTRCNTR_TRTRG_Pos        (0UL)          /*!< TRTRG (Bit 0)                                         */
 #define R_MRAM_MCTRCNTR_TRTRG_Msk        (0x1UL)        /*!< TRTRG (Bitfield-Mask: 0x01)                           */

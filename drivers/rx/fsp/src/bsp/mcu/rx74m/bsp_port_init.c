@@ -1,4 +1,8 @@
-// * ${REA_DISCLAIMER_PLACEHOLDER} */
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
@@ -74,17 +78,17 @@
  #define BSP_PRV_PORTE_NE_PIN_MASK    (0x0000)
  #define BSP_PRV_PORTF_NE_PIN_MASK    (0x03FC)
  #define BSP_PRV_PORTG_NE_PIN_MASK    (0xFFF8)
-#elif (BSP_PACKAGE_PINS == 144)
+#elif BSP_PACKAGE_PINS == 144
 
  #define BSP_PRV_PORT0_NE_PIN_MASK    (0xFF00)
  #define BSP_PRV_PORT1_NE_PIN_MASK    (0xFF00)
  #define BSP_PRV_PORT2_NE_PIN_MASK    (0xFF00)
  #define BSP_PRV_PORT3_NE_PIN_MASK    (0x0000)
- #define BSP_PRV_PORT4_NE_PIN_MASK    (0xCFC0)
+ #define BSP_PRV_PORT4_NE_PIN_MASK    (0x3FC0)
  #define BSP_PRV_PORT5_NE_PIN_MASK    (0xFFFF)
  #define BSP_PRV_PORT6_NE_PIN_MASK    (0x00C0)
- #define BSP_PRV_PORT7_NE_PIN_MASK    (0xFFF0)
- #define BSP_PRV_PORT8_NE_PIN_MASK    (0x00F8)
+ #define BSP_PRV_PORT7_NE_PIN_MASK    (0xFFF8)
+ #define BSP_PRV_PORT8_NE_PIN_MASK    (0x00F0)
  #define BSP_PRV_PORT9_NE_PIN_MASK    (0x00FC)
  #define BSP_PRV_PORTA_NE_PIN_MASK    (0x0000)
  #define BSP_PRV_PORTB_NE_PIN_MASK    (0x0000)
@@ -99,7 +103,7 @@
  #define BSP_PRV_PORT1_NE_PIN_MASK    (0xFF01)
  #define BSP_PRV_PORT2_NE_PIN_MASK    (0xFFFC)
  #define BSP_PRV_PORT3_NE_PIN_MASK    (0x0000)
- #define BSP_PRV_PORT4_NE_PIN_MASK    (0xFFEA)
+ #define BSP_PRV_PORT4_NE_PIN_MASK    (0xBFEA)
  #define BSP_PRV_PORT5_NE_PIN_MASK    (0xFFFF)
  #define BSP_PRV_PORT6_NE_PIN_MASK    (0x00FC)
  #define BSP_PRV_PORT7_NE_PIN_MASK    (0xFFFF)
@@ -108,7 +112,7 @@
  #define BSP_PRV_PORTA_NE_PIN_MASK    (0x0000)
  #define BSP_PRV_PORTB_NE_PIN_MASK    (0x0080)
  #define BSP_PRV_PORTC_NE_PIN_MASK    (0x0080)
- #define BSP_PRV_PORTD_NE_PIN_MASK    (0x0080)
+ #define BSP_PRV_PORTD_NE_PIN_MASK    (0x0000)
  #define BSP_PRV_PORTE_NE_PIN_MASK    (0x0080)
  #define BSP_PRV_PORTF_NE_PIN_MASK    (0x03FC)
  #define BSP_PRV_PORTG_NE_PIN_MASK    (0xFFFF)

@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #ifndef BSP_COMMON_H
 #define BSP_COMMON_H
@@ -35,6 +21,12 @@
 /* Different compiler support. */
 #include "../../inc/api/fsp_common_api.h"
 #include "bsp_compiler_support.h"
+
+#include "bsp_linker_info.h"
+
+/* BSP module includes */
+#include "../../src/bsp/mcu/all/bsp_sdram.h"
+
 #include "bsp_cfg.h"
 
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
@@ -49,20 +41,22 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
-/** Used to signify that an ELC event is not able to be used as an interrupt. */
-#define BSP_IRQ_DISABLED    (0xFFU)
+/** Used to configure the interrupt priority level into level 0 for disabling the interrupt. */
+#define BSP_IRQ_DISABLED    (0)
 
 /* Version of this module's code and API. */
 
 #if 1 == BSP_CFG_RTOS                  /* ThreadX */
  #include "tx_user.h"
  #if defined(TX_ENABLE_EVENT_TRACE) || defined(TX_ENABLE_EXECUTION_CHANGE_NOTIFY)
+  #include "tx_port.h"
   #define FSP_CONTEXT_SAVE       tx_isr_start((uint32_t) R_FSP_CurrentIrqGet());
   #define FSP_CONTEXT_RESTORE    tx_isr_end((uint32_t) R_FSP_CurrentIrqGet());
  #else
   #define FSP_CONTEXT_SAVE
   #define FSP_CONTEXT_RESTORE
  #endif
+
 #else
  #define FSP_CONTEXT_SAVE
  #define FSP_CONTEXT_RESTORE
@@ -82,7 +76,7 @@ FSP_HEADER
 
 /** This function is called before returning an error code. To stop on a runtime error, define fsp_error_log in
  * user code and do required debugging (breakpoints, stack dump, etc) in this function.*/
-#if (1 == BSP_CFG_ERROR_LOG)
+#if (1 == BSP_CFG_ASSERT)
 
  #ifndef FSP_ERROR_LOG
   #define FSP_ERROR_LOG(err) \
@@ -137,7 +131,7 @@ FSP_HEADER
 
 /* This macro defines a variable for interrupt mask level. */
 #ifndef BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION
- #define BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION    (15U)
+ #define BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION    (BSP_FEATURE_PSW_MAX_IPL)
 #endif
 
 /* This macro defines a variable for saving previous mask value. */
@@ -146,7 +140,7 @@ FSP_HEADER
  #define FSP_CRITICAL_SECTION_DEFINE    uint32_t old_mask_level = 0U
 #endif
 
-#if (15 == BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION)
+#if (BSP_FEATURE_PSW_MAX_IPL == BSP_CFG_IRQ_MASK_LEVEL_FOR_CRITICAL_SECTION)
 
 /* These macros abstract methods to save and restore the interrupt state for different architectures. */
  #define FSP_CRITICAL_SECTION_GET_CURRENT_STATE    R_BSP_GetCurrentIFlagState
@@ -221,6 +215,7 @@ typedef enum e_fsp_priv_clock
     FSP_PRIV_CLOCK_ICLK   = 24,
     FSP_PRIV_CLOCK_MRPCLK = 28,
     FSP_PRIV_CLOCK_CPUCLK = 32,
+    FSP_PRIV_CLOCK_UNUSED = 255,       ///< Sentinel value for unused clock
 } fsp_priv_clock_t;
 
 /* Private enum used in R_FSP_SciSpiClockHzGe.  Maps clock name to base bit in SCISPICKCR. */
@@ -249,6 +244,15 @@ typedef struct st_bsp_unique_id
         uint8_t  unique_id_bytes[16];
     };
 } bsp_unique_id_t;
+
+typedef struct st_bsp_part_number
+{
+    union
+    {
+        uint32_t part_number_words[4];
+        uint8_t  part_number_bytes[16];
+    };
+} bsp_part_number_t;
 
 /***********************************************************************************************************************
  * Exported global variables
@@ -413,10 +417,47 @@ __STATIC_INLINE bsp_unique_id_t const * R_BSP_UniqueIdGet (void)
     return (bsp_unique_id_t *) BSP_FEATURE_BSP_UNIQUE_ID_POINTER;
 }
 
+/*******************************************************************************************************************//**
+ * Get part number for this device.
+ *
+ * @param[out] p_part_number    Memory address to return MCU's part number to.
+ *
+ * @retval FSP_SUCCESS          Part number information stored.
+ * @retval FSP_ERR_ASSERTION    The parameter p_part_number is NULL.
+ * @retval FSP_ERR_NOT_FOUND    An error occurred when retrieving data from part number register.
+ **********************************************************************************************************************/
+__STATIC_INLINE fsp_err_t R_BSP_PartNumberGet (bsp_part_number_t * const p_part_number)
+{
+#if BSP_CFG_PARAM_CHECKING_ENABLE
+
+    /** Verify parameters are valid */
+    if (NULL == p_part_number)
+    {
+        return FSP_ERR_ASSERTION;
+    }
+#endif
+
+    /* Pointer to Part Numbering Register PNR */
+    volatile bsp_part_number_t * p_pnr = (bsp_part_number_t *) BSP_FEATURE_BSP_PART_NUMBER_POINTER;
+
+    /* In case part number is following the right order
+     * for example: R 5 K 5 7 4 M C A 4 F C_ _ _ */
+    if ((uint8_t) (p_pnr->part_number_words[0] & 0xff) == 'R')
+    {
+        memcpy(p_part_number, (void *) p_pnr, sizeof(bsp_part_number_t));
+    }
+    else
+    {
+        return FSP_ERR_NOT_FOUND;
+    }
+
+    return FSP_SUCCESS;
+}
+
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
-#if ((1 == BSP_CFG_ERROR_LOG) || (1 == BSP_CFG_ASSERT))
+#if (1 == BSP_CFG_ASSERT)
 
 /** Prototype of default function called before errors are returned in FSP code if BSP_CFG_LOG_ERRORS is set to 1. */
 void fsp_error_log(fsp_err_t err, const char * file, int32_t line);

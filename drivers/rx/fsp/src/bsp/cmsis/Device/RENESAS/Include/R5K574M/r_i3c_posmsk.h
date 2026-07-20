@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #ifndef R_I3C_POSMSK_H
 #define R_I3C_POSMSK_H
@@ -177,8 +163,14 @@
 #define R_I3C0_ICHBR_LOW_Pos         (0UL)          /*!< LOW (Bit 0)                                           */
 #define R_I3C0_ICHBR_LOW_Msk         (0xffUL)       /*!< LOW (Bitfield-Mask: 0xff)                             */
 /* ========================================================  ICBFTR  ========================================================= */
+#define R_I3C0_ICBFTR_ICBFTR_Pos     (0UL)          /*!< ICBFTR (Bit 0)                                        */
+#define R_I3C0_ICBFTR_ICBFTR_Msk     (0x1ffUL)      /*!< ICBFTR (Bitfield-Mask: 0x1ff)                         */
 /* ========================================================  ICBATR  ========================================================= */
+#define R_I3C0_ICBATR_ICBATR_Pos     (0UL)          /*!< ICBATR (Bit 0)                                        */
+#define R_I3C0_ICBATR_ICBATR_Msk     (0x1ffUL)      /*!< ICBATR (Bitfield-Mask: 0x1ff)                         */
 /* ========================================================  ICBITR  ========================================================= */
+#define R_I3C0_ICBITR_ICBITR_Pos     (0UL)          /*!< ICBITR (Bit 0)                                        */
+#define R_I3C0_ICBITR_ICBITR_Msk     (0x3ffffUL)    /*!< ICBITR (Bitfield-Mask: 0x3ffff)                       */
 /* =========================================================  ICOCR  ========================================================= */
 #define R_I3C0_ICOCR_DLCS_Pos        (15UL)         /*!< DLCS (Bit 15)                                         */
 #define R_I3C0_ICOCR_DLCS_Msk        (0x8000UL)     /*!< DLCS (Bitfield-Mask: 0x01)                            */
@@ -241,24 +233,24 @@
 /* ========================================================  ICTDLR  ========================================================= */
 #define R_I3C0_ICTDLR_DLGTH_Pos      (16UL)         /*!< DLGTH (Bit 16)                                        */
 #define R_I3C0_ICTDLR_DLGTH_Msk      (0xffff0000UL) /*!< DLGTH (Bitfield-Mask: 0xffff)                         */
-/* =========================================================  STCTL  ========================================================= */
-#define R_I3C0_STCTL_STOE_Pos        (0UL)          /*!< STOE (Bit 0)                                          */
-#define R_I3C0_STCTL_STOE_Msk        (0x1UL)        /*!< STOE (Bitfield-Mask: 0x01)                            */
-/* ========================================================  ICATCR  ========================================================= */
-#define R_I3C0_ICATCR_CDIV_Pos       (8UL)          /*!< CDIV (Bit 8)                                          */
-#define R_I3C0_ICATCR_CDIV_Msk       (0xff00UL)     /*!< CDIV (Bitfield-Mask: 0xff)                            */
-#define R_I3C0_ICATCR_ABEOE_Pos      (2UL)          /*!< ABEOE (Bit 2)                                         */
-#define R_I3C0_ICATCR_ABEOE_Msk      (0x4UL)        /*!< ABEOE (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_ICATCR_CREFOE_Pos     (1UL)          /*!< CREFOE (Bit 1)                                        */
-#define R_I3C0_ICATCR_CREFOE_Msk     (0x2UL)        /*!< CREFOE (Bitfield-Mask: 0x01)                          */
-#define R_I3C0_ICATCR_ATTRGS_Pos     (0UL)          /*!< ATTRGS (Bit 0)                                        */
-#define R_I3C0_ICATCR_ATTRGS_Msk     (0x1UL)        /*!< ATTRGS (Bitfield-Mask: 0x01)                          */
-/* ========================================================  ICATTR  ========================================================= */
-#define R_I3C0_ICATTR_ATSTRG_Pos     (0UL)          /*!< ATSTRG (Bit 0)                                        */
-#define R_I3C0_ICATTR_ATSTRG_Msk     (0x1UL)        /*!< ATSTRG (Bitfield-Mask: 0x01)                          */
-/* ========================================================  ICATCCR  ======================================================== */
-#define R_I3C0_ICATCCR_ATCE_Pos      (0UL)          /*!< ATCE (Bit 0)                                          */
-#define R_I3C0_ICATCCR_ATCE_Msk      (0x1UL)        /*!< ATCE (Bitfield-Mask: 0x01)                            */
+/* =========================================================  ICSYTCR  ======================================================= */
+#define R_I3C0_ICSYTCR_STOE_Pos      (0UL)          /*!< STOE (Bit 0)                                         */
+#define R_I3C0_ICSYTCR_STOE_Msk      (0x1UL)        /*!< STOE (Bitfield-Mask: 0x01)                           */
+/* ========================================================  ICASTCR  ========================================================= */
+#define R_I3C0_ICASTCR_CDIV_Pos      (8UL)          /*!< CDIV (Bit 8)                                         */
+#define R_I3C0_ICASTCR_CDIV_Msk      (0xff00UL)     /*!< CDIV (Bitfield-Mask: 0xff)                           */
+#define R_I3C0_ICASTCR_ABEOE_Pos     (2UL)          /*!< ABEOE (Bit 2)                                        */
+#define R_I3C0_ICASTCR_ABEOE_Msk     (0x4UL)        /*!< ABEOE (Bitfield-Mask: 0x01)                          */
+#define R_I3C0_ICASTCR_CREFOE_Pos    (1UL)          /*!< CREFOE (Bit 1)                                       */
+#define R_I3C0_ICASTCR_CREFOE_Msk    (0x2UL)        /*!< CREFOE (Bitfield-Mask: 0x01)                         */
+#define R_I3C0_ICASTCR_ATTRGS_Pos    (0UL)          /*!< ATTRGS (Bit 0)                                       */
+#define R_I3C0_ICASTCR_ATTRGS_Msk    (0x1UL)        /*!< ATTRGS (Bitfield-Mask: 0x01)                         */
+/* ========================================================  ICASTTR  ========================================================= */
+#define R_I3C0_ICASTTR_ATSTRG_Pos    (0UL)          /*!< ATSTRG (Bit 0)                                        */
+#define R_I3C0_ICASTTR_ATSTRG_Msk    (0x1UL)        /*!< ATSTRG (Bitfield-Mask: 0x01)                          */
+/* ========================================================  ICASTCCR  ======================================================== */
+#define R_I3C0_ICASTCCR_ATCE_Pos     (0UL)          /*!< ATCE (Bit 0)                                          */
+#define R_I3C0_ICASTCCR_ATCE_Msk     (0x1UL)        /*!< ATCE (Bitfield-Mask: 0x01)                            */
 /* =========================================================  ICCGR  ========================================================= */
 #define R_I3C0_ICCGR_SP_Pos          (2UL)          /*!< SP (Bit 2)                                            */
 #define R_I3C0_ICCGR_SP_Msk          (0x4UL)        /*!< SP (Bitfield-Mask: 0x01)                              */
@@ -502,18 +494,42 @@
 #define R_I3C0_ICEDATR_DADR_Msk       (0xff0000UL)   /*!< DADR (Bitfield-Mask: 0xff)                            */
 #define R_I3C0_ICEDATR_SADR_Pos       (0UL)          /*!< SADR (Bit 0)                                          */
 #define R_I3C0_ICEDATR_SADR_Msk       (0x7fUL)       /*!< SADR (Bitfield-Mask: 0x7f)                            */
-/* =========================================================  ICDAR  ========================================================== */
-#define R_I3C0_ICDAR_DADR_Pos         (16UL)         /*!< DADR (Bit 16)                                         */
-#define R_I3C0_ICDAR_DADR_Msk         (0x7f0000UL)   /*!< DADR (Bitfield-Mask: 0x7f)                            */
-#define R_I3C0_ICDAR_IBIPL_Pos        (12UL)         /*!< IBIPL (Bit 12)                                        */
-#define R_I3C0_ICDAR_IBIPL_Msk        (0x1000UL)     /*!< IBIPL (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_ICDAR_SADR_Pos         (0UL)          /*!< SADR (Bit 0)                                          */
-#define R_I3C0_ICDAR_SADR_Msk         (0x3ffUL)      /*!< SADR (Bitfield-Mask: 0x3ff)                           */
-/* ==========================================================  SAR  ========================================================== */
-#define R_I3C0_SAR_FS_Pos             (10UL)         /*!< IBIPL (Bit 10)                                        */
-#define R_I3C0_SAR_FS_Msk             (0x400UL)      /*!< IBIPL (Bitfield-Mask: 0x01)                           */
-#define R_I3C0_SAR_SVA_Pos            (0UL)          /*!< SADR (Bit 0)                                          */
-#define R_I3C0_SAR_SVA_Msk            (0x3ffUL)      /*!< SADR (Bitfield-Mask: 0x3ff)                           */
+/* =========================================================  ICDAR0  ========================================================== */
+#define R_I3C0_ICDAR0_DADR_Pos        (16UL)         /*!< DADR (Bit 16)                                         */
+#define R_I3C0_ICDAR0_DADR_Msk        (0x7f0000UL)   /*!< DADR (Bitfield-Mask: 0x7f)                            */
+#define R_I3C0_ICDAR0_IBIPL_Pos       (12UL)         /*!< IBIPL (Bit 12)                                        */
+#define R_I3C0_ICDAR0_IBIPL_Msk       (0x1000UL)     /*!< IBIPL (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICDAR0_SADR_Pos        (0UL)          /*!< SADR (Bit 0)                                          */
+#define R_I3C0_ICDAR0_SADR_Msk        (0x3ffUL)      /*!< SADR (Bitfield-Mask: 0x3ff)                           */
+/* =========================================================  ICDAR1  ========================================================== */
+#define R_I3C0_ICDAR1_DADR_Pos        (16UL)         /*!< DADR (Bit 16)                                         */
+#define R_I3C0_ICDAR1_DADR_Msk        (0x7f0000UL)   /*!< DADR (Bitfield-Mask: 0x7f)                            */
+#define R_I3C0_ICDAR1_IBIPL_Pos       (12UL)         /*!< IBIPL (Bit 12)                                        */
+#define R_I3C0_ICDAR1_IBIPL_Msk       (0x1000UL)     /*!< IBIPL (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICDAR1_SADR_Pos        (0UL)          /*!< SADR (Bit 0)                                          */
+#define R_I3C0_ICDAR1_SADR_Msk        (0x3ffUL)      /*!< SADR (Bitfield-Mask: 0x3ff)                           */
+/* =========================================================  ICDAR2  ========================================================== */
+#define R_I3C0_ICDAR2_DADR_Pos        (16UL)         /*!< DADR (Bit 16)                                         */
+#define R_I3C0_ICDAR2_DADR_Msk        (0x7f0000UL)   /*!< DADR (Bitfield-Mask: 0x7f)                            */
+#define R_I3C0_ICDAR2_IBIPL_Pos       (12UL)         /*!< IBIPL (Bit 12)                                        */
+#define R_I3C0_ICDAR2_IBIPL_Msk       (0x1000UL)     /*!< IBIPL (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_ICDAR2_SADR_Pos        (0UL)          /*!< SADR (Bit 0)                                          */
+#define R_I3C0_ICDAR2_SADR_Msk        (0x3ffUL)      /*!< SADR (Bitfield-Mask: 0x3ff)                           */
+/* ==========================================================  SAR0  ========================================================== */
+#define R_I3C0_SAR0_FS_Pos            (10UL)         /*!< IBIPL (Bit 10)                                        */
+#define R_I3C0_SAR0_FS_Msk            (0x400UL)      /*!< IBIPL (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_SAR0_SVA_Pos           (0UL)          /*!< SADR (Bit 0)                                          */
+#define R_I3C0_SAR0_SVA_Msk           (0x3ffUL)      /*!< SADR (Bitfield-Mask: 0x3ff)                           */
+/* ==========================================================  SAR1  ========================================================== */
+#define R_I3C0_SAR1_FS_Pos            (10UL)         /*!< IBIPL (Bit 10)                                        */
+#define R_I3C0_SAR1_FS_Msk            (0x400UL)      /*!< IBIPL (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_SAR1_SVA_Pos           (0UL)          /*!< SADR (Bit 0)                                          */
+#define R_I3C0_SAR1_SVA_Msk           (0x3ffUL)      /*!< SADR (Bitfield-Mask: 0x3ff)                           */
+/* ==========================================================  SAR2  ========================================================== */
+#define R_I3C0_SAR2_FS_Pos            (10UL)         /*!< IBIPL (Bit 10)                                        */
+#define R_I3C0_SAR2_FS_Msk            (0x400UL)      /*!< IBIPL (Bitfield-Mask: 0x01)                           */
+#define R_I3C0_SAR2_SVA_Pos           (0UL)          /*!< SADR (Bit 0)                                          */
+#define R_I3C0_SAR2_SVA_Msk           (0x3ffUL)      /*!< SADR (Bitfield-Mask: 0x3ff)                           */
 /* ========================================================  ICTDCTR  ======================================================== */
 #define R_I3C0_ICTDCTR_ROLE_Pos       (14UL)         /*!< ROLE (Bit 14)                                         */
 #define R_I3C0_ICTDCTR_ROLE_Msk       (0xc000UL)     /*!< ROLE (Bitfield-Mask: 0x03)                            */
@@ -548,20 +564,48 @@
 #define R_I3C0_ICDCTR_DCR_Msk         (0xffUL)       /*!< DCR (Bitfield-Mask: 0xff)                             */
 /* ========================================================  ICPIDLR  ======================================================== */
 /* ========================================================  ICPIDHR  ======================================================== */
-/* ========================================================  ICDAMR   =========================================================*/
-#define R_I3C0_ICDAMR_DAV_Pos         (31UL)         /*!< DAV (Bit 31)                                          */
-#define R_I3C0_ICDAMR_DAV_Msk         (0x80000000UL) /*!< DAV (Bitfield-Mask: 0x01)                             */
-#define R_I3C0_ICDAMR_SAV_Pos         (30UL)         /*!< SAV (Bit 30)                                          */
-#define R_I3C0_ICDAMR_SAV_Msk         (0x40000000UL) /*!< SAV (Bitfield-Mask: 0x01)                             */
-#define R_I3C0_ICDAMR_TADR_Pos        (16UL)         /*!< TADR (Bit 16)                                         */
-#define R_I3C0_ICDAMR_TADR_Msk        (0x3ff0000UL)  /*!< TADR (Bitfield-Mask: 0x3ff)                           */
-/* =========================================================  SAMR  ========================================================== */
-#define R_I3C0_SAMR_SAV_Pos           (30UL)         /*!< SAV (Bit 30)                                          */
-#define R_I3C0_SAMR_SAV_Msk           (0x40000000UL) /*!< SAV (Bitfield-Mask: 0x01)                             */
-#define R_I3C0_SAMR_FS_Pos            (27UL)         /*!< FS (Bit 27)                                           */
-#define R_I3C0_SAMR_FS_Msk            (0x8000000UL)  /*!< FS (Bitfield-Mask: 0x01)                              */
-#define R_I3C0_SAMR_SVA_Pos           (16UL)         /*!< TADR (Bit 16)                                         */
-#define R_I3C0_SAMR_SVA_Msk           (0x3ff0000UL)  /*!< TADR (Bitfield-Mask: 0x3ff)                           */
+/* ========================================================  ICDAMR0  ======================================================== */
+#define R_I3C0_ICDAMR0_DAV_Pos        (31UL)         /*!< DAV (Bit 31)                                          */
+#define R_I3C0_ICDAMR0_DAV_Msk        (0x80000000UL) /*!< DAV (Bitfield-Mask: 0x01)                             */
+#define R_I3C0_ICDAMR0_SAV_Pos        (30UL)         /*!< SAV (Bit 30)                                          */
+#define R_I3C0_ICDAMR0_SAV_Msk        (0x40000000UL) /*!< SAV (Bitfield-Mask: 0x01)                             */
+#define R_I3C0_ICDAMR0_TADR_Pos       (16UL)         /*!< TADR (Bit 16)                                         */
+#define R_I3C0_ICDAMR0_TADR_Msk       (0x3ff0000UL)  /*!< TADR (Bitfield-Mask: 0x3ff)                           */
+/* ========================================================  ICDAMR1  ======================================================== */
+#define R_I3C0_ICDAMR1_DAV_Pos        (31UL)         /*!< DAV (Bit 31)                                          */
+#define R_I3C0_ICDAMR1_DAV_Msk        (0x80000000UL) /*!< DAV (Bitfield-Mask: 0x01)                             */
+#define R_I3C0_ICDAMR1_SAV_Pos        (30UL)         /*!< SAV (Bit 30)                                          */
+#define R_I3C0_ICDAMR1_SAV_Msk        (0x40000000UL) /*!< SAV (Bitfield-Mask: 0x01)                             */
+#define R_I3C0_ICDAMR1_TADR_Pos       (16UL)         /*!< TADR (Bit 16)                                         */
+#define R_I3C0_ICDAMR1_TADR_Msk       (0x3ff0000UL)  /*!< TADR (Bitfield-Mask: 0x3ff)                           */
+/* ========================================================  ICDAMR2  ======================================================== */
+#define R_I3C0_ICDAMR2_DAV_Pos        (31UL)         /*!< DAV (Bit 31)                                          */
+#define R_I3C0_ICDAMR2_DAV_Msk        (0x80000000UL) /*!< DAV (Bitfield-Mask: 0x01)                             */
+#define R_I3C0_ICDAMR2_SAV_Pos        (30UL)         /*!< SAV (Bit 30)                                          */
+#define R_I3C0_ICDAMR2_SAV_Msk        (0x40000000UL) /*!< SAV (Bitfield-Mask: 0x01)                             */
+#define R_I3C0_ICDAMR2_TADR_Pos       (16UL)         /*!< TADR (Bit 16)                                         */
+#define R_I3C0_ICDAMR2_TADR_Msk       (0x3ff0000UL)  /*!< TADR (Bitfield-Mask: 0x3ff)                           */
+/* =========================================================  SAMR0  ========================================================= */
+#define R_I3C0_SAMR0_SAV_Pos          (30UL)         /*!< SAV (Bit 30)                                          */
+#define R_I3C0_SAMR0_SAV_Msk          (0x40000000UL) /*!< SAV (Bitfield-Mask: 0x01)                             */
+#define R_I3C0_SAMR0_FS_Pos           (27UL)         /*!< FS (Bit 27)                                           */
+#define R_I3C0_SAMR0_FS_Msk           (0x8000000UL)  /*!< FS (Bitfield-Mask: 0x01)                              */
+#define R_I3C0_SAMR0_SVA_Pos          (16UL)         /*!< TADR (Bit 16)                                         */
+#define R_I3C0_SAMR0_SVA_Msk          (0x3ff0000UL)  /*!< TADR (Bitfield-Mask: 0x3ff)                           */
+/* =========================================================  SAMR1  ========================================================= */
+#define R_I3C0_SAMR1_SAV_Pos          (30UL)         /*!< SAV (Bit 30)                                          */
+#define R_I3C0_SAMR1_SAV_Msk          (0x40000000UL) /*!< SAV (Bitfield-Mask: 0x01)                             */
+#define R_I3C0_SAMR1_FS_Pos           (27UL)         /*!< FS (Bit 27)                                           */
+#define R_I3C0_SAMR1_FS_Msk           (0x8000000UL)  /*!< FS (Bitfield-Mask: 0x01)                              */
+#define R_I3C0_SAMR1_SVA_Pos          (16UL)         /*!< TADR (Bit 16)                                         */
+#define R_I3C0_SAMR1_SVA_Msk          (0x3ff0000UL)  /*!< TADR (Bitfield-Mask: 0x3ff)                           */
+/* =========================================================  SAMR2  ========================================================= */
+#define R_I3C0_SAMR2_SAV_Pos          (30UL)         /*!< SAV (Bit 30)                                          */
+#define R_I3C0_SAMR2_SAV_Msk          (0x40000000UL) /*!< SAV (Bitfield-Mask: 0x01)                             */
+#define R_I3C0_SAMR2_FS_Pos           (27UL)         /*!< FS (Bit 27)                                           */
+#define R_I3C0_SAMR2_FS_Msk           (0x8000000UL)  /*!< FS (Bitfield-Mask: 0x01)                              */
+#define R_I3C0_SAMR2_SVA_Pos          (16UL)         /*!< TADR (Bit 16)                                         */
+#define R_I3C0_SAMR2_SVA_Msk          (0x3ff0000UL)  /*!< TADR (Bitfield-Mask: 0x3ff)                           */
 /* ========================================================  ICTEVR  ========================================================= */
 #define R_I3C0_ICTEVR_ENCR_Pos        (1UL)          /*!< ENCR (Bit 1)                                          */
 #define R_I3C0_ICTEVR_ENCR_Msk        (0x2UL)        /*!< ENCR (Bitfield-Mask: 0x01)                            */
