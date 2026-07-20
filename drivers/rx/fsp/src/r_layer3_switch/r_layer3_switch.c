@@ -8,7 +8,9 @@
  * Includes   <System Includes> , "Project Includes"
  ***********************************************************************************************************************/
 #include "r_layer3_switch.h"
+#ifndef LAYER3_SWICH_CFG_SKIP_PHY_LINK_SETUP
 #include "r_rmac_phy.h"
+#endif
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -281,8 +283,10 @@ static fsp_err_t r_layer3_switch_create_tx_timestamp_queue(ether_switch_ctrl_t *
 static void r_layer3_switch_enable_frame_preemption_feature(layer3_switch_instance_ctrl_t * p_instance_ctrl,
                                                             uint8_t                         port,
                                                             bool                            preemption_enable);
-static void r_layer3_switch_rmac_phy_interrupts_callback(ether_phy_callback_args_t * p_args);
 
+#ifndef LAYER3_SWICH_CFG_SKIP_PHY_LINK_SETUP
+static void r_layer3_switch_rmac_phy_interrupts_callback(ether_phy_callback_args_t * p_args);
+#endif
 #endif
 
 /***********************************************************************************************************************
@@ -469,6 +473,7 @@ fsp_err_t R_LAYER3_SWITCH_Open (ether_switch_ctrl_t * const p_ctrl, ether_switch
         }
     }
 
+#ifndef LAYER3_SWICH_CFG_SKIP_PHY_LINK_SETUP
     /* Open all ETHER_PHY instances. */
     for (uint8_t channel = 0;
          (channel < BSP_FEATURE_ETHER_NUM_CHANNELS) && ((FSP_SUCCESS == phy_err) | (FSP_ERR_ALREADY_OPEN == phy_err));
@@ -511,6 +516,9 @@ fsp_err_t R_LAYER3_SWITCH_Open (ether_switch_ctrl_t * const p_ctrl, ether_switch
             phy_err = p_ether_phy->p_api->startAutoNegotiate(p_ether_phy->p_ctrl);
         }
     }
+#else
+    FSP_PARAMETER_NOT_USED(p_ether_phy);
+#endif
 
     /* If failed to open a PHY instance, revert all configurations and return error. */
     if (FSP_SUCCESS != phy_err)
@@ -665,6 +673,7 @@ fsp_err_t R_LAYER3_SWITCH_CreateDescriptorQueue (ether_switch_ctrl_t * const    
     else
     {
         queue_index = p_instance_ctrl->allocated_descriptor_queue_index;
+
         FSP_ERROR_RETURN(LAYER3_SWITCH_CFG_AVAILABLE_QUEUE_NUM > queue_index, FSP_ERR_OUT_OF_MEMORY);
 
         /* Set all descriptors of new queue as disable. */
@@ -4039,6 +4048,7 @@ static void r_layer3_switch_enable_frame_preemption_feature (layer3_switch_insta
     p_instance_ctrl->frame_preemption_available[port] = preemption_enable;
 }
 
+#ifndef LAYER3_SWICH_CFG_SKIP_PHY_LINK_SETUP
 /*******************************************************************************************************************//**
  * Callback for r_rmac_phy interrupts.
  **********************************************************************************************************************/
@@ -4077,6 +4087,7 @@ static void r_layer3_switch_rmac_phy_interrupts_callback (ether_phy_callback_arg
         }
     }
 }
+#endif
 
 #endif
 

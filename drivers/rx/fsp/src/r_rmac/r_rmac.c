@@ -10,7 +10,9 @@
 #include "r_rmac_cfg.h"
 #include "r_rmac.h"
 #include "r_layer3_switch.h"
+#ifndef RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK
 #include "r_rmac_phy.h"
+#endif
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -69,12 +71,12 @@ static fsp_err_t rmac_open_param_check(rmac_instance_ctrl_t const * const p_inst
 
 #endif
 
-static void      rmac_init_descriptors(rmac_instance_ctrl_t * const p_instance_ctrl);
+void      rmac_init_descriptors(rmac_instance_ctrl_t * const p_instance_ctrl);
 static fsp_err_t rmac_init_descriptor_queues(rmac_instance_ctrl_t * const p_instance_ctrl);
-static void      rmac_init_buffers(rmac_instance_ctrl_t * const p_instance_ctrl);
+void      rmac_init_buffers(rmac_instance_ctrl_t * const p_instance_ctrl);
 
-static void      rmac_configure_reception_filter(rmac_instance_ctrl_t const * const p_instance_ctrl);
-static fsp_err_t rmac_do_link(rmac_instance_ctrl_t * const                 p_instance_ctrl,
+void      rmac_configure_reception_filter(rmac_instance_ctrl_t const * const p_instance_ctrl);
+fsp_err_t rmac_do_link(rmac_instance_ctrl_t * const                 p_instance_ctrl,
                               const layer3_switch_magic_packet_detection_t mode);
 static fsp_err_t rmac_link_status_check(rmac_instance_ctrl_t const * const p_instance_ctrl);
 
@@ -88,7 +90,7 @@ static fsp_err_t r_rmac_set_tx_buffer(rmac_instance_ctrl_t * p_instance_ctrl,
                                       uint32_t               frame_length,
                                       uint32_t               queue_index);
 static fsp_err_t            r_rmac_start_tx_queue(rmac_instance_ctrl_t * p_instance_ctrl, uint32_t queue_index);
-static void                 r_rmac_disable_reception(rmac_instance_ctrl_t * p_instance_ctrl);
+void                 r_rmac_disable_reception(rmac_instance_ctrl_t * p_instance_ctrl);
 static rmac_buffer_node_t * r_rmac_buffer_dequeue(rmac_buffer_queue_t * p_queue);
 static void                 r_rmac_buffer_enqueue(rmac_buffer_queue_t * p_queue, rmac_buffer_node_t * p_node);
 static fsp_err_t            r_rmac_get_rx_queue(rmac_instance_ctrl_t * p_instance_ctrl, uint32_t queue_index);
@@ -547,8 +549,8 @@ fsp_err_t R_RMAC_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uint3
 
     /* (1) Retrieve the receive buffer location controlled by the  descriptor. */
     /* When the Link up processing is not completed, return error */
-    FSP_ERROR_RETURN(ETHER_LINK_ESTABLISH_STATUS_UP == p_instance_ctrl->link_establish_status,
-                     FSP_ERR_ETHER_ERROR_LINK);
+    // FSP_ERROR_RETURN(ETHER_LINK_ESTABLISH_STATUS_UP == p_instance_ctrl->link_establish_status,
+    //                  FSP_ERR_ETHER_ERROR_LINK);
 
     p_extend = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
@@ -664,8 +666,8 @@ fsp_err_t R_RMAC_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, uint
     next_write_queue = p_instance_ctrl->write_queue_index;
 
     /* When the Link up processing is not completed, return error */
-    FSP_ERROR_RETURN(ETHER_LINK_ESTABLISH_STATUS_UP == p_instance_ctrl->link_establish_status,
-                     FSP_ERR_ETHER_ERROR_LINK);
+    // FSP_ERROR_RETURN(ETHER_LINK_ESTABLISH_STATUS_UP == p_instance_ctrl->link_establish_status,
+    //                  FSP_ERR_ETHER_ERROR_LINK);
 
     /* Get TX buffer. */
     if (ETHER_ZEROCOPY_DISABLE == p_instance_ctrl->p_cfg->zerocopy)
@@ -972,7 +974,7 @@ static fsp_err_t rmac_open_param_check (rmac_instance_ctrl_t const * const p_ins
  *                    RMAC channel number
  * Return Value : none
  ***********************************************************************************************************************/
-static void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const p_instance_ctrl)
+void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const p_instance_ctrl)
 {
     uint32_t mrafc = p_instance_ctrl->p_reg_rmac->MRAFC;
 
@@ -1032,7 +1034,7 @@ static void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const 
  *                                      or result of Auto-negotiation is abnormal.
  *
  ***********************************************************************************************************************/
-static fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_instance_ctrl,
+fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_instance_ctrl,
                                const layer3_switch_magic_packet_detection_t mode)
 {
     fsp_err_t err = FSP_SUCCESS;
@@ -1054,6 +1056,7 @@ static fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_in
 
     p_rmac_extended_cfg   = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     p_switch_extended_cfg = (layer3_switch_extended_cfg_t *) p_rmac_extended_cfg->p_ether_switch->p_cfg->p_extend;
+#ifndef RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK
     p_phy_instance        =
         (ether_phy_instance_t *) p_switch_extended_cfg->p_ether_phy_instances[p_instance_ctrl->p_cfg->channel];
 
@@ -1064,6 +1067,14 @@ static fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_in
                                                                &local_pause_bits,
                                                                &partner_pause_bits);
 
+#else
+	FSP_PARAMETER_NOT_USED(p_phy_instance);
+	FSP_PARAMETER_NOT_USED(link_speed_duplex);
+	FSP_PARAMETER_NOT_USED(local_pause_bits);
+	FSP_PARAMETER_NOT_USED(partner_pause_bits);
+
+	link_result = FSP_SUCCESS;
+#endif
     if (FSP_SUCCESS == link_result)
     {
         /* Set MAC address. */
@@ -1143,6 +1154,7 @@ static fsp_err_t rmac_link_status_check (rmac_instance_ctrl_t const * const p_in
     p_phy_instance        =
         (ether_phy_instance_t *) p_switch_extended_cfg->p_ether_phy_instances[p_instance_ctrl->p_cfg->channel];
 
+#ifndef RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK
     /* Update PHY LSI information */
     R_RMAC_PHY_ChipSelect(p_phy_instance->p_ctrl, p_instance_ctrl->p_cfg->channel);
 
@@ -1165,7 +1177,13 @@ static fsp_err_t rmac_link_status_check (rmac_instance_ctrl_t const * const p_in
                                                      &local_pause,
                                                      &partner_pause);
     }
-
+#else
+    /* When skipping PHY link ability check, assume the link is up. */
+    FSP_PARAMETER_NOT_USED(link_status);
+    FSP_PARAMETER_NOT_USED(line_speed_duplex);
+    FSP_PARAMETER_NOT_USED(local_pause);
+    FSP_PARAMETER_NOT_USED(partner_pause);
+#endif
     return err;
 }                                      /* End of function rmac_link_status_check() */
 
@@ -1214,7 +1232,7 @@ static void rmac_call_callback (rmac_instance_ctrl_t * p_instance_ctrl, ether_ca
  *                    RMAC channel number
  * Return Value : none
  ***********************************************************************************************************************/
-static void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
+void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
 {
     layer3_switch_descriptor_t descriptor = {0};
 
@@ -1367,7 +1385,7 @@ static void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
  *                    RMAC control block.
  * Return Value : none
  ***********************************************************************************************************************/
-static void rmac_init_buffers (rmac_instance_ctrl_t * const p_instance_ctrl)
+void rmac_init_buffers (rmac_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t i;
     uint32_t buffer_num;
@@ -1617,7 +1635,7 @@ static fsp_err_t r_rmac_start_tx_queue (rmac_instance_ctrl_t * p_instance_ctrl, 
 /*******************************************************************************************************************
  * Disable reception on this port.
  **********************************************************************************************************************/
-static void r_rmac_disable_reception (rmac_instance_ctrl_t * p_instance_ctrl)
+void r_rmac_disable_reception (rmac_instance_ctrl_t * p_instance_ctrl)
 {
     rmac_extended_cfg_t      * p_extend   = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     layer3_switch_port_cfg_t   port_cfg   = {0};
