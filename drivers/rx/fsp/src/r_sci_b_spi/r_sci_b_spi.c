@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /***********************************************************************************************************************
  * Includes
@@ -664,6 +650,8 @@ static void r_sci_b_spi_hw_config (sci_b_spi_instance_ctrl_t * const p_ctrl)
         scr2 |= (uint32_t) ((p_extend->clk_div.brr) << R_SCI_B0_SCR2_BRR_Pos);
         scr2 |= (uint32_t) ((p_extend->clk_div.bgdm) << R_SCI_B0_SCR2_BGDM_Pos);
 
+#if BSP_FEATURE_SCI_B_SPI_HAS_RX_SAMPLING_DELAY
+
         /* Write the receive sampling adjustment setting. This setting adjusts
          * the master receive sampling timing to account for the propagation delay
          * of SCK and MISO. Refer to the diagram "Reception Sampling Timing
@@ -676,6 +664,7 @@ static void r_sci_b_spi_hw_config (sci_b_spi_instance_ctrl_t * const p_ctrl)
         {
             scr4 |= R_SCI_B0_SCR4_RTADJ_Msk | ((p_extend->rx_sampling_delay) << R_SCI_B0_SCR4_RTMG_Pos);
         }
+#endif
     }
 
     /* Enable Clock for the SCI Channel. */
@@ -1031,6 +1020,9 @@ void sci_b_spi_tx_dmac_callback (sci_b_spi_instance_ctrl_t const * const p_ctrl)
 {
     if (NULL == p_ctrl->p_dest)
     {
+        /* Clear Pending txi flag */
+        R_BSP_IrqClearPending(p_ctrl->p_cfg->txi_irq);
+
         /* If the last byte is transmitted and there is no data to receive
          * then enable the transmit end interrupt and disable the transmit interrupt. */
         uint32_t scr0_temp = p_ctrl->p_reg->SCR0;
@@ -1056,7 +1048,6 @@ void sci_b_spi_txi_isr (void)
     /* Save context if RTOS is used. */
     FSP_CONTEXT_SAVE
     IRQn_Type irq = R_FSP_CurrentIrqGet();
-    R_BSP_IrqStatusClear(irq);
     sci_b_spi_instance_ctrl_t * p_ctrl = (sci_b_spi_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
 
     /* Write the next byte to the TDR register. */
@@ -1092,7 +1083,6 @@ void sci_b_spi_rxi_isr (void)
     FSP_CONTEXT_SAVE
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
-    R_BSP_IrqStatusClear(irq);
     sci_b_spi_instance_ctrl_t * p_ctrl = (sci_b_spi_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
 
     /* Write the next byte to the TDR register

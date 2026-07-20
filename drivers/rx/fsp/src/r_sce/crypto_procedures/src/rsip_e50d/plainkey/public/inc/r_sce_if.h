@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its affiliates
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
 *
 * SPDX-License-Identifier: BSD-3-Clause
 */
@@ -178,6 +178,10 @@
  #define HW_SCE_RSA_4096_DATA_BYTE_SIZE                          (128 * 4U)
  #define HW_SCE_RSA2048_RANDOM_PRIVATE_KEY_BYTE_SIZE             (128 * 4U)
  #define HW_SCE_RSA2048_RANDOM_PUBLIC_KEY_BYTE_SIZE              (68 * 4U)
+ #define HW_SCE_RSA3072_RANDOM_PRIVATE_KEY_BYTE_SIZE             (192U * 4U)
+ #define HW_SCE_RSA3072_RANDOM_PUBLIC_KEY_BYTE_SIZE              (97U * 4U)
+ #define HW_SCE_RSA4096_RANDOM_PRIVATE_KEY_BYTE_SIZE             (256U * 4U)
+ #define HW_SCE_RSA4096_RANDOM_PUBLIC_KEY_BYTE_SIZE              (129U * 4U)
  
  /* RSA HASH type. */
  #define HW_SCE_RSA_HASH_MD5                                     (0x01)  /* MD5     */
@@ -253,6 +257,13 @@
 /* Key update. */
  #define HW_SCE_UPDATE_KEY_RING_INDEX_WORD_SIZE                      (16U)
 
+/* For Chacha20-Poly1305 operation. */
+ #define HW_SCE_CHACHA20_BLOCK_BYTE_SIZE                    (64U)
+ #define HW_SCE_CHACHA20_BLOCK_WORD_SIZE                    (16U)
+ #define HW_SCE_CHACHA20_KEY_BYTE_SIZE                      (32U)
+ #define HW_SCE_CHACHA20_KEY_INDEX_WORD_SIZE                (13U)
+ #define HW_SCE_CHACHAPOLY_MAC_BYTE_SIZE                    (16U)
+ #define HW_SCE_CHACHAPOLY_AAD_BYTE_SIZE                    (256U)
 
 /* Firmware update. */
 #define HW_SCE_FIRMWARE_MAC_BYTE_SIZE           (16U)
@@ -302,6 +313,7 @@
 #define SCE_OEM_KEY_SIZE_HMAC_SHA512_INST_DATA_WORD              (20)
 #define SCE_OEM_KEY_SIZE_HMAC_SHA512_224_INST_DATA_WORD          (20)
 #define SCE_OEM_KEY_SIZE_HMAC_SHA512_256_INST_DATA_WORD          (20)
+#define SCE_OEM_KEY_SIZE_CHACHA20_POLY_1305_KEY_INST_DATA_WORD   (12)
 
 /* DomainParams */
 #define RSIP_PRV_WORD_SIZE_DOMAINPARAM_NIST_P192            (72U)
@@ -471,6 +483,7 @@ typedef enum
      SCE_OEM_CMD_HMAC_SHA512,
      SCE_OEM_CMD_HMAC_SHA512_224,
      SCE_OEM_CMD_HMAC_SHA512_256,
+     SCE_OEM_CMD_CHACHA20_POLY_1305 = 48,
      SCE_OEM_CMD_NUM
  } sce_oem_cmd_t;
 

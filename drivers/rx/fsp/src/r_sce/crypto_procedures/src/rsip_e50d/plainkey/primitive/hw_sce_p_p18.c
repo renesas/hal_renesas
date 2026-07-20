@@ -1,4 +1,8 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #include "hw_sce_rx_private.h"
 
@@ -8,7 +12,7 @@ fsp_err_t HW_SCE_EddsaSignatureGenerateSub (const uint32_t InData_KeyMode[],
                                             const uint32_t InData_PubKey[],
                                             const uint32_t InData_Msg[],
                                             const uint32_t InData_MsgLen[],
-                                            const uint32_t InData_DomainParam[],
+											const uint32_t InData_DomainParam[],
                                             uint32_t       OutData_Signature[],
                                             uint32_t       MAX_CNT)
 {

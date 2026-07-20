@@ -1,4 +1,8 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /***********************************************************************************************************************
  * Includes
@@ -87,6 +91,17 @@ const uint32_t sce_oem_key_size[SCE_OEM_CMD_NUM] =
     SCE_OEM_KEY_SIZE_ECCSECP256K1_PRIVATE_KEY_INST_DATA_WORD,
     SCE_OEM_KEY_SIZE_ECCP521_PUBLICK_KEY_INST_DATA_WORD,
     SCE_OEM_KEY_SIZE_ECCP521_PRIVATE_KEY_INST_DATA_WORD,
+    SCE_OEM_KEY_SIZE_DUMMY_INST_DATA_WORD,
+    SCE_OEM_KEY_SIZE_DUMMY_INST_DATA_WORD,
+    SCE_OEM_KEY_SIZE_DUMMY_INST_DATA_WORD,
+    SCE_OEM_KEY_SIZE_DUMMY_INST_DATA_WORD,
+    SCE_OEM_KEY_SIZE_DUMMY_INST_DATA_WORD,
+    SCE_OEM_KEY_SIZE_DUMMY_INST_DATA_WORD,
+    SCE_OEM_KEY_SIZE_DUMMY_INST_DATA_WORD,
+    SCE_OEM_KEY_SIZE_DUMMY_INST_DATA_WORD,
+    SCE_OEM_KEY_SIZE_DUMMY_INST_DATA_WORD,
+    SCE_OEM_KEY_SIZE_DUMMY_INST_DATA_WORD,
+    SCE_OEM_KEY_SIZE_CHACHA20_POLY_1305_KEY_INST_DATA_WORD,
 };
 
 /* Find the lifecycle state load the hardware unique key */
@@ -729,33 +744,30 @@ fsp_err_t HW_SCE_Aes128OutputKeyForDotfSubAdaptor (const uint32_t InData_Cmd[],
                                                    uint32_t       InData_KeyIndex[],
                                                    uint32_t       InData_DOTFSEED[])
 {
-    FSP_PARAMETER_NOT_USED(InData_Cmd);
-    FSP_PARAMETER_NOT_USED(InData_KeyIndex);
-    FSP_PARAMETER_NOT_USED(InData_DOTFSEED);
+    uint32_t indata_key_mode[1] = {0};
+    uint32_t indata_key[4]      = {0};
 
-    return FSP_ERR_UNSUPPORTED;
+    return HW_SCE_Aes128OutputKeyForDotfSub(indata_key_mode, InData_Cmd, InData_KeyIndex, indata_key, InData_DOTFSEED);
 }
 
 fsp_err_t HW_SCE_Aes192OutputKeyForDotfSubAdaptor (const uint32_t InData_Cmd[],
                                                    uint32_t       InData_KeyIndex[],
                                                    uint32_t       InData_DOTFSEED[])
 {
-    FSP_PARAMETER_NOT_USED(InData_Cmd);
-    FSP_PARAMETER_NOT_USED(InData_KeyIndex);
-    FSP_PARAMETER_NOT_USED(InData_DOTFSEED);
+    uint32_t indata_key_mode[1] = {0};
+    uint32_t indata_key[8]      = {0};
 
-    return FSP_ERR_UNSUPPORTED;
+    return HW_SCE_Aes192OutputKeyForDotfSub(indata_key_mode, InData_Cmd, InData_KeyIndex, indata_key, InData_DOTFSEED);
 }
 
 fsp_err_t HW_SCE_Aes256OutputKeyForDotfSubAdaptor (const uint32_t InData_Cmd[],
                                                    uint32_t       InData_KeyIndex[],
                                                    uint32_t       InData_DOTFSEED[])
 {
-    FSP_PARAMETER_NOT_USED(InData_Cmd);
-    FSP_PARAMETER_NOT_USED(InData_KeyIndex);
-    FSP_PARAMETER_NOT_USED(InData_DOTFSEED);
+    uint32_t indata_key_mode[1] = {0};
+    uint32_t indata_key[8]      = {0};
 
-    return FSP_ERR_UNSUPPORTED;
+    return HW_SCE_Aes256OutputKeyForDotfSub(indata_key_mode, InData_Cmd, InData_KeyIndex, indata_key, InData_DOTFSEED);
 }
 
 fsp_err_t HW_SCE_ShaGenerateMessageDigestSubGeneral (const uint32_t InData_HashType[],
@@ -828,7 +840,7 @@ fsp_err_t HW_SCE_ShaGenerateMessageDigestSubGeneral (const uint32_t InData_HashT
     }
 }
 
-fsp_err_t HW_SCE_Sha3GenerateMessageDigestSubAdaptor (const uint32_t InData_HashType[],
+fsp_err_t HW_SCE_Sha3GenerateMessageDigestSubGeneral (const uint32_t InData_HashType[],
                                                       const uint32_t InData_Cmd[],
                                                       const uint32_t InData_Msg[],
                                                       const uint32_t InData_MsgLen[],
@@ -924,6 +936,15 @@ fsp_err_t HW_SCE_GenerateEccP521RandomKeyIndexSubAdaptor (const uint32_t InData_
                                                    OutData_PrivKey);
 }
 
+fsp_err_t HW_SCE_Rsa1024ModularExponentDecryptSubAdaptor(const uint32_t InData_KeyMode[],
+                                                         const uint32_t InData_KeyIndex[],
+                                                         const uint32_t InData_Key[],
+                                                         const uint32_t InData_Text[],
+                                                         uint32_t OutData_Text[])
+{
+    return HW_SCE_Rsa1024ModularExponentDecryptSub(InData_KeyMode, InData_KeyIndex, InData_Key, InData_Text, OutData_Text);
+}
+
 fsp_err_t HW_SCE_Rsa2048ModularExponentDecryptSubAdaptor (const uint32_t InData_KeyMode[],
                                                           const uint32_t InData_KeyIndex[],
                                                           const uint32_t InData_Key[],
@@ -963,6 +984,15 @@ fsp_err_t HW_SCE_Rsa4096ModularExponentDecryptSubAdaptor (const uint32_t InData_
                                                    OutData_Text);
 }
 
+fsp_err_t HW_SCE_Rsa1024ModularExponentEncryptSubAdaptor(const uint32_t InData_KeyIndex[],
+                                                         const uint32_t InData_Key[],
+                                                         const uint32_t InData_Text[],
+                                                         uint32_t OutData_Text[])
+{
+    FSP_PARAMETER_NOT_USED(InData_KeyIndex);
+    return HW_SCE_Rsa1024ModularExponentEncryptSub(InData_Key, InData_Text, OutData_Text);
+}
+
 fsp_err_t HW_SCE_Rsa2048ModularExponentEncryptSubAdaptor (const uint32_t InData_KeyIndex[],
                                                           const uint32_t InData_Key[],
                                                           const uint32_t InData_Text[],
@@ -991,4 +1021,15 @@ fsp_err_t HW_SCE_Rsa4096ModularExponentEncryptSubAdaptor (const uint32_t InData_
     FSP_PARAMETER_NOT_USED(InData_KeyIndex);
 
     return HW_SCE_Rsa4096ModularExponentEncryptSub(InData_Key, InData_Text, OutData_Text);
+}
+
+fsp_err_t HW_SCE_GenerateRsa4096RandomKeyIndexSub(const uint32_t InData_KeyMode[],
+                                                  const uint32_t MAX_CNT,
+                                                  uint32_t OutData_PubKeyIndex[],
+                                                  uint32_t OutData_PubKey[],
+                                                  uint32_t OutData_PrivKeyIndex[],
+                                                  uint32_t OutData_PrivKey[])
+{
+    FSP_PARAMETER_NOT_USED(OutData_PubKeyIndex);
+    return HW_SCE_RSA4096_KeyPairGenerateSub(InData_KeyMode, OutData_PubKey, OutData_PrivKeyIndex, OutData_PrivKey, MAX_CNT);
 }

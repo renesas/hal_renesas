@@ -1,4 +1,8 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #include "hw_sce_rx_private.h"
 
@@ -6,7 +10,7 @@ fsp_err_t HW_SCE_EddsaSignatureVerificationSub (const uint32_t InData_Key[],
                                                 const uint32_t InData_Msg[],
                                                 const uint32_t InData_MsgLen[],
                                                 const uint32_t InData_Signature[],
-                                                const uint32_t InData_DomainParam[],
+												const uint32_t InData_DomainParam[],
                                                 uint32_t       MAX_CNT)
 {
     uint32_t iLoop = 0U;
@@ -567,17 +571,11 @@ fsp_err_t HW_SCE_EddsaSignatureVerificationSub (const uint32_t InData_Key[],
                 WR1_PROG(REG_1A2CH, 0x00000100U);
                 WR1_PROG(REG_1A24H, 0x08008107U);
                 WAIT_STS(REG_1444H, 31, 1);
-                WR4_PROG(REG_1420H,
-                         change_endian_long(0x2B832480U),
-                         change_endian_long(0x4FC1DF0BU),
-                         change_endian_long(0x2B4D0099U),
-                         change_endian_long(0x3DFBD7A7U));
+                WR4_PROG(REG_1420H, change_endian_long(0x2B832480U), change_endian_long(
+                             0x4FC1DF0BU), change_endian_long(0x2B4D0099U), change_endian_long(0x3DFBD7A7U));
                 WAIT_STS(REG_1444H, 31, 1);
-                WR4_PROG(REG_1420H,
-                         change_endian_long(0x2F431806U),
-                         change_endian_long(0xAD2FE478U),
-                         change_endian_long(0xC4EE1B27U),
-                         change_endian_long(0x4A0EA0B0U));
+                WR4_PROG(REG_1420H, change_endian_long(0x2F431806U), change_endian_long(
+                             0xAD2FE478U), change_endian_long(0xC4EE1B27U), change_endian_long(0x4A0EA0B0U));
                 WR1_PROG(REG_1400H, 0x00c20021U);
                 WAIT_STS(REG_1404H, 30, 0);
                 WR1_PROG(REG_143CH, 0x00001800U);

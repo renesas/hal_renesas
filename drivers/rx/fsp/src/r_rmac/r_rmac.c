@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /***********************************************************************************************************************
  * Includes
@@ -24,17 +10,15 @@
 #include "r_rmac_cfg.h"
 #include "r_rmac.h"
 #include "r_layer3_switch.h"
-#ifndef RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK
 #include "r_rmac_phy.h"
-#endif
 
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
 #define RMAC_OPEN                                   (('R' << 24U) | ('M' << 16U) | ('A' << 8U) | ('C' << 0U))
 
-#define RMAC_ETHA_REG_SIZE                          (R_ETHA1_BASE - R_ETHA0_BASE)
-#define RMAC_RMAC_REG_SIZE                          (R_RMAC1_BASE - R_RMAC0_BASE)
+#define RMAC_ETHA_REG_SIZE                          (0x2000UL)
+#define RMAC_RMAC_REG_SIZE                          (0x2000UL)
 
 /* Register values */
 #define RMAC_REG_MRAFC_PROMISCUOUS_VALUE            (R_RMAC0_MRAFC_UCENE_Msk | R_RMAC0_MRAFC_MCENE_Msk |    \
@@ -85,12 +69,12 @@ static fsp_err_t rmac_open_param_check(rmac_instance_ctrl_t const * const p_inst
 
 #endif
 
-void      rmac_init_descriptors(rmac_instance_ctrl_t * const p_instance_ctrl);
+static void      rmac_init_descriptors(rmac_instance_ctrl_t * const p_instance_ctrl);
 static fsp_err_t rmac_init_descriptor_queues(rmac_instance_ctrl_t * const p_instance_ctrl);
-void      rmac_init_buffers(rmac_instance_ctrl_t * const p_instance_ctrl);
+static void      rmac_init_buffers(rmac_instance_ctrl_t * const p_instance_ctrl);
 
-void      rmac_configure_reception_filter(rmac_instance_ctrl_t const * const p_instance_ctrl);
-fsp_err_t rmac_do_link(rmac_instance_ctrl_t * const                 p_instance_ctrl,
+static void      rmac_configure_reception_filter(rmac_instance_ctrl_t const * const p_instance_ctrl);
+static fsp_err_t rmac_do_link(rmac_instance_ctrl_t * const                 p_instance_ctrl,
                               const layer3_switch_magic_packet_detection_t mode);
 static fsp_err_t rmac_link_status_check(rmac_instance_ctrl_t const * const p_instance_ctrl);
 
@@ -104,7 +88,7 @@ static fsp_err_t r_rmac_set_tx_buffer(rmac_instance_ctrl_t * p_instance_ctrl,
                                       uint32_t               frame_length,
                                       uint32_t               queue_index);
 static fsp_err_t            r_rmac_start_tx_queue(rmac_instance_ctrl_t * p_instance_ctrl, uint32_t queue_index);
-void                 r_rmac_disable_reception(rmac_instance_ctrl_t * p_instance_ctrl);
+static void                 r_rmac_disable_reception(rmac_instance_ctrl_t * p_instance_ctrl);
 static rmac_buffer_node_t * r_rmac_buffer_dequeue(rmac_buffer_queue_t * p_queue);
 static void                 r_rmac_buffer_enqueue(rmac_buffer_queue_t * p_queue, rmac_buffer_node_t * p_node);
 static fsp_err_t            r_rmac_get_rx_queue(rmac_instance_ctrl_t * p_instance_ctrl, uint32_t queue_index);
@@ -158,6 +142,7 @@ const ether_api_t g_ether_on_rmac =
  * @retval  FSP_ERR_ASSERTION                       Pointer to ETHER control block or configuration structure is NULL.
  * @retval  FSP_ERR_ALREADY_OPEN                    Control block has already been opened or channel is being used by another
  *                                                  instance. Call close() then open() to reconfigure.
+ * @retval  FSP_ERR_ETHER_ERROR_PHY_COMMUNICATION   Initialization of PHY-LSI failed.
  * @retval  FSP_ERR_INVALID_CHANNEL                 Invalid channel number is given.
  * @retval  FSP_ERR_INVALID_POINTER                 Pointer to extend config structure or MAC address is NULL.
  * @retval  FSP_ERR_INVALID_ARGUMENT                Interrupt is not enabled.
@@ -537,6 +522,7 @@ fsp_err_t R_RMAC_WakeOnLANEnable (ether_ctrl_t * const p_ctrl)
  * @retval  FSP_ERR_INVALID_POINTER                     Value of the pointer is NULL.
  * @retval  FSP_ERR_OVERFLOW                            Value of the send frame size is larger than the buffer size.
  * @retval  FSP_ERR_BUFFER_EMPTY                        There is no available internal RX buffer.
+ * @retval  FSP_ERR_INVALID_SIZE                        The buffer size is smaller than  @ref ether_cfg_t::ether_buffer_size.
  ***********************************************************************************************************************/
 fsp_err_t R_RMAC_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uint32_t * const length_bytes)
 {
@@ -554,12 +540,15 @@ fsp_err_t R_RMAC_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uint3
     FSP_ERROR_RETURN(RMAC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
     FSP_ERROR_RETURN(NULL != p_buffer, FSP_ERR_INVALID_POINTER);
     FSP_ERROR_RETURN(NULL != length_bytes, FSP_ERR_INVALID_POINTER);
+ #if (RMAC_CFG_READ_BUFFER_SIZE_CHECK)
+    FSP_ERROR_RETURN(p_instance_ctrl->p_cfg->ether_buffer_size <= *length_bytes, FSP_ERR_INVALID_SIZE);
+ #endif
 #endif
 
     /* (1) Retrieve the receive buffer location controlled by the  descriptor. */
     /* When the Link up processing is not completed, return error */
-    // FSP_ERROR_RETURN(ETHER_LINK_ESTABLISH_STATUS_UP == p_instance_ctrl->link_establish_status,
-    //                  FSP_ERR_ETHER_ERROR_LINK);
+    FSP_ERROR_RETURN(ETHER_LINK_ESTABLISH_STATUS_UP == p_instance_ctrl->link_establish_status,
+                     FSP_ERR_ETHER_ERROR_LINK);
 
     p_extend = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
@@ -675,8 +664,8 @@ fsp_err_t R_RMAC_Write (ether_ctrl_t * const p_ctrl, void * const p_buffer, uint
     next_write_queue = p_instance_ctrl->write_queue_index;
 
     /* When the Link up processing is not completed, return error */
-    // FSP_ERROR_RETURN(ETHER_LINK_ESTABLISH_STATUS_UP == p_instance_ctrl->link_establish_status,
-    //                  FSP_ERR_ETHER_ERROR_LINK);
+    FSP_ERROR_RETURN(ETHER_LINK_ESTABLISH_STATUS_UP == p_instance_ctrl->link_establish_status,
+                     FSP_ERR_ETHER_ERROR_LINK);
 
     /* Get TX buffer. */
     if (ETHER_ZEROCOPY_DISABLE == p_instance_ctrl->p_cfg->zerocopy)
@@ -983,7 +972,7 @@ static fsp_err_t rmac_open_param_check (rmac_instance_ctrl_t const * const p_ins
  *                    RMAC channel number
  * Return Value : none
  ***********************************************************************************************************************/
-void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const p_instance_ctrl)
+static void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const p_instance_ctrl)
 {
     uint32_t mrafc = p_instance_ctrl->p_reg_rmac->MRAFC;
 
@@ -1043,7 +1032,7 @@ void rmac_configure_reception_filter (rmac_instance_ctrl_t const * const p_insta
  *                                      or result of Auto-negotiation is abnormal.
  *
  ***********************************************************************************************************************/
-fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_instance_ctrl,
+static fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_instance_ctrl,
                                const layer3_switch_magic_packet_detection_t mode)
 {
     fsp_err_t err = FSP_SUCCESS;
@@ -1065,7 +1054,6 @@ fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_instance_
 
     p_rmac_extended_cfg   = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     p_switch_extended_cfg = (layer3_switch_extended_cfg_t *) p_rmac_extended_cfg->p_ether_switch->p_cfg->p_extend;
-#ifndef RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK
     p_phy_instance        =
         (ether_phy_instance_t *) p_switch_extended_cfg->p_ether_phy_instances[p_instance_ctrl->p_cfg->channel];
 
@@ -1075,15 +1063,6 @@ fsp_err_t rmac_do_link (rmac_instance_ctrl_t * const                 p_instance_
                                                                &link_speed_duplex,
                                                                &local_pause_bits,
                                                                &partner_pause_bits);
-
-#else
-	FSP_PARAMETER_NOT_USED(p_phy_instance);
-	FSP_PARAMETER_NOT_USED(link_speed_duplex);
-	FSP_PARAMETER_NOT_USED(local_pause_bits);
-	FSP_PARAMETER_NOT_USED(partner_pause_bits);
-
-	link_result = FSP_SUCCESS;
-#endif
 
     if (FSP_SUCCESS == link_result)
     {
@@ -1164,7 +1143,6 @@ static fsp_err_t rmac_link_status_check (rmac_instance_ctrl_t const * const p_in
     p_phy_instance        =
         (ether_phy_instance_t *) p_switch_extended_cfg->p_ether_phy_instances[p_instance_ctrl->p_cfg->channel];
 
-#ifndef RMAC_CFG_SKIP_PHY_LINK_ABILITY_CHECK
     /* Update PHY LSI information */
     R_RMAC_PHY_ChipSelect(p_phy_instance->p_ctrl, p_instance_ctrl->p_cfg->channel);
 
@@ -1187,13 +1165,7 @@ static fsp_err_t rmac_link_status_check (rmac_instance_ctrl_t const * const p_in
                                                      &local_pause,
                                                      &partner_pause);
     }
-#else
-    /* When skipping PHY link ability check, assume the link is up. */
-    FSP_PARAMETER_NOT_USED(link_status);
-    FSP_PARAMETER_NOT_USED(line_speed_duplex);
-    FSP_PARAMETER_NOT_USED(local_pause);
-    FSP_PARAMETER_NOT_USED(partner_pause);
-#endif 
+
     return err;
 }                                      /* End of function rmac_link_status_check() */
 
@@ -1242,7 +1214,7 @@ static void rmac_call_callback (rmac_instance_ctrl_t * p_instance_ctrl, ether_ca
  *                    RMAC channel number
  * Return Value : none
  ***********************************************************************************************************************/
-void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
+static void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
 {
     layer3_switch_descriptor_t descriptor = {0};
 
@@ -1395,7 +1367,7 @@ void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
  *                    RMAC control block.
  * Return Value : none
  ***********************************************************************************************************************/
-void rmac_init_buffers (rmac_instance_ctrl_t * const p_instance_ctrl)
+static void rmac_init_buffers (rmac_instance_ctrl_t * const p_instance_ctrl)
 {
     uint32_t i;
     uint32_t buffer_num;
@@ -1645,7 +1617,7 @@ static fsp_err_t r_rmac_start_tx_queue (rmac_instance_ctrl_t * p_instance_ctrl, 
 /*******************************************************************************************************************
  * Disable reception on this port.
  **********************************************************************************************************************/
-void r_rmac_disable_reception (rmac_instance_ctrl_t * p_instance_ctrl)
+static void r_rmac_disable_reception (rmac_instance_ctrl_t * p_instance_ctrl)
 {
     rmac_extended_cfg_t      * p_extend   = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     layer3_switch_port_cfg_t   port_cfg   = {0};
@@ -1739,7 +1711,8 @@ static void r_rmac_buffer_enqueue (rmac_buffer_queue_t * p_queue, rmac_buffer_no
 
 /*******************************************************************************************************************//**
  * Function Name: r_rmac_get_rx_queue
- * Description  : Read descriptors in the queue and set new discriptors.
+ * Description  : Read descriptors from the specified RX queue and enqueue received buffers into the driver's
+ *                RX completed queue.
  *
  * @retval  FSP_SUCCESS                     Descriptor got or set successfully.
  **********************************************************************************************************************/
@@ -1798,8 +1771,8 @@ static fsp_err_t r_rmac_get_rx_queue (rmac_instance_ctrl_t * p_instance_ctrl, ui
 }
 
 /*******************************************************************************************************************//**
- * Function Name: r_rmac_get_rx_queue
- * Description  : Read descriptors in the queue and set new discriptors.
+ * Function Name: r_rmac_set_rx_queue
+ * Description  : Refill the specified RX queue by writing new descriptors (or LEMPTY if no buffer available).
  *
  * @retval  FSP_SUCCESS                     Descriptor got or set successfully.
  **********************************************************************************************************************/
@@ -2187,9 +2160,9 @@ void rmac_rmpi_isr (void)
     /* Clear RMPI status bit. */
     p_instance_ctrl->p_reg_rmac->MMIS2 = status_rmpi; /* Clear all ETHERC status BFR, PSRTO, LCHNG, MPD, ICD */
 
-    // /* Clear pending interrupt flag to make sure it doesn't fire again
-    //  * after exiting. */
-    // R_BSP_IrqStatusClear(R_FSP_CurrentIrqGet());
+    /* Clear pending interrupt flag to make sure it doesn't fire again
+     * after exiting. */
+    R_BSP_IrqStatusClear(R_FSP_CurrentIrqGet());
 
     /* Restore context if RTOS is used */
     FSP_CONTEXT_RESTORE

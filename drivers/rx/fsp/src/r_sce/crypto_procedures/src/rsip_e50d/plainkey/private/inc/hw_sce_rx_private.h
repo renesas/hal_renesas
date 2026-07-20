@@ -1,4 +1,8 @@
-/* ${REA_DISCLAIMER_PLACEHOLDER} */
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 #include "r_sce_if.h"
 #include "SCE_ProcCommon.h"
@@ -15,15 +19,8 @@
  #elif defined(__GNUC__)
   #define __REV(x)    __builtin_bswap32((uint32_t) (x))
  #elif defined(__ICCRX__)
-static inline uint32_t r_sce_bswap32 (uint32_t x)
-{
-    return (x & 0x000000ff) << 24 |
-           (x & 0x0000ff00) << 8 |
-           (x & 0x00ff0000) >> 8 |
-           (x & 0xff000000) >> 24;
-}
-
-  #define __REV    r_sce_bswap32
+  #include <intrinsics.h>
+  #define __REV(x)    __REVL((unsigned long) (x))
  #else
   #error "Unsupported compiler. Please define change_endian_long for your compiler."
  #endif
@@ -55,6 +52,10 @@ static inline uint32_t r_sce_bswap32 (uint32_t x)
  #define SIZE_AES_XTS_256BIT_KEYLEN_BITS_WRAPPED     (672)
  #define SIZE_AES_XTS_256BIT_KEYLEN_BYTES_WRAPPED    ((SIZE_AES_XTS_256BIT_KEYLEN_BITS_WRAPPED) / 8)
  #define SIZE_AES_XTS_256BIT_KEYLEN_WORDS_WRAPPED    ((SIZE_AES_XTS_256BIT_KEYLEN_BITS_WRAPPED) / 32)
+
+ #define SIZE_CHACHA20_256BIT_KEYLEN_BITS_WRAPPED     (416)
+ #define SIZE_CHACHA20_256BIT_KEYLEN_BYTES_WRAPPED    ((SIZE_CHACHA20_256BIT_KEYLEN_BITS_WRAPPED) / 8)
+ #define SIZE_CHACHA20_256BIT_KEYLEN_WORDS_WRAPPED    ((SIZE_CHACHA20_256BIT_KEYLEN_BITS_WRAPPED) / 32)
 
 /** Return RSA wrapped private key size in bytes from the specified RSA modulus size in bits */
  #define RSA_WRAPPED_PRIVATE_KEY_SIZE_BYTES(RSA_SIZE_BITS)    (800U)
@@ -877,7 +878,7 @@ fsp_err_t HW_SCE_ShaGenerateMessageDigestSubGeneral(const uint32_t InData_HashTy
                                                     uint32_t       OutData_State[],
                                                     const uint32_t MAX_CNT,
                                                     const uint32_t InData_InitVal[]);
-fsp_err_t HW_SCE_Sha3GenerateMessageDigestSubAdaptor(const uint32_t InData_HashType[],
+fsp_err_t HW_SCE_Sha3GenerateMessageDigestSubGeneral(const uint32_t InData_HashType[],
                                                      const uint32_t InData_Cmd[],
                                                      const uint32_t InData_Msg[],
                                                      const uint32_t InData_MsgLen[],
@@ -891,11 +892,22 @@ fsp_err_t HW_SCE_GenerateRsa3072RandomKeyIndexSub(const uint32_t InData_KeyMode[
                                                   uint32_t       OutData_PubKey[],
                                                   uint32_t       OutData_PrivKeyIndex[],
                                                   uint32_t       OutData_PrivKey[]);
+fsp_err_t HW_SCE_GenerateRsa4096RandomKeyIndexSub(const uint32_t InData_KeyMode[], 
+                                                  const uint32_t MAX_CNT,
+                                                  uint32_t OutData_PubKeyIndex[],
+                                                  uint32_t OutData_PubKey[],
+                                                  uint32_t OutData_PrivKeyIndex[],
+                                                  uint32_t OutData_PrivKey[]);
 fsp_err_t HW_SCE_GenerateEccP521RandomKeyIndexSubAdaptor(const uint32_t InData_KeyMode[],
                                                          const uint32_t InData_DomainParam[],
                                                          uint32_t       OutData_PubKey[],
                                                          uint32_t       OutData_PrivKeyIndex[],
                                                          uint32_t       OutData_PrivKey[]);
+fsp_err_t HW_SCE_Rsa1024ModularExponentDecryptSubAdaptor(const uint32_t InData_KeyMode[],
+                                                         const uint32_t InData_KeyIndex[],
+                                                         const uint32_t InData_Key[],
+                                                         const uint32_t InData_Text[],
+                                                         uint32_t OutData_Text[]);
 fsp_err_t HW_SCE_Rsa2048ModularExponentDecryptSubAdaptor(const uint32_t InData_KeyMode[],
                                                          const uint32_t InData_KeyIndex[],
                                                          const uint32_t InData_Key[],
@@ -911,6 +923,10 @@ fsp_err_t HW_SCE_Rsa4096ModularExponentDecryptSubAdaptor(const uint32_t InData_K
                                                          const uint32_t InData_Key[],
                                                          const uint32_t InData_Text[],
                                                          uint32_t       OutData_Text[]);
+fsp_err_t HW_SCE_Rsa1024ModularExponentEncryptSubAdaptor(const uint32_t InData_KeyIndex[],
+                                                         const uint32_t InData_Key[],
+                                                         const uint32_t InData_Text[],
+                                                         uint32_t OutData_Text[]);
 fsp_err_t HW_SCE_Rsa2048ModularExponentEncryptSubAdaptor(const uint32_t InData_KeyIndex[],
                                                          const uint32_t InData_Key[],
                                                          const uint32_t InData_Text[],
@@ -977,12 +993,12 @@ fsp_err_t HW_SCE_Chacha20InitSub(const uint32_t InData_KeyMode[],
                                  const uint32_t InData_Ctr[],
                                  const uint32_t InData_Nonce[],
                                  const uint32_t InData_TextLen[]);
-fsp_err_t HW_SCE_Chacha20ResumeSub(const uint32_t InData_KeyMode[],
-                                   const uint32_t InData_KeyIndex[],
-                                   const uint32_t InData_Key[],
-                                   const uint32_t InData_Nonce[],
-                                   const uint32_t InData_State[]);
-fsp_err_t HW_SCE_Chacha20SuspendSub(uint32_t OutData_State[]);
+fsp_err_t HW_SCE_Chacha20ResumeSub (const uint32_t InData_KeyMode[],
+                                    const uint32_t InData_KeyIndex[],
+                                    const uint32_t InData_Key[],
+                                    const uint32_t InData_Nonce[],
+                                    const uint32_t InData_State[]);
+fsp_err_t HW_SCE_Chacha20SuspendSub (uint32_t OutData_State[]);
 void      HW_SCE_Chacha20UpdateSub(const uint32_t InData_Text[], uint32_t OutData_Text[], uint32_t MAX_CNT);
 void      HW_SCE_Chacha20Poly1305UpdateAADSub(const uint32_t InData_DataA[], uint32_t MAX_CNT);
 fsp_err_t HW_SCE_Chacha20Poly1305FinalSub(const uint32_t InData_Text[],
@@ -999,5 +1015,6 @@ fsp_err_t HW_SCE_Chacha20Poly1305InitSub(const uint32_t InData_KeyMode[],
                                          const uint32_t InData_DataALen[]);
 void HW_SCE_Chacha20Poly1305UpdateTransitionSub(void);
 void HW_SCE_Chacha20Poly1305UpdateSub(const uint32_t InData_Text[], uint32_t OutData_Text[], uint32_t MAX_CNT);
-
+fsp_err_t HW_SCE_Chacha20Poly1305SuspendSub(uint32_t OutData_State[]);
+fsp_err_t HW_SCE_Chacha20Poly1305ResumeSub(const uint32_t InData_KeyMode[], const uint32_t InData_KeyIndex[], const uint32_t InData_Key[], const uint32_t InData_Cmd[], const uint32_t InData_Nonce[], const uint32_t InData_State[]);
 #endif                                 /* HW_SCE_RX_PRIVATE_HEADER_FILE */

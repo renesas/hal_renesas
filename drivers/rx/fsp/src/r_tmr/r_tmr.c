@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /***********************************************************************************************************************
  * Includes
@@ -202,9 +188,10 @@ fsp_err_t R_TMR_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_c
     }
 
     /* Initialize registers to the value reset*/
-    p_instance_ctrl->p_reg->TCCR[p_instance_ctrl->index] = 0U;
-    p_instance_ctrl->p_reg->TCR[p_instance_ctrl->index]  = 0U;
-    p_instance_ctrl->p_reg->TCSR[p_instance_ctrl->index] = tcsr;
+    p_instance_ctrl->p_reg->TCCR[p_instance_ctrl->index]          = 0U;
+    p_instance_ctrl->p_reg->TCR[p_instance_ctrl->index]           = 0U;
+    p_instance_ctrl->p_reg->TCSR[p_instance_ctrl->index]          = tcsr;
+    p_instance_ctrl->p_reg->TCSTR[p_instance_ctrl->control_index] = 0U;
 
     /* Set the TMR configuration settings provided in ::timer_cfg_t and ::tmr_extended_cfg_t. */
     r_tmr_config_set(p_instance_ctrl, p_cfg);
@@ -237,7 +224,8 @@ fsp_err_t R_TMR_Stop (timer_ctrl_t * const p_ctrl)
 
     /* Stop clock timer*/
     tccr &= R_TMR_TCCR_TMRIS_Msk;
-    p_instance_ctrl->p_reg->TCCR[p_instance_ctrl->control_index] = tccr;
+    p_instance_ctrl->p_reg->TCCR[p_instance_ctrl->control_index]  = tccr;
+    p_instance_ctrl->p_reg->TCSTR[p_instance_ctrl->control_index] = 0U;
 
     /* Waiting for register TCCR stopped. */
     FSP_HARDWARE_REGISTER_WAIT(tccr, p_instance_ctrl->p_reg->TCCR[p_instance_ctrl->control_index]);
@@ -496,9 +484,10 @@ fsp_err_t R_TMR_StatusGet (timer_ctrl_t * const p_ctrl, timer_status_t * const p
 
     tmr_extended_cfg_t * p_extend = (tmr_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 
-    /* Get counter state. */
+    /* Get counter state. ELC count-start updates TCSTR without changing TCCR. */
     uint8_t tccr = p_instance_ctrl->p_reg->TCCR[p_instance_ctrl->control_index];
-    if ((tccr & TMR_TCCR_SCK_CSS_VALUE_MASK) != 0)
+    if (((tccr & TMR_TCCR_SCK_CSS_VALUE_MASK) != 0U) ||
+        (0U != p_instance_ctrl->p_reg->TCSTR_b[p_instance_ctrl->control_index].TCS))
     {
         p_status->state = TIMER_STATE_COUNTING;
     }
@@ -618,7 +607,8 @@ fsp_err_t R_TMR_Close (timer_ctrl_t * const p_ctrl)
     p_instance_ctrl->p_reg->TCSR[p_instance_ctrl->index] = (uint8_t) tcsr;
 
     /* Stop timer. */
-    p_instance_ctrl->p_reg->TCCR[p_instance_ctrl->control_index] = 0U;
+    p_instance_ctrl->p_reg->TCCR[p_instance_ctrl->control_index]  = 0U;
+    p_instance_ctrl->p_reg->TCSTR[p_instance_ctrl->control_index] = 0U;
 
     /* Disable interrupts. */
     p_instance_ctrl->p_reg->TCR[p_instance_ctrl->index] = 0U;

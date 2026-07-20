@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /***********************************************************************************************************************
  * Includes
@@ -432,9 +418,11 @@ fsp_err_t R_CANFDG_Open (can_ctrl_t * const p_api_ctrl, can_cfg_t const * const 
 #endif
 
     /* Write TX message buffer interrupt enable bits */
-    memcpy((void *) &p_reg->TMIER[interlaced_channel * CANFDG_PRV_CFDTMIEC_LENGTH],
-           &p_extend->txmb_txi_enable,
-           CANFDG_PRV_CFDTMIEC_LENGTH * sizeof(uint32_t));
+    for (uint32_t i = 0; i < CANFDG_PRV_CFDTMIEC_LENGTH; i++)
+    {
+        p_reg->TMIER[(interlaced_channel * CANFDG_PRV_CFDTMIEC_LENGTH) + i] =
+            (uint32_t) (p_extend->txmb_txi_enable >> (i * CANFDG_WORD_DATA_BITS_LENGTH));
+    }
 
     /* Configure channel error interrupts */
     p_reg->CFDC[interlaced_channel].CHCR = p_extend->error_interrupts | R_CANFDG_CFDC_CHCR_MDC_Msk;
@@ -1102,7 +1090,14 @@ static void r_canfdg_global_error_handler (uint32_t instance)
     {
         /* Get lowest RX FIFO with Message Lost condition and clear the flag */
         args.buffer = r_canfdg_count_leading_zeros(r_canfdg_reverse_bit_order(p_ctrl->p_reg->FMLSR));
-        p_ctrl->p_reg->RFSR[args.buffer] &= ~R_CANFDG_RFSR_LOST_Msk;
+        if (args.buffer < CANFDG_PRV_RX_FIFO_MAX)
+        {
+            p_ctrl->p_reg->RFSR[args.buffer] &= ~R_CANFDG_RFSR_LOST_Msk;
+        }
+        else
+        {
+            p_ctrl->p_reg->CFSR[args.buffer - R_CANFDG_FMLSR_CFML0_Pos] &= ~R_CANFDG_CFSR_LOST_Msk;
+        }
     }
 
     /* Set channel and context based on selected global error handler channel. */

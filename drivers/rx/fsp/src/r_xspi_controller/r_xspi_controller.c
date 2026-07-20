@@ -1,22 +1,8 @@
-/***********************************************************************************************************************
- * Copyright [2020-2026] Renesas Electronics Corporation and/or its affiliates. All Rights Reserved.
- *
- * This software and documentation are supplied by Renesas Electronics Corporation and/or its affiliates. and may only
- * be used with products of Renesas Electronics Corp. and its affiliates ("Renesas"). No other uses are authorized.
- * Renesas products are sold pursuant to Renesas terms and conditions of sale. Purchasers are solely responsible for
- * the selection and use of Renesas products and Renesas assumes no liability. No license, express or implied, to any
- * intellectual property right is granted by Renesas. This software is protected under all applicable laws, including
- * copyright laws. Renesas reserves the right to change or discontinue this software and/or this documentation.
- * THE SOFTWARE AND DOCUMENTATION IS DELIVERED TO YOU "AS IS," AND RENESAS MAKES NO REPRESENTATIONS OR WARRANTIES, AND
- * TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, DISCLAIMS ALL WARRANTIES, WHETHER EXPLICITLY OR IMPLICITLY,
- * INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT, WITH RESPECT TO THE
- * SOFTWARE OR DOCUMENTATION. RENESAS SHALL HAVE NO LIABILITY ARISING OUT OF ANY SECURITY VULNERABILITY OR BREACH.
- * TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL RENESAS BE LIABLE TO YOU IN CONNECTION WITH THE SOFTWARE OR
- * DOCUMENTATION (OR ANY PERSON OR ENTITY CLAIMING RIGHTS DERIVED FROM YOU) FOR ANY LOSS, DAMAGES, OR CLAIMS WHATSOEVER,
- * INCLUDING, WITHOUT LIMITATION, ANY DIRECT, CONSEQUENTIAL, SPECIAL, INDIRECT, PUNITIVE, OR INCIDENTAL DAMAGES; ANY
- * LOST PROFITS, OTHER ECONOMIC DAMAGE, PROPERTY DAMAGE, OR PERSONAL INJURY; AND EVEN IF RENESAS HAS BEEN ADVISED OF THE
- * POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS.
- **********************************************************************************************************************/
+/*
+* Copyright (c) 2020 - 2026 Renesas Electronics Corporation and/or its affiliates
+*
+* SPDX-License-Identifier: BSD-3-Clause
+*/
 
 /***********************************************************************************************************************
  * Includes
@@ -50,6 +36,39 @@ extern rsip_instance_t const * const gp_rsip_instance;
 #define XSPI_CONTROLLER_PRV_CHANNELS_PER_UNIT      (2U)
 #define XSPI_CONTROLLER_PRV_UNIT_CHANNELS_SHIFT    (XSPI_CONTROLLER_PRV_CHANNELS_PER_UNIT)
 #define XSPI_CONTROLLER_PRV_UNIT_CHANNELS_MASK     ((1U << XSPI_CONTROLLER_PRV_UNIT_CHANNELS_SHIFT) - 1U)
+
+/* If any of the BSP memory macros are not defined, give them a default value of 0 for use in this file. */
+#ifndef BSP_XSPI0_CS0_START_ADDRESS
+ #define BSP_XSPI0_CS0_START_ADDRESS               (0U)
+#endif
+
+#ifndef BSP_XSPI0_CS0_SIZE_BYTES
+ #define BSP_XSPI0_CS0_SIZE_BYTES                  (0U)
+#endif
+
+#ifndef BSP_XSPI0_CS1_START_ADDRESS
+ #define BSP_XSPI0_CS1_START_ADDRESS               (0U)
+#endif
+
+#ifndef BSP_XSPI0_CS1_SIZE_BYTES
+ #define BSP_XSPI0_CS1_SIZE_BYTES                  (0U)
+#endif
+
+#ifndef BSP_XSPI1_CS0_START_ADDRESS
+ #define BSP_XSPI1_CS0_START_ADDRESS               (0U)
+#endif
+
+#ifndef BSP_XSPI1_CS0_SIZE_BYTES
+ #define BSP_XSPI1_CS0_SIZE_BYTES                  (0U)
+#endif
+
+#ifndef BSP_XSPI1_CS1_START_ADDRESS
+ #define BSP_XSPI1_CS1_START_ADDRESS               (0U)
+#endif
+
+#ifndef BSP_XSPI1_CS1_SIZE_BYTES
+ #define BSP_XSPI1_CS1_SIZE_BYTES                  (0U)
+#endif
 
 /**
  * Mask of all channels for a given XSPI_CONTROLLER unit.
@@ -147,6 +166,11 @@ extern rsip_instance_t const * const gp_rsip_instance;
 /* When XSPI supports only channel 0, COMSTT register should access a bitfield with a width of 1 bit. */
 #define XSPI_CONTROLLER_PRV_COMSTT_MEMACCCH_MASK                  (XSPI_CONTROLLER_PRV_ACCESS_BITFIELD << \
                                                                    R_XSPI0_COMSTT_MEMACCCH0_Pos)
+#define XSPI_CONTROLLER_PRV_COMSTT_WRBUFNECH_MASK                 (XSPI_CONTROLLER_PRV_ACCESS_BITFIELD << \
+                                                                   R_XSPI0_COMSTT_WRBUFNECH0_Pos)
+
+#define XSPI_CONTROLLER_PRV_COMSTT_PENDING_ACTION_MASK            (XSPI_CONTROLLER_PRV_COMSTT_MEMACCCH_MASK | \
+                                                                   XSPI_CONTROLLER_PRV_COMSTT_WRBUFNECH_MASK)
 
 #define XSPI_CONTROLLER_SOFTWARE_DELAY                            (50U)
 
@@ -205,6 +229,7 @@ static void r_xspi_controller_row_load_store(xspi_controller_instance_ctrl_t * c
 #endif
 
 #if XSPI_CONTROLLER_CFG_XIP_SUPPORT_ENABLE
+static void r_xspi_controller_dummy_read(uint32_t * p_read_address);
 static void r_xspi_controller_xip(xspi_controller_instance_ctrl_t * p_instance_ctrl, bool is_entering);
 
 #endif
@@ -305,6 +330,15 @@ fsp_err_t R_XSPI_CONTROLLER_Open (spi_flash_ctrl_t * const p_ctrl, spi_flash_cfg
     if (NULL != p_cfg_extend->p_dotf_cfg)
     {
         ret = r_xspi_controller_dotf_setup(p_cfg_extend->xspi_controller_unit, p_cfg_extend->p_dotf_cfg);
+        if (FSP_SUCCESS != ret)
+        {
+            /* If the DOTF initialization fails, stop the module if no other channels are active. */
+            if (0 == (g_xspi_controller_channels_open_flags & XSPI_CONTROLLER_PRV_UNIT_MASK(p_cfg_extend)))
+            {
+                R_BSP_MODULE_STOP(FSP_IP_XSPI, p_cfg_extend->xspi_controller_unit);
+            }
+        }
+
         FSP_ERROR_RETURN(FSP_SUCCESS == ret, ret);
     }
 #endif
@@ -1446,6 +1480,31 @@ static void r_xspi_controller_direct_transfer (xspi_controller_instance_ctrl_t  
 #if XSPI_CONTROLLER_CFG_XIP_SUPPORT_ENABLE
 
 /*******************************************************************************************************************//**
+ * Performs a dummy read from the provided address.
+ *
+ * Some scenarios, mainly XiP state changes, require a memory-mapped read operation to emit the proper bus symbol. This
+ * function will perform a read at the provided address, throw out the result, then toggle b3 of the address. The
+ * toggling of b3 ensures the next dummy read will occur at an address that is not currently available in
+ * the XSPI_CONTROLLER peripheral's 1-line (8-byte) data read buffer (this is not the same as the prefetch buffer).
+ * If the same address is read twice in a row, the peripheral may return the buffered value instead of issuing
+ * a new bus transaction.
+ *
+ * @param[in,out] p_read_address Address as a uint32_t to read dummy data from
+ **********************************************************************************************************************/
+static void r_xspi_controller_dummy_read (uint32_t * p_read_address)
+{
+    volatile uint64_t dummy_value = 0;
+
+    if (0U != *p_read_address)
+    {
+        dummy_value     = *((volatile uint64_t *) (uintptr_t) *p_read_address);
+        *p_read_address = ((*p_read_address) ^ 0x08U);
+    }
+
+    FSP_PARAMETER_NOT_USED(dummy_value);
+}
+
+/*******************************************************************************************************************//**
  * Configures the device to enter or exit XiP mode.
  *
  * @param[in]   p_instance_ctrl    Pointer to the instance ctrl struct.
@@ -1453,61 +1512,96 @@ static void r_xspi_controller_direct_transfer (xspi_controller_instance_ctrl_t  
  **********************************************************************************************************************/
 static void r_xspi_controller_xip (xspi_controller_instance_ctrl_t * p_instance_ctrl, bool is_entering)
 {
-    R_XSPI0_Type * const    p_reg                = p_instance_ctrl->p_reg;
-    const spi_flash_cfg_t * p_cfg                = p_instance_ctrl->p_cfg;
-    volatile uint8_t      * p_dummy_read_address = (volatile uint8_t *)
-                                                   (uintptr_t) ((XSPI_CONTROLLER_DEVICE_NUMBER_0 ==
-                                                                 p_instance_ctrl->channel) ?
-                                                                BSP_FEATURE_XSPI_CONTROLLER_UNIT_0_DEVICE_0_START_ADDRESS
-                                                                :
-                                                                BSP_FEATURE_XSPI_CONTROLLER_UNIT_0_DEVICE_1_START_ADDRESS);
-    volatile uint8_t dummy_read = 0;
+    R_XSPI0_Type * const    p_reg              = p_instance_ctrl->p_reg;
+    const spi_flash_cfg_t * p_cfg              = p_instance_ctrl->p_cfg;
+    uint32_t                dummy_read_address = 0;
 
-    FSP_PARAMETER_NOT_USED(dummy_read); // Suppress variable not used error.
+    /* Get the initial address to perform dummy reads.
+     * This is just the first word of the appropriate memory-mapped CS region.*/
+    if (0U == p_instance_ctrl->xspi_controller_unit)
+    {
+        dummy_read_address = ((XSPI_CONTROLLER_DEVICE_NUMBER_0 == p_instance_ctrl->channel) ?
+                              BSP_XSPI0_CS0_START_ADDRESS :
+                              BSP_XSPI0_CS1_START_ADDRESS);
+    }
+    else if (1U == p_instance_ctrl->xspi_controller_unit)
+    {
+        dummy_read_address = ((XSPI_CONTROLLER_DEVICE_NUMBER_0 == p_instance_ctrl->channel) ?
+                              BSP_XSPI1_CS0_START_ADDRESS :
+                              BSP_XSPI1_CS1_START_ADDRESS);
+    }
+    else
+    {
+        /* Not a valid unit. */
+    }
 
-    /* Clear the pre-fetch buffer for this bank so the next read is guaranteed to use the XiP code. */
+    const uint32_t reg_cmctlch = ((uint32_t) (p_cfg->xip_enter_command << R_XSPI0_CMCTLCH_XIPENCODE_Pos)) |
+                                 ((uint32_t) (p_cfg->xip_exit_command << R_XSPI0_CMCTLCH_XIPEXCODE_Pos));
+
+    /* Save the bus bridge config to restore it after the XiP mode change. */
+    const uint32_t reg_bmcfgch0 = p_reg->BMCFGCH[0];
+    const uint32_t reg_bmcfgch1 = p_reg->BMCFGCH[1];
+
  #if XSPI_CONTROLLER_CFG_PREFETCH_FUNCTION
-    p_reg->BMCTL1 |= XSPI_CONTROLLER_PRV_BMCTL1_CLEAR_PREFETCH_MASK;
+
+    /* Clear the pre-fetch buffer so following reads always send a read transaction to the xSPI memory. */
+    p_reg->BMCTL1 = XSPI_CONTROLLER_PRV_BMCTL1_CLEAR_PREFETCH_MASK;
+
+    /* Disable the prefetch buffer. */
+    p_reg->BMCFGCH[0] = reg_bmcfgch0 & ~R_XSPI0_BMCFGCH_PREEN_Msk;
+    p_reg->BMCFGCH[1] = reg_bmcfgch1 & ~R_XSPI0_BMCFGCH_PREEN_Msk;
  #endif
 
+    if (XSPI_CONTROLLER_COMBINATION_FUNCTION_DISABLE != XSPI_CONTROLLER_CFG_COMBINATION_FUNCTION)
+    {
+        /* Flush any combination writes before disabling. */
+        p_reg->BMCTL1 = XSPI_CONTROLLER_PRV_BMCTL1_PUSH_COMBINATION_WRITE_MASK;
+    }
+
+    /* Perform a dummy read before disabling memory mapping. */
+    r_xspi_controller_dummy_read(&dummy_read_address);
+
+    /* Disable bus bridge buffering. */
+    p_reg->BMCFGCH[0] = 0U;
+    p_reg->BMCFGCH[1] = 0U;
+
     /* Wait for any on-going access to complete. */
-    FSP_HARDWARE_REGISTER_WAIT((p_reg->COMSTT & XSPI_CONTROLLER_PRV_COMSTT_MEMACCCH_MASK), 0);
+    FSP_HARDWARE_REGISTER_WAIT((p_reg->COMSTT & XSPI_CONTROLLER_PRV_COMSTT_PENDING_ACTION_MASK), 0);
 
     if (is_entering)
     {
         /* Change memory-mapping to read-only mode. */
         p_reg->BMCTL0 = XSPI_CONTROLLER_PRV_BMCTL0_READ_ONLY_VALUE;
 
-        /* Configure XiP codes and enable. */
-        const uint32_t cmctlch = R_XSPI0_CMCTLCH_XIPEN_Msk |
-                                 ((uint32_t) (p_cfg->xip_enter_command << R_XSPI0_CMCTLCH_XIPENCODE_Pos)) |
-                                 ((uint32_t) (p_cfg->xip_exit_command << R_XSPI0_CMCTLCH_XIPEXCODE_Pos));
-
         /* XiP enter/exit codes are configured only for memory mapped operations and affects both XSPI slave channels. */
-        p_reg->CMCTLCH[0] = cmctlch;
-        p_reg->CMCTLCH[1] = cmctlch;
+        p_reg->CMCTLCH[0] = reg_cmctlch | R_XSPI0_CMCTLCH_XIPEN_Msk;
+        p_reg->CMCTLCH[1] = reg_cmctlch | R_XSPI0_CMCTLCH_XIPEN_Msk;
 
         /* Perform a read to send the enter code. All further reads will use the enter code and will not send a read command code. */
-        dummy_read = *p_dummy_read_address;
-
-        /* Wait for the read to complete. */
-        FSP_HARDWARE_REGISTER_WAIT((p_reg->COMSTT & XSPI_CONTROLLER_PRV_COMSTT_MEMACCCH_MASK), 0);
+        r_xspi_controller_dummy_read(&dummy_read_address);
     }
     else
     {
-        /* Disable XiP. */
-        p_reg->CMCTLCH[0] &= ~R_XSPI0_CMCTLCH_XIPEN_Msk;
-        p_reg->CMCTLCH[1] &= ~R_XSPI0_CMCTLCH_XIPEN_Msk;
+        /* Disable XiP. The exit code needs to available at this stage. */
+        p_reg->CMCTLCH[0] = reg_cmctlch;
 
-        /* Perform a read to send the exit code. All further reads will not send an exit code. */
-        dummy_read = *p_dummy_read_address;
+        /* Perform a read to send the exit code. */
+        r_xspi_controller_dummy_read(&dummy_read_address);
 
-        /* Wait for the read to complete. */
-        FSP_HARDWARE_REGISTER_WAIT((p_reg->COMSTT & XSPI_CONTROLLER_PRV_COMSTT_MEMACCCH_MASK), 0);
+        /* Clear all XiP settings. */
+        p_reg->CMCTLCH[0] = 0U;
+        p_reg->CMCTLCH[1] = 0U;
+
+        /* This read should be without XiP. */
+        r_xspi_controller_dummy_read(&dummy_read_address);
 
         /* Change memory-mapping back to R/W mode. */
         p_reg->BMCTL0 = XSPI_CONTROLLER_PRV_BMCTL0_READ_WRITE_VALUE;
     }
+
+    /* Restore bus bridge buffering to the previous state. */
+    p_reg->BMCFGCH[0] = reg_bmcfgch0;
+    p_reg->BMCFGCH[1] = reg_bmcfgch1;
 }
 
 #endif
@@ -1618,9 +1712,9 @@ static fsp_err_t r_xspi_controller_dotf_side_channal_seed_init (uint32_t p_seed[
  **********************************************************************************************************************/
 static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xspi_controller_dotf_cfg_t * p_dotf_cfg)
 {
-    fsp_err_t sce_ret = FSP_SUCCESS;
-    uint32_t  seed[2] = {0};
-    FSP_PARAMETER_NOT_USED(xspi_controller_unit);
+    fsp_err_t      sce_ret = FSP_SUCCESS;
+    uint32_t       seed[2] = {0};
+    R_DOTF0_Type * p_reg   = (R_DOTF0_Type *) (R_DOTF0_BASE + (xspi_controller_unit * (R_DOTF1_BASE - R_DOTF0_BASE)));
 
     if (XSPI_CONTROLLER_DOTF_KEY_FORMAT_WRAPPED != p_dotf_cfg->format)
     {
@@ -1662,7 +1756,9 @@ static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xsp
     }
 
     sce_ret =
-        gp_rsip_instance->p_api->otfInit(gp_rsip_instance->p_ctrl, RSIP_OTF_CHANNEL_0, p_wrapped_key,
+        gp_rsip_instance->p_api->otfInit(gp_rsip_instance->p_ctrl,
+                                         (rsip_otf_channel_t) (xspi_controller_unit),
+                                         p_wrapped_key,
                                          (uint8_t *) &seed[0]);
 
     if (FSP_SUCCESS != sce_ret)
@@ -1679,19 +1775,19 @@ static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xsp
     if (sce_ret == FSP_SUCCESS)
     {
         /* Disable byte order conversion. */
-        R_DOTF->REG00 = (XSPI_CONTROLLER_PRV_DOTF_REG00_RESET_VALUE | R_DOTF_REG00_B09_Msk);
+        p_reg->REG00 = (XSPI_CONTROLLER_PRV_DOTF_REG00_RESET_VALUE | R_DOTF_REG00_B09_Msk);
 
         /* Load the IV. */
-        R_DOTF->REG03 = bswap_32big(p_dotf_cfg->p_iv[0]);
-        R_DOTF->REG03 = bswap_32big(p_dotf_cfg->p_iv[1]);
-        R_DOTF->REG03 = bswap_32big(p_dotf_cfg->p_iv[2]);
-        R_DOTF->REG03 = bswap_32big(p_dotf_cfg->p_iv[3]);
+        p_reg->REG03 = bswap_32big(p_dotf_cfg->p_iv[0]);
+        p_reg->REG03 = bswap_32big(p_dotf_cfg->p_iv[1]);
+        p_reg->REG03 = bswap_32big(p_dotf_cfg->p_iv[2]);
+        p_reg->REG03 = bswap_32big(p_dotf_cfg->p_iv[3]);
     }
 
     /* Set the end and start area for DOTF conversion in that order to
      * ensure that end address is always higher than start address. */
-    R_DOTF->CONVAREAED = (uint32_t) p_dotf_cfg->p_end_addr;
-    R_DOTF->CONVAREAST = (uint32_t) p_dotf_cfg->p_start_addr;
+    p_reg->CONVAREAED = (uint32_t) p_dotf_cfg->p_end_addr;
+    p_reg->CONVAREAST = (uint32_t) p_dotf_cfg->p_start_addr;
 
     return sce_ret;
 }
@@ -1708,11 +1804,12 @@ static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xsp
  **********************************************************************************************************************/
 static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xspi_controller_dotf_cfg_t * p_dotf_cfg)
 {
-    fsp_err_t     sce_ret = FSP_SUCCESS;
-    uint32_t      unit    = xspi_controller_unit;
-    uint32_t      seed[2] = {0};
-    uint32_t      wrapped_key[HW_SCE_AES256_KEY_INDEX_WORD_SIZE] = {0};
-    sce_oem_cmd_t key_cmd = SCE_OEM_CMD_AES128;
+    fsp_err_t      sce_ret = FSP_SUCCESS;
+    uint32_t       unit    = xspi_controller_unit;
+    uint32_t       seed[2] = {0};
+    uint32_t       wrapped_key[HW_SCE_AES256_KEY_INDEX_WORD_SIZE] = {0};
+    sce_oem_cmd_t  key_cmd = SCE_OEM_CMD_AES128;
+    R_DOTF0_Type * p_reg   = (R_DOTF0_Type *) (R_DOTF0_BASE + (xspi_controller_unit * (R_DOTF1_BASE - R_DOTF0_BASE)));
 
     if ((((uint32_t) &(p_dotf_cfg->p_key[0])) & 0x03) && (((uint32_t) &(p_dotf_cfg->p_iv[0])) & 0x03))
     {
@@ -1796,19 +1893,19 @@ static fsp_err_t r_xspi_controller_dotf_setup (uint8_t xspi_controller_unit, xsp
     if (sce_ret == FSP_SUCCESS)
     {
         /* Disable byte order conversion. */
-        R_DOTF->REG00 = (XSPI_CONTROLLER_PRV_DOTF_REG00_RESET_VALUE | R_DOTF_REG00_B09_Msk);
+        p_reg->REG00 = (XSPI_CONTROLLER_PRV_DOTF_REG00_RESET_VALUE | R_DOTF_REG00_B09_Msk);
 
         /* Load the IV. */
-        R_DOTF->REG03 = change_endian_long(p_dotf_cfg->p_iv[0]);
-        R_DOTF->REG03 = change_endian_long(p_dotf_cfg->p_iv[1]);
-        R_DOTF->REG03 = change_endian_long(p_dotf_cfg->p_iv[2]);
-        R_DOTF->REG03 = change_endian_long(p_dotf_cfg->p_iv[3]);
+        p_reg->REG03 = change_endian_long(p_dotf_cfg->p_iv[0]);
+        p_reg->REG03 = change_endian_long(p_dotf_cfg->p_iv[1]);
+        p_reg->REG03 = change_endian_long(p_dotf_cfg->p_iv[2]);
+        p_reg->REG03 = change_endian_long(p_dotf_cfg->p_iv[3]);
     }
 
     /* Set the end and start area for DOTF conversion in that order to
      * ensure that end address is always higher than start address. */
-    R_DOTF->CONVAREAED = (uint32_t) p_dotf_cfg->p_end_addr;
-    R_DOTF->CONVAREAST = (uint32_t) p_dotf_cfg->p_start_addr;
+    p_reg->CONVAREAED = (uint32_t) p_dotf_cfg->p_end_addr;
+    p_reg->CONVAREAST = (uint32_t) p_dotf_cfg->p_start_addr;
 
     return sce_ret;
 }
