@@ -91,6 +91,16 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_DISPLAY
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_MIPI_DSI
 	fsp/src/r_mipi_dsi/r_mipi_dsi.c
 	fsp/src/r_mipi_phy/r_mipi_phy.c)
+if(CONFIG_USE_RA_FSP_MIPI_CSI)
+	zephyr_include_directories(
+		fsp/src/r_mipi_csi
+		fsp/src/r_mipi_phy
+	)
+zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_MIPI_CSI
+	fsp/src/r_mipi_csi/r_mipi_csi.c
+	fsp/src/r_mipi_phy/r_mipi_phy.c)
+endif()
+
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_DAC
 	fsp/src/r_dac/r_dac.c)
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_USB_HOST
@@ -243,5 +253,10 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CRC
 
 zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CEU
 	fsp/src/r_ceu/r_ceu.c)
+
+if(CONFIG_USE_RA_FSP_VIN)
+	zephyr_include_directories(fsp/src/r_vin)
+	zephyr_library_sources(fsp/src/r_vin/r_vin.c)
+endif()
 
 zephyr_compile_definitions_ifdef(CONFIG_INPUT_RENESAS_RA_QE_TOUCH_CFG QE_TOUCH_CONFIGURATION)
