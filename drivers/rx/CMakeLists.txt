@@ -150,7 +150,6 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 	)
 
 	set(srcs
-		fsp/src/bsp/mcu/all/bsp_rom_registers.c
 		fsp/src/bsp/mcu/all/bsp_clocks.c
 		fsp/src/bsp/mcu/all/bsp_delay.c
 		fsp/src/bsp/mcu/all/bsp_register_protection.c
