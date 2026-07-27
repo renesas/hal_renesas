@@ -273,4 +273,10 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 		)
 	endif()
 
+	if(CONFIG_USE_RX_FSP_RTC)
+		zephyr_library_sources(
+			fsp/src/r_rtc/r_rtc.c
+		)
+	endif()
+
 endif()
