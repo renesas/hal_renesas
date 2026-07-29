@@ -68,3 +68,8 @@ Patch List:
       drivers/rx/fsp/src/r_layer3_switch/r_layer3_switch.c
       zephyr/rx/fsp_cfg/r_rmac_cfg.h
       zephyr/rx/fsp_cfg/r_layer3_switch_cfg.h
+
+   * Fix case handling for RX package lost in r_rmac driver
+   Impacted files:
+      drivers/rx/fsp/inc/instances/r_rmac.h
+      drivers/rx/fsp/src/r_rmac/r_rmac.c
