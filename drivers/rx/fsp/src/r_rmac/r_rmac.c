@@ -557,6 +557,26 @@ fsp_err_t R_RMAC_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, uint3
     FSP_CRITICAL_SECTION_DEFINE;
     FSP_CRITICAL_SECTION_ENTER;
 
+    /* Recover a queue that the interrupt callback reported as lost. Deferred to
+     * this thread-context call (see ETHER_SWITCH_EVENT_RX_MESSAGE_LOST in
+     * r_rmac_switch_interrupt_callback) to avoid expensive descriptor
+     * drain/refill work in the interrupt path. */
+    if (p_instance_ctrl->rx_recover_pending)
+    {
+        uint32_t lost_queue_index = p_instance_ctrl->rx_lost_queue_index;
+
+        p_instance_ctrl->rx_recover_pending  = false;
+        p_instance_ctrl->rx_lost_queue_index = RMAC_INVALID_QUEUE_INDEX;
+
+        if (RMAC_INVALID_QUEUE_INDEX != lost_queue_index)
+        {
+            uint32_t lost_hw_queue_index = p_extend->p_rx_queue_list[lost_queue_index].index;
+
+            r_rmac_get_rx_queue(p_instance_ctrl, lost_hw_queue_index);
+            r_rmac_set_rx_queue(p_instance_ctrl, lost_hw_queue_index);
+        }
+    }
+
     p_read_buffer_node = r_rmac_buffer_dequeue(&p_instance_ctrl->rx_completed_buffer_queue);
     if (NULL != p_read_buffer_node)
     {
@@ -2110,22 +2130,27 @@ static void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_a
                 }
             }
 
-            if (RMAC_INVALID_QUEUE_INDEX != lost_queue_index)
+            /* Only act when the loss was reported for the queue currently being
+             * serviced. A loss on any other (idle/backup) queue does not affect
+             * ongoing reception and must not hijack rx_running_queue_index away
+             * from a queue that is still delivering data normally. */
+            if ((RMAC_INVALID_QUEUE_INDEX != lost_queue_index) &&
+                (lost_queue_index == p_instance_ctrl->rx_running_queue_index))
             {
-                next_queue_index = lost_queue_index;
-                RMAC_INCREMENT_DESCRIPTOR_QUEUE_INDEX(next_queue_index, p_extend->rx_queue_num);
-
+                /* Record the stalled queue; the actual descriptor drain/refill
+                 * is deferred to thread context (R_RMAC_Read) to avoid expensive
+                 * work in the interrupt path. */
                 p_instance_ctrl->rx_lost_queue_index = lost_queue_index;
                 p_instance_ctrl->rx_recover_pending  = true;
 
-                if (next_queue_index != p_instance_ctrl->rx_running_queue_index)
-                {
-                    if (FSP_SUCCESS == R_LAYER3_SWITCH_StartDescriptorQueue(
+                next_queue_index = lost_queue_index;
+                RMAC_INCREMENT_DESCRIPTOR_QUEUE_INDEX(next_queue_index, p_extend->rx_queue_num);
+
+                if (FSP_SUCCESS == R_LAYER3_SWITCH_StartDescriptorQueue(
                         p_extend->p_ether_switch->p_ctrl,
                         p_extend->p_rx_queue_list[next_queue_index].index))
-                    {
-                        p_instance_ctrl->rx_running_queue_index = next_queue_index;
-                    }
+                {
+                    p_instance_ctrl->rx_running_queue_index = next_queue_index;
                 }
             }
 
