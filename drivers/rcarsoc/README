@@ -1,0 +1,34 @@
+FreeRTOS BSP Driver (DRV)
+###############################
+
+Origin:
+   Renesas Electronics Corporation
+   https://github.com/renesas-rcar/FreeRTOS
+
+Status:
+   version v2.2.0
+
+Purpose:
+   FreeRTOS BSP driver for R-Car Gen 5.
+
+Description:
+   This package is a snapshot from the R-Car FreeRTOS BSP driver released by Renesas Electronics Corporation
+   It contain the HAL for Renesas R-Car Gen 5 SoC
+
+Dependencies:
+    None.
+
+URL:
+   https://github.com/renesas-rcar/FreeRTOS
+
+Commit:
+   c508f344c12be90cef52471c385d17e063764d63
+
+Maintained-by:
+   Renesas Electronics Corporation
+
+License:
+   MIT
+
+License Link:
+   http://opensource.org/licenses/mit-license.php
