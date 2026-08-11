@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
-if(CONFIG_SOC_R8A7800_R52)
+if(CONFIG_SOC_R8A78000_R52)
     zephyr_library_compile_definitions(BOARD=X5H_IRONHIDE)
 endif()
 

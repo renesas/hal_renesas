@@ -61,12 +61,12 @@ static volatile uint32_t fBaseAddress[DRV_RTDMAC_UNIT_NUM] = {
     DRV_ADMAC_REG_ADDR_DMACP3,
     DRV_SCPDMAC_REG_ADDR_DMAC0,
     DRV_SCPDMAC_REG_ADDR_DMAC1,
-    NULL,
-    NULL,
+    (volatile uint32_t) NULL,
+    (volatile uint32_t) NULL,
     DRV_SCPDMAC_REG_ADDR_DMACP0,
     DRV_SCPDMAC_REG_ADDR_DMACP1,
-    NULL,
-    NULL,
+    (volatile uint32_t) NULL,
+    (volatile uint32_t) NULL,
 #endif /* CONFIG_USE_RCARSOC_DRV_DMAC */
 };
 
