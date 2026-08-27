@@ -81,3 +81,12 @@ else()
 endif()
 
 endif() # CONFIG_PHY_RENESAS_Q32XX
+
+if(CONFIG_RENESAS_RCAR_MP_PHY)
+	generate_inc_file_for_target(
+		${ZEPHYR_CURRENT_LIBRARY}
+		portable/assets/gen5/rcar_gen5_mp_phy.bin
+		${ZEPHYR_BINARY_DIR}/include/generated/rcar_gen5_mp_phy.bin.inc
+	)
+	zephyr_library_sources(${CMAKE_CURRENT_LIST_DIR}/portable/src/mpphy_firmware.c)
+endif()
