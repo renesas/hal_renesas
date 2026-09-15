@@ -10,6 +10,12 @@ zephyr_include_directories(
     portable/inc
     portable/inc/x5h
     portable/inc/mfis)
+
+if(CONFIG_USE_RCARSOC_DRV_OSTM)
+    zephyr_include_directories(portable/fsp)
+    add_subdirectory(rcarsoc_cfg)
+endif()
+
 zephyr_library_compile_options(-w)
 
 zephyr_library_sources_ifdef(CONFIG_USE_RCARSOC_DRV_MFIS

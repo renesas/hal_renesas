@@ -32,3 +32,19 @@ if(CONFIG_USE_RCARSOC_DRV_WATCHDOG)
 	zephyr_include_directories(drv/inc/watchdog)
 endif()
 
+if(CONFIG_USE_RCARSOC_DRV_OSTM)
+	zephyr_library_sources(
+		fsp/src/r_ostm/r_ostm.c
+		fsp/src/bsp/mcu/all/bsp_irq.c)
+
+	zephyr_include_directories(
+		fsp/inc
+		fsp/inc/api
+		fsp/inc/instances
+		fsp/src/bsp/mcu/all
+		fsp/src/bsp/mcu/x5h
+		fsp/src/bsp/rcarsoc/Device/RENESAS/Include)
+
+	zephyr_include_directories_ifdef(CONFIG_SOC_R8A78000_R52
+		fsp/src/bsp/mcu/x5h/r8a78000)
+endif()
