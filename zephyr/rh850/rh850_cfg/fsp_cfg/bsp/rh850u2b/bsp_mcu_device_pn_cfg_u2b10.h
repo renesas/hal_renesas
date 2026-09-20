@@ -588,7 +588,7 @@
 #endif
 
 #ifndef BSP_OPBT_SETTING_OPBT3
- #define BSP_OPBT_SETTING_OPBT3                       (0xF1FF7EFEUL)
+ #define BSP_OPBT_SETTING_OPBT3                       (0xF1FB7EFEUL)
 #endif
 
 #ifndef BSP_OPBT_SETTING_OPBT4
@@ -712,11 +712,11 @@
 #endif
 
 #ifndef BSP_OPBT_SETTING_OPBT34
- #define BSP_OPBT_SETTING_OPBT34                      (0xF0F5EC01UL)
+ #define BSP_OPBT_SETTING_OPBT34                      (0xF0F5EC03UL)
 #endif
 
 #ifndef BSP_OPBT_SETTING_OPBT35
- #define BSP_OPBT_SETTING_OPBT35                      (0x0A180001UL)
+ #define BSP_OPBT_SETTING_OPBT35                      (0x0A180003UL)
 #endif
 
 #ifndef BSP_OPBT_SETTING_OPBT36

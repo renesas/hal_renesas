@@ -8,7 +8,7 @@
  * @file     rh850_ghs.h
  * @brief    RH850 compiler GHS header file
  * @version  V0.0.2
- * @date     24 Jun 2026
+ * @date     01 Aug 2026
  **********************************************************************************************************************/
 
 #ifndef __RH850_GHS_H
@@ -255,7 +255,12 @@ __STATIC_FORCEINLINE uint32_t __RBIT (uint32_t value)
  * @return             number of leading zeros in value
  * @note    Keep RH850 function name and ensure identical behavior on RH850.
  */
-#define __CLZ(value)    ((__SCH1L(value)) ? (__SCH1L(value) - 1) : 32)
+__STATIC_FORCEINLINE uint32_t __CLZ (uint32_t value)
+{
+    const int32_t pos = __SCH1L((int) value);
+
+    return (0 != pos) ? (uint32_t) (pos - 1) : 32U;
+}
 
 /**
  * @brief   Signed Saturate
@@ -644,10 +649,10 @@ __STATIC_FORCEINLINE uint32_t __STLEX (uint32_t value, volatile uint32_t * ptr)
 
     __ASM volatile (
         "synce            \n"
-        "stc.w %2, [%1]   \n"
+        "stc.w %1, [%2]   \n"
         "mov   1, %0      \n"
-        "xor   %2, %0     \n"
-        : "=&r" (result) : "r" (ptr), "r" (value) : "memory", "cc"
+        "xor   %1, %0     \n"
+        : "=&r" (result), "+r" (value) : "r" (ptr) : "memory", "cc"
         );
 
     return result;
@@ -812,7 +817,7 @@ __STATIC_FORCEINLINE int32_t __MUL (int32_t a, int32_t b)
     int32_t result;
     int32_t reg1 = a;
     int32_t reg2 = b;
-    __ASM volatile ("mul %1, %2, %0" : "=r" (result) : "r" (reg1), "r" (reg2) : "memory");
+    __ASM volatile ("mul %2, %1, %0" : "=r" (result), "+r" (reg2) : "r" (reg1) : "memory");
 
     return result;
 }
@@ -830,7 +835,7 @@ __STATIC_FORCEINLINE long __MULU (long a, long b)
     long reg1 = a;
     long reg2 = b;
 
-    __ASM volatile ("mulu %1, %2, %0" : "=r" (result) : "r" (reg1), "r" (reg2) : "memory");
+    __ASM volatile ("mulu %2, %1, %0" : "=r" (result), "+r" (reg2) : "r" (reg1) : "memory");
 
     return result;
 }
@@ -996,7 +1001,7 @@ __STATIC_FORCEINLINE int32_t __ROTL (int32_t value, uint8_t bit)
 __STATIC_FORCEINLINE int32_t __DIV (int32_t num1, int32_t num2)
 {
     int32_t result;
-    __ASM volatile ("div  %2, %1, %0" : "=&r" (result) : "r" (num1), "r" (num2) : "memory");
+    __ASM volatile ("div  %2, %1, %0" : "=&r" (result), "+r" (num1) : "r" (num2) : "memory");
 
     return result;
 }
@@ -1627,6 +1632,16 @@ __STATIC_FORCEINLINE uint32_t __get_FEWR (void)
 }
 
 /**
+ * @brief Set SPID (System protection identifier).
+ * @details Writes a value to the SPID system register.
+ * @param[in] value uint32_t input.
+ */
+__STATIC_FORCEINLINE void __set_SPID (uint32_t value)
+{
+    __ASM volatile ("ldsr %0, 0, 1" : : "r" (value) : "memory");
+}
+
+/**
  * @brief Get SPID (System protection identifier).
  * @details Reads the current value of the SPID system register.
  * @return uint32_t register value.
@@ -1639,16 +1654,6 @@ __STATIC_FORCEINLINE uint32_t __get_SPID (void)
     __ASM volatile ("stsr 0, %0, 1" : "=r" (result));
 
     return result;
-}
-
-/**
- * @brief Set SPID (System protection identifier).
- * @details Writes a value to the SPID system register.
- * @param[in] value uint32_t input.
- */
-__STATIC_FORCEINLINE void __set_SPID (uint32_t value)
-{
-    __ASM volatile ("ldsr %0, 0, 1" : : "r" (value) : "memory");
 }
 
 /**
@@ -1707,7 +1712,7 @@ __STATIC_FORCEINLINE uint32_t __get_EBASE (void)
 }
 
 /**
- * @brief Set INTBP (Base address of the interrupt handler “address” table).
+ * @brief Set INTBP (Base address of the interrupt handler "address" table).
  * @details Writes a value to the INTBP system register.
  * @param[in] value uint32_t input.
  */
@@ -1717,7 +1722,7 @@ __STATIC_FORCEINLINE void __set_INTBP (uint32_t value)
 }
 
 /**
- * @brief Get INTBP (Base address of the interrupt handler “address” table).
+ * @brief Get INTBP (Base address of the interrupt handler "address" table).
  * @details Reads the current value of the INTBP system register.
  * @return uint32_t register value.
  *
@@ -3357,7 +3362,7 @@ __STATIC_FORCEINLINE void __set_PMCTRL4 (uint32_t value)
 #if defined(__RH850_G4MH) && (__RH850_G4MH == 1)
 
 /**
- * @brief Get PMCTRL4- (Performance count control 4 register).
+ * @brief Get PMCTRL4 (Performance count control 4 register).
  * @details Reads the current value of the PMCTRL4 system register.
  * @return uint32_t register value.
  *
@@ -4028,7 +4033,7 @@ __STATIC_FORCEINLINE uint32_t __get_LSTEST0 (void)
 }
 
 /**
- * @brief Set LSTEST1- (Lock-step function self-diagnosis register 1).
+ * @brief Set LSTEST1 (Lock-step function self-diagnosis register 1).
  * @details Writes a value to the LSTEST1 system register.
  * @param[in] value uint32_t input.
  */
@@ -4230,7 +4235,7 @@ __STATIC_FORCEINLINE uint32_t __get_HVCFG (void)
 
 /** @} end of group RH850_Core_FunctionInterface */
 
-// Include the profile specific settings:
+/* Include the profile specific settings: */
 #include "G4-profile/rh850_ghs_g4.h"
 
 #endif                                 /* __RH850_GHS_H */

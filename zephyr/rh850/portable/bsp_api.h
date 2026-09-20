@@ -85,13 +85,13 @@ FSP_HEADER
  **********************************************************************************************************************/
 
 /*******************************************************************************************************************//**
- * @addtogroup BSP_MCU
+ * @addtogroup BSP_COMMON
  * @{
  **********************************************************************************************************************/
 
 fsp_err_t R_FSP_VersionGet(fsp_pack_version_t * const p_version);
 
-/** @} (end addtogroup BSP_MCU) */
+/** @} (end addtogroup BSP_COMMON) */
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

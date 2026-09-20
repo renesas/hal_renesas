@@ -8,7 +8,7 @@
  * @file     rh850_g4_fpu.h
  * @brief    FPU initialization function for RH850 G4
  * @version  V0.0.2
- * @date     24 Jun 2026
+ * @date     01 Aug 2026
  **********************************************************************************************************************/
 
 #if defined(__FPU_PRESENT) && (__FPU_PRESENT == 1U)
@@ -164,11 +164,11 @@ typedef enum e_rh850_fpu_fcbit_cc
  */
 typedef enum e_rh850_fpu_status_enable
 {
-    RH850_FPU_STATUS_ENABLE_OFF = 0x0U, /*!< Counter is disabled */
-    RH850_FPU_STATUS_ENABLE_ON  = 0x1U  /*!< Counter is enabled */
+    RH850_FPU_STATUS_ENABLE_OFF = 0x0U, /*!< FPU is disabled */
+    RH850_FPU_STATUS_ENABLE_ON  = 0x1U  /*!< FPU is enabled */
 } rh850_fpu_status_enable_t;
 
-/** @} */ /* end of RH850_FXU_Types */
+/** @} */ /* end of RH850_FPU_Types */
 
 /* ###########################################  FPU API Functions  ################################################## */
 
@@ -189,7 +189,7 @@ typedef enum e_rh850_fpu_status_enable
  *          specified by @p LenFcbit. If the CC bit is set, the comparison result is TRUE;
  *          otherwise, it is FALSE.
  *
- * @param  LenFcbit  CC bit position (0–7) corresponding to the floating-point comparison result.
+ * @param  LenFcbit  CC bit position (0-7) corresponding to the floating-point comparison result.
  *
  * @return bool
  *         - true  : Comparison condition is satisfied.
@@ -200,13 +200,17 @@ typedef enum e_rh850_fpu_status_enable
  */
 __STATIC_INLINE bool __RH850_FPU_FpsrCcBitGet (rh850_fpu_fcbit_cc_t LenFcbit)
 {
-    bool LblReturnValue;
+    bool     LblReturnValue;
+    uint32_t LulCcBitMask;
 
-    /* Initalize for LblReturnValue */
+    /* Initialize for LblReturnValue */
     LblReturnValue = false;
 
-    /* Get the comparation result at specific fcbit */
-    if ((__get_FPSR() & R_FPU_FPSR_CC_Msk) & (LenFcbit << R_FPU_FPSR_CC_Pos))
+    /* Build the single-bit mask for the requested CCn bit (FPSR bit = CC_Pos + n) */
+    LulCcBitMask = (1UL << (R_FPU_FPSR_CC_Pos + (uint32_t) LenFcbit));
+
+    /* Get the comparison result at the specific CC bit */
+    if (0U != (__get_FPSR() & LulCcBitMask))
     {
         LblReturnValue = true;
     }
@@ -222,7 +226,7 @@ __STATIC_INLINE bool __RH850_FPU_FpsrCcBitGet (rh850_fpu_fcbit_cc_t LenFcbit)
  *          store the outcome of floating-point comparison instructions (0 = false,
  *          1 = true) and can also be updated via software by writing FPSR.
  *
- * @param  LenFcbit  CC bit selector (0–7) that identifies which CCn bit to update.
+ * @param  LenFcbit  CC bit selector (0-7) that identifies which CCn bit to update.
  *                   The value corresponds to CC0..CC7 (mapped to FPSR bits 24..31).
  * @param  LblValue  Comparison result to set:
  *                   - false : condition not satisfied (0)
@@ -235,16 +239,23 @@ __STATIC_INLINE bool __RH850_FPU_FpsrCcBitGet (rh850_fpu_fcbit_cc_t LenFcbit)
 __STATIC_INLINE void __RH850_FPU_FpsrCcBitSet (rh850_fpu_fcbit_cc_t LenFcbit, bool LblValue)
 {
     uint32_t LulFpsrRegValue;
+    uint32_t LulCcBitMask;
 
-    /* Get the FPSR value and mask for the input bit */
+    /* Build the single-bit mask for the requested CCn bit (FPSR bit = CC_Pos + n) */
+    LulCcBitMask = (1UL << (R_FPU_FPSR_CC_Pos + (uint32_t) LenFcbit));
+
+    /* Get the FPSR value and clear the target CCn bit only (keep the other bits) */
     LulFpsrRegValue  = __get_FPSR();
-    LulFpsrRegValue &= (LenFcbit << R_FPU_FPSR_CC_Pos);
+    LulFpsrRegValue &= (~LulCcBitMask);
 
-    /* Setting the new value for CCn bit */
-    LulFpsrRegValue |= (LblValue << R_FPU_FPSR_CC_Pos);
+    /* Set the new value for the CCn bit */
+    if (false != LblValue)
+    {
+        LulFpsrRegValue |= LulCcBitMask;
+    }
 
     /* Write back */
-    (void) __set_FPSR(LulFpsrRegValue);
+    __set_FPSR(LulFpsrRegValue);
 }
 
 /**
@@ -326,7 +337,7 @@ __STATIC_INLINE void __RH850_FPU_ModeRoundingSet (rh850_fpu_round_t LenMode)
 }
 
 /**
- * @brief Set FPU rounding mode (FPCFG.RM[9:8]).
+ * @brief Get FPU rounding mode (FPCFG.RM[9:8]).
  * @details
  * Reads **FPCFG (SR10)** for RM[9:8] bits, then return the Rounding Mode.
  *
@@ -430,8 +441,8 @@ __STATIC_INLINE void __RH850_FPU_Disable (void)
  */
 __STATIC_INLINE rh850_fpu_status_enable_t __RH850_FPU_EnableGet (void)
 {
-    /* Extract CEN bit, translate into enumeration */
-    return (__get_PSW() & R_SYS_PSW_CU0_Msk) ? RH850_FPU_STATUS_ENABLE_ON : RH850_FPU_STATUS_ENABLE_OFF;
+    /* Extract CU0 bit, translate into enumeration */
+    return (0U != (__get_PSW() & R_SYS_PSW_CU0_Msk)) ? RH850_FPU_STATUS_ENABLE_ON : RH850_FPU_STATUS_ENABLE_OFF;
 }
 
 /**
@@ -461,7 +472,7 @@ __STATIC_INLINE void __RH850_FPU_StatusClear (rh850_fpu_status_t LulFpuStatus)
     LulFpstRegValue = __get_FPST();
 
     /* Clear requested bits */
-    LulFpstRegValue &= ~(LulFpuStatus & (R_FPU_FPST_XC_Msk | R_FPU_FPST_IF_Msk | R_FPU_FPST_XP_Msk));
+    LulFpstRegValue &= ~((uint32_t) LulFpuStatus & (R_FPU_FPST_XC_Msk | R_FPU_FPST_IF_Msk | R_FPU_FPST_XP_Msk));
 
     /* Write back */
     __set_FPST(LulFpstRegValue);

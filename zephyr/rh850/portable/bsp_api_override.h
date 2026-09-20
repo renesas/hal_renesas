@@ -4,6 +4,8 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU
  * @defgroup BSP_MCU_RH850 BSP MCU
@@ -21,6 +23,8 @@
  *
  * These components form the fundamental hardware-level support for applications running on RH850 devices.
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /*******************************************************************************************************************//**
  * @addtogroup BSP_MCU
@@ -60,6 +64,8 @@
 #if (BSP_FEATURE_QOS_IS_AVAILABLE)
  #include "bsp_qos.h"
 #endif
+
+#include "bsp_fault_trace.h"
 
 /* Factory MCU information. */
 #include "fsp_features.h"

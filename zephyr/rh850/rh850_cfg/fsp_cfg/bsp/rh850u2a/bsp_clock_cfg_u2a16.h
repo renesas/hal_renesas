@@ -329,6 +329,10 @@
  #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_SRC     (1)                         /* CYCLIC_CLKA_ADC: CLK_HSIOSC/20 */
 #endif
 
+#ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_DIV
+ #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_DIV     (1)                         /* CYCLIC_CKSC_AADCC selection/1 */
+#endif
+
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_HZ
  #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_HZ      (10000000)                  /* CYCLIC_CLKA_ADC: 10000000Hz */
 #endif

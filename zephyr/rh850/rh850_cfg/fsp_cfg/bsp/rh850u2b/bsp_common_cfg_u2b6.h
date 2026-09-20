@@ -22,8 +22,8 @@
 #endif
 
 /* BSP Reduced Interrupt Handler Address */
-#ifndef BSP_INTERRUPT_HANDLER_REDUCTION
- #define BSP_INTERRUPT_HANDLER_REDUCTION         (0)
+#ifndef BSP_INTERRUPT_REDUCTION
+ #define BSP_INTERRUPT_REDUCTION                 (0)
 #endif
 
 /* BSP Nested Interrupt Enable */

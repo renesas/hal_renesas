@@ -8,7 +8,7 @@
  * @file     rh850_ccrh.h
  * @brief    RH850 compiler CCRH header file
  * @version  V0.0.2
- * @date     24 Jun 2026
+ * @date     01 Aug 2026
  **********************************************************************************************************************/
 
 #ifndef __RH850_CCRH_H
@@ -160,7 +160,7 @@
  * @return               Reversed value
  * @note    Keep CMSIS function name and ensure identical behavior on RH850.
  */
-#define __REVSH(value)    (int16_t) __bsh(value)
+#define __REVSH(value)    ((int16_t) __bsh(value))
 
 /**
  * @brief   Rotate Right in unsigned value (32 bit)
@@ -212,7 +212,12 @@ __STATIC_FORCEINLINE uint32_t __RBIT (uint32_t value)
  * @return             number of leading zeros in value
  * @note    Keep CMSIS function name and ensure identical behavior on RH850.
  */
-#define __CLZ(value)    ((__sch1l(value)) ? (__sch1l(value) - 1) : 32)
+__STATIC_FORCEINLINE uint32_t __CLZ (uint32_t value)
+{
+    const int32_t pos = __sch1l((long) value);
+
+    return (0 != pos) ? (uint32_t) (pos - 1) : 32U;
+}
 
 /**
  * @brief   Signed Saturate
@@ -1447,6 +1452,17 @@ static uint32_t __get_FEWR (void)
 }
 
 /**
+ * @brief Set SPID (System protection identifier).
+ * @details Writes a value to the SPID system register.
+ * @param[in] value uint32_t input.
+ */
+#pragma inline_asm __set_SPID
+static void __set_SPID (uint32_t value)
+{
+    ldsr r6, 0, 1
+}
+
+/**
  * @brief Get SPID (System protection identifier).
  * @details Reads the current value of the SPID system register.
  * @return uint32_t register value.
@@ -1456,17 +1472,6 @@ static uint32_t __get_FEWR (void)
 static uint32_t __get_SPID (void)
 {
     stsr 0, r10, 1
-}
-
-/**
- * @brief Set SPID (System protection identifier).
- * @details Writes a value to the SPID system register.
- * @param[in] value uint32_t input.
- */
-#pragma inline_asm __set_SPID
-static void __set_SPID (uint32_t value)
-{
-    ldsr r6, 0, 1
 }
 
 /**
@@ -1517,7 +1522,7 @@ static uint32_t __get_EBASE (void)
 }
 
 /**
- * @brief Set INTBP (Base address of the interrupt handler “address” table).
+ * @brief Set INTBP (Base address of the interrupt handler "address" table).
  * @details Writes a value to the INTBP system register.
  * @param[in] value uint32_t input.
  */
@@ -1528,7 +1533,7 @@ static void __set_INTBP (uint32_t value)
 }
 
 /**
- * @brief Get INTBP (Base address of the interrupt handler “address” table).
+ * @brief Get INTBP (Base address of the interrupt handler "address" table).
  * @details Reads the current value of the INTBP system register.
  * @return uint32_t register value.
  *
@@ -2964,7 +2969,7 @@ static void __set_PMCTRL2 (uint32_t value)
     ldsr r6, 2, 14
 #elif defined(__RH850_G4KH) && (__RH850_G4KH == 1)
     ldsr r6, 21, 11
-#endif
+#endif                                 /* #if defined(__RH850_G4MH) && (__RH850_G4MH == 1) */
 }
 
 /**
@@ -2980,7 +2985,7 @@ static uint32_t __get_PMCTRL2 (void)
     stsr 2, r10, 14
 #elif defined(__RH850_G4KH) && (__RH850_G4KH == 1)
     stsr 21, r10, 11
-#endif
+#endif                                 /* #if defined(__RH850_G4MH) && (__RH850_G4MH == 1) */
 }
 
 /**
@@ -2995,7 +3000,7 @@ static void __set_PMCTRL3 (uint32_t value)
     ldsr r6, 3, 14
 #elif defined(__RH850_G4KH) && (__RH850_G4KH == 1)
     ldsr r6, 23, 11
-#endif
+#endif                                 /* #if defined(__RH850_G4MH) && (__RH850_G4MH == 1) */
 }
 
 /**
@@ -3011,7 +3016,7 @@ static uint32_t __get_PMCTRL3 (void)
     stsr 3, r10, 14
 #elif defined(__RH850_G4KH) && (__RH850_G4KH == 1)
     stsr 23, r10, 11
-#endif
+#endif                                 /* #if defined(__RH850_G4MH) && (__RH850_G4MH == 1) */
 }
 
 #if defined(__RH850_G4MH) && (__RH850_G4MH == 1)
@@ -3032,7 +3037,7 @@ static void __set_PMCTRL4 (uint32_t value)
 #if defined(__RH850_G4MH) && (__RH850_G4MH == 1)
 
 /**
- * @brief Get PMCTRL4- (Performance count control 4 register).
+ * @brief Get PMCTRL4 (Performance count control 4 register).
  * @details Reads the current value of the PMCTRL4 system register.
  * @return uint32_t register value.
  *
@@ -3664,7 +3669,7 @@ static uint32_t __get_LSTEST0 (void)
 }
 
 /**
- * @brief Set LSTEST1- (Lock-step function self-diagnosis register 1).
+ * @brief Set LSTEST1 (Lock-step function self-diagnosis register 1).
  * @details Writes a value to the LSTEST1 system register.
  * @param[in] value uint32_t input.
  */
@@ -3850,7 +3855,7 @@ static uint32_t __get_HVCFG (void)
 
 /** @} end of group RH850_Core_FunctionInterface */
 
-// Include the profile specific settings:
+/* Include the profile specific settings: */
 #include "G4-profile/rh850_ccrh_g4.h"
 
 #endif                                 /* __RH850_CCRH_H */

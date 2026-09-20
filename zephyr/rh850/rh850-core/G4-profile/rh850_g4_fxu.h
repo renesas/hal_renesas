@@ -8,7 +8,7 @@
  * @file     rh850_g4_fxu.h
  * @brief    FXU initialization function for RH850 G4
  * @version  V0.0.2
- * @date     24 Jun 2026
+ * @date     01 Aug 2026
  **********************************************************************************************************************/
 
 #if defined(__FXU_PRESENT) && (__FXU_PRESENT == 1U)
@@ -118,6 +118,7 @@ typedef enum e_rh850_fxu_irq_enable
  */
 typedef enum e_rh850_fxu_status
 {
+    RH850_FXU_STATUS_NONE              = 0x0000, /*!< None */
     RH850_FXU_STATUS_INEXACT           = 0x0001, /*!< Inexact */
     RH850_FXU_STATUS_UNDERFLOW         = 0x0002, /*!< Underflow */
     RH850_FXU_STATUS_OVERFLOW          = 0x0004, /*!< Overflow */
@@ -161,7 +162,7 @@ typedef enum e_rh850_fxu_xc_operation_way
  *          for a specific SIMD operation way:
  *          - XPn: Vn, Zn, On, Un, In
  *
- * @note    XP bits indicate “preservation” behavior for IEEE754 exceptions: when set,
+ * @note    XP bits indicate "preservation" behavior for IEEE754 exceptions: when set,
  *          the operation result is preserved even if the corresponding exception occurs.
  */
 typedef enum e_rh850_fxu_xp_operation_way
@@ -362,11 +363,11 @@ __STATIC_INLINE void __RH850_FXU_ExceptionEnableSet (rh850_fxu_irq_enable_t LenI
     LulFxcfgRegValue  = __get_FXCFG();
     LulFxcfgRegValue &= (~R_FXU_FXCFG_XE_Msk);
 
-    /* Update the rounding mode */
+    /* Update the exception enable bits */
     LulFxcfgRegValue |= (uint32_t) (LenIrqEna & R_FXU_FXCFG_XE_Msk);
 
     /* Update XE bits */
-    __set_FXSR(LulFxcfgRegValue);
+    __set_FXCFG(LulFxcfgRegValue);
 }
 
 /**
@@ -384,10 +385,13 @@ __STATIC_INLINE void __RH850_FXU_ExceptionEnableSet (rh850_fxu_irq_enable_t LenI
 __STATIC_INLINE rh850_fxu_xc_t __RH850_FXU_CauseBitsGet (rh850_fxu_xc_operation_way_t LenOperationWay)
 {
     rh850_fxu_xc_t LstReturnValue;
+    uint32_t       LulShift;
+
+    /* Each operation way occupies 8 bits within the FXXC register */
+    LulShift = ((uint32_t) LenOperationWay * 8U);
 
     /* Get the cause bits for a specific operation way */
-    LstReturnValue.XC = (uint8_t) ((__get_FXXC() & (R_FXU_FXXC_XC0_Msk << (LenOperationWay * 8))) >> \
-                                   (LenOperationWay * 8));
+    LstReturnValue.XC = (uint8_t) ((__get_FXXC() & (R_FXU_FXXC_XC0_Msk << LulShift)) >> LulShift);
 
     return LstReturnValue;
 }
@@ -396,7 +400,7 @@ __STATIC_INLINE rh850_fxu_xc_t __RH850_FXU_CauseBitsGet (rh850_fxu_xc_operation_
  * @brief  Get the preservation (XP) bitfield for a specific operation way.
  * @details Reads the FXXP register and returns the XP bit group associated with
  *        @p LenOperationWay (XP0..XP3). The returned value is a bitmask composed of
- *          rh850_fxu_xp_mask_t flags (V, Z, O, U, I).
+ *          rh850_fxu_xp_t flags (V, Z, O, U, I).
  *
  * @param  LenOperationWay   XP group selector.
  *
@@ -409,10 +413,13 @@ __STATIC_INLINE rh850_fxu_xc_t __RH850_FXU_CauseBitsGet (rh850_fxu_xc_operation_
 __STATIC_INLINE rh850_fxu_xp_t __RH850_FXU_PreservationBitsGet (rh850_fxu_xp_operation_way_t LenOperationWay)
 {
     rh850_fxu_xp_t LstReturnValue;
+    uint32_t       LulShift;
+
+    /* Each operation way occupies 8 bits within the FXXP register */
+    LulShift = ((uint32_t) LenOperationWay * 8U);
 
     /* Get the preservation (XP) bitfield for a specific operation way */
-    LstReturnValue.XP = (uint8_t) ((__get_FXXP() & (R_FXU_FXXP_XP0_Msk << (LenOperationWay * 8))) >> \
-                                   (LenOperationWay * 8));
+    LstReturnValue.XP = (uint8_t) ((__get_FXXP() & (R_FXU_FXXP_XP0_Msk << LulShift)) >> LulShift);
 
     return LstReturnValue;
 }
@@ -443,9 +450,8 @@ __STATIC_INLINE void __RH850_FXU_StatusClear (rh850_fxu_status_t LulFxuStatus)
     /* Read the FXST value */
     LulFxstRegValue = __get_FXST();
 
-    /* Clear requested bits */
-    LulFxstRegValue &= (~R_FXU_FXST_XC_Msk | ~R_FXU_FXST_IF_Msk | ~R_FXU_FXST_XP_Msk);
-    LulFxstRegValue |= (LulFxuStatus & (R_FXU_FXST_XC_Msk | R_FXU_FXST_IF_Msk | R_FXU_FXST_XP_Msk));
+    /* Clear requested bits (only within the writable status fields) */
+    LulFxstRegValue &= ~((uint32_t) LulFxuStatus & (R_FXU_FXST_XC_Msk | R_FXU_FXST_IF_Msk | R_FXU_FXST_XP_Msk));
 
     /* Write back */
     __set_FXST(LulFxstRegValue);
@@ -462,7 +468,7 @@ __STATIC_INLINE void __RH850_FXU_Enable (void)
 
     /* Read the value of PSW and set the PSW.CU1 to 1 */
     LulPswRegValue  = __get_PSW();
-    LulPswRegValue |= (R_SYS_EIPSW_CU1_Msk);
+    LulPswRegValue |= (R_SYS_PSW_CU1_Msk);
 
     /* Write back to the PSW */
     __set_PSW(LulPswRegValue);
@@ -477,9 +483,9 @@ __STATIC_INLINE void __RH850_FXU_Disable (void)
 {
     uint32_t LulPswRegValue;
 
-    /* Read the value of PSW and set the PSW.CU1 to 1 */
+    /* Read the value of PSW and clear the PSW.CU1 to 0 */
     LulPswRegValue  = __get_PSW();
-    LulPswRegValue &= (~R_SYS_EIPSW_CU1_Msk);
+    LulPswRegValue &= (~R_SYS_PSW_CU1_Msk);
 
     /* Write back to the PSW */
     __set_PSW(LulPswRegValue);
@@ -487,8 +493,9 @@ __STATIC_INLINE void __RH850_FXU_Disable (void)
 
 /** @} */ /* end of RH850_FXU_API */
 
-#endif                                 /* RH850_CCRH_G4_FXU_H */
+#endif                                 /* RH850_G4_FXU_H */
 
 /** @} */ /* end of RH850_FXU */
 /** @} */ /* end of RH850_CoreAccess_FunctionInterface */
-#endif /* #if defined(__FXU_PRESENT) && (__FXU_PRESENT == 1U) */
+
+#endif                                 /* #if defined(__FXU_PRESENT) && (__FXU_PRESENT == 1U) */

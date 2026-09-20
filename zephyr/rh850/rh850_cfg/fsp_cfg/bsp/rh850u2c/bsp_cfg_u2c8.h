@@ -11,6 +11,7 @@
 #include "board_cfg.h"
 #include "bsp_common_cfg.h"
 #include "bsp_mcu_cpu_memory_cfg.h"
+#include "memory_regions.h"
 #ifndef BSP_API_OVERRIDE
  #define BSP_API_OVERRIDE    "bsp_api_override.h"
 #endif
@@ -20,13 +21,8 @@
 #endif
 
 #ifndef BSP_CFG_RTOS
- #if (FSP_NOT_DEFINED) != (0)
+ #if (FSP_NOT_DEFINED) != (FSP_NOT_DEFINED)
   #define BSP_CFG_RTOS       (2)
- #elif (FSP_NOT_DEFINED) != (FSP_NOT_DEFINED)
-  #ifndef BSP_CFG_RTOS
-   #define BSP_CFG_RTOS      (2)
-  #endif
-
  #elif (FSP_NOT_DEFINED) != (FSP_NOT_DEFINED)
   #define BSP_CFG_RTOS       (1)
  #else

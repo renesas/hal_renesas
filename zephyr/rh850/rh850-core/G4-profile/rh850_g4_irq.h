@@ -8,7 +8,7 @@
  * @file     rh850_g4_irq.h
  * @brief    Interrupt Function for RH850 G4
  * @version  V0.0.2
- * @date     24 Jun 2026
+ * @date     01 Aug 2026
  **********************************************************************************************************************/
 
 #if defined(__IRQ_PRESENT) && (__IRQ_PRESENT == 1U)
@@ -91,12 +91,12 @@ typedef enum e_rh850_isr_priority
 
 /**
  * @enum rh850_imsr_bit_t
- * @brief IMSR bit positions for RH850 mask status.
+ * @brief IMSR bit masks for RH850 mask status.
  *
- * This enumeration defines symbolic names for the IMSR bits so code can
+ * This enumeration defines symbolic names for the IMSR bit masks so code can
  * reference mask sources in a readable way.
  *
- * @note The values equal the bit indices of IMSR.
+ * @note The values are single-bit masks of the IMSR register.
  */
 typedef enum e_rh850_imsr_bit
 {
@@ -298,11 +298,11 @@ __STATIC_INLINE rh850_isr_priority_t __RH850_IRQ_InterruptPriorityGet (void)
  *
  * @return  rh850_imsr_mask_t
  *          - RH850_IMSR_MASK_NOT_EXIST (0U): no mask condition present for the selected bit
- *          - RH850_IMSR_MASK_EXISTS          (1): mask condition present for the selected bit
+ *          - RH850_IMSR_MASK_EXISTS    (1U): mask condition present for the selected bit
  */
 __STATIC_INLINE rh850_imsr_mask_t __RH850_IRQ_InterruptMaskStatusGet (rh850_imsr_bit_t LenMaskBit)
 {
-    return (rh850_imsr_mask_t) (__get_IMSR() & LenMaskBit);
+    return (0U != (__get_IMSR() & (uint32_t) LenMaskBit)) ? RH850_IMSR_MASK_EXISTS : RH850_IMSR_MASK_NOT_EXIST;
 }
 
  #endif                                /* #if defined(__RH850_G4MH) && (__RH850_G4MH == 1) */
@@ -317,7 +317,8 @@ __STATIC_INLINE rh850_imsr_mask_t __RH850_IRQ_InterruptMaskStatusGet (rh850_imsr
  */
 __STATIC_INLINE rh850_imsr_eiint_eplm_mask_t __RH850_IRQ_InterruptControlStatusGet (void)
 {
-    return (rh850_imsr_eiint_eplm_mask_t) (__get_ICSR() & R_IRQ_ICSR_PMEI_Msk);
+    return (0U != (__get_ICSR() & R_IRQ_ICSR_PMEI_Msk)) ?
+           RH850_IMSR_EIINT_EPLM_MASK_EXISTS : RH850_IMSR_EIINT_EPLM_MASK_DOES_NOT_EXIST;
 }
 
 /**
@@ -331,7 +332,7 @@ __STATIC_INLINE rh850_intcfg_extended_priority_level_t __RH850_IRQ_PriorityExten
 
 /**
  * @brief Set EPL bit (enable/disable priority level extension).
- * @param epl RH850_INTCFG_EXTENDED_PRIORITY_LEVEL_ENABLED or RH850_INTCFG_EXTENDED_PRIORITY_LEVEL_DISABLED.
+ * @param LenMode RH850_INTCFG_EXTENDED_PRIORITY_LEVEL_ENABLED or RH850_INTCFG_EXTENDED_PRIORITY_LEVEL_DISABLED.
  *
  * @details When enabled, device supports extended priority levels (e.g., up to 64),
  *          affecting ISPR/IMSR/ISPC interactions per manual (see priority mask sections).
@@ -340,13 +341,15 @@ __STATIC_INLINE void __RH850_IRQ_PriorityExtensionSet (rh850_intcfg_extended_pri
 {
     uint32_t LulIntcfgRegVal;
 
-    /* Read the INTCFG value */
+    /* Read the INTCFG value and clear the EPL bit */
     LulIntcfgRegVal  = __get_INTCFG();
     LulIntcfgRegVal &= (~R_IRQ_INTCFG_EPL_Msk);
-    LulIntcfgRegVal |= ((uint8_t) LenMode << R_IRQ_INTCFG_EPL_Pos);
+
+    /* Set the new EPL value */
+    LulIntcfgRegVal |= (((uint32_t) LenMode << R_IRQ_INTCFG_EPL_Pos) & R_IRQ_INTCFG_EPL_Msk);
 
     /* Write back */
-    (void) __set_INTCFG(LulIntcfgRegVal);
+    __set_INTCFG(LulIntcfgRegVal);
 }
 
 /**
@@ -376,7 +379,7 @@ __STATIC_INLINE void __RH850_IRQ_IsprUpdateModeSet (rh850_intcfg_update_ispc_t L
     LulIntcfgRegVal &= (~R_IRQ_INTCFG_ISPC_Msk);
 
     /* Set mode */
-    LulIntcfgRegVal |= (LenMode & R_IRQ_INTCFG_ISPC_Msk);
+    LulIntcfgRegVal |= (((uint32_t) LenMode << R_IRQ_INTCFG_ISPC_Pos) & R_IRQ_INTCFG_ISPC_Msk);
 
     /* Write back */
     __set_INTCFG(LulIntcfgRegVal);
@@ -402,12 +405,12 @@ __STATIC_INLINE void __RH850_IRQ_RegisterBankLimitSet (uint32_t LulLimit)
 {
     uint32_t LulIntcfgRegVal;
 
-    /* Read the INTCFG value */
+    /* Read the INTCFG value and clear the ULNR field */
     LulIntcfgRegVal  = __get_INTCFG();
-    LulIntcfgRegVal &= (~R_IRQ_INTCFG_ULNR_Pos);
+    LulIntcfgRegVal &= (~R_IRQ_INTCFG_ULNR_Msk);
 
     /* Set the limit */
-    LulIntcfgRegVal |= (LulLimit << R_IRQ_INTCFG_ULNR_Pos) & R_IRQ_INTCFG_ULNR_Msk;
+    LulIntcfgRegVal |= ((LulLimit << R_IRQ_INTCFG_ULNR_Pos) & R_IRQ_INTCFG_ULNR_Msk);
 
     /* Write back */
     __set_INTCFG(LulIntcfgRegVal);
@@ -424,13 +427,13 @@ __STATIC_INLINE rh850_plmr_priority_mask_level_t __RH850_IRQ_PriorityMaskLevelGe
 
 /**
  * @brief Set the PLMR mask level (PLM).
- * @param level rh850_plmr_priority_mask_level_t (0..63).
+ * @param LenLevel rh850_plmr_priority_mask_level_t (0..63).
  * @details Masks all EIINTn with priority <= @p LenLevel.
  *          PLM=0 masks all; priority 63 is always masked.
  */
 __STATIC_INLINE void __RH850_IRQ_PriorityMaskLevelSet (rh850_plmr_priority_mask_level_t LenLevel)
 {
-    (void) __set_PLMR((uint32_t) LenLevel);
+    __set_PLMR((uint32_t) LenLevel);
 }
 
 /**
@@ -450,7 +453,7 @@ __STATIC_INLINE uint32_t __RH850_IRQ_IntMaskGet (void)
  */
 __STATIC_INLINE void __RH850_IRQ_IntMaskSet (uint32_t priMask)
 {
-    if (priMask)
+    if (0U != priMask)
     {
         __disable_irq();
     }
@@ -487,8 +490,8 @@ __STATIC_INLINE void __RH850_IRQ_EnableIRQ (uint32_t IRQn)
 /**
  * @brief   Enable Interrupt by PEn
  * @details Enables a device specific interrupt in the EIC interrupt controller for specific core ID (INTC1 Only).
- * @param [in]      IRQn  Device specific interrupt number (INTC1).
  * @param [in]      CoreID  PEID of the INTC1 interrupt.
+ * @param [in]      IRQn  Device specific interrupt number (INTC1).
  * @note    IRQn must not be negative.
  */
 __STATIC_INLINE void __RH850_IRQ_EnableIRQByPE (uint8_t CoreID, uint32_t IRQn)
@@ -531,8 +534,8 @@ __STATIC_INLINE void __RH850_IRQ_DisableIRQ (uint32_t IRQn)
 /**
  * @brief   Disable Interrupt by PEn
  * @details Disables a device specific interrupt in the EIC interrupt controller for specific core ID (INTC1 Only).
- * @param [in]      IRQn  Device specific interrupt number (INTC1).
  * @param [in]      CoreID  PEID of the INTC1 interrupt.
+ * @param [in]      IRQn  Device specific interrupt number (INTC1).
  * @note    IRQn must not be negative.
  */
 __STATIC_INLINE void __RH850_IRQ_DisableIRQByPE (uint8_t CoreID, uint32_t IRQn)
@@ -566,15 +569,15 @@ __STATIC_INLINE uint8_t __RH850_IRQ_GetEnableIRQ (uint32_t IRQn)
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(LucCoreID, IRQn);
 
-    return !RH850_EEIC_INTC->EEIC_b.EIMK;
+    return (uint8_t) ((0U == RH850_EEIC_INTC->EEIC_b.EIMK) ? 1U : 0U);
 }
 
 /**
  * @brief   Get Interrupt Enable status by PEn
  * @details Returns a device specific interrupt enable status from the EIC interrupt controller
  * for specific core ID (INTC1 Only).
- * @param [in]      IRQn  Device specific interrupt number (INTC1).
  * @param [in]      CoreID  PEID of the INTC1 interrupt.
+ * @param [in]      IRQn  Device specific interrupt number (INTC1).
  * \return             0  Interrupt is not enabled.
  * \return             1  Interrupt is enabled.
  * @note    IRQn must not be negative.
@@ -586,7 +589,7 @@ __STATIC_INLINE uint8_t __RH850_IRQ_GetEnableIRQByPE (uint8_t CoreID, uint32_t I
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(CoreID, IRQn);
 
-    return !RH850_EEIC_INTC->EEIC_b.EIMK;
+    return (uint8_t) ((0U == RH850_EEIC_INTC->EEIC_b.EIMK) ? 1U : 0U);
 }
 
 /**
@@ -605,15 +608,15 @@ __STATIC_INLINE uint8_t __RH850_IRQ_GetPendingIRQ (uint32_t IRQn)
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(LucCoreID, IRQn);
 
-    return RH850_EEIC_INTC->EEIC_b.EIRF;
+    return (uint8_t) RH850_EEIC_INTC->EEIC_b.EIRF;
 }
 
 /**
  * @brief   Get Pending Interrupt
  * @details Reads the EIC pending register and returns the pending bit for the specified device specific interrupt
  * for specific core ID (INTC1 Only).
- * @param [in]      IRQn  Device specific interrupt number (INTC1).
  * @param [in]      CoreID  PEID of the INTC1 interrupt.
+ * @param [in]      IRQn  Device specific interrupt number (INTC1).
  * \return             0  Interrupt status is not pending.
  * \return             1  Interrupt status is pending.
  * @note    IRQn must not be negative.
@@ -625,7 +628,7 @@ __STATIC_INLINE uint8_t __RH850_IRQ_GetPendingIRQByPE (uint8_t CoreID, uint32_t 
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(CoreID, IRQn);
 
-    return RH850_EEIC_INTC->EEIC_b.EIRF;
+    return (uint8_t) RH850_EEIC_INTC->EEIC_b.EIRF;
 }
 
 /**
@@ -642,8 +645,8 @@ __STATIC_INLINE void __RH850_IRQ_ClearPendingIRQ (uint32_t IRQn)
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(LucCoreID, IRQn);
 
-    /* Decttion of the edge */
-    if (RH850_EEIC_INTC->EEIC_b.EICT == 0U)
+    /* Detection of the edge */
+    if (0U == RH850_EEIC_INTC->EEIC_b.EICT)
     {
         /* Clear the pending interrupt flag */
         RH850_EEIC_INTC->EEIC_b.EIRF = 0U;
@@ -658,8 +661,8 @@ __STATIC_INLINE void __RH850_IRQ_ClearPendingIRQ (uint32_t IRQn)
  * @brief   Clear Pending Interrupt
  * @details Clears the pending bit of a device specific interrupt in the EIC pending register
  * for specific core ID (INTC1 Only).
- * @param [in]      IRQn  Device specific interrupt number (INTC1).
  * @param [in]      CoreID  PEID of the INTC1 interrupt.
+ * @param [in]      IRQn  Device specific interrupt number (INTC1).
  * @note    IRQn must not be negative.
  */
 __STATIC_INLINE void __RH850_IRQ_ClearPendingIRQByPE (uint8_t CoreID, uint32_t IRQn)
@@ -669,8 +672,8 @@ __STATIC_INLINE void __RH850_IRQ_ClearPendingIRQByPE (uint8_t CoreID, uint32_t I
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(CoreID, IRQn);
 
-    /* Decttion of the edge */
-    if (RH850_EEIC_INTC->EEIC_b.EICT == 0U)
+    /* Detection of the edge */
+    if (0U == RH850_EEIC_INTC->EEIC_b.EICT)
     {
         /* Clear the pending interrupt flag */
         RH850_EEIC_INTC->EEIC_b.EIRF = 0U;
@@ -698,7 +701,7 @@ __STATIC_INLINE void __RH850_IRQ_SetPriority (uint32_t IRQn, uint32_t priority)
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(LucCoreID, IRQn);
 
-    /* Set the interurpt priority */
+    /* Set the interrupt priority */
     RH850_EEIC_INTC->EEIC_b.EIP = priority;
 
     /* Dummy read & SYNCP */
@@ -711,9 +714,9 @@ __STATIC_INLINE void __RH850_IRQ_SetPriority (uint32_t IRQn, uint32_t priority)
  * @details Sets the priority of a device specific interrupt or a processor exception.
  *         The interrupt number can be positive to specify a device specific interrupt,
  *         or negative to specify a processor exception for specific core ID (INTC1 Only).
+ * @param [in]      CoreID  PEID of the INTC1 interrupt.
  * @param [in]      IRQn  Interrupt number (INTC1).
  * @param [in]  priority  Priority to set.
- * @param [in]      CoreID  PEID of the INTC1 interrupt.
  * @note    The priority cannot be set for every processor exception.
  */
 __STATIC_INLINE void __RH850_IRQ_SetPriorityByPE (uint8_t CoreID, uint32_t IRQn, uint32_t priority)
@@ -723,7 +726,7 @@ __STATIC_INLINE void __RH850_IRQ_SetPriorityByPE (uint8_t CoreID, uint32_t IRQn,
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(CoreID, IRQn);
 
-    /* Set the interurpt priority */
+    /* Set the interrupt priority */
     RH850_EEIC_INTC->EEIC_b.EIP = priority;
 
     /* Dummy read & SYNCP */
@@ -748,7 +751,7 @@ __STATIC_INLINE uint32_t __RH850_IRQ_GetPriority (uint32_t IRQn)
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(LucCoreID, IRQn);
 
-    /* Get the interurpt priority */
+    /* Get the interrupt priority */
     return RH850_EEIC_INTC->EEIC_b.EIP;
 }
 
@@ -757,8 +760,8 @@ __STATIC_INLINE uint32_t __RH850_IRQ_GetPriority (uint32_t IRQn)
  * @details Reads the priority of a device specific interrupt or a processor exception.
  *         The interrupt number can be positive to specify a device specific interrupt,
  *         or negative to specify a processor exception for specific core ID (INTC1 Only).
+ * @param [in]   CoreID  PEID of the INTC1 interrupt.
  * @param [in]   IRQn  Interrupt number (INTC1).
- * @param [in]      CoreID  PEID of the INTC1 interrupt.
  * \return             Interrupt Priority.
  *                    Value is aligned automatically to the implemented priority bits of the microcontroller.
  */
@@ -769,7 +772,7 @@ __STATIC_INLINE uint32_t __RH850_IRQ_GetPriorityByPE (uint8_t CoreID, uint32_t I
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(CoreID, IRQn);
 
-    /* Get the interurpt priority */
+    /* Get the interrupt priority */
     return RH850_EEIC_INTC->EEIC_b.EIP;
 }
 
@@ -798,9 +801,9 @@ __STATIC_INLINE void __RH850_IRQ_SetIRQMethod (uint32_t IRQn, uint32_t vector_me
 /**
  * @brief   Set the interrupt vector method
  * @details Sets the interrupt vector method specific for RH850 processor for specific core ID (INTC1 Only).
- * @param [in]      IRQn  Interrupt number (INCT1).
+ * @param [in]  CoreID         PEID of the INTC1 interrupt.
+ * @param [in]  IRQn           Interrupt number (INTC1).
  * @param [in]  vector_method  Interrupt Vector Method (0: Direct Vector Method/ 1: Table Reference Method)
- * @param [in]      CoreID  PEID of the INTC1 interrupt.
  */
 __STATIC_INLINE void __RH850_IRQ_SetIRQMethodByPE (uint8_t CoreID, uint32_t IRQn, uint32_t vector_method)
 {
@@ -832,14 +835,14 @@ __STATIC_INLINE uint8_t __RH850_IRQ_GetIRQMethod (uint32_t IRQn)
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(LucCoreID, IRQn);
 
     /* Return the interrupt vector method */
-    return RH850_EEIC_INTC->EEIC_b.EITB;
+    return (uint8_t) RH850_EEIC_INTC->EEIC_b.EITB;
 }
 
 /**
  * @brief   Get the interrupt vector method
  * @details Gets the interrupt vector method specific for RH850 processor for specific core ID (INTC1 Only).
- * @param [in]      IRQn  Interrupt number (INCT1).
  * @param [in]      CoreID  PEID of the INTC1 interrupt.
+ * @param [in]      IRQn  Interrupt number (INTC1).
  * \return  Interrupt Vector Method (0: Direct Vector Method/ 1: Table Reference Method)
  */
 __STATIC_INLINE uint8_t __RH850_IRQ_GetIRQMethodByPE (uint8_t CoreID, uint32_t IRQn)
@@ -850,7 +853,7 @@ __STATIC_INLINE uint8_t __RH850_IRQ_GetIRQMethodByPE (uint8_t CoreID, uint32_t I
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(CoreID, IRQn);
 
     /* Return the interrupt vector method */
-    return RH850_EEIC_INTC->EEIC_b.EITB;
+    return (uint8_t) RH850_EEIC_INTC->EEIC_b.EITB;
 }
 
 /**
@@ -869,13 +872,14 @@ __STATIC_INLINE uint32_t __RH850_IRQ_GetActive (uint32_t IRQn)
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(LucCoreID, IRQn);
 
-    return RH850_EEIC_INTC->EEIC_b.EIRF;
+    return (uint32_t) RH850_EEIC_INTC->EEIC_b.EIRF;
 }
 
 /**
  * @brief   Get Active Interrupt
- * @details Reads the active register in the EEIC and returns the active bit for the device specific interrupt.
+ * @details Reads the active register in the EEIC and returns the active bit for the device specific interrupt
  * for specific core ID (INTC1 Only).
+ * @param [in]      CoreID  PEID of the INTC1 interrupt.
  * @param [in]      IRQn  Device specific interrupt number (INTC1).
  * @return             0  Interrupt status is not active.
  * @return             1  Interrupt status is active.
@@ -888,24 +892,24 @@ __STATIC_INLINE uint32_t __RH850_IRQ_GetActiveByPE (uint8_t CoreID, uint32_t IRQ
     /* Get the address of the specific EIC */
     RH850_EEIC_INTC = (volatile RH850_IRQ_EEIC_Type *) RH850_EEIC_ADDR(CoreID, IRQn);
 
-    return RH850_EEIC_INTC->EEIC_b.EIRF;
+    return (uint32_t) RH850_EEIC_INTC->EEIC_b.EIRF;
 }
 
 /**
  * @brief   Set the specify the interrupt bind (request) destination.
  * @details Sets the specify the interrupt bind (request) destination.
- * @param [in]      IRQn  Interrupt number.
  * @param [in]      CoreID  The target PE for the interrupt to be bound.
+ * @param [in]      IRQn  Interrupt number.
  */
 __STATIC_INLINE void __RH850_IRQ_SetIRQBoundToPE (uint8_t CoreID, uint32_t IRQn)
 {
     volatile RH850_IRQ_EIBD_INTC2_Type * RH850_EIBD_INTC;
 
     /* INTC2 */
-    if ((int32_t) (IRQn) > 31U)
+    if (!RH850_IRQ_IS_INTC1(IRQn))
     {
         RH850_EIBD_INTC =
-            (volatile RH850_IRQ_EIBD_INTC2_Type *) (RH850_INTC2_BASE + 4U * IRQn + RH850_INTC2_EIBD_OFFSET);
+            (volatile RH850_IRQ_EIBD_INTC2_Type *) (RH850_INTC2_BASE + (4U * IRQn) + RH850_INTC2_EIBD_OFFSET);
 
         /* Specify the interrupt bind (request) destination */
         RH850_EIBD_INTC->EIBD_b.PEID = CoreID;
@@ -919,6 +923,7 @@ __STATIC_INLINE void __RH850_IRQ_SetIRQBoundToPE (uint8_t CoreID, uint32_t IRQn)
 /**
  * @brief   Get the specify the interrupt bind (request) destination.
  * @details Gets the specify the interrupt bind (request) destination.
+ * @param [in]      CoreID  PEID of the INTC1 interrupt.
  * @param [in]      IRQn  Interrupt number.
  * \return  The specify the interrupt bind (request) destination.
  */
@@ -926,24 +931,28 @@ __STATIC_INLINE uint32_t __RH850_IRQ_GetIRQBoundToPE (uint8_t CoreID, uint32_t I
 {
     volatile RH850_IRQ_EIBD_INTC1_Type * RH850_EIBD_INTC1;
     volatile RH850_IRQ_EIBD_INTC2_Type * RH850_EIBD_INTC2;
+    uint32_t LulReturnValue;
 
-    /* INTC2 */
-    if ((int32_t) (IRQn) <= 31U)
+    /* INTC1 */
+    if (RH850_IRQ_IS_INTC1(IRQn))
     {
-        RH850_EIBD_INTC1 = (volatile RH850_IRQ_EIBD_INTC1_Type *) (RH850_INTC1_BASE + RH850_INTC1_EIBD_OFFSET + \
-                                                                   CoreID * RH850_INTC1_OFFSET + 4U * IRQn);
+        RH850_EIBD_INTC1 = (volatile RH850_IRQ_EIBD_INTC1_Type *) (RH850_INTC1_BASE + RH850_INTC1_EIBD_OFFSET +
+                                                                   ((uint32_t) CoreID * RH850_INTC1_OFFSET) +
+                                                                   (4U * IRQn));
 
         /* Return the specify the interrupt bind (request) destination */
-        return RH850_EIBD_INTC1->EIBD_b.PEID;
+        LulReturnValue = RH850_EIBD_INTC1->EIBD_b.PEID;
     }
     else
     {
-        RH850_EIBD_INTC2 = (volatile RH850_IRQ_EIBD_INTC2_Type *) (RH850_INTC2_BASE + RH850_INTC2_EIBD_OFFSET + \
-                                                                   4U * IRQn);
+        RH850_EIBD_INTC2 = (volatile RH850_IRQ_EIBD_INTC2_Type *) (RH850_INTC2_BASE + RH850_INTC2_EIBD_OFFSET +
+                                                                   (4U * IRQn));
 
         /* Return the specify the interrupt bind (request) destination */
-        return RH850_EIBD_INTC2->EIBD_b.PEID;
+        LulReturnValue = RH850_EIBD_INTC2->EIBD_b.PEID;
     }
+
+    return LulReturnValue;
 }
 
 /** @} */ /* end of RH850_IRQ_API */
@@ -952,4 +961,5 @@ __STATIC_INLINE uint32_t __RH850_IRQ_GetIRQBoundToPE (uint8_t CoreID, uint32_t I
 
 /** @} */ /* end of RH850_IRQ */
 /** @} */ /* end of RH850_CoreAccess_FunctionInterface */
-#endif /* #if defined(__IRQ_PRESENT) && (__IRQ_PRESENT == 1U) */
+
+#endif                                 /* #if defined(__IRQ_PRESENT) && (__IRQ_PRESENT == 1U) */

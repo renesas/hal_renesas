@@ -8,7 +8,7 @@
  * @file     rh850_g4_mpu.h
  * @brief    MPU operation functions for RH850 G4
  * @version  V0.0.2
- * @date     24 Jun 2026
+ * @date     01 Aug 2026
  **********************************************************************************************************************/
 
 #if defined(__MPU_PRESENT) && (__MPU_PRESENT == 1U)
@@ -53,14 +53,14 @@
  #define RH850_MPU_MPID_6                       (6U)
  #define RH850_MPU_MPID_7                       (7U)
 
- #define RH850_MPU_MPM_ENABLE                   (0x01)                              ///< Enable MPU
- #define RH850_MPU_MPAT_REGION_ENABLE           (0x80)                              ///< Enable specific region in MPU
+ #define RH850_MPU_MPM_ENABLE                   (0x01U)                             ///< Enable MPU
+ #define RH850_MPU_MPAT_REGION_ENABLE           (0x80U)                             ///< Enable specific region in MPU
 
  #define RH850_MPU_PRIV_MODE_ACCESS_ALL         (RH850_MPU_SV_MODE_ACCESS_ENABLE)   ///< Enable all accesses in Privilege mode
  #define RH850_MPU_PRIV_MODE_RESTRICT_ACCESS    (RH850_MPU_SV_MODE_ACCESS_RESTRICT) ///< Restrict access according to the SX, SW, and SR bits in SV mode
 
- #define RH850_MPU_MPAT_WMPID_VALUE(spid)    (spid << (24))
- #define RH850_MPU_MPAT_RMPID_VALUE(spid)    (spid << (16))
+ #define RH850_MPU_MPAT_WMPID_VALUE(spid)    ((uint32_t) (spid) << 24)
+ #define RH850_MPU_MPAT_RMPID_VALUE(spid)    ((uint32_t) (spid) << 16)
  #define RH850_MPU_MPAT_UR_EN                   (1U << 0)                           ///< Reading is enabled for user mode
  #define RH850_MPU_MPAT_UW_EN                   (1U << 1)                           ///< Writing is enabled for user mode
  #define RH850_MPU_MPAT_UX_EN                   (1U << 2)                           ///< Executing is enabled for user mode
@@ -98,7 +98,7 @@
 typedef enum e_rh850_mpu_sv_mode_access
 {
     RH850_MPU_SV_MODE_ACCESS_ENABLE   = 0x00, /*!< Enable all accesses in SV mode (no restriction) */
-    RH850_MPU_SV_MODE_ACCESS_RESTRICT = 0x02, /*!< Restrict access according to SX, SW, and SR bits in SV mode */
+    RH850_MPU_SV_MODE_ACCESS_RESTRICT = 0x02  /*!< Restrict access according to SX, SW, and SR bits in SV mode */
 } rh850_mpu_sv_mode_access_t;
 
 /**
@@ -152,9 +152,9 @@ typedef struct st_rh850_mpu_mem_status
             uint32_t usr_rd_en  : 1;   /*!< User mode read permission */
             uint32_t usr_wr_en  : 1;   /*!< User mode write permission */
             uint32_t usr_exe_en : 1;   /*!< User mode execute permission */
-            uint32_t sup_rd_en  : 1;   /*!< Supervisor mode  read permission */
+            uint32_t sup_rd_en  : 1;   /*!< Supervisor mode read permission */
             uint32_t sup_wr_en  : 1;   /*!< Supervisor mode write permission */
-            uint32_t sup_exe_en : 1;   /*!< Supervisor mode executepermission */
+            uint32_t sup_exe_en : 1;   /*!< Supervisor mode execute permission */
             uint32_t            : 2;   /*!< Reserved bits */
             uint32_t ov_bit     : 1;   /*!< Bit indicates the specified area includes 0000 0000H or 7FFF FFFFH */
             uint32_t            : 23;  /*!< Reserved bits */
@@ -185,7 +185,7 @@ typedef struct st_rh850_mpu_mem_status
 __STATIC_INLINE void __RH850_MPU_Enable (rh850_mpu_sv_mode_access_t LenSvAccessControl)
 {
     /* Setting for SVP and enable for MPE bit */
-    (void) __set_MPM(LenSvAccessControl | R_MPU_MPM_MPE_Msk);
+    __set_MPM((uint32_t) LenSvAccessControl | R_MPU_MPM_MPE_Msk);
 }
 
 /**
@@ -201,7 +201,7 @@ __STATIC_INLINE void __RH850_MPU_Disable (void)
     LulMpmRegValue &= (~R_MPU_MPM_MPE_Msk);
 
     /* Write back */
-    (void) __set_MPM(LulMpmRegValue);
+    __set_MPM(LulMpmRegValue);
 }
 
 /**
@@ -210,7 +210,7 @@ __STATIC_INLINE void __RH850_MPU_Disable (void)
  */
 __STATIC_INLINE rh850_mpu_state_t __RH850_MPU_StateGet (void)
 {
-    return (rh850_mpu_state_t) (__get_MPM() & R_MPU_MPM_MPE_Msk);
+    return (0U != (__get_MPM() & R_MPU_MPM_MPE_Msk)) ? RH850_MPU_STATE_ENABLE : RH850_MPU_STATE_DISABLE;
 }
 
 /**
@@ -232,9 +232,9 @@ __STATIC_INLINE uint8_t __RH850_MPU_NumberofRegionsGet (void)
     uint8_t LucNumOfRegions;
 
     /* Check if MPU is supported on MCU */
-    if (__get_PID() & R_MPU_PID_MPU_Msk)
+    if (0U != (__get_PID() & R_MPU_PID_MPU_Msk))
     {
-        LucNumOfRegions = (__get_MPCFG() & R_MPU_MPCFG_NMPUE_Msk) + 1U;
+        LucNumOfRegions = (uint8_t) ((__get_MPCFG() & R_MPU_MPCFG_NMPUE_Msk) + 1U);
     }
     else
     {
@@ -249,7 +249,7 @@ __STATIC_INLINE uint8_t __RH850_MPU_NumberofRegionsGet (void)
  * @details Reads the NBK field from the MPU configuration register. The NBK field indicates
  *          "number of banks - 1" for the MPU. For example, if NBK = 0, the CPU has one MPU bank.
  *
- * @return uint32_t
+ * @return uint8_t
  *         - Value representing (number of banks - 1).
  *
  * @note   For this CPU, NBK typically reads as 0, meaning one MPU bank is present.
@@ -264,7 +264,7 @@ __STATIC_INLINE uint8_t __RH850_MPU_NumberOfBanksGet (void)
  * @details Reads the ARCH field from the MPU configuration register. This field indicates
  *          the version of the MPU architecture implemented by the CPU.
  *
- * @return uint32_t
+ * @return uint8_t
  *         - Value representing the MPU architecture version (e.g., 2 for this CPU).
  *
  * @note   The ARCH field is read-only and reflects the hardware MPU specification level.
@@ -276,12 +276,11 @@ __STATIC_INLINE uint8_t __RH850_MPU_ArchitectureVersionGet (void)
 
 /**
  * @brief Execute memory protection checking.
- * @details Performs memory protection check using MCA, MCS, MCI, MCC, and returns result from MCR.
- * @param[in] LulSpid System protection identifier.
- * @param[in] LulLowerAddr Value for MCA register.
- * @param[in] LulSize Size of region.
- * @param[in] LpStatus Pointer to the variable that stores the status result.
- * @return Result code masked to 0x1FF.
+ * @details Performs memory protection check using MCA, MCS, MCI, MCC, and returns the result via MCR.
+ * @param[in]  LulSpid      System protection identifier.
+ * @param[in]  LulLowerAddr Value for MCA register.
+ * @param[in]  LulSize      Size of region.
+ * @param[out] LpStatus     Pointer to the variable that stores the status result.
  */
 __STATIC_INLINE void __RH850_MPU_ExecMemProtectCheck (uint8_t                  LulSpid,
                                                       uint32_t                 LulLowerAddr,
@@ -290,18 +289,18 @@ __STATIC_INLINE void __RH850_MPU_ExecMemProtectCheck (uint8_t                  L
 {
     uint32_t LulDummyValue;
 
-    LulDummyValue = 0;
+    LulDummyValue = 0U;
 
     /* Set parameter LulLowerAddr to SR8, 5 MCA */
     __set_MCA(LulLowerAddr);
 
-    /* Set parameter LulSize to  SR9, 5 MCS */
+    /* Set parameter LulSize to SR9, 5 MCS */
     __set_MCS(LulSize);
 
     /* Set parameter LulSpid to SR12, 5 MCI */
     __set_MCI(LulSpid);
 
-    /* Start checking with SR10, 5 MCC by writting for any value */
+    /* Start checking with SR10, 5 MCC by writing any value */
     __set_MCC(LulDummyValue);
 
     /* Get the results from SR11, 5 MCR */
@@ -315,7 +314,7 @@ __STATIC_INLINE void __RH850_MPU_ExecMemProtectCheck (uint8_t                  L
  */
 __STATIC_INLINE void __RH850_MPU_MpuIdSet (uint8_t LucRegion)
 {
-    (void) __set_MPIDX(LucRegion);
+    __set_MPIDX(LucRegion);
 }
 
 /**
@@ -327,7 +326,7 @@ __STATIC_INLINE void __RH850_MPU_MpuIdSet (uint8_t LucRegion)
  *
  * @return The current BK value (typically 0 for MPU bank 0; other values are prohibited).
  *
- * @note The returned BK dictates which bank’s configuration is active for protection and
+ * @note The returned BK dictates which bank's configuration is active for protection and
  *       for MP-related load/store instructions.
  */
 __STATIC_INLINE uint8_t __RH850_MPU_BankGet (void)
@@ -378,8 +377,8 @@ __STATIC_INLINE void __RH850_MPU_RegionClear (uint8_t LucRegion)
     /* Clear register SR20, 5 MPLA
      * Clear register SR21, 5 MPUA
      * Clear register SR22, 5 MPAT */
-    __set_MPIDX(0);
     __set_MPLA(0);
+    __set_MPUA(0);
     __set_MPAT(0);
 }
 
@@ -499,6 +498,7 @@ __STATIC_INLINE void __RH850_MPU_MpidSet (uint8_t LucMpid, uint8_t LucValue)
 
         default:
         {
+            /* No operation for out-of-range MPID index */
             break;
         }
     }
@@ -513,4 +513,5 @@ __STATIC_INLINE void __RH850_MPU_MpidSet (uint8_t LucMpid, uint8_t LucValue)
 
 /** @} */ /* end of RH850_MPU */
 /** @} */ /* end of RH850_CoreAccess_FunctionInterface */
-#endif /* #if defined(__MPU_PRESENT) && (__MPU_PRESENT == 1U) */
+
+#endif                                 /* #if defined(__MPU_PRESENT) && (__MPU_PRESENT == 1U) */

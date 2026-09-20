@@ -8,7 +8,7 @@
  * @file     rh850_version.h
  * @brief    RH850  Core Version Definitions
  * @version  V0.0.2
- * @date     24 Jun 2026
+ * @date     01 Aug 2026
  ******************************************************************************/
 
 /*

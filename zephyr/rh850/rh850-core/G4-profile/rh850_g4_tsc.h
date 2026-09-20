@@ -8,7 +8,7 @@
  * @file     rh850_g4_tsc.h
  * @brief    RH850 Time-Stamp Counter (TSC) control
  * @version  V0.0.2
- * @date     24 Jun 2026
+ * @date     01 Aug 2026
  **********************************************************************************************************************/
 
 #if defined(__TSC_PRESENT) && (__TSC_PRESENT == 1U)
@@ -123,22 +123,22 @@ __STATIC_INLINE void __RH850_TSC_OverflowClear (void)
 }
 
 /**
- * @brief Read overflow flag (OVF) of a TSC channel.
+ * @brief Read overflow flag (OVF) of the TSC.
  * @return uint8_t 1 if overflow occurred; 0 otherwise.
  */
 __STATIC_INLINE uint8_t __RH850_TSC_OverflowGet (void)
 {
     uint32_t LulTsctrlRegValue;
-    uint8_t  LulReturnValue;
+    uint8_t  LucReturnValue;
 
     /* Read current control register */
     LulTsctrlRegValue = __get_TSCTRL();
 
-    /* Clear OVF status bit */
-    LulReturnValue = (uint8_t) ((LulTsctrlRegValue & R_TSC_TSCTRL_OVF_Msk) >> R_TSC_TSCTRL_OVF_Pos);
+    /* Extract OVF status bit */
+    LucReturnValue = (uint8_t) ((LulTsctrlRegValue & R_TSC_TSCTRL_OVF_Msk) >> R_TSC_TSCTRL_OVF_Pos);
 
     /* Return the value of OVF bit */
-    return LulReturnValue;
+    return LucReturnValue;
 }
 
 /**
@@ -150,11 +150,11 @@ __STATIC_INLINE uint8_t __RH850_TSC_OverflowGet (void)
 __STATIC_INLINE rh850_tsc_enable_t __RH850_TSC_EnableGet (void)
 {
     /* Extract CEN bit, translate into enumeration */
-    return (__get_TSCTRL() & R_TSC_TSCTRL_CEN_Msk) ? RH850_TSC_ENABLE_ON : RH850_TSC_ENABLE_OFF;
+    return (0U != (__get_TSCTRL() & R_TSC_TSCTRL_CEN_Msk)) ? RH850_TSC_ENABLE_ON : RH850_TSC_ENABLE_OFF;
 }
 
 /**
- * @brief   Read the upper 32 bits of the TSC (Read the TSCTRLH's register).
+ * @brief   Read the upper 32 bits of the TSC (Read the TSCOUNTH register).
  * @details
  *  Returns the high word of the 64-bit counter.
  * @return  Upper 32 bits of the counter.
@@ -166,19 +166,19 @@ __STATIC_INLINE uint32_t __RH850_TSC_CounterHighGet (void)
 }
 
 /**
- * @brief   Read the lower 32 bits of the TSC (Read TSCTRLL's register).
+ * @brief   Read the lower 32 bits of the TSC (Read the TSCOUNTL register).
  * @details
- *  Returns the LulLowValue word of the 64-bit counter.
+ *  Returns the low word of the 64-bit counter.
  * @return  Lower 32 bits of the counter.
  */
 __STATIC_INLINE uint32_t __RH850_TSC_CounterLowGet (void)
 {
-    /* Read of the LulLowValue word */
+    /* Read of the low word */
     return (uint32_t) __get_TSCOUNTL();
 }
 
 /**
- * @brief   Read the TSC control register (Read the TSCTRL's regsiter).
+ * @brief   Read the TSC control register (Read the TSCTRL register).
  * @details
  *  Provides raw access to the control/status register.
  * @return  Value of the TSCTRL register.
@@ -190,7 +190,7 @@ __STATIC_INLINE uint32_t __RH850_TSC_ControlRead (void)
 }
 
 /**
- * @brief   Write the upper 32 bits of the TSC (Write to the TSCTRLH's regitser).
+ * @brief   Write the upper 32 bits of the TSC (Write to the TSCOUNTH register).
  * @details
  *  Programs the high word of the counter.
  * @param   LulValue Value to write.
@@ -198,23 +198,23 @@ __STATIC_INLINE uint32_t __RH850_TSC_ControlRead (void)
 __STATIC_INLINE void __RH850_TSC_CounterHighSet (uint32_t LulValue)
 {
     /* Program high word of the counter */
-    (void) __set_TSCOUNTH(LulValue);
+    __set_TSCOUNTH(LulValue);
 }
 
 /**
- * @brief   Write the lower 32 bits of the TSC (Write to the TSCTRLL's register).
+ * @brief   Write the lower 32 bits of the TSC (Write to the TSCOUNTL register).
  * @details
- *  Programs the LulLowValue word of the counter.
+ *  Programs the low word of the counter.
  * @param   LulValue Value to write.
  */
 __STATIC_INLINE void __RH850_TSC_CounterLowSet (uint32_t LulValue)
 {
-    /* Program LulLowValue word of the counter */
-    (void) __set_TSCOUNTL(LulValue);
+    /* Program low word of the counter */
+    __set_TSCOUNTL(LulValue);
 }
 
 /**
- * @brief   Write the TSC control register (write to the TSCTRL's register).
+ * @brief   Write the TSC control register (write to the TSCTRL register).
  * @details
  *  Writes the raw control value to TSCTRL.
  * @param   LulValue Value to write to TSCTRL.
@@ -222,17 +222,17 @@ __STATIC_INLINE void __RH850_TSC_CounterLowSet (uint32_t LulValue)
 __STATIC_INLINE void __RH850_TSC_ControlSet (uint32_t LulValue)
 {
     /* Write of control/status register */
-    (void) __set_TSCTRL(LulValue);
+    __set_TSCTRL(LulValue);
 }
 
 /**
  * @brief   Read the full 64-bit TSC value in a stable way.
  * @details
- *  Implements the high–low–high read scheme:
+ *  Implements the high-low-high read scheme:
  *   1) Read high (H1),
- *   2) Read LulLowValue  (L),
+ *   2) Read low (L),
  *   3) Read high (H2).
- *  If H1 != H2, the LulLowValue value is re-read implicitly by the loop to avoid tearing
+ *  If H1 != H2, the value is re-read by the loop to avoid tearing
  *  across rollover. This yields a coherent 64-bit counter value.
  * @return  64-bit TSC value.
  */
@@ -246,11 +246,11 @@ __STATIC_INLINE uint64_t __RH850_TSC_CounterFullGet (void)
     do
     {
         LulHigh1Value = __get_TSCOUNTH();     /* first high read  */
-        LulLowValue   = __get_TSCOUNTL();     /* LulLowValue read         */
+        LulLowValue   = __get_TSCOUNTL();     /* low read         */
         LulHigh2Value = __get_TSCOUNTH();     /* second high read */
     } while (LulHigh1Value != LulHigh2Value); /* retry if rollover occurred between reads */
 
-    /* Compose 64-bit value from stable high and LulLowValue parts */
+    /* Compose 64-bit value from stable high and low parts */
     return ((uint64_t) LulHigh2Value << 32) | (uint64_t) LulLowValue;
 }
 

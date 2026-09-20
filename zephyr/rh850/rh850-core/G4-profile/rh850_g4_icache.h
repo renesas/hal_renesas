@@ -7,7 +7,7 @@
  * @file     rh850_g4_icache.h
  * @brief    Instruction Cache (ICACHE) control
  * @version  V0.0.2
- * @date     24 Jun 2026
+ * @date     01 Aug 2026
  **********************************************************************************************************************/
 
 #if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U)
@@ -56,7 +56,7 @@ typedef enum e_rh850_icache_size
 {
     RH850_ICACHE_SIZE_8KB  = 0x0800,   /*!< ICache size 8KB */
     RH850_ICACHE_SIZE_16KB = 0x1000,   /*!< ICache size 16KB */
-    RH850_ICACHE_SIZE_32KB = 0x2000,   /*!< ICache size 32KB */
+    RH850_ICACHE_SIZE_32KB = 0x2000    /*!< ICache size 32KB */
 } rh850_icache_size_t;
 
 /**
@@ -79,7 +79,7 @@ typedef enum e_rh850_icache_line
  */
 typedef enum e_rh850_icache_way
 {
-    RH850_ICACHE_WAY_4 = 0x4,          /*!< ICache line 4 */
+    RH850_ICACHE_WAY_4 = 0x4           /*!< ICache way: 4 */
 } rh850_icache_way_t;
 
 /**
@@ -433,7 +433,7 @@ __STATIC_INLINE void __RH850_ICache_Enable (void)
 
 /**
  * @brief   Disable the instruction cache.
- * @details Clears ICHEN via read–modify–write. Other bits preserved.
+ * @details Clears ICHEN via read-modify-write. Other bits preserved.
  */
 __STATIC_INLINE void __RH850_ICache_Disable (void)
 {
@@ -518,7 +518,7 @@ __STATIC_INLINE rh850_icache_error_way_t __RH850_ICache_ErrorWayGet (void)
  */
 __STATIC_INLINE rh850_icache_enable_t __RH850_ICache_EnableGet (void)
 {
-    return (__get_ICCTRL() & R_ICACHE_ICCTRL_ICHEN_Msk) ? RH850_ICACHE_ENABLE_ON : RH850_ICACHE_ENABLE_OFF;
+    return (0U != (__get_ICCTRL() & R_ICACHE_ICCTRL_ICHEN_Msk)) ? RH850_ICACHE_ENABLE_ON : RH850_ICACHE_ENABLE_OFF;
 }
 
 /**
@@ -549,7 +549,7 @@ __STATIC_INLINE void __RH850_ICache_AutoInvalidateOnErrorSet (rh850_icache_auto_
     /* Clear bit, then apply mode */
     LulIcctrlRegValue  = __get_ICCTRL();
     LulIcctrlRegValue &= ~R_ICACHE_ICCTRL_ICHEIV_Msk;
-    if (LenMode == RH850_ICACHE_AUTO_INVALIDATE_MODE_ENABLE)
+    if (RH850_ICACHE_AUTO_INVALIDATE_MODE_ENABLE == LenMode)
     {
         LulIcctrlRegValue |= R_ICACHE_ICCTRL_ICHEIV_Msk;
     }
@@ -569,7 +569,7 @@ __STATIC_INLINE void __RH850_ICache_ErrorNotifyMaskSet (rh850_icache_notify_t Le
     /* Clear bit, then apply mode */
     LulIcctrlRegValue  = __get_ICCTRL();
     LulIcctrlRegValue &= ~R_ICACHE_ICCTRL_ICHEMK_Msk;
-    if (LenMode == RH850_ICACHE_NOTIFY_MASK)
+    if (RH850_ICACHE_NOTIFY_MASK == LenMode)
     {
         LulIcctrlRegValue |= R_ICACHE_ICCTRL_ICHEMK_Msk;
     }
@@ -594,7 +594,7 @@ __STATIC_INLINE uint32_t __RH850_ICache_TagLoGet (void)
  */
 __STATIC_INLINE void __RH850_ICache_TagLoSet (uint32_t LulValue)
 {
-    (void) __set_ICTAGL(LulValue);
+    __set_ICTAGL(LulValue);
 }
 
 /**
@@ -614,7 +614,7 @@ __STATIC_INLINE uint32_t __RH850_ICache_TagHiGet (void)
  */
 __STATIC_INLINE void __RH850_ICache_TagHiSet (uint32_t LulValue)
 {
-    (void) __set_ICTAGH(LulValue);
+    __set_ICTAGH(LulValue);
 }
 
 /**
@@ -635,7 +635,7 @@ __STATIC_INLINE uint32_t __RH850_ICache_DataLoGet (void)
  */
 __STATIC_INLINE void __RH850_ICache_DataLoSet (uint32_t LulData)
 {
-    (void) __set_ICDATL(LulData);
+    __set_ICDATL(LulData);
 }
 
 /**
@@ -656,7 +656,7 @@ __STATIC_INLINE uint32_t __RH850_ICache_DataHiGet (void)
  */
 __STATIC_INLINE void __RH850_ICache_DataHiSet (uint32_t LulData)
 {
-    (void) __set_ICDATH(LulData);
+    __set_ICDATH(LulData);
 }
 
 /** @} */ /* end of RH850_ICACHE_API */
@@ -665,4 +665,5 @@ __STATIC_INLINE void __RH850_ICache_DataHiSet (uint32_t LulData)
 
 /** @} */ /* end of RH850_ICACHE */
 /** @} */ /* end of RH850_CoreAccess_FunctionInterface */
-#endif /* #if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U) */
+
+#endif                                 /* #if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U) */

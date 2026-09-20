@@ -246,19 +246,19 @@
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKC_CANXL_CH0_SRC
- #define BSP_CFG_CLOCK_CLKC_CANXL_CH0_SRC              (1)                         /* CLKC_CANXL_CH0: CLKC_HSB */
+ #define BSP_CFG_CLOCK_CLKC_CANXL_CH0_SRC              (4)                         /* CLKC_CANXL_CH0: CLKC_UHSB */
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKC_CANXL_CH0_HZ
- #define BSP_CFG_CLOCK_CLKC_CANXL_CH0_HZ               (80000000)                  /* CLKC_CANXL_CH0: 80000000Hz */
+ #define BSP_CFG_CLOCK_CLKC_CANXL_CH0_HZ               (160000000)                 /* CLKC_CANXL_CH0: 160000000Hz */
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKC_CANXL_CH1_SRC
- #define BSP_CFG_CLOCK_CLKC_CANXL_CH1_SRC              (1)                         /* CLKC_CANXL_CH1: CLKC_HSB */
+ #define BSP_CFG_CLOCK_CLKC_CANXL_CH1_SRC              (4)                         /* CLKC_CANXL_CH1: CLKC_UHSB */
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKC_CANXL_CH1_HZ
- #define BSP_CFG_CLOCK_CLKC_CANXL_CH1_HZ               (80000000)                  /* CLKC_CANXL_CH1: 80000000Hz */
+ #define BSP_CFG_CLOCK_CLKC_CANXL_CH1_HZ               (160000000)                 /* CLKC_CANXL_CH1: 160000000Hz */
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_WDTB_SRC

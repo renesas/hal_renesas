@@ -8,7 +8,7 @@
  * @file     core_g4kh.h
  * @brief    RH850 G4KH Core Definitions
  * @version  V0.0.2
- * @date     24 Jun 2026
+ * @date     01 Aug 2026
  **********************************************************************************************************************/
 
 #ifndef __CORE_RH850_G4KH_H_GENERIC
@@ -354,7 +354,7 @@ extern "C" {
   #define SR_MPID1       25            /*!< RegID: SPID which can access protection area (SR25, 5) */
   #define SL_MPID1       5             /*!< SelID: SPID which can access protection area (SR25, 5) */
   #define SR_MPID2       26            /*!< RegID: SPID which can access protection area (SR26, 5) */
-  #define SL_MPID2       5             /*!< SelID: SPID which can access protection area (SR25, 5) */
+  #define SL_MPID2       5             /*!< SelID: SPID which can access protection area (SR26, 5) */
   #define SR_MPID3       27            /*!< RegID: SPID which can access protection area (SR27, 5) */
   #define SL_MPID3       5             /*!< SelID: SPID which can access protection area (SR27, 5) */
   #define SR_MPID4       28            /*!< RegID: SPID which can access protection area (SR28, 5) */
@@ -367,7 +367,7 @@ extern "C" {
   #define SL_MPID7       5             /*!< SelID: SPID which can access protection area (SR31, 5) */
 
 /***********************************************************************************************************************
- *                 ICAHCE Registers
+ *                 ICACHE Registers
  **********************************************************************************************************************/
   #define SR_ICTAGL      16            /*!< RegID: Instruction cache tag Lo access (SR16, 4) */
   #define SL_ICTAGL      4             /*!< SelID: Instruction cache tag Lo access (SR16, 4) */
@@ -467,7 +467,7 @@ extern "C" {
 /**
  * @ingroup  RH850_G4KH_Core_register
  * @defgroup RH850_G4KH_SYS     Basic System Register (SYS)
- * @brief    Type definitions for the basic sytem register (SYS)
+ * @brief    Type definitions for the basic system register (SYS)
  * @{
  */
 
@@ -1526,8 +1526,8 @@ typedef union
   #define R_IRQ_EEIC_EIP_Pos           (0UL)          /*!< EIP (Bit 0)                                                */
   #define R_IRQ_EEIC_EIP_Msk           (0x3fUL)       /*!< EIP (Bitfield-Mask: 0x3f)                                  */
 /* =========================================================  EIBD  ================================================= */
-  #define R_IRQ_INCT1_EIBD_PEID_Pos    (0UL)          /*!< PEID (Bit 0)                                               */
-  #define R_IRQ_INCT1_EIBD_PEID_Msk    (0x7UL)        /*!< PEID (Bitfield-Mask: 0x07)                                 */
+  #define R_IRQ_INTC1_EIBD_PEID_Pos    (0UL)          /*!< PEID (Bit 0)                                               */
+  #define R_IRQ_INTC1_EIBD_PEID_Msk    (0x7UL)        /*!< PEID (Bitfield-Mask: 0x07)                                 */
 
 /*@}*/ /* end of group RH850_G4KH_IRQ */
 
@@ -1745,8 +1745,8 @@ typedef union
 
     struct
     {
-        __IOM uint32_t MPE : 1;        /*!< [0..0] This bit indicates that 32 128-bit vector registers are
-                                        *    provided.                                                                */
+        __IOM uint32_t MPE : 1;        /*!< [0..0] Memory protection enable
+                                        *    0: MPU is disabled. 1: MPU is enabled.                                   */
         __IOM uint32_t SVP : 1;        /*!< [1..1] This bit indicates that 4-way SIMD arithmetic unit is
                                         *    provided.                                                                */
         uint32_t : 30;
@@ -1763,8 +1763,8 @@ typedef union
                                         *    in this CPUminus 1. A value of 31 is read since this CPU
                                         *    incorporates 32 MPUentries.                                              */
         uint32_t           : 11;
-        __IM uint32_t ARCH : 4;        /*!< [19..16] These bits hold the cause bits associated with operation
-                                        *    way 1.                                                                   */
+        __IM uint32_t ARCH : 4;        /*!< [19..16] These bits indicate the MPU architecture specification
+                                        *    version implemented by this CPU.                                         */
         __IM uint32_t NBK : 2;         /*!< [21..20] Indicates the "number of banks - 1" of the MPU bank
                                         * 2 equipped in thisCPU.Since the MPU bank of this CPU is
                                         *    equipped with one bank, 0 is read.                                       */
@@ -1878,7 +1878,7 @@ typedef union
                                         *    settings check is tobe performed.                                        */
         uint32_t : 27;
     } MPIDX_b;
-} RH850_MPU_MPIDX_type;
+} RH850_MPU_MPIDX_Type;
 
 typedef union
 {
@@ -2167,7 +2167,7 @@ typedef union
                                         *    RAM of the cache is not updated.1: Data RAM of the cache
                                         *    is updated.                                                              */
     } ICTAGH_b;
-} RH850_ICACHE_ICTAGH_type;
+} RH850_ICACHE_ICTAGH_Type;
 
 typedef union
 {
@@ -2506,7 +2506,7 @@ typedef union
   #define R_PMU_PMUMCTRL_PMUE1_Msk    (0x2UL)        /*!< PMUE1 (Bitfield-Mask: 0x01)                               */
   #define R_PMU_PMUMCTRL_PMUE0_Pos    (0UL)          /*!< PMUE0 (Bit 0)                                             */
   #define R_PMU_PMUMCTRL_PMUE0_Msk    (0x1UL)        /*!< PMUE0 (Bitfield-Mask: 0x01)                               */
-  #define R_PMU_PMUMCTRL_PMUE_Msk     (0xFFUL)       /*!< PMUE0 (Bitfield-Mask: 0x00)                               */
+  #define R_PMU_PMUMCTRL_PMUE_Msk     (0xFFUL)       /*!< PMUE0 (Bitfield-Mask: 0xff)                               */
 /* ========================================================  PMCTRL0  =============================================== */
   #define R_PMU_PMCTRL0_CND_Pos       (8UL)          /*!< CND (Bit 8)                                               */
   #define R_PMU_PMCTRL0_CND_Msk       (0xff00UL)     /*!< CND (Bitfield-Mask: 0xff)                                 */

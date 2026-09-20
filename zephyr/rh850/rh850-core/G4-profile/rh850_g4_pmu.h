@@ -8,7 +8,7 @@
  * @file     rh850_g4_pmu.h
  * @brief    Performance Measurement Function
  * @version  V0.0.2
- * @date     24 Jun 2026
+ * @date     01 Aug 2026
  **********************************************************************************************************************/
 
 #if defined(__PMU_PRESENT) && (__PMU_PRESENT == 1U)
@@ -91,11 +91,11 @@ typedef enum e_rh850_pmu_number_of_event
 /**
  * @brief Channel operation state.
  */
-typedef enum e_rh850_channel_operaiton_state
+typedef enum e_rh850_channel_operation_state
 {
     RH850_CHANNEL_OPERATION_STATE_DISABLE = 0, /*!< Channel disabled */
     RH850_CHANNEL_OPERATION_STATE_ENABLE  = 1  /*!< Channel enabled */
-} rh850_channel_operaiton_state_t;
+} rh850_channel_operation_state_t;
 
 /** @} */ /* end of RH850_PMU_Types */
 
@@ -118,11 +118,11 @@ typedef enum e_rh850_channel_operaiton_state
  * @brief       Read PMCTRL register of a PMU channel.
  * @param[in]   LucChannel   PMU channel index (0..7).
  * @return      uint32_t  Raw PMCTRLn value of the selected channel.
- * @note        Valid range for @p channel is implementation-defined (typically 0..7).
+ * @note        Valid range for @p LucChannel is implementation-defined (typically 0..7).
  */
 __STATIC_INLINE uint32_t __get_PMCTRL (uint8_t LucChannel)
 {
-    uint32_t LulReturnValue = 0;
+    uint32_t LulReturnValue = 0U;
 
     /* PMU channel index */
     switch (LucChannel)
@@ -191,7 +191,6 @@ __STATIC_INLINE uint32_t __get_PMCTRL (uint8_t LucChannel)
  * @brief       Write PMCTRL register of a PMU channel.
  * @param[in]   LucChannel   PMU channel index (0..7).
  * @param[in]   LulValue     Value to write into PMCTRLn.
- * @return      void
  */
 __STATIC_INLINE void __set_PMCTRL (uint8_t LucChannel, uint32_t LulValue)
 {
@@ -200,50 +199,50 @@ __STATIC_INLINE void __set_PMCTRL (uint8_t LucChannel, uint32_t LulValue)
     {
         case (RH850_PMU_COUNT_CHANNEL_0):
         {
-            (void) __set_PMCTRL0(LulValue);
+            __set_PMCTRL0(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_1):
         {
-            (void) __set_PMCTRL1(LulValue);
+            __set_PMCTRL1(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_2):
         {
-            (void) __set_PMCTRL2(LulValue);
+            __set_PMCTRL2(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_3):
         {
-            (void) __set_PMCTRL3(LulValue);
+            __set_PMCTRL3(LulValue);
             break;
         }
 
  #if defined(__RH850_G4MH) && (__RH850_G4MH == 1)
         case (RH850_PMU_COUNT_CHANNEL_4):
         {
-            (void) __set_PMCTRL4(LulValue);
+            __set_PMCTRL4(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_5):
         {
-            (void) __set_PMCTRL5(LulValue);
+            __set_PMCTRL5(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_6):
         {
-            (void) __set_PMCTRL6(LulValue);
+            __set_PMCTRL6(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_7):
         {
-            (void) __set_PMCTRL7(LulValue);
+            __set_PMCTRL7(LulValue);
             break;
         }
  #endif                                /* #if defined(__RH850_G4MH) && (__RH850_G4MH == 1) */
@@ -259,7 +258,6 @@ __STATIC_INLINE void __set_PMCTRL (uint8_t LucChannel, uint32_t LulValue)
  * @brief       Write PMCOUNT register of a PMU channel.
  * @param[in]   LucChannel   PMU channel index (0..7).
  * @param[in]   LulValue     Initial count to load into PMCOUNTn.
- * @return      void
  */
 __STATIC_INLINE void __set_PMCOUNT (uint8_t LucChannel, uint32_t LulValue)
 {
@@ -268,50 +266,50 @@ __STATIC_INLINE void __set_PMCOUNT (uint8_t LucChannel, uint32_t LulValue)
     {
         case (RH850_PMU_COUNT_CHANNEL_0):
         {
-            (void) __set_PMCOUNT0(LulValue);
+            __set_PMCOUNT0(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_1):
         {
-            (void) __set_PMCOUNT1(LulValue);
+            __set_PMCOUNT1(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_2):
         {
-            (void) __set_PMCOUNT2(LulValue);
+            __set_PMCOUNT2(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_3):
         {
-            (void) __set_PMCOUNT3(LulValue);
+            __set_PMCOUNT3(LulValue);
             break;
         }
 
  #if defined(__RH850_G4MH) && (__RH850_G4MH == 1)
         case (RH850_PMU_COUNT_CHANNEL_4):
         {
-            (void) __set_PMCOUNT4(LulValue);
+            __set_PMCOUNT4(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_5):
         {
-            (void) __set_PMCOUNT5(LulValue);
+            __set_PMCOUNT5(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_6):
         {
-            (void) __set_PMCOUNT6(LulValue);
+            __set_PMCOUNT6(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_7):
         {
-            (void) __set_PMCOUNT7(LulValue);
+            __set_PMCOUNT7(LulValue);
             break;
         }
  #endif                                /* #if defined(__RH850_G4MH) && (__RH850_G4MH == 1) */
@@ -330,7 +328,7 @@ __STATIC_INLINE void __set_PMCOUNT (uint8_t LucChannel, uint32_t LulValue)
  */
 __STATIC_INLINE uint32_t __get_PMCOUNT (uint8_t LucChannel)
 {
-    uint32_t LulReturnValue = 0;
+    uint32_t LulReturnValue = 0U;
 
     /* PMU channel index */
     switch (LucChannel)
@@ -405,7 +403,7 @@ __STATIC_INLINE uint32_t __get_PMCOUNT (uint8_t LucChannel)
  */
 __STATIC_INLINE uint32_t __get_PMSUBCND (uint8_t LucChannel)
 {
-    uint32_t LulReturnValue = 0;
+    uint32_t LulReturnValue = 0U;
 
     /* PMU channel index */
     switch (LucChannel)
@@ -476,7 +474,6 @@ __STATIC_INLINE uint32_t __get_PMSUBCND (uint8_t LucChannel)
  * @brief       Write PMSUBCND register of a PMU channel.
  * @param[in]   LucChannel   PMU channel index (0..7).
  * @param[in]   LulValue     SUBCND value to program.
- * @return      void
  * @details     Writes PMSUBCNDn (SRn, bank 15). Only effective for event numbers that
  *              define a sub-condition; otherwise the value has no effect on counting.
  */
@@ -487,49 +484,49 @@ __STATIC_INLINE void __set_PMSUBCND (uint8_t LucChannel, uint32_t LulValue)
     {
         case (RH850_PMU_COUNT_CHANNEL_0):
         {
-            (void) __set_PMSUBCND0(LulValue);
+            __set_PMSUBCND0(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_1):
         {
-            (void) __set_PMSUBCND1(LulValue);
+            __set_PMSUBCND1(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_2):
         {
-            (void) __set_PMSUBCND2(LulValue);
+            __set_PMSUBCND2(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_3):
         {
-            (void) __set_PMSUBCND3(LulValue);
+            __set_PMSUBCND3(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_4):
         {
-            (void) __set_PMSUBCND4(LulValue);
+            __set_PMSUBCND4(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_5):
         {
-            (void) __set_PMSUBCND5(LulValue);
+            __set_PMSUBCND5(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_6):
         {
-            (void) __set_PMSUBCND6(LulValue);
+            __set_PMSUBCND6(LulValue);
             break;
         }
 
         case (RH850_PMU_COUNT_CHANNEL_7):
         {
-            (void) __set_PMSUBCND7(LulValue);
+            __set_PMSUBCND7(LulValue);
             break;
         }
 
@@ -545,7 +542,6 @@ __STATIC_INLINE void __set_PMSUBCND (uint8_t LucChannel, uint32_t LulValue)
 /**
  * @brief Enable counting (CEN=1) for a PMU channel.
  * @param[in] LucChannel PMU channel index (0..7).
- * @return void
  * @details Sets PMCTRLn.CEN to 1.
  */
 __STATIC_INLINE void __RH850_PMU_ChannelEnable (uint8_t LucChannel)
@@ -565,7 +561,6 @@ __STATIC_INLINE void __RH850_PMU_ChannelEnable (uint8_t LucChannel)
 /**
  * @brief Disable counting (CEN=0) for a PMU channel.
  * @param[in] LucChannel PMU channel index (0..7).
- * @return void
  * @details Clears PMCTRLn.CEN.
  */
 __STATIC_INLINE void __RH850_PMU_ChannelDisable (uint8_t LucChannel)
@@ -586,20 +581,19 @@ __STATIC_INLINE void __RH850_PMU_ChannelDisable (uint8_t LucChannel)
  * @brief Enable or disable user-mode access for a PMU channel.
  * @param[in] LucChannel PMU channel index (0..7).
  * @param[in] LenMode RH850_PMU_USER_MODE_ACCESS_DISABLE/ENABLE.
- * @return void
- * @details Performs read–modify–write on PMUMCTRL to set/clear PMUE[channel].
+ * @details Performs read-modify-write on PMUMCTRL to set/clear PMUE[channel].
  */
 __STATIC_INLINE void __RH850_PMU_ModeSet (uint8_t LucChannel, rh850_pmu_user_mode_access_t LenMode)
 {
     uint32_t LulPmumctrlRegValue;
 
-    /* Read current PMUMCTRL value for the channel */
+    /* Read current PMUMCTRL value */
     LulPmumctrlRegValue = __get_PMUMCTRL();
 
-    /* Clear the PMUE[0:7] field before setting new value */
-    LulPmumctrlRegValue &= (~R_PMU_PMUMCTRL_PMUE_Msk);
+    /* Clear the target PMUE[channel] bit before setting new value */
+    LulPmumctrlRegValue &= (~(1UL << LucChannel) & R_PMU_PMUMCTRL_PMUE_Msk);
 
-    /* Set new PMUE[0:7] value */
+    /* Set new PMUE[channel] value */
     LulPmumctrlRegValue |= (((uint32_t) LenMode << LucChannel) & R_PMU_PMUMCTRL_PMUE_Msk);
 
     /* Write back updated PMUMCTRL */
@@ -610,7 +604,6 @@ __STATIC_INLINE void __RH850_PMU_ModeSet (uint8_t LucChannel, rh850_pmu_user_mod
  * @brief Set event number (CND) for a PMU channel.
  * @param[in] LucChannel PMU channel index (0..7).
  * @param[in] LenCndBits Event selector (see rh850_pmu_number_of_event_t).
- * @return void
  * @details Updates PMCTRLn.CND.
  */
 __STATIC_INLINE void __RH850_PMU_ControlSet (uint8_t LucChannel, rh850_pmu_number_of_event_t LenCndBits)
@@ -635,50 +628,49 @@ __STATIC_INLINE void __RH850_PMU_ControlSet (uint8_t LucChannel, rh850_pmu_numbe
  * @param[in] LucChannel PMU channel index (0..7).
  * @details Reads PMCTRLn and extracts the CEN bit.
  * @return RH850_CHANNEL_OPERATION_STATE_DISABLE/RH850_CHANNEL_OPERATION_STATE_ENABLE
- * (CEN=0 - counting disabled/ CEN=1 (counting enabled)).
+ * (CEN=0 - counting disabled/ CEN=1 - counting enabled).
  */
-__STATIC_INLINE rh850_channel_operaiton_state_t __RH850_PMU_StatusGet (uint8_t LucChannel)
+__STATIC_INLINE rh850_channel_operation_state_t __RH850_PMU_StatusGet (uint8_t LucChannel)
 {
     uint32_t LulPmctrlRegValue;
-    rh850_channel_operaiton_state_t LulReturnValue;
+    rh850_channel_operation_state_t LenReturnValue;
 
     /* Read current PMCTRL value for the channel */
     LulPmctrlRegValue = __get_PMCTRL(LucChannel);
 
     /* Get CEN value */
-    LulReturnValue =
-        (rh850_channel_operaiton_state_t) ((LulPmctrlRegValue & R_PMU_PMCTRL0_CEN_Msk) >> R_PMU_PMCTRL0_CEN_Pos);
+    LenReturnValue =
+        (rh850_channel_operation_state_t) ((LulPmctrlRegValue & R_PMU_PMCTRL0_CEN_Msk) >> R_PMU_PMCTRL0_CEN_Pos);
 
     /* Return the value of CEN bit */
-    return LulReturnValue;
+    return LenReturnValue;
 }
 
 /**
  * @brief Read overflow flag (OVF) of a PMU channel.
  * @param[in] LucChannel PMU channel index (0..7).
  * @return uint8_t 1 if overflow occurred; 0 otherwise.
- * @details Extracts PMCTRLn.OVF. Hardware sets OVF when PMCOUNTn wraps from 0xFFFF_FFFF to 0.
+ * @details Extracts PMCTRLn.OVF. Hardware sets OVF when PMCOUNTn wraps from 0xFFFFFFFF to 0.
  */
 __STATIC_INLINE uint8_t __RH850_PMU_OverflowGet (uint8_t LucChannel)
 {
     uint32_t LulPmctrlRegValue;
-    uint8_t  LulReturnValue;
+    uint8_t  LucReturnValue;
 
     /* Read current PMCTRL value for the channel */
     LulPmctrlRegValue = __get_PMCTRL(LucChannel);
 
     /* Get OVF value */
-    LulReturnValue = (uint8_t) ((LulPmctrlRegValue & R_PMU_PMCTRL0_OVF_Msk) >> R_PMU_PMCTRL0_OVF_Pos);
+    LucReturnValue = (uint8_t) ((LulPmctrlRegValue & R_PMU_PMCTRL0_OVF_Msk) >> R_PMU_PMCTRL0_OVF_Pos);
 
     /* Return the value of OVF bit */
-    return LulReturnValue;
+    return LucReturnValue;
 }
 
 /**
  * @brief Clear overflow flag (OVF) of a PMU channel.
  * @param[in] LucChannel PMU channel index (0..7).
- * @return void
- * @details Clears PMCTRLn.OVF by writing 0 to the bit using read–modify–write.
+ * @details Clears PMCTRLn.OVF by writing 0 to the bit using read-modify-write.
  */
 __STATIC_INLINE void __RH850_PMU_OverflowClear (uint8_t LucChannel)
 {
@@ -698,7 +690,6 @@ __STATIC_INLINE void __RH850_PMU_OverflowClear (uint8_t LucChannel)
  * @brief Set the PMCOUNT of a PMU channel.
  * @param[in] LucChannel PMU channel index (0..7).
  * @param[in] LulCount Initial count value to write.
- * @return void
  * @details Writes PMCOUNTn. The counter can be primed before enabling counting.
  */
 __STATIC_INLINE void __RH850_PMU_CounterSet (uint8_t LucChannel, uint32_t LulCount)
@@ -725,13 +716,12 @@ __STATIC_INLINE uint32_t __RH850_PMU_CounterGet (uint8_t LucChannel)
  * @brief Set the PMSUBCND of a PMU channel.
  * @param[in] LucChannel PMU channel index (0..7).
  * @param[in] LulCount SUBCND value to write.
- * @return void
  * @details Programs PMSUBCNDn.
  */
 __STATIC_INLINE void __RH850_PMU_SubCountSet (uint8_t LucChannel, uint32_t LulCount)
 {
-    /* Write back updated PMCOUNT */
-    (void) __set_PMSUBCND(LucChannel, LulCount);
+    /* Write back updated PMSUBCND */
+    __set_PMSUBCND(LucChannel, LulCount);
 }
 
  #endif                                /* #if defined(__RH850_G4MH) && (__RH850_G4MH == 1) */
@@ -754,8 +744,9 @@ __STATIC_INLINE uint32_t __RH850_PMU_SubCountGet (uint8_t LucChannel)
 
 /** @} */ /* end of RH850_PMU_API */
 
-#endif                                 /* #ifndef RH850_G4_PMU_H */
+#endif                                 /* RH850_G4_PMU_H */
 
 /** @} */ /* end of RH850_PMU */
 /** @} */ /* end of RH850_CoreAccess_FunctionInterface */
+
 #endif                                 /* #if defined(__PMU_PRESENT) && (__PMU_PRESENT == 1U) */
