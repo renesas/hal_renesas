@@ -16,6 +16,8 @@
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU
  * @defgroup BSP_MPU BSP MPU
@@ -24,53 +26,56 @@ FSP_HEADER
  * @{
  **********************************************************************************************************************/
 
+/* PRQA S 0292 -- */
+
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
 
-#define BSP_MPU_ENABLE                       (0x01)                              ///< Enable MPU
-#define BSP_MPU_REGION_ENABLE                (0x80)                              ///< Enable specific region in MPU
-#define BSP_MPU_PRIV_MODE_ACCESS_ALL         (RH850_MPU_SV_MODE_ACCESS_ENABLE)   ///< Enable all accesses in Privilege mode
-#define BSP_MPU_PRIV_MODE_RESTRICT_ACCESS    (RH850_MPU_SV_MODE_ACCESS_RESTRICT) ///< Restrict access according to the SX, SW, and SR bits in SV mode
+#define BSP_MPU_ENABLE                       (0x01U)                                                              ///< Enable MPU
+#define BSP_MPU_REGION_ENABLE                (0x80U)                                                              ///< Enable specific region in MPU
+#define BSP_MPU_PRIV_MODE_ACCESS_ALL         (RH850_MPU_SV_MODE_ACCESS_ENABLE) /* PRQA S 1534 # Advisory R-2.5 */ ///< Enable all accesses in Privilege mode
+#define BSP_MPU_PRIV_MODE_RESTRICT_ACCESS    (RH850_MPU_SV_MODE_ACCESS_RESTRICT)                                  ///< Restrict access according to the SX, SW, and SR bits in SV mode
 
-#define BSP_MPU_MPID_MASK                    (0x1F)                              ///< Mask for MPID register
+#define BSP_MPU_MPID_MASK                    (0x1FU)                                                              ///< Mask for MPID register
 
-#define BSP_MPU_MAX_MPID_NUMBER              (8)                                 ///< Max number of MPID register supported in this device
+#define BSP_MPU_MAX_MPID_NUMBER              (8U)                                                                 ///< Max number of MPID register supported in this device
 
-#define BSP_MPU_WMPID_VALUE(spid)    ((spid) << (24))                            /// < Encodes SPID into WMPID field (bit position 24)
-#define BSP_MPU_RMPID_VALUE(spid)    ((spid) << (16))                            /// < Encodes SPID into RMPID field (bit position 16)
-#define BSP_MPU_UR_EN                        (1U << 0)                           ///< Reading is enabled for user mode
-#define BSP_MPU_UW_EN                        (1U << 1)                           ///< Writing is enabled for user mode
-#define BSP_MPU_UX_EN                        (1U << 2)                           ///< Executing is enabled for user mode
-#define BSP_MPU_SR_EN                        (1U << 3)                           ///< Reading is enabled for supervisor mode
-#define BSP_MPU_SW_EN                        (1U << 4)                           ///< Writing is enabled for supervisor mode
-#define BSP_MPU_SX_EN                        (1U << 5)                           ///< Executing is enabled for supervisor mode
+#define BSP_MPU_WMPID_VALUE(spid)    ((spid) << (24)) /* PRQA S 1534 # Advisory R-2.5 */                          /// < Encodes SPID into WMPID field (bit position 24)
+#define BSP_MPU_RMPID_VALUE(spid)    ((spid) << (16)) /* PRQA S 1534 # Advisory R-2.5 */                          /// < Encodes SPID into RMPID field (bit position 16)
+#define BSP_MPU_UR_EN                        ((uint32_t) 1U << 0)                                                 ///< Reading is enabled for user mode
+#define BSP_MPU_UW_EN                        ((uint32_t) 1U << 1)                                                 ///< Writing is enabled for user mode
+#define BSP_MPU_UX_EN                        ((uint32_t) 1U << 2)                                                 ///< Executing is enabled for user mode
+#define BSP_MPU_SR_EN                        ((uint32_t) 1U << 3)                                                 ///< Reading is enabled for supervisor mode
+#define BSP_MPU_SW_EN                        ((uint32_t) 1U << 4)                                                 ///< Writing is enabled for supervisor mode
+#define BSP_MPU_SX_EN                        ((uint32_t) 1U << 5)                                                 ///< Executing is enabled for supervisor mode
 
 /** Execution and reading by any SPID is enabled regardless of the settings MPIDn */
-#define BSP_MPU_RG_EN                        (1U << 14)
+#define BSP_MPU_RG_EN                        ((uint32_t) 1U << 14)
 
 /** Writing by any SPID is enabled regardless of the settings MPIDn */
-#define BSP_MPU_WG_EN                        (1U << 15)
+#define BSP_MPU_WG_EN                        ((uint32_t) 1U << 15)
 
 /** Helper define to initialize the region structure. */
-#define BSP_MPU_REGIONn_CONFIG(n)    BSP_REGION ## n ## _CONFIG
+#define BSP_MPU_REGIONn_CONFIG(n)    BSP_REGION ## n ## _CONFIG                      /* PRQA S 0342 # Advisory R-20.10 */
 
-#define BSP_MPU_MPID_0                       (0U) ///< MPID value for MPU entry 0
-#define BSP_MPU_MPID_1                       (1U) ///< MPID value for MPU entry 1
-#define BSP_MPU_MPID_2                       (2U) ///< MPID value for MPU entry 2
-#define BSP_MPU_MPID_3                       (3U) ///< MPID value for MPU entry 3
-#define BSP_MPU_MPID_4                       (4U) ///< MPID value for MPU entry 4
-#define BSP_MPU_MPID_5                       (5U) ///< MPID value for MPU entry 5
-#define BSP_MPU_MPID_6                       (6U) ///< MPID value for MPU entry 6
-#define BSP_MPU_MPID_7                       (7U) ///< MPID value for MPU entry 7
+#define BSP_MPU_MPID_0                       (0U) /* PRQA S 1534 # Advisory R-2.5 */ ///< MPID value for MPU entry 0
+#define BSP_MPU_MPID_1                       (1U) /* PRQA S 1534 # Advisory R-2.5 */ ///< MPID value for MPU entry 1
+#define BSP_MPU_MPID_2                       (2U) /* PRQA S 1534 # Advisory R-2.5 */ ///< MPID value for MPU entry 2
+#define BSP_MPU_MPID_3                       (3U) /* PRQA S 1534 # Advisory R-2.5 */ ///< MPID value for MPU entry 3
+#define BSP_MPU_MPID_4                       (4U) /* PRQA S 1534 # Advisory R-2.5 */ ///< MPID value for MPU entry 4
+#define BSP_MPU_MPID_5                       (5U) /* PRQA S 1534 # Advisory R-2.5 */ ///< MPID value for MPU entry 5
+#define BSP_MPU_MPID_6                       (6U) /* PRQA S 1534 # Advisory R-2.5 */ ///< MPID value for MPU entry 6
+#define BSP_MPU_MPID_7                       (7U) /* PRQA S 1534 # Advisory R-2.5 */ ///< MPID value for MPU entry 7
 
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /** MPU Memory checking status */
-typedef struct st_bsp_mpu_mem_check_status
+typedef struct st_bsp_mpu_mem_check_status /* PRQA S 3630, 1536 # Advisory D-4.8, Advisory R-2.4 */
 {
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         uint32_t mem_check_status;
@@ -87,38 +92,44 @@ typedef struct st_bsp_mpu_mem_check_status
             uint32_t                           : 23; ///< Reserved bits
         } mem_check_status_b;
     } mpu_status;
+
+    /* PRQA S 0750 -- */
 } bsp_mpu_mem_check_status_t;
 
 /** Region definition data structure */
-typedef struct e_bsp_mpu_region
+typedef struct st_bsp_mpu_region       /* PRQA S 3630, 1536 # Advisory D-4.8, Advisory R-2.4 */
 {
-    const char * name;                               ///< Region's name
-    uint32_t     start_address;                      ///< Region's start address
-    uint32_t     size;                               ///< Region's size
+    const char * name;                 ///< Region's name
+    uint32_t     start_address;        ///< Region's start address
+    uint32_t     size;                 ///< Region's size
+
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
-        uint32_t attribute;                          ///< Region's attribute
+        uint32_t attribute;                                                             ///< Region's attribute
         struct
         {
-            uint32_t user_mode_permission       : 3; ///< User mode permission
-            uint32_t supervisor_mode_permission : 3; ///< Supervisor mode permission
-            uint32_t                            : 1; ///< Reserved bit
-            uint32_t region_enable              : 1; ///< Region enable
-            uint32_t                            : 6; ///< Reserved bits
-            uint32_t rg_bit                     : 1; ///< Bit indicates the execution and read permissions for any SPID
-            uint32_t wg_bit                     : 1; ///< Bit indicates the write permissions for any SPID
-            uint32_t rmpid                      : 8; ///< Indicates the execution and read permissions for the SPID specified in the MPIDn register
-            uint32_t wmpid                      : 8; ///< Indicates the write for the SPID specified in the MPIDn register
+            uint32_t user_mode_permission       : 3;                                    ///< User mode permission
+            uint32_t supervisor_mode_permission : 3;                                    ///< Supervisor mode permission
+            uint32_t                            : 1;                                    ///< Reserved bit
+            uint32_t region_enable              : 1;                                    ///< Region enable
+            uint32_t                            : 6;                                    ///< Reserved bits
+            uint32_t rg_bit                     : 1;                                    ///< Bit indicates the execution and read permissions for any SPID
+            uint32_t wg_bit                     : 1;                                    ///< Bit indicates the write permissions for any SPID
+            uint32_t rmpid                      : 8; /* PRQA S 1710 # Advisory D-4.5 */ ///< Indicates the execution and read permissions for the SPID specified in the MPIDn register
+            uint32_t wmpid                      : 8; /* PRQA S 1710 # Advisory D-4.5 */ ///< Indicates the write for the SPID specified in the MPIDn register
         } attribute_b;
-    }       region_attr;
-    uint8_t no_of_region;                            ///< Region's index in MPU
+    } region_attr;
+
+    /* PRQA S 0750 -- */
+    uint8_t no_of_region;              ///< Region's index in MPU
 } bsp_mpu_region_t;
 
 /** MPU configuration data structure */
-typedef struct e_bsp_mpu_config
+typedef struct st_bsp_mpu_config       /* PRQA S 1536 # Advisory R-2.4 */
 {
     bsp_mpu_region_t * mpu_region;     ///< Pointer to Regions
-    uint8_t            num_of_regions; ///< Total number of regions to be configurated
+    uint8_t            num_of_regions; ///< Total number of regions to be configured
 } bsp_mpu_config_t;
 
 /***********************************************************************************************************************

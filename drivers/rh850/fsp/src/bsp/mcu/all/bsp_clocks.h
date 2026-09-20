@@ -21,10 +21,6 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
-/** Key code protection value */
-#define BSP_PRV_KEYCODE_DISABLE    0xA5A5A500 ///< Key code protection disable value
-#define BSP_PRV_KEYCODE_ENABLE     0xA5A5A501 ///< Key code protection enable value
-
 /***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
@@ -37,7 +33,7 @@ FSP_HEADER
 void R_BSP_InitClock(void);
 
 /* Get a clock frequency */
-uint32_t R_FSP_SystemClockHzGet(fsp_priv_clock_t clock);
+uint32_t R_FSP_SystemClockHzGet(fsp_priv_clock_t clock); /* PRQA S 4604 # DP_MSR_R-21.2_UC1 */
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

@@ -10,6 +10,8 @@
  #error "INTERNAL ERROR: bsp_cfg.h must be included before renesas.h."
 #endif
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /** @addtogroup Renesas
  * @{
  */
@@ -40,22 +42,29 @@ extern "C" {
 /* ================                           Processor and Core Peripheral Section                           ================ */
 /* =========================================================================================================================== */
 
- #if (BSP_MCU_GROUP_RH850U2Bx)
+ #if (BSP_MCU_GROUP_RH850U2Bx)         /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
+
   #include "r7f7025x.h"
- #elif (BSP_MCU_GROUP_RH850U2Ax)
+
+ #elif (BSP_MCU_GROUP_RH850U2Ax)       /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
+
   #include "r7f7023x.h"
+
  #elif (BSP_MCU_GROUP_RH850U2Cx)
   #include "r7f7026x.h"
  #else
-  #warning "Unsupported MCU"
+
+  #warning "Unsupported MCU" /* PRQA S 3638 # DP_MSR_D-1.1_UC2 & DP_MSR_R-1.2_UC2 */
+
  #endif
 
  #ifdef __cplusplus
 }
  #endif
 
-#endif                                 /* RENESAS_H */
-
 /** @} */ /* End of group RH850 */
 
 /** @} */ /* End of group Renesas */
+/* PRQA S 0292 -- */
+
+#endif                                 /* RENESAS_H */

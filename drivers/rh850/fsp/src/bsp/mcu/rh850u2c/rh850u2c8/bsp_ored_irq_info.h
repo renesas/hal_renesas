@@ -19,31 +19,31 @@
      ((uint32_t) (ored) & 0xFFU))
 
 /** Register base addresses */
-#define BSP_MSPI_MODULE_ID                  (0U)                                         ///< Module ID for MSPI
-#define BSP_CANFD_MODULE_ID                 (1U)                                         ///< Module ID for CANFD
+#define BSP_MSPI_MODULE_ID                  (0U)                                                                         ///< Module ID for MSPI
+#define BSP_CANFD_MODULE_ID                 (1U)                                                                         ///< Module ID for CANFD
 
 /** Macro disable value */
-#define BSP_ORED_MSPI_DISABLE               ((bsp_ored_t) (0x4D524544U))                 ///< Disable MSPI ORed interrupts
-#define BSP_ORED_CANFD_DISABLE              ((bsp_ored_t) (0x43524544U))                 ///< Disable CANFD ORed interrupts
+#define BSP_ORED_MSPI_DISABLE               ((bsp_ored_t) (0x4D524544U)) /* PRQA S 1534 # Advisory R-2.5 */              ///< Disable MSPI ORed interrupts
+#define BSP_ORED_CANFD_DISABLE              ((bsp_ored_t) (0x43524544U)) /* PRQA S 1534 # Advisory R-2.5 */              ///< Disable CANFD ORed interrupts
 
 /** Register stride addresses */
-#define BSP_MSPI_OREDINT_EIC_BASE(ored)    ((uint32_t) (88U + ((uint32_t) (ored) * 4U))) ///< Base EIC index for MSPI ORed
-#define BSP_MSPI_OREDINT_TYPE_TRANSMIT      (0U)                                         ///< MSPI ORed type transmit
-#define BSP_MSPI_OREDINT_TYPE_RECEIVE       (1U)                                         ///< MSPI ORed type receive
-#define BSP_MSPI_OREDINT_TYPE_FRAMECOUNT    (2U)                                         ///< MSPI ORed type framecount
-#define BSP_MSPI_OREDINT_TYPE_ERROR         (3U)                                         ///< MSPI ORed type error
+#define BSP_MSPI_OREDINT_EIC_BASE(ored)    ((uint32_t) (88U + (((uint32_t) ored) * 4U)))                                 ///< Base EIC index for MSPI ORed
+#define BSP_MSPI_OREDINT_TYPE_TRANSMIT      (0U)                                                                         ///< MSPI ORed type transmit
+#define BSP_MSPI_OREDINT_TYPE_RECEIVE       (1U)                                                                         ///< MSPI ORed type receive
+#define BSP_MSPI_OREDINT_TYPE_FRAMECOUNT    (2U)                                                                         ///< MSPI ORed type framecount
+#define BSP_MSPI_OREDINT_TYPE_ERROR         (3U)                                                                         ///< MSPI ORed type error
 
 /** CANFD */
-#define BSP_CANFD_OREDINT_ERROR(ored)    (106U + (6U * (ored)))                          ///< CANFD ORed type error
-#define BSP_CANFD_OREDINT_FIFO(ored)     (107U + (6U * (ored)))                          ///< CANFD ORed type fifo
-#define BSP_CANFD_OREDINT_TX(ored)       (108U + (6U * (ored)))                          ///< CANFD ORed type transmit
-#define BSP_CANFD_OREDINT_VMTX(ored)     (109U + (6U * (ored)))                          ///< CANFD ORed type vmtx
-#define BSP_CANFD_OREDINT_VMRX(ored)     (110U + (6U * (ored)))                          ///< CANFD ORed type vmrx
-#define BSP_CANFD_OREDINT_VMERR(ored)    (111U + (6U * (ored)))                          ///< CANFD ORed type vmerr
+#define BSP_CANFD_OREDINT_ERROR(ored)    (106U + (6U * ((uint32_t) ored)))                                               ///< CANFD ORed type error
+#define BSP_CANFD_OREDINT_FIFO(ored)     (107U + (6U * ((uint32_t) ored)))                                               ///< CANFD ORed type fifo
+#define BSP_CANFD_OREDINT_TX(ored)       (108U + (6U * ((uint32_t) ored)))                                               ///< CANFD ORed type transmit
+#define BSP_CANFD_OREDINT_VMTX(ored)     (109U + (6U * ((uint32_t) ored)))                                               ///< CANFD ORed type vmtx
+#define BSP_CANFD_OREDINT_VMRX(ored)     (110U + (6U * ((uint32_t) ored)))                                               ///< CANFD ORed type vmrx
+#define BSP_CANFD_OREDINT_VMERR(ored)    (111U + (6U * ((uint32_t) ored)))                                               ///< CANFD ORed type vmerr
 
 /** CANFD Interrupt Mask */
 #define BSP_CANFD_ITEM(prefix, CH, ORED, EIC_MACRO) \
-    prefix ## _CANFD_CH ## CH ## _ORED ## ORED = BSP_OREDINT_CREATE(BSP_CANFD_MODULE_ID, EIC_MACRO(ORED), (CH), (ORED)),
+    prefix ## _CANFD_CH ## CH ## _ORED ## ORED = BSP_OREDINT_CREATE(BSP_CANFD_MODULE_ID, EIC_MACRO(ORED), (CH), (ORED)), /* PRQA S 0342 # Advisory R-20.10 */
 
 /** Repeat 14 times to cover channels 0 to 13 */
 #define BSP_CANFD_REPEAT14(prefix, ORED, EIC_MACRO) \
@@ -74,7 +74,7 @@
 
 /** Repeat 10 times to cover channels 0 to 9 */
 #define BSP_MSPI_ITEM(prefix, TYPE_OFF, m, o) \
-    prefix ## _MSPI ## m ## _ORED ## o = BSP_OREDINT_CREATE(BSP_MSPI_MODULE_ID, BSP_MSPI_EIC(o, TYPE_OFF), (m), (o)),
+    prefix ## _MSPI ## m ## _ORED ## o = BSP_OREDINT_CREATE(BSP_MSPI_MODULE_ID, BSP_MSPI_EIC(o, TYPE_OFF), (m), (o)), /* PRQA S 0342 # Advisory R-20.10 */
 
 /** Repeat 10 times to cover channels 0 to 9 */
 #define BSP_MSPI_REPEAT10(prefix, TYPE_OFF, ored)                                     \
@@ -91,6 +91,8 @@
     BSP_MSPI_REPEAT10(prefix, TYPE_OFF, 2) \
     BSP_MSPI_REPEAT10(prefix, TYPE_OFF, 3)
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU_RH850U2C8
  * @defgroup BSP_INTERRUPT_U2C8 BSP Interrupt Events
@@ -99,19 +101,21 @@
  * @{
  **********************************************************************************************************************/
 
+/* PRQA S 0292 -- */
+
 /** Interrupt mask enumeration */
-typedef enum e_bsp_ored_u2c8
+typedef enum e_bsp_ored_u2c8                                                                                                             /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_MSPI_BLOCK(BSP_ORED_TRANSMIT, BSP_MSPI_OREDINT_TYPE_TRANSMIT)     ///< Interrupt mask for MSPI transmit
-    BSP_MSPI_BLOCK(BSP_ORED_RECEIVE, BSP_MSPI_OREDINT_TYPE_RECEIVE)       ///< Interrupt mask for MSPI receive
-    BSP_MSPI_BLOCK(BSP_ORED_FRAMECOUNT, BSP_MSPI_OREDINT_TYPE_FRAMECOUNT) ///< Interrupt mask for MSPI frame count
-    BSP_MSPI_BLOCK(BSP_ORED_ERROR, BSP_MSPI_OREDINT_TYPE_ERROR)           ///< Interrupt mask for MSPI error
-    BSP_CANFD_BLOCK(BSP_ORED_ERROR, BSP_CANFD_OREDINT_ERROR)              ///< Interrupt mask for CANFD error
-    BSP_CANFD_BLOCK(BSP_ORED_FIFO, BSP_CANFD_OREDINT_FIFO)                ///< Interrupt mask for CANFD FIFO receive completion
-    BSP_CANFD_BLOCK(BSP_ORED_TRANSMIT, BSP_CANFD_OREDINT_TX)              ///< Interrupt mask for CANFD transmit
-    BSP_CANFD_BLOCK(BSP_ORED_VMTX, BSP_CANFD_OREDINT_VMTX)                ///< Interrupt mask for CANFD virtual transmit
-    BSP_CANFD_BLOCK(BSP_ORED_VMRX, BSP_CANFD_OREDINT_VMRX)                ///< Interrupt mask for CANFD virtual receive
-    BSP_CANFD_BLOCK(BSP_ORED_VMERR, BSP_CANFD_OREDINT_VMERR)              ///< Interrupt mask for CANFD virtual error
+    BSP_MSPI_BLOCK(BSP_ORED_TRANSMIT, BSP_MSPI_OREDINT_TYPE_TRANSMIT) /* PRQA S 3432, 0499 # DP_MSR_R-20.7_UC1, DP_MSR_R-12.2_UC1 */     ///< Interrupt mask for MSPI transmit
+    BSP_MSPI_BLOCK(BSP_ORED_RECEIVE, BSP_MSPI_OREDINT_TYPE_RECEIVE) /* PRQA S 3432, 0499 # DP_MSR_R-20.7_UC1, DP_MSR_R-12.2_UC1 */       ///< Interrupt mask for MSPI receive
+    BSP_MSPI_BLOCK(BSP_ORED_FRAMECOUNT, BSP_MSPI_OREDINT_TYPE_FRAMECOUNT) /* PRQA S 3432, 0499 # DP_MSR_R-20.7_UC1, DP_MSR_R-12.2_UC1 */ ///< Interrupt mask for MSPI frame count
+    BSP_MSPI_BLOCK(BSP_ORED_ERROR, BSP_MSPI_OREDINT_TYPE_ERROR) /* PRQA S 3432, 0499 # DP_MSR_R-20.7_UC1, DP_MSR_R-12.2_UC1 */           ///< Interrupt mask for MSPI error
+    BSP_CANFD_BLOCK(BSP_ORED_ERROR, BSP_CANFD_OREDINT_ERROR) /* PRQA S 0499, 3432 # DP_MSR_R-12.2_UC1, DP_MSR_R-20.7_UC1 */              ///< Interrupt mask for CANFD error
+    BSP_CANFD_BLOCK(BSP_ORED_FIFO, BSP_CANFD_OREDINT_FIFO) /* PRQA S 0499, 3432 # DP_MSR_R-12.2_UC1, DP_MSR_R-20.7_UC1 */                ///< Interrupt mask for CANFD FIFO receive completion
+    BSP_CANFD_BLOCK(BSP_ORED_TRANSMIT, BSP_CANFD_OREDINT_TX) /* PRQA S 0499, 3432 # DP_MSR_R-12.2_UC1, DP_MSR_R-20.7_UC1 */              ///< Interrupt mask for CANFD transmit
+    BSP_CANFD_BLOCK(BSP_ORED_VMTX, BSP_CANFD_OREDINT_VMTX) /* PRQA S 0499, 3432 # DP_MSR_R-12.2_UC1, DP_MSR_R-20.7_UC1 */                ///< Interrupt mask for CANFD virtual transmit
+    BSP_CANFD_BLOCK(BSP_ORED_VMRX, BSP_CANFD_OREDINT_VMRX) /* PRQA S 0499, 3432 # DP_MSR_R-12.2_UC1, DP_MSR_R-20.7_UC1 */                ///< Interrupt mask for CANFD virtual receive
+    BSP_CANFD_BLOCK(BSP_ORED_VMERR, BSP_CANFD_OREDINT_VMERR) /* PRQA S 0499, 3432 # DP_MSR_R-12.2_UC1, DP_MSR_R-20.7_UC1 */              ///< Interrupt mask for CANFD virtual error
 } bsp_ored_t;
 
 /** @} (end addtogroup BSP_MCU_RH850U2C8) */

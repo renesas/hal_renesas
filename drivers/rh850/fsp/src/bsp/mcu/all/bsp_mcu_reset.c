@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
-#include "bsp_mcu_reset.h"
+#include "bsp_mcu_reset.h"             /* PRQA S 0380 # DP_MSR_D-1.1-C99_UC1 & DP_MSR_D-1.1-C11_UC1 */
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -26,31 +26,35 @@
  **********************************************************************************************************************/
 
 /* BSP reset table information */
-static const bsp_reset_table_t reset_table[] =
+static const bsp_reset_table_t reset_table[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
-    {0,   BSP_RESET_POWER_ON         }, ///< Highest priority reset source
+    {0,   BSP_RESET_POWER_ON         },        ///< Highest priority reset source
 #if (BSP_RESET_SOURCE_POWER_OFF_STANDBY_IS_AVAILABLE)
-    { 1,  BSP_RESET_POWER_OFF_STANDBY}, ///< Reset caused by power-off standby mode
+    { 1,  BSP_RESET_POWER_OFF_STANDBY},        ///< Reset caused by power-off standby mode
 #endif
-    {2,   BSP_RESET_EXTERNAL         }, ///< External reset source
-    {3,   BSP_RESET_VMON             }, ///< VMON reset
-    {4,   BSP_RESET_SYSTEM           }, ///< System reset
-    {16,  BSP_RESET_ICUM_SYSTEM      }, ///< ICUM system reset
-    {6,   BSP_RESET_ECM_SYSTEM       }, ///< ECM system reset
-    {7,   BSP_RESET_WDT              }, ///< WDT reset
-    {8,   BSP_RESET_APPLICATION      }, ///< Application-level reset
-    {17,  BSP_RESET_ICUM_APPLICATION }, ///< ICUM application reset
-    {10,  BSP_RESET_ECM_APPLICATION  }, ///< ECM application reset
+    {2,   BSP_RESET_EXTERNAL         },        ///< External reset source
+    {3,   BSP_RESET_VMON             },        ///< VMON reset
+    {4,   BSP_RESET_SYSTEM           },        ///< System reset
+    {16,  BSP_RESET_ICUM_SYSTEM      },        ///< ICUM system reset
+    {6,   BSP_RESET_ECM_SYSTEM       },        ///< ECM system reset
+    {7,   BSP_RESET_WDT              },        ///< WDT reset
+    {8,   BSP_RESET_APPLICATION      },        ///< Application-level reset
+    {17,  BSP_RESET_ICUM_APPLICATION },        ///< ICUM application reset
+    {10,  BSP_RESET_ECM_APPLICATION  },        ///< ECM application reset
 #if (BSP_FEATURE_CHIP_STANDBY_DEEPSTOP_IS_AVAILABLE)
-    { 15, BSP_RESET_DEEPSTOP         } ///< Lowest priority reset source
+    { 15, BSP_RESET_DEEPSTOP         }  ///< Lowest priority reset source
 #endif
 };
+
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
 
 /*******************************************************************************************************************//**
  * @addtogroup BSP_MCU_RESET
  *
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /*******************************************************************************************************************//**
  * Retrieves the reset source flags from the reset status register.
@@ -72,17 +76,17 @@ static const bsp_reset_table_t reset_table[] =
  * - BSP_RESET_DEEPSTOP: DeepSTOP reset.
  * - BSP_RESET_NONE: No reset flags set.
  **********************************************************************************************************************/
-bsp_reset_t R_BSP_McuResetGetFlags (void)
+bsp_reset_t R_BSP_McuResetGetFlags (void)          /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
-    uint8_t  i                = 0;
-    uint32_t resf             = R_SYS_RESET->RESF;
-    uint8_t  reset_table_size = sizeof(reset_table) / sizeof(reset_table[0]);
+    uint8_t  reset_index      = 0U;
+    uint32_t resf             = R_SYS_RESET->RESF; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    uint8_t  reset_table_size = (uint8_t) (sizeof(reset_table) / sizeof(reset_table[0]));
 
-    for (i = 0; i < reset_table_size; i++)
+    for (reset_index = 0U; reset_index < reset_table_size; reset_index++)
     {
-        if (resf & (1U << reset_table[i].bit))
+        if (0U != (resf & ((uint32_t) 1U << reset_table[reset_index].bit)))
         {
-            return reset_table[i].flag;
+            return reset_table[reset_index].flag;
         }
     }
 
@@ -101,13 +105,13 @@ bsp_reset_t R_BSP_McuResetGetFlags (void)
  * - BSP_CHIP_STANDBY_MODE_HWBIST_SKIPPED: HW BIST skipped by OPBT3 bit 15.
  * - BSP_CHIP_STANDBY_MODE_HW_BIST_FLAG_CLEARED: The flag is cleared before reading the RESF register.
  **********************************************************************************************************************/
-bsp_chip_standby_mode_t R_BSP_GetChipStandbyMode (void)
+bsp_chip_standby_mode_t R_BSP_GetChipStandbyMode (void)  /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
-    uint32_t                resf = R_SYS_RESET->RESF;
+    uint32_t                resf = R_SYS_RESET->RESF;    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     bsp_chip_standby_mode_t mode;
-    if (0U != (BSP_OPBT3_VALUE & BSP_OPBT3_BIT_15_MASK))
+    if (0U != (BSP_OPBT3_VALUE & BSP_OPBT3_BIT_15_MASK)) /* PRQA S 0303 # Advisory R-11.4 */
     {
-        if (resf & BSP_RESET_HW_BIST_0_MASK)
+        if (0U != (resf & BSP_RESET_HW_BIST_0_MASK))
         {
             mode = BSP_CHIP_STANDBY_MODE_RUN_MODE;
         }
@@ -143,7 +147,7 @@ bsp_chip_standby_mode_t R_BSP_GetChipStandbyMode (void)
 void R_BSP_McuResetClearFlags (void)
 {
     /* Clear all reset flags */
-    R_SYS_RESET->RESFC = BSP_RESET_FLAG_MASK;
+    R_SYS_RESET->RESFC = BSP_RESET_FLAG_MASK;                                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 }
 
 /*******************************************************************************************************************//**
@@ -152,19 +156,19 @@ void R_BSP_McuResetClearFlags (void)
  *
  * @retval  None
  **********************************************************************************************************************/
-void R_BSP_McuSoftwareSystemReset (void)
+void R_BSP_McuSoftwareSystemReset (void)                                             /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     /* Enable write access to protected registers */
-    R_SYS_RESET->RESKCPROT0 = BSP_RESET_KEYCODE_ENABLE;
+    R_SYS_RESET->RESKCPROT0 = BSP_RESET_KEYCODE_ENABLE;                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Trigger software reset */
-    R_SYS_RESET->SWSRESA = BSP_RESET_SOFTWARE_RESET_TRIGGEG;
+    R_SYS_RESET->SWSRESA = BSP_RESET_SOFTWARE_RESET_TRIGGEG;                         /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Disable write access to protected registers */
-    R_SYS_RESET->RESKCPROT0 = BSP_RESET_KEYCODE_DISABLE;
+    R_SYS_RESET->RESKCPROT0 = BSP_RESET_KEYCODE_DISABLE;                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Confirm that RESKCPROT0 register is written 0x00000000 successfully */
-    FSP_HARDWARE_REGISTER_WAIT(R_SYS_RESET->RESKCPROT0, BSP_RESET_RESKCPROT0_RESET);
+    FSP_HARDWARE_REGISTER_WAIT(R_SYS_RESET->RESKCPROT0, BSP_RESET_RESKCPROT0_RESET); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 }
 
 /*******************************************************************************************************************//**
@@ -173,19 +177,19 @@ void R_BSP_McuSoftwareSystemReset (void)
  *
  * @retval  None
  **********************************************************************************************************************/
-void R_BSP_McuSoftwareApplicationReset (void)
+void R_BSP_McuSoftwareApplicationReset (void)                                        /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     /* Enable write access to protected registers */
-    R_SYS_RESET->RESKCPROT0 = BSP_RESET_KEYCODE_ENABLE;
+    R_SYS_RESET->RESKCPROT0 = BSP_RESET_KEYCODE_ENABLE;                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Trigger software reset */
-    R_SYS_RESET->SWARESA = BSP_RESET_SOFTWARE_RESET_TRIGGEG;
+    R_SYS_RESET->SWARESA = BSP_RESET_SOFTWARE_RESET_TRIGGEG;                         /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Disable write access to protected registers */
-    R_SYS_RESET->RESKCPROT0 = BSP_RESET_KEYCODE_DISABLE;
+    R_SYS_RESET->RESKCPROT0 = BSP_RESET_KEYCODE_DISABLE;                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Confirm that RESKCPROT0 register is written 0x00000000 successfully */
-    FSP_HARDWARE_REGISTER_WAIT(R_SYS_RESET->RESKCPROT0, BSP_RESET_RESKCPROT0_RESET);
+    FSP_HARDWARE_REGISTER_WAIT(R_SYS_RESET->RESKCPROT0, BSP_RESET_RESKCPROT0_RESET); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 }
 
 #if (BSP_RESET_ECM_SELECT_RESET_SOURCE_IS_AVAILABLE)
@@ -199,21 +203,28 @@ void R_BSP_McuSoftwareApplicationReset (void)
  * @retval  FSP_SUCCESS              Reset source for ECM was set successfully.
  * @retval  FSP_ERR_UNSUPPORTED      Unsupport reset source.
  **********************************************************************************************************************/
-fsp_err_t R_BSP_ECMResetSourceConfig (bsp_reset_t reset_src)
+fsp_err_t R_BSP_ECMResetSourceConfig (bsp_reset_t reset_src) /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     fsp_err_t err = FSP_SUCCESS;
+
+    R_SYS_RESET->RESKCPROT0 = BSP_RESET_KEYCODE_ENABLE;      /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+
     if (reset_src == BSP_RESET_ECM_SYSTEM)
     {
-        R_SYS_RESET->RESC = BSP_RESET_ECM_RESET_SRC_SYS; ///< ECM Reset generates a System Reset
+        R_SYS_RESET->RESC =                                  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                            BSP_RESET_ECM_RESET_SRC_SYS;     ///< ECM Reset generates a System Reset
     }
     else if (reset_src == BSP_RESET_ECM_APPLICATION)
     {
-        R_SYS_RESET->RESC = BSP_RESET_ECM_RESET_SRC_APP; ///< ECM Reset generates an Application Reset
+        R_SYS_RESET->RESC =                                  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                            BSP_RESET_ECM_RESET_SRC_APP;     ///< ECM Reset generates an Application Reset
     }
     else
     {
         err = FSP_ERR_UNSUPPORTED;
     }
+
+    R_SYS_RESET->RESKCPROT0 = BSP_RESET_KEYCODE_DISABLE; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     return err;
 }

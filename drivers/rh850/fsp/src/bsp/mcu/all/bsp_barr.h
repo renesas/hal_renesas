@@ -14,6 +14,8 @@
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU
  * @defgroup BSP_BARR BSP Barrier-Synchronization
@@ -21,6 +23,8 @@ FSP_HEADER
  *
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -36,19 +40,33 @@ FSP_HEADER
 #define R_BARR_BASE                               0xFFFB8000UL                                            ///< Base address of barrier registers
 
 /** Barrier register access macros */
-#define BSP_REG_BRnINIT(n)        *(volatile uint8_t *) (R_BARR_BASE + 0x000 + 0x010 * (n))               ///< BRnINIT register for channel n
-#define BSP_REG_BRnEN(n)          *(volatile uint8_t *) (R_BARR_BASE + 0x004 + 0x010 * (n))               ///< BRnEN register for channel n
-#define BSP_REG_BRnCHKS(n)        *(volatile uint8_t *) (R_BARR_BASE + 0x100 + 0x010 * (n))               ///< BRnCHKS register for channel n
-#define BSP_REG_BRnSYNCS(n)       *(volatile uint8_t *) (R_BARR_BASE + 0x104 + 0x010 * (n))               ///< BRnSYNCS register for channel n
-#define BSP_REG_BRnCHKm(n, m)     *(volatile uint8_t *) (R_BARR_BASE + 0x800 + 0x010 * (n) + 0x100 * (m)) ///< BRnCHKm register for channel n and PE m
-#define BSP_REG_BRnSYNCm(n, m)    *(volatile uint8_t *) (R_BARR_BASE + 0x804 + 0x010 * (n) + 0x100 * (m)) ///< BRnSYNCm register for channel n and PE m
+#define BSP_REG_BRnINIT(n)     *(volatile uint8_t *) (R_BARR_BASE + (uint32_t) 0x000U + ((uint32_t) 0x010U * \
+                                                                                         (uint32_t) (n))) ///< BRnINIT register for channel n
+#define BSP_REG_BRnEN(n)       *(volatile uint8_t *) (R_BARR_BASE + (uint32_t) 0x004U + ((uint32_t) 0x010U * \
+                                                                                         (uint32_t) (n))) ///< BRnEN register for channel n
+
+/* PRQA S 1534 ++ # Advisory R-2.5 */
+#define BSP_REG_BRnCHKS(n)     *(volatile uint8_t *) (R_BARR_BASE + (uint32_t) 0x100U + ((uint32_t) 0x010U * \
+                                                                                         (uint32_t) (n))) ///< BRnCHKS register for channel n
+#define BSP_REG_BRnSYNCS(n)    *(volatile uint8_t *) (R_BARR_BASE + (uint32_t) 0x104U + ((uint32_t) 0x010U * \
+                                                                                         (uint32_t) (n))) ///< BRnSYNCS register for channel n
+
+/* PRQA S 1534 -- */
+#define BSP_REG_BRnCHKm(n,                                                                                   \
+                        m)     *(volatile uint8_t *) (R_BARR_BASE + (uint32_t) 0x800U + ((uint32_t) 0x010U * \
+                                                                                         (uint32_t) (n)) +   \
+                                                      ((uint32_t) 0x100U * (uint32_t) (m))) ///< BRnCHKm register for channel n and PE m
+#define BSP_REG_BRnSYNCm(n,                                                                                  \
+                         m)    *(volatile uint8_t *) (R_BARR_BASE + (uint32_t) 0x804U + ((uint32_t) 0x010U * \
+                                                                                         (uint32_t) (n)) +   \
+                                                      ((uint32_t) 0x100U * (uint32_t) (m))) ///< BRnSYNCm register for channel n and PE m
 
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /** Barrier Synchronization channel */
-typedef enum e_bsp_barrier_sync_channel
+typedef enum e_bsp_barrier_sync_channel  /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_BARRIER_SYNC_CHANNEL_0  = (0U),  ///< Barrier sync channel 0
     BSP_BARRIER_SYNC_CHANNEL_1  = (1U),  ///< Barrier sync channel 1
@@ -69,7 +87,7 @@ typedef enum e_bsp_barrier_sync_channel
 } bsp_barrier_sync_channel_t;
 
 /***********************************************************************************************************************
- * Exported global variable (to be accessed by other files)
+ * Exported global functions (to be accessed by other files)
  **********************************************************************************************************************/
 
 uint8_t R_BSP_GetCoreID(void);

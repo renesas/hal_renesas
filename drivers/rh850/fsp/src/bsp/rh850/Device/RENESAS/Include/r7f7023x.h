@@ -5,7 +5,7 @@
  *
  * @file     r7f7023x.h
  * @brief    RH850 HeaderFile
- * @version  0.4.0
+ * @version  1.0.0
  */
 
 /** @addtogroup Renesas Electronics Corporation
@@ -7280,15 +7280,31 @@ typedef struct
 
     union
     {
-        __IOM uint32_t ATOM_CH_CN0;        /*!< (@ 0x00000018) ATOM[i] channel [x] CCU0 counter register                  */
+        __IOM uint32_t ATOM_CH_CN0;    /*!< (@ 0x00000018) ATOM[i] channel [x] CCU0 counter register                  */
 
         struct
         {
-            __IOM uint32_t CN0 : 24;       /*!< [23..0] CN0[23:0]                                                         */
+            __IOM uint32_t CN0 : 24;   /*!< [23..0] CN0[23:0]                                                         */
             uint32_t           : 8;
         } ATOM_CH_CN0_b;
     };
-    __IOM uint32_t ATOM_CH_STAT;           /*!< (@ 0x0000001C) ATOM[i] channel [x] status register                        */
+
+    union
+    {
+        __IOM uint32_t ATOM_CH_STAT;   /*!< (@ 0x0000001C) ATOM[i] channel [x] status register                        */
+
+        struct
+        {
+            __IOM uint32_t OL   : 1;   /*!< [0..0] Output signal level of ATOM-OUT[x:x].                              */
+            uint32_t            : 15;
+            __IM uint32_t  ACBI : 5;   /*!< [20..16] ATOM Mode control bits.                                          */
+            __IM uint32_t  DV   : 1;   /*!< [21..21] Valid ARU Data stored in compare registers.                      */
+            __IOM uint32_t WRF  : 1;   /*!< [22..22] Write request of CPU failed for late update.                     */
+            __IM uint32_t  DR   : 1;   /*!< [23..23] ARU data rejected flag                                           */
+            __IM uint32_t  ACBO : 5;   /*!< [28..24] ATOM Internal status bits.                                       */
+            uint32_t            : 3;
+        } ATOM_CH_STAT_b;
+    };
 
     union
     {
@@ -8076,7 +8092,7 @@ typedef struct
                                             *   by O1F_2)                                                                 */
             __IOM uint32_t I1SEL_2 : 1;    /*!< [17..17] Input 1 select channel 2.0 : signal PSU_SHIFT selected1
                                             *   : signal COUT1 selected                                                   */
-            __IM uint32_t SH_EN_2 : 1;     /*!< [18..18] Shift enable channel 20: DTM[i]_IN1 is not used; no
+            __IOM uint32_t SH_EN_2 : 1;    /*!< [18..18] Shift enable channel 20: DTM[i]_IN1 is not used; no
                                             *   input signal shift1: Signal selected by I1SEL_2 triggers
                                             *   update of DTM[i]_IN2 with input of DTM[i]_IN1 → input
                                             *   signal shift                                                              */
@@ -9443,6 +9459,200 @@ typedef struct
         } SPID_b;
     };
 } R_GUARD_IBG_TPTM_PROT__Type;         /*!< Size = 8 (0x8)                                                            */
+
+/**
+ * @brief R_IPIR_PE_CH [CH] (Inter Processor Interrupt Channel inside PE block)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint8_t EN;              /*!< (@ 0x00000000) Inter-PE Interrupt Enable Register                         */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } EN_b;
+    };
+    __IM uint8_t RESERVED[3];
+
+    union
+    {
+        __IM uint8_t FLG;              /*!< (@ 0x00000004) Inter-PE Interrupt Request Flag Register                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } FLG_b;
+    };
+    __IM uint8_t RESERVED1[3];
+
+    union
+    {
+        __OM uint8_t FCLR;             /*!< (@ 0x00000008) Inter-PE Interrupt Request Flag Clear Register             */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } FCLR_b;
+    };
+    __IM uint8_t RESERVED2[7];
+
+    union
+    {
+        __IOM uint8_t REQ;             /*!< (@ 0x00000010) Inter-PE Interrupt Request Register                        */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } REQ_b;
+    };
+    __IM uint8_t RESERVED3[3];
+
+    union
+    {
+        __OM uint8_t RCLR;             /*!< (@ 0x00000014) Inter-PE Interrupt Request Clear Register                  */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } RCLR_b;
+    };
+    __IM uint8_t RESERVED4[11];
+} R_IPIR_PE_CH_Type;                   /*!< Size = 32 (0x20)                                                          */
+
+/**
+ * @brief R_IPIR_PE [PE] (Inter Processor Interrupt PE Block)
+ */
+typedef struct
+{
+    __IOM R_IPIR_PE_CH_Type CH[4];     /*!< (@ 0x00000000) Inter Processor Interrupt Channel inside PE block          */
+    __IM uint8_t            RESERVED[128];
+} R_IPIR_PE_Type;                      /*!< Size = 256 (0x100)                                                        */
+
+/**
+ * @brief R_IPIR_CH [CH] (Inter Processor Interrupt Shared Channel)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint8_t ENS;             /*!< (@ 0x00000000) Inter-PE Interrupt Enable Shared Register                  */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } ENS_b;
+    };
+    __IM uint8_t RESERVED[3];
+
+    union
+    {
+        __IM uint8_t FLGS;             /*!< (@ 0x00000004) Inter-PE Interrupt Request Flag Shared Register            */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } FLGS_b;
+    };
+    __IM uint8_t RESERVED1[3];
+
+    union
+    {
+        __OM uint8_t FCLRS;            /*!< (@ 0x00000008) Inter-PE Interrupt Request Flag Clear Shared
+                                        *                  Register                                                   */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } FCLRS_b;
+    };
+    __IM uint8_t RESERVED2[7];
+
+    union
+    {
+        __IOM uint8_t REQS;            /*!< (@ 0x00000010) Inter-PE Interrupt Request Shared Register                 */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } REQS_b;
+    };
+    __IM uint8_t RESERVED3[3];
+
+    union
+    {
+        __OM uint8_t RCLRS;            /*!< (@ 0x00000014) Inter-PE Interrupt Request Clear Shared Register           */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } RCLRS_b;
+    };
+    __IM uint8_t RESERVED4[11];
+} R_IPIR_CH_Type;                      /*!< Size = 32 (0x20)                                                          */
 
 /**
  * @brief R_PBG00_PBG_CTR [PBG_CTR] (PEG Channel protection control register)
@@ -11305,6 +11515,148 @@ typedef struct
 {
     __IOM R_PSI5S0_MB_CH_FRM_Type FRM[6]; /*!< (@ 0x00000000) PSI5S Receive MailBox ch Register                          */
 } R_PSI5S0_MB_CH_Type;                    /*!< Size = 72 (0x48)                                                          */
+
+/**
+ * @brief R_TAUJ0_CDR [CDR] (TAUJ channel data register)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint32_t CDR;            /*!< (@ 0x00000000) CDR                                                        */
+
+        struct
+        {
+            __IOM uint32_t CDR : 32;   /*!< [31..0] Data register for capture/compare values                          */
+        } CDR_b;
+    };
+} R_TAUJ0_CDR_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_TAUJ0_CNT [CNT] (TAUJ channel counter register)
+ */
+typedef struct
+{
+    union
+    {
+        __IM uint32_t CNT;             /*!< (@ 0x00000000) CNT                                                        */
+
+        struct
+        {
+            __IM uint32_t CNT : 32;    /*!< [31..0] 32-bit counter value.                                             */
+        } CNT_b;
+    };
+} R_TAUJ0_CNT_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_TAUJ0_CMOR [CMOR] (TAUJ channel mode OS register)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint16_t CMOR;           /*!< (@ 0x00000000) CMOR                                                       */
+
+        struct
+        {
+            __IOM uint16_t MD  : 5;    /*!< [4..0] Specifies an operating mode.                                       */
+            uint16_t           : 1;
+            __IOM uint16_t COS : 2;    /*!< [7..6] Specifies the timing for updating capture register TAUJnCDRm
+                                        *   and overflow flag TAUJnCSRm.TAUJnOVF of channel m.These
+                                        *   bits are valid only when channel m is in capture function.The
+                                        *   bits must be fixed to 01B in Capture mode and Capture and
+                                        *   gate count mode.00: TAUJnCDRm - Updated when valid edge
+                                        *   of TAUJnTTINm input is detected.TAUJnCSRm.TAUJnOVF - Updated
+                                        *   (cleared or set) when valid edge of TAUJnTTINm input is
+                                        *   detected:+ Set TAUJnCSRm.TAUJnOVF if a counter overflow
+                                        *   has occurred since the last valid edge was de                             */
+            __IOM uint16_t STS : 3;    /*!< [10..8] Selects an external start trigger.                                */
+            __IOM uint16_t MAS : 1;    /*!< [11..11] Specifies whether the channel is a master channel or
+                                        *   slave channel during synchronouschannel operation. This
+                                        *   bit setting is valid only for even channels (CHm_even).
+                                        *   Odd channels (CHm_odd) arefixed to 0.                                     */
+            __IOM uint16_t CCS : 2;    /*!< [13..12] Selects a count clock for TAUJnCNTm counter.                     */
+            __IOM uint16_t CKS : 2;    /*!< [15..14] Selects an operation clock. An operation clock is used
+                                        *   for the TAUJTTINm input edge detection circuit. Setting
+                                        *   of TAUJnCMORm.TAUJnCCS[1:0] bits also allows the operation
+                                        *   clock to serve asthe TAUJnCNTm counter clock.                             */
+        } CMOR_b;
+    };
+    __IM uint16_t RESERVED;
+} R_TAUJ0_CMOR_Type;                   /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_TAUJ0_CMUR [CMUR] (TAUJ channel mode user register)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint8_t CMUR;            /*!< (@ 0x00000000) CMUR                                                       */
+
+        struct
+        {
+            __IOM uint8_t TIS : 2;     /*!< [1..0] Specifies a valid edge of TAUJTTINm input signal.                  */
+            uint8_t           : 6;
+        } CMUR_b;
+    };
+    __IM uint8_t RESERVED[3];
+} R_TAUJ0_CMUR_Type;                   /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_TAUJ0_CSR [CSR] (TAUJ channel status register)
+ */
+typedef struct
+{
+    union
+    {
+        __IM uint8_t CSR;              /*!< (@ 0x00000000) CSR                                                        */
+
+        struct
+        {
+            __IM uint8_t OVF : 1;      /*!< [0..0] Indicates the counter overflow status.This bit is used
+                                        *   only in the following modes: - Capture mode - Capture and
+                                        *   one-count mode                                                            */
+            uint8_t : 7;
+        } CSR_b;
+    };
+    __IM uint8_t RESERVED[3];
+} R_TAUJ0_CSR_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_TAUJ0_CSC [CSC] (TAUJ channel status clear trigger register)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint8_t CSC;             /*!< (@ 0x00000000) CSC                                                        */
+
+        struct
+        {
+            __OM uint8_t CLOV : 1;     /*!< [0..0] CLOV                                                               */
+            uint8_t           : 7;
+        } CSC_b;
+    };
+    __IM uint8_t RESERVED[3];
+} R_TAUJ0_CSC_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_TPBA0_DUTY_BUF [DUTY_BUF] (TPBA Duty Setting Buffer)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint16_t BUF;            /*!< (@ 0x00000000) TPBA Duty Setting Register                                 */
+
+        struct
+        {
+            __IOM uint16_t BUFm : 16;  /*!< [15..0] Sets the duty value.                                              */
+        } BUF_b;
+    };
+    __IM uint16_t RESERVED;
+} R_TPBA0_DUTY_BUF_Type;               /*!< Size = 4 (0x4)                                                            */
 
 /**
  * @brief R_TPTM_TPTM_PE [TPTM_PE] (TPTM for PE[0..3])
@@ -22101,7 +22453,9 @@ typedef struct                         /*!< (@ 0xFF9A4000) R_LPS Structure      
 
         struct
         {
-            uint16_t             : 8;
+            __IOM uint16_t CNT0n : 8;  /*!< [7..0] These bits set the stabilization time of the external
+                                        *   circuit (digital signal source).Stabilization time = (1/(fRH/20))
+                                        *   × 16 × CNT0n (set value)                                                */
             __IOM uint16_t CNT1n : 8;  /*!< [15..8] These bits set the stabilization time of the external
                                         *   circuit (analog signal source).Stabilization time = (1/(fRH/20))
                                         *   × 16 × CNT1n (set value)                                                */
@@ -45983,7 +46337,7 @@ typedef struct                         /*!< (@ 0xFFFB8000) R_BARR Structure     
 /* =========================================================================================================================== */
 
 /**
- * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the R-Car U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMA0)
+ * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the RH850 U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMA0)
  */
 
 typedef struct                           /*!< (@ 0xFF989100) R_CLMA0 Structure                                          */
@@ -46048,7 +46402,7 @@ typedef struct                           /*!< (@ 0xFF989100) R_CLMA0 Structure  
 /* =========================================================================================================================== */
 
 /**
- * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the R-Car U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMAKCPROT)
+ * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the RH850 U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMAKCPROT)
  */
 
 typedef struct                         /*!< (@ 0xFF982700) R_CLMAKCPROT Structure                                     */
@@ -46077,7 +46431,7 @@ typedef struct                         /*!< (@ 0xFF982700) R_CLMAKCPROT Structur
 /* =========================================================================================================================== */
 
 /**
- * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the R-Car U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMAC)
+ * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the RH850 U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMAC)
  */
 
 typedef struct                             /*!< (@ 0xFF989000) R_CLMAC Structure                                          */
@@ -51403,7 +51757,7 @@ typedef struct                         /*!< (@ 0xFF0A2000) R_ETNB0 Structure    
     {
         __IOM uint32_t RIC0;           /*!< (@ 0x00000360) Receive Interrupt Control Register 0The ETNBnRIC0
                                         *                  register controls the AVB-DMAC receive interrupts.See
-                                        *                  this Registers section in R-Car/U5x Group
+                                        *                  this Registers section in RH850/U2x Group
                                         *                  ETNB IP User‘s Manual: Hardware.                         */
 
         struct
@@ -52994,7 +53348,7 @@ typedef struct                         /*!< (@ 0xFF0A2000) R_ETNB0 Structure    
         __IOM uint32_t PIR;            /*!< (@ 0x00000520) PHY Interface RegisterThe ETNBnPIR register provides
                                         *                  a means of access to the PHY-LSI internal
                                         *                  registers via the MII.See this Registers
-                                        *                  section in R-Car/U5x Group ETNB IP User‘s
+                                        *                  section in RH850/U2x Group ETNB IP User‘s
                                         *                  Manual: Hardware.                                          */
 
         struct
@@ -57501,7 +57855,7 @@ typedef struct                         /*!< (@ 0xFF0A4000) R_ETNB1 Structure    
     {
         __IOM uint32_t RIC0;           /*!< (@ 0x00000360) Receive Interrupt Control Register 0The ETNBnRIC0
                                         *                  register controls the AVB-DMAC receive interrupts.See
-                                        *                  this Registers section in R-Car/U5x Group
+                                        *                  this Registers section in RH850/U2x Group
                                         *                  ETNB IP User‘s Manual: Hardware.                         */
 
         struct
@@ -59092,7 +59446,7 @@ typedef struct                         /*!< (@ 0xFF0A4000) R_ETNB1 Structure    
         __IOM uint32_t PIR;            /*!< (@ 0x00000520) PHY Interface RegisterThe ETNBnPIR register provides
                                         *                  a means of access to the PHY-LSI internal
                                         *                  registers via the MII.See this Registers
-                                        *                  section in R-Car/U5x Group ETNB IP User‘s
+                                        *                  section in RH850/U2x Group ETNB IP User‘s
                                         *                  Manual: Hardware.                                          */
 
         struct
@@ -59624,6 +59978,1614 @@ typedef struct                         /*!< (@ 0xFF0A4000) R_ETNB1 Structure    
     __IM uint8_t  RESERVED35;
     __IM uint16_t RESERVED36;
 } R_ETNB1_Type;                        /*!< Size = 6156 (0x180c)                                                      */
+
+/* =========================================================================================================================== */
+/* ================                                        R_FCMDAREA0                                        ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief FACI0 Command Issuing Area. Write FACI command bytes here to issue commands to FPSYS0 (Code Flash / Data Flash 0/1). (R_FCMDAREA0)
+ */
+
+typedef struct                         /*!< (@ 0xFFA20000) R_FCMDAREA0 Structure                                      */
+{
+    union
+    {
+        __IOM uint32_t FACI_CMD32;     /*!< (@ 0x00000000) FACI Command Issuing Area (32-bit access). Write
+                                        *                  FACI command codes to this address. Supports
+                                        *                  8/16/32-bit writes.                                        */
+
+        struct
+        {
+            __IOM uint32_t CMD : 32;   /*!< [31..0] FACI Command Data. Write command byte (8-bit) or data
+                                        *   word (16-bit) for FACI command sequences.                                 */
+        } FACI_CMD32_b;
+    };
+} R_FCMDAREA0_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/* =========================================================================================================================== */
+/* ================                                        R_FCMDAREA1                                        ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief FACI1 Command Issuing Area. Write FACI command bytes here to issue commands to FPSYS1 (Code Flash / Data Flash 0/1). (R_FCMDAREA1)
+ */
+
+typedef struct                         /*!< (@ 0xFFA30000) R_FCMDAREA1 Structure                                      */
+{
+    union
+    {
+        __IOM uint32_t FACI_CMD32;     /*!< (@ 0x00000000) FACI Command Issuing Area (32-bit access). Write
+                                        *                  FACI command codes to this address. Supports
+                                        *                  8/16/32-bit writes.                                        */
+
+        struct
+        {
+            __IOM uint32_t CMD : 32;   /*!< [31..0] FACI Command Data. Write command byte (8-bit) or data
+                                        *   word (16-bit) for FACI command sequences.                                 */
+        } FACI_CMD32_b;
+    };
+} R_FCMDAREA1_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/* =========================================================================================================================== */
+/* ================                                        R_FCMDAREA2                                        ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief FACI2 Command Issuing Area. Write FACI command bytes here to issue commands to FPSYS2 (Data Area 2 / ICUMHB). (R_FCMDAREA2)
+ */
+
+typedef struct                         /*!< (@ 0xFFA40000) R_FCMDAREA2 Structure                                      */
+{
+    union
+    {
+        __IOM uint32_t FACI_CMD32;     /*!< (@ 0x00000000) FACI Command Issuing Area (32-bit access). Write
+                                        *                  FACI command codes to this address. Supports
+                                        *                  8/16/32-bit writes.                                        */
+
+        struct
+        {
+            __IOM uint32_t CMD : 32;   /*!< [31..0] FACI Command Data. Write command byte (8-bit) or data
+                                        *   word (16-bit) for FACI command sequences.                                 */
+        } FACI_CMD32_b;
+    };
+} R_FCMDAREA2_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FACI0                                          ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief Flash Application Command Interface 0 (FPSYS0). Controls Code Flash Banks A-F, Data Area 0/1, and Hardware Property Area. (R_FACI0)
+ */
+
+typedef struct                         /*!< (@ 0xFFA10000) R_FACI0 Structure                                          */
+{
+    union
+    {
+        __IM uint8_t FPMON;            /*!< (@ 0x00000000) Flash Pin Monitor                                          */
+
+        struct
+        {
+            uint8_t           : 7;
+            __IM uint8_t SFWE : 1;     /*!< [7..7] Flash Write EnableMonitors the status of SFWE bit in
+                                        *   FLMDCNT register.                                                         */
+        } FPMON_b;
+    };
+    __IM uint8_t  RESERVED;
+    __IM uint16_t RESERVED1;
+    __IM uint32_t RESERVED2[3];
+
+    union
+    {
+        __IOM uint8_t FASTAT;          /*!< (@ 0x00000010) Flash Access Status                                        */
+
+        struct
+        {
+            __IM uint8_t ECRCT : 1;    /*!< [0..0] Error CorrectionIndicates that a 1-bit error has been
+                                        *   corrected when the flash sequencer reads the flash memory
+                                        *   (Configuration Setting Area, Block Protection Area, Security
+                                        *   Setting Area, Erase Counter, SwitchArea, TAG Area or the
+                                        *   P/E parameter table)                                                      */
+            uint8_t            : 2;
+            __IOM uint8_t DFAE : 1;    /*!< [3..3] Data Flash Access ErrorIndicates whether or not data
+                                        *   flash access error has been generated.                                    */
+            __IM uint8_t CMDLK : 1;    /*!< [4..4] Command LockIndicates whether flash sequencer is in the
+                                        *   command lock state.                                                       */
+            uint8_t            : 2;
+            __IOM uint8_t CFAE : 1;    /*!< [7..7] Code Flash Access ErrorIndicates whether or not code
+                                        *   flash access error has been generated.                                    */
+        } FASTAT_b;
+    };
+    __IM uint8_t  RESERVED3;
+    __IM uint16_t RESERVED4;
+
+    union
+    {
+        __IOM uint8_t FAEINT;          /*!< (@ 0x00000014) Flash Access Error Interrupt Enable                        */
+
+        struct
+        {
+            __IOM uint8_t ECRCTIE : 1; /*!< [0..0] Error Correction Interrupt EnableEnables or disables
+                                        *   the FLERR interrupt request when a 1-bit error has been
+                                        *   corrected and the ECRCT bit in FASTAT_n has been set to
+                                        *   1 on the flash memory read (Configuration Setting Area,
+                                        *   Block Protection Area, Security Setting Area, Erase Counter,
+                                        *   Switch Area, TAG Area, or the P/E parameter table).                       */
+            uint8_t              : 2;
+            __IOM uint8_t DFAEIE : 1;  /*!< [3..3] Data Flash Access Error Interrupt EnableEnables or disables
+                                        *   the FLERR interrupt request when data flash access error
+                                        *   occurs and DFAE bit in FASTAT_n becomes 1.                                */
+            __IOM uint8_t CMDLKIE : 1; /*!< [4..4] Command Lock Interrupt EnableEnables or disables the
+                                        *   FLERR interrupt request when flash sequencer enters the
+                                        *   command lock state and CMDLK bit in FASTAT_n becomes 1.                   */
+            uint8_t              : 2;
+            __IOM uint8_t CFAEIE : 1;  /*!< [7..7] Code Flash Access Error Interrupt EnableEnables or disables
+                                        *   the FLERR interrupt request when code flash access error
+                                        *   occurs and CFAE bit in FASTAT_n becomes 1.                                */
+        } FAEINT_b;
+    };
+    __IM uint8_t  RESERVED5;
+    __IM uint16_t RESERVED6;
+    __IM uint32_t RESERVED7[6];
+
+    union
+    {
+        __IOM uint32_t FSADDR;          /*!< (@ 0x00000030) Flash Command Start Address                                */
+
+        struct
+        {
+            __IOM uint32_t FSADDR : 32; /*!< [31..0] Start Address of FACI Command ProcessingThese bits specify
+                                         *   the start address of the FACI command processing.Bits 31
+                                         *   to 28 are ignored in the FACI command processing for the
+                                         *   code flash memory.Bits 31 to 21 are ignored in the FACI
+                                         *   command processing for the data flash memory.Lower address
+                                         *   bits for smaller address than boundary below are also ignored             */
+        } FSADDR_b;
+    };
+
+    union
+    {
+        __IOM uint32_t FEADDR;          /*!< (@ 0x00000034) Flash Command End Address                                  */
+
+        struct
+        {
+            __IOM uint32_t FEADDR : 32; /*!< [31..0] End Address of FACI Command Target AreaSpecifies end
+                                         *   address of target area in the Area Erasure or Blank Checking
+                                         *   Command.Bits 31 to 21 are ignored in the FACI command processing.Bits
+                                         *   20 to 0 are used in the inconsistency check between FSADDR
+                                         *   and FEADDR.                                                               */
+        } FEADDR_b;
+    };
+    __IM uint32_t RESERVED8[2];
+
+    union
+    {
+        __IOM uint16_t FCVAPROT;        /*!< (@ 0x00000040) Code Flash Valid Area Protection                           */
+
+        struct
+        {
+            __IOM uint16_t CVAPROT : 1; /*!< [0..0] Code Flash Valid Area ProtectionValid area of code flash
+                                         *   is protected from FACI command (Programming, BlockErasure,
+                                         *   Programming/Erasure Resumption) in double map mode                        */
+            uint16_t          : 7;
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key CodeThese bits enable or disable CVAPROT bit modification     */
+        } FCVAPROT_b;
+    };
+    __IM uint16_t RESERVED9;
+    __IM uint32_t RESERVED10[15];
+
+    union
+    {
+        __IM uint32_t FSTATR;          /*!< (@ 0x00000080) Flash Status                                               */
+
+        struct
+        {
+            uint32_t              : 2;
+            __IM uint32_t TBLCRCT : 1;   /*!< [2..2] 1-Bit Error Correction Monitor (P/E Parameter Table )Indicates
+                                          *   that a 1-bit error has been corrected on reading the P/E
+                                          *   parameter table.Flash sequencer reads the P/E parameter
+                                          *   table in Programming, MultiProgramming, DMA Programming,
+                                          *   Block Erasure, Area Erasure, Blank Checking, Property Programming,
+                                          *   Property Erasure, Switchq Programming, Switch Erasure,
+                                          *   TAG Update, TAG Erasure Command processing. When this bit
+                                          *   is 1, the flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t TBLDTCT : 1;   /*!< [3..3] 2-Bit Error Detection Monitor (P/E Parameter Table)Indicates
+                                          *   that a 2-bit error has been detected on reading the P/E
+                                          *   parameter table.Flash sequencer reads the P/E parameter
+                                          *   table in Programming, Multi Programming, DMA Programming,
+                                          *   Block Erasure, Area Erasure, Blank Checking, Property Programming,
+                                          *   Property Erasure, Switch Programming, Switch Erasure, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   1, the flash sequencer is in the command lock state.                      */
+            __IM uint32_t CFGCRCT : 1;   /*!< [4..4] Configuration Setting Area ECC 1-Bit Error Correction
+                                          *   Monitoring BitIndicates that 1-bit error has been corrected
+                                          *   when flash sequencer is reading Configuration Setting Area.
+                                          *   Flash sequencer reads Configuration Setting Area in Property
+                                          *   Programming, TAG Update, TAG Erasure. When this bit is
+                                          *   “1”, flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t CFGDTCT : 1;   /*!< [5..5] Configuration Setting Area ECC 2-Bit Error Detection
+                                          *   Monitoring BitIndicates that 2-bit error has been detected
+                                          *   when flash sequencer is reading Configuration Setting Area.
+                                          *   Flash sequencer reads Configuration Setting Area in Property
+                                          *   Programming, TAG Update, TAG Erasure Command processing
+                                          *   When this bit is “1”, flash sequencer is in command
+                                          *   lock state.                                                               */
+            __IM uint32_t FHVEERR : 1;   /*!< [6..6] FHVE Setting ErrorIndicates the violation of the flash
+                                          *   memory programming/erasure protection in the FHVE3FPn register.
+                                          *   When FHVEERR bit is 1, the flash sequencer is in the command
+                                          *   lock state.                                                               */
+            uint32_t             : 1;
+            __IM uint32_t PRGSPD : 1;    /*!< [8..8] Programming Suspension StatusIndicates that flash sequencer
+                                          *   has entered the Programming Command Suspension process
+                                          *   or Programming Suspension status.                                         */
+            __IM uint32_t ERSSPD : 1;    /*!< [9..9] Erasure-Suspended StatusIndicates that flash sequencer
+                                          *   has entered the erasure command suspension process or erasure-suspended
+                                          *   status.                                                                   */
+            __IM uint32_t DBFULL : 1;    /*!< [10..10] Data Buffer FullThis bit is always read as "0".                  */
+            __IM uint32_t SUSRDY : 1;    /*!< [11..11] Suspend ReadyIndicates whether flash sequencer is ready
+                                          *   to accept the Programming/Erasure Suspension Command.                     */
+            __IM uint32_t PRGERR : 1;    /*!< [12..12] Programming ErrorIndicates the result of code or data
+                                          *   flash programming by flash sequencer.                                     */
+            __IM uint32_t ERSERR : 1;    /*!< [13..13] Erasure ErrorIndicates result of code or data flash
+                                          *   erasure by flash sequencer.                                               */
+            __IM uint32_t ILGLERR : 1;   /*!< [14..14] Illegal ErrorIndicates that flash sequencer has detected
+                                          *   an illegal command or illegal flash memory access. When
+                                          *   this bit is 1, flash sequencer is in the command lock state.              */
+            __IM uint32_t FRDY : 1;      /*!< [15..15] Flash ReadyIndicates the processing state in flash
+                                          *   sequencer.                                                                */
+            __IM uint32_t BPLCRCT : 1;   /*!< [16..16] Block Protection Area ECC 1-Bit Error Correction Monitoring
+                                          *   BitIndicates that 1-bit error has been corrected when flash
+                                          *   sequencer is reading Block Protection Area. Flash sequencer
+                                          *   reads Block Protection Area in Programming, Block Erasure
+                                          *   for the code flash memory or Programming, Multi Programming,
+                                          *   Block Erasure, Area Erasure for the Extended Data Area
+                                          *   or Property Programming, TAG Update, TAG Erasure Command
+                                          *   processing.                                                               */
+            __IM uint32_t BPLDTCT : 1;   /*!< [17..17] Block Protection Area ECC 2-Bit Error Detection Monitoring
+                                          *   BitIndicates that 2-bit error has been detected when flash
+                                          *   sequencer is reading Block Protection Area. Flash sequencer
+                                          *   reads Block Protection Area in Programming, Block Erasure
+                                          *   for the code flash memory or Programming, Multi Programming,
+                                          *   Block Erasure, Area Erasure for the Extended Data Area
+                                          *   or Property Programming, TAG Update, TAG Erasure Command
+                                          *   processing. When this bit is “1”, flash sequencer is
+                                          *   in command lock state.                                                    */
+            __IM uint32_t EBFULL : 1;    /*!< [18..18] FDMYECC_n Buffer FullIndicates the FDMYECC_n buffer
+                                          *   status when issuing the Programming Command. Flash sequencer
+                                          *   incorporates a buffer for FDMYECC_n register (ECC buffer).                */
+            uint32_t            : 1;
+            __IM uint32_t OTERR : 1;     /*!< [20..20] Other ErrorWhen this bit is “1”, flash sequencer
+                                          *   enters command lock state.                                                */
+            __IM uint32_t SECERR : 1;    /*!< [21..21] Security Error When this bit is “1”, flash sequencer
+                                          *   enters command lock state.                                                */
+            __IM uint32_t FESETERR : 1;  /*!< [22..22] FENTRY Setting ErrorWhen this bit is “1”, flash
+                                          *   sequencer enters command lock state.                                      */
+            __IM uint32_t ILGCOMERR : 1; /*!< [23..23] Illegal Command ErrorWhen this bit is “1”, flash
+                                          *   sequencer enters command lock state.                                      */
+            __IM uint32_t SECCRCT : 1;   /*!< [24..24] Security Setting Area ECC 1-Bit Error Correction Monitoring
+                                          *   BitIndicates that 1-bit error has been corrected when flash
+                                          *   sequencer is reading Security Setting Area. Flash sequencer
+                                          *   reads Security Setting Area in Property Programming, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   “1”, flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t SECDTCT : 1;   /*!< [25..25] Security Setting Area ECC 2-Bit Error Detection Monitoring
+                                          *   BitIndicates that 2-bit error has been detected when flash
+                                          *   sequencer is reading Security Setting Area. Flash sequencer
+                                          *   reads Security Setting Area in Property Programming, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   “1”, flash sequencer is in command lock state.                        */
+            __IM uint32_t SWTCRCT : 1;   /*!< [26..26] Switch Area and TAG Area ECC 1-Bit Error Correction
+                                          *   Monitoring BitIndicates that 1-bit error has been detected
+                                          *   when FACI is reading Switch Area and TAG Area. FACI reads
+                                          *   Switch Area and TAG Area in Switch Erasure, TAG Update,
+                                          *   and TAG Erasure Command processing. When this bit is "1",
+                                          *   flash sequencer continues command processing, and does
+                                          *   not enter "Command Lock" state.                                           */
+            __IM uint32_t SWTDTCT : 1;   /*!< [27..27] Switch Area and TAG Area ECC 2-Bit Error Detection
+                                          *   Monitoring BitIndicates that 2-bit error has been detected
+                                          *   when FACI is reading Switch Area and TAG Area. FACI reads
+                                          *   Switch Area and TAG Area in Switch Erasure, TAG Update,
+                                          *   and TAG Erasure Command processing. When this bit is "1",
+                                          *   flash sequencer is in "Command Lock" state.                               */
+            __IM uint32_t ERCCRCT : 1;   /*!< [28..28] Erase counter 1-Bit Error Correction Monitoring BitIndicates
+                                          *   that 1-bit error has been corrected when FACI is reading
+                                          *   Erase counter. FACI reads Erase counter in Block Erasure
+                                          *   (User Area), Erasure Resumption (User Area) Command processing.
+                                          *   When this bit is "1", flash sequencer continues command
+                                          *   processing, and does not enter "Command Lock" state.                      */
+            __IM uint32_t ERCDTCT : 1;   /*!< [29..29] Erase counter ECC 2-Bit Error Detection Monitoring
+                                          *   BitIndicates that 2-bit error has been detected when FACI
+                                          *   is reading Erase counter. FACI reads Erase counter in Block
+                                          *   Erasure (User Area), Erasure Resumption (User Area) Command
+                                          *   processing. When this bit is "1", flash sequencer is in
+                                          *   "Command Lock" state.                                                     */
+            uint32_t : 2;
+        } FSTATR_b;
+    };
+
+    union
+    {
+        __IOM uint16_t FENTRYR;         /*!< (@ 0x00000084) Flash P/E Mode Entry                                       */
+
+        struct
+        {
+            __IOM uint16_t FENTRYC : 1; /*!< [0..0] Code Flash Programming/Erasure Mode EntryThis bit specifies
+                                         *   programming/erasure mode for code flash.                                  */
+            uint16_t               : 6;
+            __IOM uint16_t FENTRYD : 1; /*!< [7..7] Data Flash Programming/Erasure Mode EntryThis bit specifies
+                                         *   programming/erasure mode for data flash.                                  */
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key CodeThese bits enable or disable FENTRYD and FENTRYC
+                                         *   bits modification.                                                        */
+        } FENTRYR_b;
+    };
+    __IM uint16_t RESERVED11;
+    __IM uint32_t RESERVED12;
+
+    union
+    {
+        __IOM uint16_t FSUINITR;       /*!< (@ 0x0000008C) Flash Sequencer Setup Initialization                       */
+
+        struct
+        {
+            __IOM uint16_t SUINIT : 1; /*!< [0..0] Set-up InitializationInitializes following flash sequencer
+                                        *   set-up registers.FSADDR_nFEADDR_nFENTRYR_nFBCCNT_nFCVAPROT_n.             */
+            uint16_t          : 7;
+            __OM uint16_t KEY : 8;     /*!< [15..8] Key CodeThese bits enable or disable CVAPROT bit modification     */
+        } FSUINITR_b;
+    };
+    __IM uint16_t RESERVED13;
+    __IM uint32_t RESERVED14[4];
+
+    union
+    {
+        __IM uint16_t FCMDR;           /*!< (@ 0x000000A0) FACI Command Register                                      */
+
+        struct
+        {
+            __IM uint16_t PCMDR : 8;   /*!< [7..0] Previous CommandThese bits store previous command accepted
+                                        *   by each Flash sequencer.                                                  */
+            __IM uint16_t CMDR : 8;    /*!< [15..8] CommandThese bits store the latest command accepted
+                                        *   by each Flash sequencer.                                                  */
+        } FCMDR_b;
+    };
+    __IM uint16_t RESERVED15;
+
+    union
+    {
+        __IM uint32_t FCMDMON;           /*!< (@ 0x000000A4) Flash Status                                               */
+
+        struct
+        {
+            __IM uint32_t PCMDM : 8;     /*!< [7..0] Previous CommandThese bits store previous command accepted
+                                          *   by each Flash sequencer.                                                  */
+            __IM uint32_t PFENTRYCM : 1; /*!< [8..8] FENTRYC status Monitor of previous command                         */
+            __IM uint32_t PFENTRYDM : 1; /*!< [9..9] FENTRYD status Monitor of previous command                         */
+            uint32_t                : 5;
+            __IM uint32_t PMSTCM    : 1; /*!< [15..15] Previous Command Master MonitorThe master which issued
+                                          *   Previous command.                                                         */
+            __IM uint32_t CMDM : 8;      /*!< [23..16] CommandThese bits store the latest command accepted
+                                          *   by each Flash sequencer.                                                  */
+            __IM uint32_t FENTRYCM : 1;  /*!< [24..24] FENTRYC status Monitor of Latest command                         */
+            __IM uint32_t FENTRYDM : 1;  /*!< [25..25] FENTRYD status Monitor of Latest command                         */
+            uint32_t               : 5;
+            __IM uint32_t MSTCM    : 1;  /*!< [31..31] Latest Command Master MonitorThe master which issued
+                                          *   Latest command.                                                           */
+        } FCMDMON_b;
+    };
+
+    union
+    {
+        __IM uint8_t FSWASTAT;         /*!< (@ 0x000000A8) Switch Area Status (FACI0 only)                            */
+
+        struct
+        {
+            __IM uint8_t SWVA  : 1;    /*!< [0..0] Valid Area in Switch Area                                          */
+            __IM uint8_t SWAS  : 1;    /*!< [1..1] Switch Area Status                                                 */
+            __IM uint8_t CFGVA : 1;    /*!< [2..2] Valid Area in Configuration Setting Area                           */
+            __IM uint8_t SECVA : 1;    /*!< [3..3] Valid Area in Security Setting Area                                */
+            __IM uint8_t BPVA0 : 1;    /*!< [4..4] Valid Area in Block Protection Area for FPSYS0                     */
+            uint8_t            : 3;
+        } FSWASTAT_b;
+    };
+    __IM uint8_t  RESERVED16;
+    __IM uint16_t RESERVED17;
+    __IM uint32_t RESERVED18[5];
+
+    union
+    {
+        __IM uint16_t FPESTAT;         /*!< (@ 0x000000C0) Flash P/E Status                                           */
+
+        struct
+        {
+            __IM uint16_t PEERRST : 8; /*!< [7..0] Programming/Erasure Error StatusIndicates the source
+                                        *   of error that occurs during programming or erasure for
+                                        *   code flash or data flash. This bit value is only valid
+                                        *   if ERSERR or PRGERR bit value in FSTATR_n register is 1,
+                                        *   while FRDY bit in FSTATR_n register is 1.                                 */
+            uint16_t : 8;
+        } FPESTAT_b;
+    };
+    __IM uint16_t RESERVED19;
+    __IM uint32_t RESERVED20[3];
+
+    union
+    {
+        __IOM uint8_t FBCCNT;          /*!< (@ 0x000000D0) Data Flash Blank Check Control                             */
+
+        struct
+        {
+            __IOM uint8_t BCDIR : 1;   /*!< [0..0] Blank Check DirectionSpecifies addressing mode in blank
+                                        *   checking operation.                                                       */
+            uint8_t : 7;
+        } FBCCNT_b;
+    };
+    __IM uint8_t  RESERVED21;
+    __IM uint16_t RESERVED22;
+
+    union
+    {
+        __IM uint8_t FBCSTAT;          /*!< (@ 0x000000D4) Data Flash Blank Check Status                              */
+
+        struct
+        {
+            __IM uint8_t BCST : 1;     /*!< [0..0] Blank Check StatusIndicates the result of the Blank Checking
+                                        *   Command.                                                                  */
+            uint8_t : 7;
+        } FBCSTAT_b;
+    };
+    __IM uint8_t  RESERVED23;
+    __IM uint16_t RESERVED24;
+
+    union
+    {
+        __IM uint32_t FPSADDR;         /*!< (@ 0x000000D8) Programmed Area Start Address                              */
+
+        struct
+        {
+            __IM uint32_t PSADR : 21;  /*!< [20..0] Programmed Area Start AddressIndicates address of the
+                                        *   first programmed data which is found in Blank Checking
+                                        *   Command execution. These bits stores address offset from
+                                        *   the top address in the data flash memory.This register
+                                        *   value is only valid if BCST bit value in FBCSTAT_n register
+                                        *   is 1, while FRDY bit in FSTATR_n register is 1.When BCST
+                                        *   bit is 0, the PSADR bit holds the address that previously
+                                        *   checked.                                                                  */
+            uint32_t : 11;
+        } FPSADDR_b;
+    };
+    __IM uint32_t RESERVED25;
+
+    union
+    {
+        __IM uint16_t FCPSR;           /*!< (@ 0x000000E0) Flash Sequencer Process Switch                             */
+
+        struct
+        {
+            __IM uint16_t ESUSPMD : 1; /*!< [0..0] Erasure-Suspended Mode Selects erasure-suspended mode
+                                        *   to be entered when the Programming/Erasure Suspension Command
+                                        *   is issued while flash sequencer is erasing flash memory.                  */
+            uint16_t : 15;
+        } FCPSR_b;
+    };
+    __IM uint16_t RESERVED26;
+    __IM uint32_t RESERVED27[7];
+
+    union
+    {
+        __IM uint16_t FECCEMON;        /*!< (@ 0x00000100) Flash ECC Encoder Monitor                                  */
+
+        struct
+        {
+            __IM uint16_t FECCM : 10;  /*!< [9..0] ECC Monitor Indicates the ECC encoder output.In code
+                                        *   flash programming/erasure modeThe FECCM[9] to FECCM[0]
+                                        *   bits indicate the ECC encoder output for the code flash
+                                        *   memory.In data flash programming/erasure modeThe FECCM[9]
+                                        *   to FECCM[7] bits are fixed to 1.The FECCM[6] to FECCM[0]
+                                        *   indicate the ECC encoder output for the data flash memory.                */
+            __IM uint16_t FAPARM : 1;  /*!< [10..10] Address Parity Monitor Indicates the output from the
+                                        *   address parity generator.In code flash programming/erasure
+                                        *   modeThis bit indicates the output from the address parity
+                                        *   generator.In data flash programming/erasure modeThis bit
+                                        *   is fixed to 1.                                                            */
+            uint16_t : 5;
+        } FECCEMON_b;
+    };
+    __IM uint16_t RESERVED28;
+
+    union
+    {
+        __IOM uint16_t FECCTMD;         /*!< (@ 0x00000104) Flash ECC Test Mode                                        */
+
+        struct
+        {
+            __IOM uint16_t ECCDISE : 1; /*!< [0..0] ECC Encoder Disable Disables the address parity generator
+                                         *   and the ECC encoder. If the address parity generator and
+                                         *   the ECC encoder are disabled, the FDMYECC_n value is written
+                                         *   to the flash memory.                                                      */
+            uint16_t              : 3;
+            __IOM uint16_t DECCVE : 1;  /*!< [4..4] Data Flash Memory ECC Bits Verify Enable Specifies the
+                                         *   verify operation on programming/erasure the data flash
+                                         *   memory.                                                                   */
+            __IOM uint16_t CECCVE : 1;  /*!< [5..5] Code Flash Memory ECC Bits Verify Enable Specifies the
+                                         *   verify operation on programming/erasure the code flash
+                                         *   memory.                                                                   */
+            uint16_t          : 2;
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key Code These bits enable or disable CECCVE, DECCVE,
+                                         *   and ECCDISE bits modification.                                            */
+        } FECCTMD_b;
+    };
+    __IM uint16_t RESERVED29;
+
+    union
+    {
+        __IOM uint16_t FDMYECC;         /*!< (@ 0x00000108) Flash Dummy ECC Register                                   */
+
+        struct
+        {
+            __IOM uint16_t DMYECC : 10; /*!< [9..0] Dummy ECC Specify the ECC value when the ECCDISE bit
+                                         *   is 1.                                                                     */
+            __IOM uint16_t DMYAPAR : 1; /*!< [10..10] Dummy Address Parity Specifies the address parity value
+                                         *   when the ECCDISE bit is 1.                                                */
+            uint16_t : 5;
+        } FDMYECC_b;
+    };
+    __IM uint16_t RESERVED30;
+} R_FACI0_Type;                        /*!< Size = 268 (0x10c)                                                        */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FACI1                                          ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief Flash Application Command Interface 1 (FPSYS1). Controls Data Area 2 (ICUMHB exclusive). Subset of FACI0 - no FAREASELC, FRTSTAT, FRTEINT, FSWASTAT. (R_FACI1)
+ */
+
+typedef struct                         /*!< (@ 0xFFA14000) R_FACI1 Structure                                          */
+{
+    union
+    {
+        __IM uint8_t FPMON;            /*!< (@ 0x00000000) Flash Pin Monitor                                          */
+
+        struct
+        {
+            uint8_t           : 7;
+            __IM uint8_t SFWE : 1;     /*!< [7..7] Flash Write EnableMonitors the status of SFWE bit in
+                                        *   FLMDCNT register.                                                         */
+        } FPMON_b;
+    };
+    __IM uint8_t  RESERVED;
+    __IM uint16_t RESERVED1;
+    __IM uint32_t RESERVED2[3];
+
+    union
+    {
+        __IOM uint8_t FASTAT;          /*!< (@ 0x00000010) Flash Access Status                                        */
+
+        struct
+        {
+            __IM uint8_t ECRCT : 1;    /*!< [0..0] Error CorrectionIndicates that a 1-bit error has been
+                                        *   corrected when the flash sequencer reads the flash memory
+                                        *   (Configuration Setting Area, Block Protection Area, Security
+                                        *   Setting Area, Erase Counter, SwitchArea, TAG Area or the
+                                        *   P/E parameter table)                                                      */
+            uint8_t            : 2;
+            __IOM uint8_t DFAE : 1;    /*!< [3..3] Data Flash Access ErrorIndicates whether or not data
+                                        *   flash access error has been generated.                                    */
+            __IM uint8_t CMDLK : 1;    /*!< [4..4] Command LockIndicates whether flash sequencer is in the
+                                        *   command lock state.                                                       */
+            uint8_t            : 2;
+            __IOM uint8_t CFAE : 1;    /*!< [7..7] Code Flash Access ErrorIndicates whether or not code
+                                        *   flash access error has been generated.                                    */
+        } FASTAT_b;
+    };
+    __IM uint8_t  RESERVED3;
+    __IM uint16_t RESERVED4;
+
+    union
+    {
+        __IOM uint8_t FAEINT;          /*!< (@ 0x00000014) Flash Access Error Interrupt Enable                        */
+
+        struct
+        {
+            __IOM uint8_t ECRCTIE : 1; /*!< [0..0] Error Correction Interrupt EnableEnables or disables
+                                        *   the FLERR interrupt request when a 1-bit error has been
+                                        *   corrected and the ECRCT bit in FASTAT_n has been set to
+                                        *   1 on the flash memory read (Configuration Setting Area,
+                                        *   Block Protection Area, Security Setting Area, Erase Counter,
+                                        *   Switch Area, TAG Area, or the P/E parameter table).                       */
+            uint8_t              : 2;
+            __IOM uint8_t DFAEIE : 1;  /*!< [3..3] Data Flash Access Error Interrupt EnableEnables or disables
+                                        *   the FLERR interrupt request when data flash access error
+                                        *   occurs and DFAE bit in FASTAT_n becomes 1.                                */
+            __IOM uint8_t CMDLKIE : 1; /*!< [4..4] Command Lock Interrupt EnableEnables or disables the
+                                        *   FLERR interrupt request when flash sequencer enters the
+                                        *   command lock state and CMDLK bit in FASTAT_n becomes 1.                   */
+            uint8_t              : 2;
+            __IOM uint8_t CFAEIE : 1;  /*!< [7..7] Code Flash Access Error Interrupt EnableEnables or disables
+                                        *   the FLERR interrupt request when code flash access error
+                                        *   occurs and CFAE bit in FASTAT_n becomes 1.                                */
+        } FAEINT_b;
+    };
+    __IM uint8_t  RESERVED5;
+    __IM uint16_t RESERVED6;
+    __IM uint32_t RESERVED7[6];
+
+    union
+    {
+        __IOM uint32_t FSADDR;          /*!< (@ 0x00000030) Flash Command Start Address                                */
+
+        struct
+        {
+            __IOM uint32_t FSADDR : 32; /*!< [31..0] Start Address of FACI Command ProcessingThese bits specify
+                                         *   the start address of the FACI command processing.Bits 31
+                                         *   to 28 are ignored in the FACI command processing for the
+                                         *   code flash memory.Bits 31 to 21 are ignored in the FACI
+                                         *   command processing for the data flash memory.Lower address
+                                         *   bits for smaller address than boundary below are also ignored             */
+        } FSADDR_b;
+    };
+
+    union
+    {
+        __IOM uint32_t FEADDR;          /*!< (@ 0x00000034) Flash Command End Address                                  */
+
+        struct
+        {
+            __IOM uint32_t FEADDR : 32; /*!< [31..0] End Address of FACI Command Target AreaSpecifies end
+                                         *   address of target area in the Area Erasure or Blank Checking
+                                         *   Command.Bits 31 to 21 are ignored in the FACI command processing.Bits
+                                         *   20 to 0 are used in the inconsistency check between FSADDR
+                                         *   and FEADDR.                                                               */
+        } FEADDR_b;
+    };
+    __IM uint32_t RESERVED8[2];
+
+    union
+    {
+        __IOM uint16_t FCVAPROT;        /*!< (@ 0x00000040) Code Flash Valid Area Protection                           */
+
+        struct
+        {
+            __IOM uint16_t CVAPROT : 1; /*!< [0..0] Code Flash Valid Area ProtectionValid area of code flash
+                                         *   is protected from FACI command (Programming, BlockErasure,
+                                         *   Programming/Erasure Resumption) in double map mode                        */
+            uint16_t          : 7;
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key CodeThese bits enable or disable CVAPROT bit modification     */
+        } FCVAPROT_b;
+    };
+    __IM uint16_t RESERVED9;
+    __IM uint32_t RESERVED10[15];
+
+    union
+    {
+        __IM uint32_t FSTATR;          /*!< (@ 0x00000080) Flash Status                                               */
+
+        struct
+        {
+            uint32_t              : 2;
+            __IM uint32_t TBLCRCT : 1;   /*!< [2..2] 1-Bit Error Correction Monitor (P/E Parameter Table )Indicates
+                                          *   that a 1-bit error has been corrected on reading the P/E
+                                          *   parameter table.Flash sequencer reads the P/E parameter
+                                          *   table in Programming, MultiProgramming, DMA Programming,
+                                          *   Block Erasure, Area Erasure, Blank Checking, Property Programming,
+                                          *   Property Erasure, Switchq Programming, Switch Erasure,
+                                          *   TAG Update, TAG Erasure Command processing. When this bit
+                                          *   is 1, the flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t TBLDTCT : 1;   /*!< [3..3] 2-Bit Error Detection Monitor (P/E Parameter Table)Indicates
+                                          *   that a 2-bit error has been detected on reading the P/E
+                                          *   parameter table.Flash sequencer reads the P/E parameter
+                                          *   table in Programming, Multi Programming, DMA Programming,
+                                          *   Block Erasure, Area Erasure, Blank Checking, Property Programming,
+                                          *   Property Erasure, Switch Programming, Switch Erasure, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   1, the flash sequencer is in the command lock state.                      */
+            __IM uint32_t CFGCRCT : 1;   /*!< [4..4] Configuration Setting Area ECC 1-Bit Error Correction
+                                          *   Monitoring BitIndicates that 1-bit error has been corrected
+                                          *   when flash sequencer is reading Configuration Setting Area.
+                                          *   Flash sequencer reads Configuration Setting Area in Property
+                                          *   Programming, TAG Update, TAG Erasure. When this bit is
+                                          *   “1”, flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t CFGDTCT : 1;   /*!< [5..5] Configuration Setting Area ECC 2-Bit Error Detection
+                                          *   Monitoring BitIndicates that 2-bit error has been detected
+                                          *   when flash sequencer is reading Configuration Setting Area.
+                                          *   Flash sequencer reads Configuration Setting Area in Property
+                                          *   Programming, TAG Update, TAG Erasure Command processing
+                                          *   When this bit is “1”, flash sequencer is in command
+                                          *   lock state.                                                               */
+            __IM uint32_t FHVEERR : 1;   /*!< [6..6] FHVE Setting ErrorIndicates the violation of the flash
+                                          *   memory programming/erasure protection in the FHVE3FPn register.
+                                          *   When FHVEERR bit is 1, the flash sequencer is in the command
+                                          *   lock state.                                                               */
+            uint32_t             : 1;
+            __IM uint32_t PRGSPD : 1;    /*!< [8..8] Programming Suspension StatusIndicates that flash sequencer
+                                          *   has entered the Programming Command Suspension process
+                                          *   or Programming Suspension status.                                         */
+            __IM uint32_t ERSSPD : 1;    /*!< [9..9] Erasure-Suspended StatusIndicates that flash sequencer
+                                          *   has entered the erasure command suspension process or erasure-suspended
+                                          *   status.                                                                   */
+            __IM uint32_t DBFULL : 1;    /*!< [10..10] Data Buffer FullThis bit is always read as "0".                  */
+            __IM uint32_t SUSRDY : 1;    /*!< [11..11] Suspend ReadyIndicates whether flash sequencer is ready
+                                          *   to accept the Programming/Erasure Suspension Command.                     */
+            __IM uint32_t PRGERR : 1;    /*!< [12..12] Programming ErrorIndicates the result of code or data
+                                          *   flash programming by flash sequencer.                                     */
+            __IM uint32_t ERSERR : 1;    /*!< [13..13] Erasure ErrorIndicates result of code or data flash
+                                          *   erasure by flash sequencer.                                               */
+            __IM uint32_t ILGLERR : 1;   /*!< [14..14] Illegal ErrorIndicates that flash sequencer has detected
+                                          *   an illegal command or illegal flash memory access. When
+                                          *   this bit is 1, flash sequencer is in the command lock state.              */
+            __IM uint32_t FRDY : 1;      /*!< [15..15] Flash ReadyIndicates the processing state in flash
+                                          *   sequencer.                                                                */
+            __IM uint32_t BPLCRCT : 1;   /*!< [16..16] Block Protection Area ECC 1-Bit Error Correction Monitoring
+                                          *   BitIndicates that 1-bit error has been corrected when flash
+                                          *   sequencer is reading Block Protection Area. Flash sequencer
+                                          *   reads Block Protection Area in Programming, Block Erasure
+                                          *   for the code flash memory or Programming, Multi Programming,
+                                          *   Block Erasure, Area Erasure for the Extended Data Area
+                                          *   or Property Programming, TAG Update, TAG Erasure Command
+                                          *   processing.                                                               */
+            __IM uint32_t BPLDTCT : 1;   /*!< [17..17] Block Protection Area ECC 2-Bit Error Detection Monitoring
+                                          *   BitIndicates that 2-bit error has been detected when flash
+                                          *   sequencer is reading Block Protection Area. Flash sequencer
+                                          *   reads Block Protection Area in Programming, Block Erasure
+                                          *   for the code flash memory or Programming, Multi Programming,
+                                          *   Block Erasure, Area Erasure for the Extended Data Area
+                                          *   or Property Programming, TAG Update, TAG Erasure Command
+                                          *   processing. When this bit is “1”, flash sequencer is
+                                          *   in command lock state.                                                    */
+            __IM uint32_t EBFULL : 1;    /*!< [18..18] FDMYECC_n Buffer FullIndicates the FDMYECC_n buffer
+                                          *   status when issuing the Programming Command. Flash sequencer
+                                          *   incorporates a buffer for FDMYECC_n register (ECC buffer).                */
+            uint32_t            : 1;
+            __IM uint32_t OTERR : 1;     /*!< [20..20] Other ErrorWhen this bit is “1”, flash sequencer
+                                          *   enters command lock state.                                                */
+            __IM uint32_t SECERR : 1;    /*!< [21..21] Security Error When this bit is “1”, flash sequencer
+                                          *   enters command lock state.                                                */
+            __IM uint32_t FESETERR : 1;  /*!< [22..22] FENTRY Setting ErrorWhen this bit is “1”, flash
+                                          *   sequencer enters command lock state.                                      */
+            __IM uint32_t ILGCOMERR : 1; /*!< [23..23] Illegal Command ErrorWhen this bit is “1”, flash
+                                          *   sequencer enters command lock state.                                      */
+            __IM uint32_t SECCRCT : 1;   /*!< [24..24] Security Setting Area ECC 1-Bit Error Correction Monitoring
+                                          *   BitIndicates that 1-bit error has been corrected when flash
+                                          *   sequencer is reading Security Setting Area. Flash sequencer
+                                          *   reads Security Setting Area in Property Programming, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   “1”, flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t SECDTCT : 1;   /*!< [25..25] Security Setting Area ECC 2-Bit Error Detection Monitoring
+                                          *   BitIndicates that 2-bit error has been detected when flash
+                                          *   sequencer is reading Security Setting Area. Flash sequencer
+                                          *   reads Security Setting Area in Property Programming, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   “1”, flash sequencer is in command lock state.                        */
+            __IM uint32_t SWTCRCT : 1;   /*!< [26..26] Switch Area and TAG Area ECC 1-Bit Error Correction
+                                          *   Monitoring BitIndicates that 1-bit error has been detected
+                                          *   when FACI is reading Switch Area and TAG Area. FACI reads
+                                          *   Switch Area and TAG Area in Switch Erasure, TAG Update,
+                                          *   and TAG Erasure Command processing. When this bit is "1",
+                                          *   flash sequencer continues command processing, and does
+                                          *   not enter "Command Lock" state.                                           */
+            __IM uint32_t SWTDTCT : 1;   /*!< [27..27] Switch Area and TAG Area ECC 2-Bit Error Detection
+                                          *   Monitoring BitIndicates that 2-bit error has been detected
+                                          *   when FACI is reading Switch Area and TAG Area. FACI reads
+                                          *   Switch Area and TAG Area in Switch Erasure, TAG Update,
+                                          *   and TAG Erasure Command processing. When this bit is "1",
+                                          *   flash sequencer is in "Command Lock" state.                               */
+            __IM uint32_t ERCCRCT : 1;   /*!< [28..28] Erase counter 1-Bit Error Correction Monitoring BitIndicates
+                                          *   that 1-bit error has been corrected when FACI is reading
+                                          *   Erase counter. FACI reads Erase counter in Block Erasure
+                                          *   (User Area), Erasure Resumption (User Area) Command processing.
+                                          *   When this bit is "1", flash sequencer continues command
+                                          *   processing, and does not enter "Command Lock" state.                      */
+            __IM uint32_t ERCDTCT : 1;   /*!< [29..29] Erase counter ECC 2-Bit Error Detection Monitoring
+                                          *   BitIndicates that 2-bit error has been detected when FACI
+                                          *   is reading Erase counter. FACI reads Erase counter in Block
+                                          *   Erasure (User Area), Erasure Resumption (User Area) Command
+                                          *   processing. When this bit is "1", flash sequencer is in
+                                          *   "Command Lock" state.                                                     */
+            uint32_t : 2;
+        } FSTATR_b;
+    };
+
+    union
+    {
+        __IOM uint16_t FENTRYR;         /*!< (@ 0x00000084) Flash P/E Mode Entry                                       */
+
+        struct
+        {
+            __IOM uint16_t FENTRYC : 1; /*!< [0..0] Code Flash Programming/Erasure Mode EntryThis bit specifies
+                                         *   programming/erasure mode for code flash.                                  */
+            uint16_t               : 6;
+            __IOM uint16_t FENTRYD : 1; /*!< [7..7] Data Flash Programming/Erasure Mode EntryThis bit specifies
+                                         *   programming/erasure mode for data flash.                                  */
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key CodeThese bits enable or disable FENTRYD and FENTRYC
+                                         *   bits modification.                                                        */
+        } FENTRYR_b;
+    };
+    __IM uint16_t RESERVED11;
+    __IM uint32_t RESERVED12;
+
+    union
+    {
+        __IOM uint16_t FSUINITR;       /*!< (@ 0x0000008C) Flash Sequencer Setup Initialization                       */
+
+        struct
+        {
+            __IOM uint16_t SUINIT : 1; /*!< [0..0] Set-up InitializationInitializes following flash sequencer
+                                        *   set-up registers.FSADDR_nFEADDR_nFENTRYR_nFBCCNT_nFCVAPROT_n.             */
+            uint16_t          : 7;
+            __OM uint16_t KEY : 8;     /*!< [15..8] Key CodeThese bits enable or disable CVAPROT bit modification     */
+        } FSUINITR_b;
+    };
+    __IM uint16_t RESERVED13;
+    __IM uint32_t RESERVED14[4];
+
+    union
+    {
+        __IM uint16_t FCMDR;           /*!< (@ 0x000000A0) FACI Command Register                                      */
+
+        struct
+        {
+            __IM uint16_t PCMDR : 8;   /*!< [7..0] Previous CommandThese bits store previous command accepted
+                                        *   by each Flash sequencer.                                                  */
+            __IM uint16_t CMDR : 8;    /*!< [15..8] CommandThese bits store the latest command accepted
+                                        *   by each Flash sequencer.                                                  */
+        } FCMDR_b;
+    };
+    __IM uint16_t RESERVED15;
+
+    union
+    {
+        __IM uint32_t FCMDMON;           /*!< (@ 0x000000A4) Flash Status                                               */
+
+        struct
+        {
+            __IM uint32_t PCMDM : 8;     /*!< [7..0] Previous CommandThese bits store previous command accepted
+                                          *   by each Flash sequencer.                                                  */
+            __IM uint32_t PFENTRYCM : 1; /*!< [8..8] FENTRYC status Monitor of previous command                         */
+            __IM uint32_t PFENTRYDM : 1; /*!< [9..9] FENTRYD status Monitor of previous command                         */
+            uint32_t                : 5;
+            __IM uint32_t PMSTCM    : 1; /*!< [15..15] Previous Command Master MonitorThe master which issued
+                                          *   Previous command.                                                         */
+            __IM uint32_t CMDM : 8;      /*!< [23..16] CommandThese bits store the latest command accepted
+                                          *   by each Flash sequencer.                                                  */
+            __IM uint32_t FENTRYCM : 1;  /*!< [24..24] FENTRYC status Monitor of Latest command                         */
+            __IM uint32_t FENTRYDM : 1;  /*!< [25..25] FENTRYD status Monitor of Latest command                         */
+            uint32_t               : 5;
+            __IM uint32_t MSTCM    : 1;  /*!< [31..31] Latest Command Master MonitorThe master which issued
+                                          *   Latest command.                                                           */
+        } FCMDMON_b;
+    };
+    __IM uint32_t RESERVED16[6];
+
+    union
+    {
+        __IM uint16_t FPESTAT;         /*!< (@ 0x000000C0) Flash P/E Status                                           */
+
+        struct
+        {
+            __IM uint16_t PEERRST : 8; /*!< [7..0] Programming/Erasure Error StatusIndicates the source
+                                        *   of error that occurs during programming or erasure for
+                                        *   code flash or data flash. This bit value is only valid
+                                        *   if ERSERR or PRGERR bit value in FSTATR_n register is 1,
+                                        *   while FRDY bit in FSTATR_n register is 1.                                 */
+            uint16_t : 8;
+        } FPESTAT_b;
+    };
+    __IM uint16_t RESERVED17;
+    __IM uint32_t RESERVED18[3];
+
+    union
+    {
+        __IOM uint8_t FBCCNT;          /*!< (@ 0x000000D0) Data Flash Blank Check Control                             */
+
+        struct
+        {
+            __IOM uint8_t BCDIR : 1;   /*!< [0..0] Blank Check DirectionSpecifies addressing mode in blank
+                                        *   checking operation.                                                       */
+            uint8_t : 7;
+        } FBCCNT_b;
+    };
+    __IM uint8_t  RESERVED19;
+    __IM uint16_t RESERVED20;
+
+    union
+    {
+        __IM uint8_t FBCSTAT;          /*!< (@ 0x000000D4) Data Flash Blank Check Status                              */
+
+        struct
+        {
+            __IM uint8_t BCST : 1;     /*!< [0..0] Blank Check StatusIndicates the result of the Blank Checking
+                                        *   Command.                                                                  */
+            uint8_t : 7;
+        } FBCSTAT_b;
+    };
+    __IM uint8_t  RESERVED21;
+    __IM uint16_t RESERVED22;
+
+    union
+    {
+        __IM uint32_t FPSADDR;         /*!< (@ 0x000000D8) Programmed Area Start Address                              */
+
+        struct
+        {
+            __IM uint32_t PSADR : 21;  /*!< [20..0] Programmed Area Start Address Indicates address of the
+                                        *   first programmed data which is found in Blank Checking
+                                        *   Command execution. These bits stores address offset from
+                                        *   the top address in the data flash memory.This register
+                                        *   value is only valid if BCST bit value in FBCSTAT_n register
+                                        *   is 1, while FRDY bit in FSTATR_n register is 1.When BCST
+                                        *   bit is 0, the PSADR bit holds the address that previously
+                                        *   checked.                                                                  */
+            uint32_t : 11;
+        } FPSADDR_b;
+    };
+    __IM uint32_t RESERVED23;
+
+    union
+    {
+        __IM uint16_t FCPSR;           /*!< (@ 0x000000E0) Flash Sequencer Process Switch                             */
+
+        struct
+        {
+            __IM uint16_t ESUSPMD : 1; /*!< [0..0] Erasure-Suspended Mode Selects erasure-suspended mode
+                                        *   to be entered when the Programming/Erasure Suspension Command
+                                        *   is issued while flash sequencer is erasing flash memory.                  */
+            uint16_t : 15;
+        } FCPSR_b;
+    };
+    __IM uint16_t RESERVED24;
+    __IM uint32_t RESERVED25[7];
+
+    union
+    {
+        __IM uint16_t FECCEMON;        /*!< (@ 0x00000100) Flash ECC Encoder Monitor                                  */
+
+        struct
+        {
+            __IM uint16_t FECCM : 10;  /*!< [9..0] ECC Monitor Indicates the ECC encoder output.In code
+                                        *   flash programming/erasure modeThe FECCM[9] to FECCM[0]
+                                        *   bits indicate the ECC encoder output for the code flash
+                                        *   memory.In data flash programming/erasure modeThe FECCM[9]
+                                        *   to FECCM[7] bits are fixed to 1.The FECCM[6] to FECCM[0]
+                                        *   indicate the ECC encoder output for the data flash memory.                */
+            __IM uint16_t FAPARM : 1;  /*!< [10..10] Address Parity MonitorIndicates the output from the
+                                        *   address parity generator.In code flash programming/erasure
+                                        *   modeThis bit indicates the output from the address parity
+                                        *   generator.In data flash programming/erasure modeThis bit
+                                        *   is fixed to 1.                                                            */
+            uint16_t : 5;
+        } FECCEMON_b;
+    };
+    __IM uint16_t RESERVED26;
+
+    union
+    {
+        __IOM uint16_t FECCTMD;         /*!< (@ 0x00000104) Flash ECC Test Mode                                        */
+
+        struct
+        {
+            __IOM uint16_t ECCDISE : 1; /*!< [0..0] ECC Encoder Disable Disables the address parity generator
+                                         *   and the ECC encoder. If the address parity generator and
+                                         *   the ECC encoder are disabled, the FDMYECC_n value is written
+                                         *   to the flash memory.                                                      */
+            uint16_t              : 3;
+            __IOM uint16_t DECCVE : 1;  /*!< [4..4] Data Flash Memory ECC Bits Verify Enable Specifies the
+                                         *   verify operation on programming/erasure the data flash
+                                         *   memory.                                                                   */
+            __IOM uint16_t CECCVE : 1;  /*!< [5..5] Code Flash Memory ECC Bits Verify Enable Specifies the
+                                         *   verify operation on programming/erasure the code flash
+                                         *   memory.                                                                   */
+            uint16_t          : 2;
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key Code These bits enable or disable CECCVE, DECCVE,
+                                         *   and ECCDISE bits modification.                                            */
+        } FECCTMD_b;
+    };
+    __IM uint16_t RESERVED27;
+
+    union
+    {
+        __IOM uint16_t FDMYECC;        /*!< (@ 0x00000108) Flash Dummy ECC Register                                   */
+
+        struct
+        {
+            __IM uint16_t DMYECC : 10; /*!< [9..0] Dummy ECC Specify the ECC value when the ECCDISE bit
+                                        *   is 1.                                                                     */
+            __IM uint16_t DMYAPAR : 1; /*!< [10..10] Dummy Address Parity Specifies the address parity value
+                                        *   when the ECCDISE bit is 1.                                                */
+            uint16_t : 5;
+        } FDMYECC_b;
+    };
+    __IM uint16_t RESERVED28;
+} R_FACI1_Type;                        /*!< Size = 268 (0x10c)                                                        */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FACI2                                          ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief Flash Application Command Interface 2 (FPSYS2). Controls Data Area 2 (ICUMHB exclusive). Subset of FACI0 - no FAREASELC, FRTSTAT, FRTEINT, FSWASTAT. (R_FACI2)
+ */
+
+typedef struct                         /*!< (@ 0xFFA18000) R_FACI2 Structure                                          */
+{
+    union
+    {
+        __IM uint8_t FPMON;            /*!< (@ 0x00000000) Flash Pin Monitor                                          */
+
+        struct
+        {
+            uint8_t           : 7;
+            __IM uint8_t SFWE : 1;     /*!< [7..7] Flash Write Enable Monitors the status of SFWE bit in
+                                        *   FLMDCNT register.                                                         */
+        } FPMON_b;
+    };
+    __IM uint8_t  RESERVED;
+    __IM uint16_t RESERVED1;
+    __IM uint32_t RESERVED2[3];
+
+    union
+    {
+        __IOM uint8_t FASTAT;          /*!< (@ 0x00000010) Flash Access Status                                        */
+
+        struct
+        {
+            __IM uint8_t ECRCT : 1;    /*!< [0..0] Error Correction Indicates that a 1-bit error has been
+                                        *   corrected when the flash sequencer reads the flash memory
+                                        *   (Configuration Setting Area, Block Protection Area, Security
+                                        *   Setting Area, Erase Counter, SwitchArea, TAG Area or the
+                                        *   P/E parameter table)                                                      */
+            uint8_t            : 2;
+            __IOM uint8_t DFAE : 1;    /*!< [3..3] Data Flash Access Error Indicates whether or not data
+                                        *   flash access error has been generated.                                    */
+            __IM uint8_t CMDLK : 1;    /*!< [4..4] Command Lock Indicates whether flash sequencer is in
+                                        *   the command lock state.                                                   */
+            uint8_t            : 2;
+            __IOM uint8_t CFAE : 1;    /*!< [7..7] Code Flash Access Error Indicates whether or not code
+                                        *   flash access error has been generated.                                    */
+        } FASTAT_b;
+    };
+    __IM uint8_t  RESERVED3;
+    __IM uint16_t RESERVED4;
+
+    union
+    {
+        __IOM uint8_t FAEINT;          /*!< (@ 0x00000014) Flash Access Error Interrupt Enable                        */
+
+        struct
+        {
+            __IOM uint8_t ECRCTIE : 1; /*!< [0..0] Error Correction Interrupt Enable Enables or disables
+                                        *   the FLERR interrupt request when a 1-bit error has been
+                                        *   corrected and the ECRCT bit in FASTAT_n has been set to
+                                        *   1 on the flash memory read (Configuration Setting Area,
+                                        *   Block Protection Area, Security Setting Area, Erase Counter,
+                                        *   Switch Area, TAG Area, or the P/E parameter table).                       */
+            uint8_t              : 2;
+            __IOM uint8_t DFAEIE : 1;  /*!< [3..3] Data Flash Access Error Interrupt Enable Enables or disables
+                                        *   the FLERR interrupt request when data flash access error
+                                        *   occurs and DFAE bit in FASTAT_n becomes 1.                                */
+            __IOM uint8_t CMDLKIE : 1; /*!< [4..4] Command Lock Interrupt Enable Enables or disables the
+                                        *   FLERR interrupt request when flash sequencer enters the
+                                        *   command lock state and CMDLK bit in FASTAT_n becomes 1.                   */
+            uint8_t              : 2;
+            __IOM uint8_t CFAEIE : 1;  /*!< [7..7] Code Flash Access Error Interrupt Enable Enables or disables
+                                        *   the FLERR interrupt request when code flash access error
+                                        *   occurs and CFAE bit in FASTAT_n becomes 1.                                */
+        } FAEINT_b;
+    };
+    __IM uint8_t  RESERVED5;
+    __IM uint16_t RESERVED6;
+    __IM uint32_t RESERVED7[6];
+
+    union
+    {
+        __IOM uint32_t FSADDR;          /*!< (@ 0x00000030) Flash Command Start Address                                */
+
+        struct
+        {
+            __IOM uint32_t FSADDR : 32; /*!< [31..0] Start Address of FACI Command Processing These bits
+                                         *   specify the start address of the FACI command processing.Bits
+                                         *   31 to 28 are ignored in the FACI command processing for
+                                         *   the code flash memory.Bits 31 to 21 are ignored in the
+                                         *   FACI command processing for the data flash memory.Lower
+                                         *   address bits for smaller address than boundary below are
+                                         *   also ignored                                                              */
+        } FSADDR_b;
+    };
+
+    union
+    {
+        __IOM uint32_t FEADDR;          /*!< (@ 0x00000034) Flash Command End Address                                  */
+
+        struct
+        {
+            __IOM uint32_t FEADDR : 32; /*!< [31..0] End Address of FACI Command Target Area Specifies end
+                                         *   address of target area in the Area Erasure or Blank Checking
+                                         *   Command.Bits 31 to 21 are ignored in the FACI command processing.Bits
+                                         *   20 to 0 are used in the inconsistency check between FSADDR
+                                         *   and FEADDR.                                                               */
+        } FEADDR_b;
+    };
+    __IM uint32_t RESERVED8[2];
+
+    union
+    {
+        __IOM uint16_t FCVAPROT;        /*!< (@ 0x00000040) Code Flash Valid Area Protection                           */
+
+        struct
+        {
+            __IOM uint16_t CVAPROT : 1; /*!< [0..0] Code Flash Valid Area Protection Valid area of code flash
+                                         *   is protected from FACI command (Programming, Block Erasure,
+                                         *   Programming/Erasure Resumption) in double map mode                        */
+            uint16_t          : 7;
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key Code These bits enable or disable CVAPROT bit modification    */
+        } FCVAPROT_b;
+    };
+    __IM uint16_t RESERVED9;
+    __IM uint32_t RESERVED10[15];
+
+    union
+    {
+        __IM uint32_t FSTATR;          /*!< (@ 0x00000080) Flash Status                                               */
+
+        struct
+        {
+            uint32_t              : 2;
+            __IM uint32_t TBLCRCT : 1;   /*!< [2..2] 1-Bit Error Correction Monitor (P/E Parameter Table )Indicates
+                                          *   that a 1-bit error has been corrected on reading the P/E
+                                          *   parameter table.Flash sequencer reads the P/E parameter
+                                          *   table in Programming, MultiProgramming, DMA Programming,
+                                          *   Block Erasure, Area Erasure, Blank Checking, Property Programming,
+                                          *   Property Erasure, Switchq Programming, Switch Erasure,
+                                          *   TAG Update, TAG Erasure Command processing. When this bit
+                                          *   is 1, the flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t TBLDTCT : 1;   /*!< [3..3] 2-Bit Error Detection Monitor (P/E Parameter Table)Indicates
+                                          *   that a 2-bit error has been detected on reading the P/E
+                                          *   parameter table.Flash sequencer reads the P/E parameter
+                                          *   table in Programming, Multi Programming, DMA Programming,
+                                          *   Block Erasure, Area Erasure, Blank Checking, Property Programming,
+                                          *   Property Erasure, Switch Programming, Switch Erasure, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   1, the flash sequencer is in the command lock state.                      */
+            __IM uint32_t CFGCRCT : 1;   /*!< [4..4] Configuration Setting Area ECC 1-Bit Error Correction
+                                          *   Monitoring BitIndicates that 1-bit error has been corrected
+                                          *   when flash sequencer is reading Configuration Setting Area.
+                                          *   Flash sequencer reads Configuration Setting Area in Property
+                                          *   Programming, TAG Update, TAG Erasure. When this bit is
+                                          *   1, flash sequencer continues command processing, and does
+                                          *   not enter command lock state.                                             */
+            __IM uint32_t CFGDTCT : 1;   /*!< [5..5] Configuration Setting Area ECC 2-Bit Error Detection
+                                          *   Monitoring BitIndicates that 2-bit error has been detected
+                                          *   when flash sequencer is reading Configuration Setting Area.
+                                          *   Flash sequencer reads Configuration Setting Area in Property
+                                          *   Programming, TAG Update, TAG Erasure Command processing
+                                          *   When this bit is “1”, flash sequencer is in command
+                                          *   lock state.                                                               */
+            __IM uint32_t FHVEERR : 1;   /*!< [6..6] FHVE Setting ErrorIndicates the violation of the flash
+                                          *   memory programming/erasure protection in the FHVE3FPn register.
+                                          *   When FHVEERR bit is 1, the flash sequencer is in the command
+                                          *   lock state.                                                               */
+            uint32_t             : 1;
+            __IM uint32_t PRGSPD : 1;    /*!< [8..8] Programming Suspension StatusIndicates that flash sequencer
+                                          *   has entered the Programming Command Suspension process
+                                          *   or Programming Suspension status.                                         */
+            __IM uint32_t ERSSPD : 1;    /*!< [9..9] Erasure-Suspended StatusIndicates that flash sequencer
+                                          *   has entered the erasure command suspension process or erasure-suspended
+                                          *   status.                                                                   */
+            __IM uint32_t DBFULL : 1;    /*!< [10..10] Data Buffer FullThis bit is always read as 0.                    */
+            __IM uint32_t SUSRDY : 1;    /*!< [11..11] Suspend ReadyIndicates whether flash sequencer is ready
+                                          *   to accept the Programming/Erasure Suspension Command.                     */
+            __IM uint32_t PRGERR : 1;    /*!< [12..12] Programming ErrorIndicates the result of code or data
+                                          *   flash programming by flash sequencer.                                     */
+            __IM uint32_t ERSERR : 1;    /*!< [13..13] Erasure ErrorIndicates result of code or data flash
+                                          *   erasure by flash sequencer.                                               */
+            __IM uint32_t ILGLERR : 1;   /*!< [14..14] Illegal Error Indicates that flash sequencer has detected
+                                          *   an illegal command or illegal flash memory access. When
+                                          *   this bit is 1, flash sequencer is in the command lock state.              */
+            __IM uint32_t FRDY : 1;      /*!< [15..15] Flash Ready Indicates the processing state in flash
+                                          *   sequencer.                                                                */
+            __IM uint32_t BPLCRCT : 1;   /*!< [16..16] Block Protection Area ECC 1-Bit Error Correction Monitoring
+                                          *   BitIndicates that 1-bit error has been corrected when flash
+                                          *   sequencer is reading Block Protection Area. Flash sequencer
+                                          *   reads Block Protection Area in Programming, Block Erasure
+                                          *   for the code flash memory or Programming, Multi Programming,
+                                          *   Block Erasure, Area Erasure for the Extended Data Area
+                                          *   or Property Programming, TAG Update, TAG Erasure Command
+                                          *   processing.                                                               */
+            __IM uint32_t BPLDTCT : 1;   /*!< [17..17] Block Protection Area ECC 2-Bit Error Detection Monitoring
+                                          *   Bit Indicates that 2-bit error has been detected when flash
+                                          *   sequencer is reading Block Protection Area. Flash sequencer
+                                          *   reads Block Protection Area in Programming, Block Erasure
+                                          *   for the code flash memory or Programming, Multi Programming,
+                                          *   Block Erasure, Area Erasure for the Extended Data Area
+                                          *   or Property Programming, TAG Update, TAG Erasure Command
+                                          *   processing. When this bit is 1, flash sequencer is in command
+                                          *   lock state.                                                               */
+            __IM uint32_t EBFULL : 1;    /*!< [18..18] FDMYECC_n Buffer FullIndicates the FDMYECC_n buffer
+                                          *   status when issuing the Programming Command. Flash sequencer
+                                          *   incorporates a buffer for FDMYECC_n register (ECC buffer).                */
+            uint32_t            : 1;
+            __IM uint32_t OTERR : 1;     /*!< [20..20] Other ErrorWhen this bit is 1, flash sequencer enters
+                                          *   command lock state.                                                       */
+            __IM uint32_t SECERR : 1;    /*!< [21..21] Security Error When this bit is “1”, flash sequencer
+                                          *   enters command lock state.                                                */
+            __IM uint32_t FESETERR : 1;  /*!< [22..22] FENTRY Setting ErrorWhen this bit is 1, flash sequencer
+                                          *   enters command lock state.                                                */
+            __IM uint32_t ILGCOMERR : 1; /*!< [23..23] Illegal Command ErrorWhen this bit is 1, flash sequencer
+                                          *   enters command lock state.                                                */
+            __IM uint32_t SECCRCT : 1;   /*!< [24..24] Security Setting Area ECC 1-Bit Error Correction Monitoring
+                                          *   BitIndicates that 1-bit error has been corrected when flash
+                                          *   sequencer is reading Security Setting Area. Flash sequencer
+                                          *   reads Security Setting Area in Property Programming, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   1, flash sequencer continues command processing, and does
+                                          *   not enter command lock state.                                             */
+            __IM uint32_t SECDTCT : 1;   /*!< [25..25] Security Setting Area ECC 2-Bit Error Detection Monitoring
+                                          *   BitIndicates that 2-bit error has been detected when flash
+                                          *   sequencer is reading Security Setting Area. Flash sequencer
+                                          *   reads Security Setting Area in Property Programming, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   “1”, flash sequencer is in command lock state.                        */
+            __IM uint32_t SWTCRCT : 1;   /*!< [26..26] Switch Area and TAG Area ECC 1-Bit Error Correction
+                                          *   Monitoring BitIndicates that 1-bit error has been detected
+                                          *   when FACI is reading Switch Area and TAG Area. FACI reads
+                                          *   Switch Area and TAG Area in Switch Erasure, TAG Update,
+                                          *   and TAG Erasure Command processing. When this bit is 1,
+                                          *   flash sequencer continues command processing, and does
+                                          *   not enter "Command Lock" state.                                           */
+            __IM uint32_t SWTDTCT : 1;   /*!< [27..27] Switch Area and TAG Area ECC 2-Bit Error Detection
+                                          *   Monitoring BitIndicates that 2-bit error has been detected
+                                          *   when FACI is reading Switch Area and TAG Area. FACI reads
+                                          *   Switch Area and TAG Area in Switch Erasure, TAG Update,
+                                          *   and TAG Erasure Command processing. When this bit is "1",
+                                          *   flash sequencer is in "Command Lock" state.                               */
+            __IM uint32_t ERCCRCT : 1;   /*!< [28..28] Erase counter 1-Bit Error Correction Monitoring BitIndicates
+                                          *   that 1-bit error has been corrected when FACI is reading
+                                          *   Erase counter. FACI reads Erase counter in Block Erasure
+                                          *   (User Area), Erasure Resumption (User Area) Command processing.
+                                          *   When this bit is 1, flash sequencer continues command processing,
+                                          *   and does not enter Command Lock state.                                    */
+            __IM uint32_t ERCDTCT : 1;   /*!< [29..29] Erase counter ECC 2-Bit Error Detection Monitoring
+                                          *   BitIndicates that 2-bit error has been detected when FACI
+                                          *   is reading Erase counter. FACI reads Erase counter in Block
+                                          *   Erasure (User Area), Erasure Resumption (User Area) Command
+                                          *   processing. When this bit is 1, flash sequencer is in Command
+                                          *   Lock state.                                                               */
+            uint32_t : 2;
+        } FSTATR_b;
+    };
+
+    union
+    {
+        __IOM uint16_t FENTRYR;         /*!< (@ 0x00000084) Flash P/E Mode Entry                                       */
+
+        struct
+        {
+            __IOM uint16_t FENTRYC : 1; /*!< [0..0] Code Flash Programming/Erasure Mode Entry This bit specifies
+                                         *   programming/erasure mode for code flash.                                  */
+            uint16_t               : 6;
+            __IOM uint16_t FENTRYD : 1; /*!< [7..7] Data Flash Programming/Erasure Mode Entry This bit specifies
+                                         *   programming/erasure mode for data flash.                                  */
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key Code These bits enable or disable FENTRYD and FENTRYC
+                                         *   bits modification.                                                        */
+        } FENTRYR_b;
+    };
+    __IM uint16_t RESERVED11;
+    __IM uint32_t RESERVED12;
+
+    union
+    {
+        __IOM uint16_t FSUINITR;       /*!< (@ 0x0000008C) Flash Sequencer Setup Initialization                       */
+
+        struct
+        {
+            __IOM uint16_t SUINIT : 1; /*!< [0..0] Set-up Initialization Initializes following flash sequencer
+                                        *   set-up registers.FSADDR_nFEADDR_nFENTRYR_nFBCCNT_nFCVAPROT_n.             */
+            uint16_t          : 7;
+            __OM uint16_t KEY : 8;     /*!< [15..8] Key Code These bits enable or disable CVAPROT bit modification    */
+        } FSUINITR_b;
+    };
+    __IM uint16_t RESERVED13;
+    __IM uint32_t RESERVED14[4];
+
+    union
+    {
+        __IM uint16_t FCMDR;           /*!< (@ 0x000000A0) FACI Command Register                                      */
+
+        struct
+        {
+            __IM uint16_t PCMDR : 8;   /*!< [7..0] Previous Command These bits store previous command accepted
+                                        *   by each Flash sequencer.                                                  */
+            __IM uint16_t CMDR : 8;    /*!< [15..8] Command These bits store the latest command accepted
+                                        *   by each Flash sequencer.                                                  */
+        } FCMDR_b;
+    };
+    __IM uint16_t RESERVED15;
+
+    union
+    {
+        __IM uint32_t FCMDMON;           /*!< (@ 0x000000A4) Flash Status                                               */
+
+        struct
+        {
+            __IM uint32_t PCMDM : 8;     /*!< [7..0] Previous Command These bits store previous command accepted
+                                          *   by each Flash sequencer.                                                  */
+            __IM uint32_t PFENTRYCM : 1; /*!< [8..8] FENTRYC status Monitor of previous command                         */
+            __IM uint32_t PFENTRYDM : 1; /*!< [9..9] FENTRYD status Monitor of previous command                         */
+            uint32_t                : 5;
+            __IM uint32_t PMSTCM    : 1; /*!< [15..15] Previous Command Master MonitorThe master which issued
+                                          *   Previous command.                                                         */
+            __IM uint32_t CMDM : 8;      /*!< [23..16] Command These bits store the latest command accepted
+                                          *   by each Flash sequencer.                                                  */
+            __IM uint32_t FENTRYCM : 1;  /*!< [24..24] FENTRYC status Monitor of Latest command                         */
+            __IM uint32_t FENTRYDM : 1;  /*!< [25..25] FENTRYD status Monitor of Latest command                         */
+            uint32_t               : 5;
+            __IM uint32_t MSTCM    : 1;  /*!< [31..31] Latest Command Master Monitor The master which issued
+                                          *   Latest command.                                                           */
+        } FCMDMON_b;
+    };
+    __IM uint32_t RESERVED16[6];
+
+    union
+    {
+        __IM uint16_t FPESTAT;         /*!< (@ 0x000000C0) Flash P/E Status                                           */
+
+        struct
+        {
+            __IM uint16_t PEERRST : 8; /*!< [7..0] Programming/Erasure Error Status Indicates the source
+                                        *   of error that occurs during programming or erasure for
+                                        *   code flash or data flash. This bit value is only valid
+                                        *   if ERSERR or PRGERR bit value in FSTATR_n register is 1,
+                                        *   while FRDY bit in FSTATR_n register is 1.                                 */
+            uint16_t : 8;
+        } FPESTAT_b;
+    };
+    __IM uint16_t RESERVED17;
+    __IM uint32_t RESERVED18[3];
+
+    union
+    {
+        __IOM uint8_t FBCCNT;          /*!< (@ 0x000000D0) Data Flash Blank Check Control                             */
+
+        struct
+        {
+            __IOM uint8_t BCDIR : 1;   /*!< [0..0] Blank Check Direction Specifies addressing mode in blank
+                                        *   checking operation.                                                       */
+            uint8_t : 7;
+        } FBCCNT_b;
+    };
+    __IM uint8_t  RESERVED19;
+    __IM uint16_t RESERVED20;
+
+    union
+    {
+        __IM uint8_t FBCSTAT;          /*!< (@ 0x000000D4) Data Flash Blank Check Status                              */
+
+        struct
+        {
+            __IM uint8_t BCST : 1;     /*!< [0..0] Blank Check StatusIndicates the result of the Blank Checking
+                                        *   Command.                                                                  */
+            uint8_t : 7;
+        } FBCSTAT_b;
+    };
+    __IM uint8_t  RESERVED21;
+    __IM uint16_t RESERVED22;
+
+    union
+    {
+        __IM uint32_t FPSADDR;         /*!< (@ 0x000000D8) Programmed Area Start Address                              */
+
+        struct
+        {
+            __IM uint32_t PSADR : 21;  /*!< [20..0] Programmed Area Start AddressIndicates address of the
+                                        *   first programmed data which is found in Blank Checking
+                                        *   Command execution. These bits stores address offset from
+                                        *   the top address in the data flash memory.This register
+                                        *   value is only valid if BCST bit value in FBCSTAT_n register
+                                        *   is 1, while FRDY bit in FSTATR_n register is 1.When BCST
+                                        *   bit is 0, the PSADR bit holds the address that previously
+                                        *   checked.                                                                  */
+            uint32_t : 11;
+        } FPSADDR_b;
+    };
+    __IM uint32_t RESERVED23;
+
+    union
+    {
+        __IM uint16_t FCPSR;           /*!< (@ 0x000000E0) Flash Sequencer Process Switch                             */
+
+        struct
+        {
+            __IM uint16_t ESUSPMD : 1; /*!< [0..0] Erasure-Suspended Mode Selects erasure-suspended mode
+                                        *   to be entered when the Programming/Erasure Suspension Command
+                                        *   is issued while flash sequencer is erasing flash memory.                  */
+            uint16_t : 15;
+        } FCPSR_b;
+    };
+    __IM uint16_t RESERVED24;
+    __IM uint32_t RESERVED25[7];
+
+    union
+    {
+        __IM uint16_t FECCEMON;        /*!< (@ 0x00000100) Flash ECC Encoder Monitor                                  */
+
+        struct
+        {
+            __IM uint16_t FECCM : 10;  /*!< [9..0] ECC Monitor Indicates the ECC encoder output.In code
+                                        *   flash programming/erasure modeThe FECCM[9] to FECCM[0]
+                                        *   bits indicate the ECC encoder output for the code flash
+                                        *   memory.In data flash programming/erasure modeThe FECCM[9]
+                                        *   to FECCM[7] bits are fixed to 1.The FECCM[6] to FECCM[0]
+                                        *   indicate the ECC encoder output for the data flash memory.                */
+            __IM uint16_t FAPARM : 1;  /*!< [10..10] Address Parity MonitorIndicates the output from the
+                                        *   address parity generator.In code flash programming/erasure
+                                        *   modeThis bit indicates the output from the address parity
+                                        *   generator.In data flash programming/erasure modeThis bit
+                                        *   is fixed to 1.                                                            */
+            uint16_t : 5;
+        } FECCEMON_b;
+    };
+    __IM uint16_t RESERVED26;
+
+    union
+    {
+        __IOM uint16_t FECCTMD;         /*!< (@ 0x00000104) Flash ECC Test Mode                                        */
+
+        struct
+        {
+            __IOM uint16_t ECCDISE : 1; /*!< [0..0] ECC Encoder Disable Disables the address parity generator
+                                         *   and the ECC encoder. If the address parity generator and
+                                         *   the ECC encoder are disabled, the FDMYECC_n value is written
+                                         *   to the flash memory.                                                      */
+            uint16_t              : 3;
+            __IOM uint16_t DECCVE : 1;  /*!< [4..4] Data Flash Memory ECC Bits Verify Enable Specifies the
+                                         *   verify operation on programming/erasure the data flash
+                                         *   memory.                                                                   */
+            __IOM uint16_t CECCVE : 1;  /*!< [5..5] Code Flash Memory ECC Bits Verify Enable Specifies the
+                                         *   verify operation on programming/erasure the code flash
+                                         *   memory.                                                                   */
+            uint16_t          : 2;
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key Code These bits enable or disable CECCVE, DECCVE,
+                                         *   and ECCDISE bits modification.                                            */
+        } FECCTMD_b;
+    };
+    __IM uint16_t RESERVED27;
+
+    union
+    {
+        __IOM uint16_t FDMYECC;        /*!< (@ 0x00000108) Flash Dummy ECC Register                                   */
+
+        struct
+        {
+            __IM uint16_t DMYECC : 10; /*!< [9..0] Dummy ECC Specify the ECC value when the ECCDISE bit
+                                        *   is 1.                                                                     */
+            __IM uint16_t DMYAPAR : 1; /*!< [10..10] Dummy Address Parity Specifies the address parity value
+                                        *   when the ECCDISE bit is 1.                                                */
+            uint16_t : 5;
+        } FDMYECC_b;
+    };
+    __IM uint16_t RESERVED28;
+} R_FACI2_Type;                        /*!< Size = 268 (0x10c)                                                        */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FLMD                                           ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief R_FLMD (R_FLMD)
+ */
+
+typedef struct                         /*!< (@ 0xFFA00000) R_FLMD Structure                                           */
+{
+    union
+    {
+        __IOM uint32_t FLMDCNT;        /*!< (@ 0x00000000) FLMD Control                                               */
+
+        struct
+        {
+            __IOM uint32_t SFWE : 1;   /*!< [0..0] SFWE                                                               */
+            uint32_t            : 31;
+        } FLMDCNT_b;
+    };
+    __IM uint32_t RESERVED[2];
+
+    union
+    {
+        __IOM uint32_t FLMDFPLOCK;      /*!< (@ 0x0000000C) FLMD FACI LOCK                                             */
+
+        struct
+        {
+            __IOM uint32_t FP0LOCK : 1; /*!< [0..0] FP0LOCK                                                            */
+            __IOM uint32_t FP1LOCK : 1; /*!< [1..1] FP1LOCK                                                            */
+            uint32_t               : 30;
+        } FLMDFPLOCK_b;
+    };
+} R_FLMD_Type;                          /*!< Size = 16 (0x10)                                                          */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FHVE                                           ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief R_FHVE (R_FHVE)
+ */
+
+typedef struct                           /*!< (@ 0xFF984800) R_FHVE Structure                                           */
+{
+    union
+    {
+        __IOM uint32_t FHVE3FP0;         /*!< (@ 0x00000000) FHVE3 Control for FACI0                                    */
+
+        struct
+        {
+            __IOM uint32_t FHVE3CNT : 1; /*!< [0..0] FHVE3CNT                                                           */
+            uint32_t                : 31;
+        } FHVE3FP0_b;
+    };
+
+    union
+    {
+        __IOM uint32_t FHVE15FP0;         /*!< (@ 0x00000004) FHVE15 Control for FACI0                                   */
+
+        struct
+        {
+            __IOM uint32_t FHVE15CNT : 1; /*!< [0..0] FHVE15CNT                                                          */
+            uint32_t                 : 31;
+        } FHVE15FP0_b;
+    };
+    __IM uint32_t RESERVED[2];
+
+    union
+    {
+        __IOM uint32_t FHVE3FP1;         /*!< (@ 0x00000010) FHVE3 Control for FACI1                                    */
+
+        struct
+        {
+            __IOM uint32_t FHVE3CNT : 1; /*!< [0..0] FHVE3CNT                                                           */
+            uint32_t                : 31;
+        } FHVE3FP1_b;
+    };
+
+    union
+    {
+        __IOM uint32_t FHVE15FP1;         /*!< (@ 0x00000014) FHVE15 Control for FACI1                                   */
+
+        struct
+        {
+            __IOM uint32_t FHVE15CNT : 1; /*!< [0..0] FHVE15CNT                                                          */
+            uint32_t                 : 31;
+        } FHVE15FP1_b;
+    };
+    __IM uint32_t RESERVED1[2];
+
+    union
+    {
+        __IOM uint32_t FHVE3FP2;         /*!< (@ 0x00000020) FHVE3 Control for FACI2                                    */
+
+        struct
+        {
+            __IOM uint32_t FHVE3CNT : 1; /*!< [0..0] FHVE3CNT                                                           */
+            uint32_t                : 31;
+        } FHVE3FP2_b;
+    };
+
+    union
+    {
+        __IOM uint32_t FHVE15FP2;         /*!< (@ 0x00000024) FHVE15 Control for FACI2                                   */
+
+        struct
+        {
+            __IOM uint32_t FHVE15CNT : 1; /*!< [0..0] FHVE15CNT                                                          */
+            uint32_t                 : 31;
+        } FHVE15FP2_b;
+    };
+} R_FHVE_Type;                            /*!< Size = 40 (0x28)                                                          */
 
 /* =========================================================================================================================== */
 /* ================                                          R_FLXA0                                          ================ */
@@ -67418,1893 +69380,10 @@ typedef struct                         /*!< (@ 0xFFC64000) R_GUARD_INTC2 Structu
 
 typedef struct                         /*!< (@ 0xFFFB9000) R_IPIR Structure                                           */
 {
-    union
-    {
-        __IOM uint8_t IPI0ENS;         /*!< (@ 0x00000000) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI0ENS_b;
-    };
-    __IM uint8_t RESERVED[3];
-    __IM uint8_t IPI0FLGS;             /*!< (@ 0x00000004) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-    __IM uint8_t RESERVED1[3];
-    __OM uint8_t IPI0FCLRS;            /*!< (@ 0x00000008) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-    __IM uint8_t  RESERVED2[7];
-    __IOM uint8_t IPI0REQS;            /*!< (@ 0x00000010) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-    __IM uint8_t RESERVED3[3];
-    __OM uint8_t IPI0RCLRS;            /*!< (@ 0x00000014) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-    __IM uint8_t RESERVED4[11];
-
-    union
-    {
-        __IOM uint8_t IPI1ENS;         /*!< (@ 0x00000020) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI1ENS_b;
-    };
-    __IM uint8_t RESERVED5[3];
-    __IM uint8_t IPI1FLGS;             /*!< (@ 0x00000024) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-    __IM uint8_t RESERVED6[3];
-    __OM uint8_t IPI1FCLRS;            /*!< (@ 0x00000028) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-    __IM uint8_t  RESERVED7[7];
-    __IOM uint8_t IPI1REQS;            /*!< (@ 0x00000030) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-    __IM uint8_t RESERVED8[3];
-    __OM uint8_t IPI1RCLRS;            /*!< (@ 0x00000034) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-    __IM uint8_t RESERVED9[11];
-
-    union
-    {
-        __IOM uint8_t IPI2ENS;         /*!< (@ 0x00000040) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI2ENS_b;
-    };
-    __IM uint8_t RESERVED10[3];
-    __IM uint8_t IPI2FLGS;             /*!< (@ 0x00000044) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-    __IM uint8_t RESERVED11[3];
-    __OM uint8_t IPI2FCLRS;            /*!< (@ 0x00000048) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-    __IM uint8_t  RESERVED12[7];
-    __IOM uint8_t IPI2REQS;            /*!< (@ 0x00000050) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-    __IM uint8_t RESERVED13[3];
-    __OM uint8_t IPI2RCLRS;            /*!< (@ 0x00000054) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-    __IM uint8_t RESERVED14[11];
-
-    union
-    {
-        __IOM uint8_t IPI3ENS;         /*!< (@ 0x00000060) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI3ENS_b;
-    };
-    __IM uint8_t RESERVED15[3];
-    __IM uint8_t IPI3FLGS;             /*!< (@ 0x00000064) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-    __IM uint8_t RESERVED16[3];
-    __OM uint8_t IPI3FCLRS;            /*!< (@ 0x00000068) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-    __IM uint8_t  RESERVED17[7];
-    __IOM uint8_t IPI3REQS;            /*!< (@ 0x00000070) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-    __IM uint8_t RESERVED18[3];
-    __OM uint8_t IPI3RCLRS;            /*!< (@ 0x00000074) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-    __IM uint8_t RESERVED19[1931];
-
-    union
-    {
-        __IOM uint8_t IPI0EN0;         /*!< (@ 0x00000800) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI0EN0_b;
-    };
-    __IM uint8_t RESERVED20[3];
-
-    union
-    {
-        __IM uint8_t IPI0FLG0;         /*!< (@ 0x00000804) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI0FLG0_b;
-    };
-    __IM uint8_t RESERVED21[3];
-
-    union
-    {
-        __OM uint8_t IPI0FCLR0;        /*!< (@ 0x00000808) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI0FCLR0_b;
-    };
-    __IM uint8_t RESERVED22[7];
-
-    union
-    {
-        __IOM uint8_t IPI0REQ0;        /*!< (@ 0x00000810) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI0REQ0_b;
-    };
-    __IM uint8_t RESERVED23[3];
-
-    union
-    {
-        __OM uint8_t IPI0RCLR0;        /*!< (@ 0x00000814) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI0RCLR0_b;
-    };
-    __IM uint8_t RESERVED24[11];
-
-    union
-    {
-        __IOM uint8_t IPI1EN0;         /*!< (@ 0x00000820) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI1EN0_b;
-    };
-    __IM uint8_t RESERVED25[3];
-
-    union
-    {
-        __IM uint8_t IPI1FLG0;         /*!< (@ 0x00000824) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI1FLG0_b;
-    };
-    __IM uint8_t RESERVED26[3];
-
-    union
-    {
-        __OM uint8_t IPI1FCLR0;        /*!< (@ 0x00000828) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI1FCLR0_b;
-    };
-    __IM uint8_t RESERVED27[7];
-
-    union
-    {
-        __IOM uint8_t IPI1REQ0;        /*!< (@ 0x00000830) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI1REQ0_b;
-    };
-    __IM uint8_t RESERVED28[3];
-
-    union
-    {
-        __OM uint8_t IPI1RCLR0;        /*!< (@ 0x00000834) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI1RCLR0_b;
-    };
-    __IM uint8_t RESERVED29[11];
-
-    union
-    {
-        __IOM uint8_t IPI2EN0;         /*!< (@ 0x00000840) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI2EN0_b;
-    };
-    __IM uint8_t RESERVED30[3];
-
-    union
-    {
-        __IM uint8_t IPI2FLG0;         /*!< (@ 0x00000844) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI2FLG0_b;
-    };
-    __IM uint8_t RESERVED31[3];
-
-    union
-    {
-        __OM uint8_t IPI2FCLR0;        /*!< (@ 0x00000848) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI2FCLR0_b;
-    };
-    __IM uint8_t RESERVED32[7];
-
-    union
-    {
-        __IOM uint8_t IPI2REQ0;        /*!< (@ 0x00000850) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI2REQ0_b;
-    };
-    __IM uint8_t RESERVED33[3];
-
-    union
-    {
-        __OM uint8_t IPI2RCLR0;        /*!< (@ 0x00000854) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI2RCLR0_b;
-    };
-    __IM uint8_t RESERVED34[11];
-
-    union
-    {
-        __IOM uint8_t IPI3EN0;         /*!< (@ 0x00000860) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI3EN0_b;
-    };
-    __IM uint8_t RESERVED35[3];
-
-    union
-    {
-        __IM uint8_t IPI3FLG0;         /*!< (@ 0x00000864) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI3FLG0_b;
-    };
-    __IM uint8_t RESERVED36[3];
-
-    union
-    {
-        __OM uint8_t IPI3FCLR0;        /*!< (@ 0x00000868) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI3FCLR0_b;
-    };
-    __IM uint8_t RESERVED37[7];
-
-    union
-    {
-        __IOM uint8_t IPI3REQ0;        /*!< (@ 0x00000870) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI3REQ0_b;
-    };
-    __IM uint8_t RESERVED38[3];
-
-    union
-    {
-        __OM uint8_t IPI3RCLR0;        /*!< (@ 0x00000874) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI3RCLR0_b;
-    };
-    __IM uint8_t RESERVED39[139];
-
-    union
-    {
-        __IOM uint8_t IPI0EN1;         /*!< (@ 0x00000900) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI0EN1_b;
-    };
-    __IM uint8_t RESERVED40[3];
-
-    union
-    {
-        __IM uint8_t IPI0FLG1;         /*!< (@ 0x00000904) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI0FLG1_b;
-    };
-    __IM uint8_t RESERVED41[3];
-
-    union
-    {
-        __OM uint8_t IPI0FCLR1;        /*!< (@ 0x00000908) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI0FCLR1_b;
-    };
-    __IM uint8_t RESERVED42[7];
-
-    union
-    {
-        __IOM uint8_t IPI0REQ1;        /*!< (@ 0x00000910) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI0REQ1_b;
-    };
-    __IM uint8_t RESERVED43[3];
-
-    union
-    {
-        __OM uint8_t IPI0RCLR1;        /*!< (@ 0x00000914) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI0RCLR1_b;
-    };
-    __IM uint8_t RESERVED44[11];
-
-    union
-    {
-        __IOM uint8_t IPI1EN1;         /*!< (@ 0x00000920) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI1EN1_b;
-    };
-    __IM uint8_t RESERVED45[3];
-
-    union
-    {
-        __IM uint8_t IPI1FLG1;         /*!< (@ 0x00000924) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI1FLG1_b;
-    };
-    __IM uint8_t RESERVED46[3];
-
-    union
-    {
-        __OM uint8_t IPI1FCLR1;        /*!< (@ 0x00000928) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI1FCLR1_b;
-    };
-    __IM uint8_t RESERVED47[7];
-
-    union
-    {
-        __IOM uint8_t IPI1REQ1;        /*!< (@ 0x00000930) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI1REQ1_b;
-    };
-    __IM uint8_t RESERVED48[3];
-
-    union
-    {
-        __OM uint8_t IPI1RCLR1;        /*!< (@ 0x00000934) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI1RCLR1_b;
-    };
-    __IM uint8_t RESERVED49[11];
-
-    union
-    {
-        __IOM uint8_t IPI2EN1;         /*!< (@ 0x00000940) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI2EN1_b;
-    };
-    __IM uint8_t RESERVED50[3];
-
-    union
-    {
-        __IM uint8_t IPI2FLG1;         /*!< (@ 0x00000944) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI2FLG1_b;
-    };
-    __IM uint8_t RESERVED51[3];
-
-    union
-    {
-        __OM uint8_t IPI2FCLR1;        /*!< (@ 0x00000948) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI2FCLR1_b;
-    };
-    __IM uint8_t RESERVED52[7];
-
-    union
-    {
-        __IOM uint8_t IPI2REQ1;        /*!< (@ 0x00000950) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI2REQ1_b;
-    };
-    __IM uint8_t RESERVED53[3];
-
-    union
-    {
-        __OM uint8_t IPI2RCLR1;        /*!< (@ 0x00000954) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI2RCLR1_b;
-    };
-    __IM uint8_t RESERVED54[11];
-
-    union
-    {
-        __IOM uint8_t IPI3EN1;         /*!< (@ 0x00000960) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI3EN1_b;
-    };
-    __IM uint8_t RESERVED55[3];
-
-    union
-    {
-        __IM uint8_t IPI3FLG1;         /*!< (@ 0x00000964) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI3FLG1_b;
-    };
-    __IM uint8_t RESERVED56[3];
-
-    union
-    {
-        __OM uint8_t IPI3FCLR1;        /*!< (@ 0x00000968) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI3FCLR1_b;
-    };
-    __IM uint8_t RESERVED57[7];
-
-    union
-    {
-        __IOM uint8_t IPI3REQ1;        /*!< (@ 0x00000970) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI3REQ1_b;
-    };
-    __IM uint8_t RESERVED58[3];
-
-    union
-    {
-        __OM uint8_t IPI3RCLR1;        /*!< (@ 0x00000974) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI3RCLR1_b;
-    };
-    __IM uint8_t RESERVED59[139];
-
-    union
-    {
-        __IOM uint8_t IPI0EN2;         /*!< (@ 0x00000A00) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI0EN2_b;
-    };
-    __IM uint8_t RESERVED60[3];
-
-    union
-    {
-        __IM uint8_t IPI0FLG2;         /*!< (@ 0x00000A04) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI0FLG2_b;
-    };
-    __IM uint8_t RESERVED61[3];
-
-    union
-    {
-        __OM uint8_t IPI0FCLR2;        /*!< (@ 0x00000A08) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI0FCLR2_b;
-    };
-    __IM uint8_t RESERVED62[7];
-
-    union
-    {
-        __IOM uint8_t IPI0REQ2;        /*!< (@ 0x00000A10) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI0REQ2_b;
-    };
-    __IM uint8_t RESERVED63[3];
-
-    union
-    {
-        __OM uint8_t IPI0RCLR2;        /*!< (@ 0x00000A14) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI0RCLR2_b;
-    };
-    __IM uint8_t RESERVED64[11];
-
-    union
-    {
-        __IOM uint8_t IPI1EN2;         /*!< (@ 0x00000A20) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI1EN2_b;
-    };
-    __IM uint8_t RESERVED65[3];
-
-    union
-    {
-        __IM uint8_t IPI1FLG2;         /*!< (@ 0x00000A24) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI1FLG2_b;
-    };
-    __IM uint8_t RESERVED66[3];
-
-    union
-    {
-        __OM uint8_t IPI1FCLR2;        /*!< (@ 0x00000A28) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI1FCLR2_b;
-    };
-    __IM uint8_t RESERVED67[7];
-
-    union
-    {
-        __IOM uint8_t IPI1REQ2;        /*!< (@ 0x00000A30) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI1REQ2_b;
-    };
-    __IM uint8_t RESERVED68[3];
-
-    union
-    {
-        __OM uint8_t IPI1RCLR2;        /*!< (@ 0x00000A34) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI1RCLR2_b;
-    };
-    __IM uint8_t RESERVED69[11];
-
-    union
-    {
-        __IOM uint8_t IPI2EN2;         /*!< (@ 0x00000A40) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI2EN2_b;
-    };
-    __IM uint8_t RESERVED70[3];
-
-    union
-    {
-        __IM uint8_t IPI2FLG2;         /*!< (@ 0x00000A44) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI2FLG2_b;
-    };
-    __IM uint8_t RESERVED71[3];
-
-    union
-    {
-        __OM uint8_t IPI2FCLR2;        /*!< (@ 0x00000A48) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI2FCLR2_b;
-    };
-    __IM uint8_t RESERVED72[7];
-
-    union
-    {
-        __IOM uint8_t IPI2REQ2;        /*!< (@ 0x00000A50) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI2REQ2_b;
-    };
-    __IM uint8_t RESERVED73[3];
-
-    union
-    {
-        __OM uint8_t IPI2RCLR2;        /*!< (@ 0x00000A54) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI2RCLR2_b;
-    };
-    __IM uint8_t RESERVED74[11];
-
-    union
-    {
-        __IOM uint8_t IPI3EN2;         /*!< (@ 0x00000A60) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI3EN2_b;
-    };
-    __IM uint8_t RESERVED75[3];
-
-    union
-    {
-        __IM uint8_t IPI3FLG2;         /*!< (@ 0x00000A64) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI3FLG2_b;
-    };
-    __IM uint8_t RESERVED76[3];
-
-    union
-    {
-        __OM uint8_t IPI3FCLR2;        /*!< (@ 0x00000A68) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI3FCLR2_b;
-    };
-    __IM uint8_t RESERVED77[7];
-
-    union
-    {
-        __IOM uint8_t IPI3REQ2;        /*!< (@ 0x00000A70) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI3REQ2_b;
-    };
-    __IM uint8_t RESERVED78[3];
-
-    union
-    {
-        __OM uint8_t IPI3RCLR2;        /*!< (@ 0x00000A74) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI3RCLR2_b;
-    };
-    __IM uint8_t RESERVED79[139];
-
-    union
-    {
-        __IOM uint8_t IPI0EN3;         /*!< (@ 0x00000B00) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI0EN3_b;
-    };
-    __IM uint8_t RESERVED80[3];
-
-    union
-    {
-        __IM uint8_t IPI0FLG3;         /*!< (@ 0x00000B04) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI0FLG3_b;
-    };
-    __IM uint8_t RESERVED81[3];
-
-    union
-    {
-        __OM uint8_t IPI0FCLR3;        /*!< (@ 0x00000B08) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI0FCLR3_b;
-    };
-    __IM uint8_t RESERVED82[7];
-
-    union
-    {
-        __IOM uint8_t IPI0REQ3;        /*!< (@ 0x00000B10) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI0REQ3_b;
-    };
-    __IM uint8_t RESERVED83[3];
-
-    union
-    {
-        __OM uint8_t IPI0RCLR3;        /*!< (@ 0x00000B14) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI0RCLR3_b;
-    };
-    __IM uint8_t RESERVED84[11];
-
-    union
-    {
-        __IOM uint8_t IPI1EN3;         /*!< (@ 0x00000B20) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI1EN3_b;
-    };
-    __IM uint8_t RESERVED85[3];
-
-    union
-    {
-        __IM uint8_t IPI1FLG3;         /*!< (@ 0x00000B24) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI1FLG3_b;
-    };
-    __IM uint8_t RESERVED86[3];
-
-    union
-    {
-        __OM uint8_t IPI1FCLR3;        /*!< (@ 0x00000B28) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI1FCLR3_b;
-    };
-    __IM uint8_t RESERVED87[7];
-
-    union
-    {
-        __IOM uint8_t IPI1REQ3;        /*!< (@ 0x00000B30) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI1REQ3_b;
-    };
-    __IM uint8_t RESERVED88[3];
-
-    union
-    {
-        __OM uint8_t IPI1RCLR3;        /*!< (@ 0x00000B34) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI1RCLR3_b;
-    };
-    __IM uint8_t RESERVED89[11];
-
-    union
-    {
-        __IOM uint8_t IPI2EN3;         /*!< (@ 0x00000B40) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI2EN3_b;
-    };
-    __IM uint8_t RESERVED90[3];
-
-    union
-    {
-        __IM uint8_t IPI2FLG3;         /*!< (@ 0x00000B44) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI2FLG3_b;
-    };
-    __IM uint8_t RESERVED91[3];
-
-    union
-    {
-        __OM uint8_t IPI2FCLR3;        /*!< (@ 0x00000B48) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI2FCLR3_b;
-    };
-    __IM uint8_t RESERVED92[7];
-
-    union
-    {
-        __IOM uint8_t IPI2REQ3;        /*!< (@ 0x00000B50) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI2REQ3_b;
-    };
-    __IM uint8_t RESERVED93[3];
-
-    union
-    {
-        __OM uint8_t IPI2RCLR3;        /*!< (@ 0x00000B54) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI2RCLR3_b;
-    };
-    __IM uint8_t RESERVED94[11];
-
-    union
-    {
-        __IOM uint8_t IPI3EN3;         /*!< (@ 0x00000B60) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 4;      /*!< [3..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 4;
-        } IPI3EN3_b;
-    };
-    __IM uint8_t RESERVED95[3];
-
-    union
-    {
-        __IM uint8_t IPI3FLG3;         /*!< (@ 0x00000B64) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 4;      /*!< [3..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 4;
-        } IPI3FLG3_b;
-    };
-    __IM uint8_t RESERVED96[3];
-
-    union
-    {
-        __OM uint8_t IPI3FCLR3;        /*!< (@ 0x00000B68) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 4;     /*!< [3..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 4;
-        } IPI3FCLR3_b;
-    };
-    __IM uint8_t RESERVED97[7];
-
-    union
-    {
-        __IOM uint8_t IPI3REQ3;        /*!< (@ 0x00000B70) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 4;     /*!< [3..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 4;
-        } IPI3REQ3_b;
-    };
-    __IM uint8_t RESERVED98[3];
-
-    union
-    {
-        __OM uint8_t IPI3RCLR3;        /*!< (@ 0x00000B74) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 4;     /*!< [3..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 4;
-        } IPI3RCLR3_b;
-    };
-} R_IPIR_Type;                         /*!< Size = 2933 (0xb75)                                                       */
+    __IOM R_IPIR_CH_Type CH[4];        /*!< (@ 0x00000000) Inter Processor Interrupt Shared Channel                   */
+    __IM uint8_t         RESERVED[1920];
+    __IOM R_IPIR_PE_Type PE[4];        /*!< (@ 0x00000800) Inter Processor Interrupt PE Block                         */
+} R_IPIR_Type;                         /*!< Size = 3072 (0xc00)                                                       */
 
 /* =========================================================================================================================== */
 /* ================                                          R_LTSC                                           ================ */
@@ -74869,7 +74948,7 @@ typedef struct                         /*!< (@ 0xFFD52000) R_PSI50 Structure    
     {
         __IOM uint32_t PSI5nTXDATA;     /*!< (@ 0x00000098) PSI5 Transmit Data RegisterThis register stores
                                          *                  transmit data.See this Registers section
-                                         *                  in R-Car/U5x Group CSIH IP User‘s Manual:
+                                         *                  in RH850/U2x Group CSIH IP User‘s Manual:
                                          *                  Hardware.                                                  */
 
         struct
@@ -74879,7 +74958,7 @@ typedef struct                         /*!< (@ 0xFFD52000) R_PSI50 Structure    
                                          *   arrangement differs depending on the transmit frame format
                                          *   specified in the PSI5nTXDCTRL.FRMFORMAT bit. (See Table,
                                          *   "PSI5nTXDATA.TXDATA Data Arrangement in Transmit Frame
-                                         *   Format" in R-Car/U5x Group PSI5 IP User‘s Manual: Hardware)The
+                                         *   Format" in RH850/U2x Group PSI5 IP User‘s Manual: Hardware)The
                                          *   data is sent after these bits are written.Read value is
                                          *   always 0.                                                                 */
         } PSI5nTXDATA_b;
@@ -78656,6 +78735,412 @@ typedef struct                         /*!< (@ 0xFF9A3800) R_ADCJ2_SELB Structur
 } R_ADCJ2_SELB_Type;                   /*!< Size = 20 (0x14)                                                          */
 
 /* =========================================================================================================================== */
+/* ================                                          R_TAUJ0                                          ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief TAUJ Interface Module (R_TAUJ0)
+ */
+
+typedef struct                         /*!< (@ 0xFFBF7000) R_TAUJ0 Structure                                          */
+{
+    __IOM R_TAUJ0_CDR_Type  CDR[4];    /*!< (@ 0x00000000) TAUJ channel data register                                 */
+    __IOM R_TAUJ0_CNT_Type  CNT[4];    /*!< (@ 0x00000010) TAUJ channel counter register                              */
+    __IOM R_TAUJ0_CMUR_Type CMUR[4];   /*!< (@ 0x00000020) TAUJ channel mode user register                            */
+    __IOM R_TAUJ0_CSR_Type  CSR[4];    /*!< (@ 0x00000030) TAUJ channel status register                               */
+    __IOM R_TAUJ0_CSC_Type  CSC[4];    /*!< (@ 0x00000040) TAUJ channel status clear trigger register                 */
+
+    union
+    {
+        __IM uint8_t TE;               /*!< (@ 0x00000050) TAUJ Channel Enable Status Register                        */
+
+        struct
+        {
+            __IM uint8_t TE : 4;       /*!< [3..0] TE                                                                 */
+            uint8_t         : 4;
+        } TE_b;
+    };
+    __IM uint8_t  RESERVED;
+    __IM uint16_t RESERVED1;
+
+    union
+    {
+        __IOM uint8_t TS;              /*!< (@ 0x00000054) TAUJ Channel Start Trigger Register                        */
+
+        struct
+        {
+            __OM uint8_t TS : 4;       /*!< [3..0] TS                                                                 */
+            uint8_t         : 4;
+        } TS_b;
+    };
+    __IM uint8_t  RESERVED2;
+    __IM uint16_t RESERVED3;
+
+    union
+    {
+        __IOM uint8_t TT;              /*!< (@ 0x00000058) TAUJ Channel Stop Trigger Register                         */
+
+        struct
+        {
+            __OM uint8_t TT : 4;       /*!< [3..0] TT                                                                 */
+            uint8_t         : 4;
+        } TT_b;
+    };
+    __IM uint8_t  RESERVED4;
+    __IM uint16_t RESERVED5;
+
+    union
+    {
+        __IOM uint8_t TO;              /*!< (@ 0x0000005C) TAUJ Channel Output Register                               */
+
+        struct
+        {
+            __IM uint8_t TO : 4;       /*!< [3..0] Specifies and reads the level of TAUJTTOUTm                        */
+            uint8_t         : 4;
+        } TO_b;
+    };
+    __IM uint8_t  RESERVED6;
+    __IM uint16_t RESERVED7;
+
+    union
+    {
+        __IOM uint8_t TOE;             /*!< (@ 0x00000060) TAUJ Channel Output Enable Register                        */
+
+        struct
+        {
+            __IM uint8_t TOE : 4;      /*!< [3..0] Enables/disables independent channel output function:              */
+            uint8_t          : 4;
+        } TOE_b;
+    };
+    __IM uint8_t  RESERVED8;
+    __IM uint16_t RESERVED9;
+
+    union
+    {
+        __IOM uint8_t TOL;             /*!< (@ 0x00000064) TAUJ Channel Output Active Level Register                  */
+
+        struct
+        {
+            __IM uint8_t TOL : 4;      /*!< [3..0] Specifies the output logic of the channel m output bit
+                                        *   (TAUJnTO.TAUJnTOm)                                                        */
+            uint8_t : 4;
+        } TOL_b;
+    };
+    __IM uint8_t  RESERVED10;
+    __IM uint16_t RESERVED11;
+
+    union
+    {
+        __IOM uint8_t RDT;             /*!< (@ 0x00000068) TAUJ Channel Reload Data Trigger Register                  */
+
+        struct
+        {
+            __OM uint8_t RDT : 4;      /*!< [3..0] Triggers the simultaneous rewrite enabling state.                  */
+            uint8_t          : 4;
+        } RDT_b;
+    };
+    __IM uint8_t  RESERVED12;
+    __IM uint16_t RESERVED13;
+
+    union
+    {
+        __IM uint8_t RSF;              /*!< (@ 0x0000006C) TAUJ Channel Reload Status Register                        */
+
+        struct
+        {
+            __IM uint8_t RSF : 4;      /*!< [3..0] Indicates the simultaneous rewrite status.                         */
+            uint8_t          : 4;
+        } RSF_b;
+    };
+    __IM uint8_t            RESERVED14;
+    __IM uint16_t           RESERVED15;
+    __IM uint32_t           RESERVED16[4];
+    __IOM R_TAUJ0_CMOR_Type CMOR[4];   /*!< (@ 0x00000080) TAUJ channel mode OS register                              */
+
+    union
+    {
+        __IOM uint16_t TPS;            /*!< (@ 0x00000090) TAUJ Prescaler Clock Select Register                       */
+
+        struct
+        {
+            __IOM uint16_t PRS0 : 4;   /*!< [3..0] Specifies CK0_PRE clock.                                           */
+            __IOM uint16_t PRS1 : 4;   /*!< [7..4] Specifies CK1_PRE clock.                                           */
+            __IOM uint16_t PRS2 : 4;   /*!< [11..8] Specifies CK2_PRE clock.                                          */
+            __IOM uint16_t PRS3 : 4;   /*!< [15..12] Specifies CK3_PRE clock.                                         */
+        } TPS_b;
+    };
+    __IM uint16_t RESERVED17;
+
+    union
+    {
+        __IOM uint8_t BRS;             /*!< (@ 0x00000094) TAUJ Prescaler Baud Rate Setting Register                  */
+
+        struct
+        {
+            __IOM uint8_t BRS : 8;     /*!< [7..0] Specifies a CK3_PRE clock division factor for generating
+                                        *   CK3.00000000: CK3_PRE/100000001: CK3_PRE/200000010: CK3_PRE/300000011:
+                                        *   CK3_PRE/4......11111110: CK3_PRE/25511111111: CK3_PRE/256                 */
+        } BRS_b;
+    };
+    __IM uint8_t  RESERVED18;
+    __IM uint16_t RESERVED19;
+
+    union
+    {
+        __IOM uint8_t TOM;             /*!< (@ 0x00000098) TAUJ Channel Output Mode Register                          */
+
+        struct
+        {
+            __IM uint8_t TOM : 4;      /*!< [3..0] Specifies the channel output mode.                                 */
+            uint8_t          : 4;
+        } TOM_b;
+    };
+    __IM uint8_t  RESERVED20;
+    __IM uint16_t RESERVED21;
+
+    union
+    {
+        __IOM uint8_t TOC;             /*!< (@ 0x0000009C) TAUJ Channel Output Configuration Register                 */
+
+        struct
+        {
+            __IM uint8_t TOC : 4;      /*!< [3..0] Specifies the output mode                                          */
+            uint8_t          : 4;
+        } TOC_b;
+    };
+    __IM uint8_t  RESERVED22;
+    __IM uint16_t RESERVED23;
+
+    union
+    {
+        __IOM uint8_t RDE;             /*!< (@ 0x000000A0) TAUJ Channel Reload Data Enable Register                   */
+
+        struct
+        {
+            __IM uint8_t RDE : 4;      /*!< [3..0] Specifies the output logic of the channel m output bit
+                                        *   (TAUJnTO.TAUJnTOm)                                                        */
+            uint8_t : 4;
+        } RDE_b;
+    };
+    __IM uint8_t  RESERVED24;
+    __IM uint16_t RESERVED25;
+
+    union
+    {
+        __IOM uint8_t RDM;             /*!< (@ 0x000000A4) TAUJ Channel Reload Data Mode Register                     */
+
+        struct
+        {
+            __IM uint8_t RDM : 4;      /*!< [3..0] Specifies when the signal that triggers simultaneous
+                                        *   rewrite is generated.                                                     */
+            uint8_t : 4;
+        } RDM_b;
+    };
+    __IM uint8_t  RESERVED26;
+    __IM uint16_t RESERVED27;
+} R_TAUJ0_Type;                        /*!< Size = 168 (0xa8)                                                         */
+
+/* =========================================================================================================================== */
+/* ================                                          R_TPBA0                                          ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief Timer Pattern Buffer (R_TPBA0)
+ */
+
+typedef struct                                /*!< (@ 0xFFBFA000) R_TPBA0 Structure                                          */
+{
+    __IOM R_TPBA0_DUTY_BUF_Type DUTY_BUF[64]; /*!< (@ 0x00000000) TPBA Duty Setting Buffer                                   */
+
+    union
+    {
+        __IOM uint16_t CMP0;                  /*!< (@ 0x00000100) TPBAn Period Setting Register                              */
+
+        struct
+        {
+            __IOM uint16_t CMP0 : 16;         /*!< [15..0] 16-bit compare register for setting the PWM period.               */
+        } CMP0_b;
+    };
+    __IM uint16_t RESERVED;
+
+    union
+    {
+        __IOM uint8_t CMP1;            /*!< (@ 0x00000104) TPBAn Pattern Number Setting Register                      */
+
+        struct
+        {
+            __IOM uint8_t CMP1 : 7;    /*!< [6..0] Sets the number of patterns.                                       */
+            uint8_t            : 1;
+        } CMP1_b;
+    };
+    __IM uint8_t  RESERVED1;
+    __IM uint16_t RESERVED2;
+
+    union
+    {
+        __IM uint16_t CNT0;            /*!< (@ 0x00000108) TPBAn Timer Counter Register                               */
+
+        struct
+        {
+            __IM uint16_t CNT0 : 16;   /*!< [15..0] Timer counter register that generates PWM output.                 */
+        } CNT0_b;
+    };
+    __IM uint16_t RESERVED3;
+
+    union
+    {
+        __IM uint8_t CNT1;             /*!< (@ 0x0000010C) TPBAn Address Counter Register                             */
+
+        struct
+        {
+            __IM uint8_t CNT1 : 7;     /*!< [6..0] Counter register that indicates the address pointer to
+                                        *   the duty setting register.                                                */
+            uint8_t : 1;
+        } CNT1_b;
+    };
+    __IM uint8_t  RESERVED4;
+    __IM uint16_t RESERVED5;
+
+    union
+    {
+        __IM uint8_t RSF;              /*!< (@ 0x00000110) TPBAn Reload Status Register                               */
+
+        struct
+        {
+            __IM uint8_t RSF0 : 1;     /*!< [0..0] Indicates whether or not a reload request from TPBAnCMP0
+                                        *   and TPBAnTOL has been generated.                                          */
+            __IM uint8_t RSF1 : 1;     /*!< [1..1] Indicates whether or not a reload request from TPBAnCMP1
+                                        *   has been generated.                                                       */
+            uint8_t : 6;
+        } RSF_b;
+    };
+    __IM uint8_t  RESERVED6;
+    __IM uint16_t RESERVED7;
+
+    union
+    {
+        __IOM uint8_t RDT;             /*!< (@ 0x00000114) TPBAn reload data trigger register                         */
+
+        struct
+        {
+            __OM uint8_t RDT0 : 1;     /*!< [0..0] Enables reload of the TPBAnCMP0 and TPBAnTOL values.               */
+            __OM uint8_t RDT1 : 1;     /*!< [1..1] Enables reload of the TPBAnCMP1 values.                            */
+            uint8_t           : 6;
+        } RDT_b;
+    };
+    __IM uint8_t  RESERVED8;
+    __IM uint16_t RESERVED9;
+
+    union
+    {
+        __IOM uint8_t RDM;             /*!< (@ 0x00000118) TPBAn Reload Data Mode Register                            */
+
+        struct
+        {
+            __IOM uint8_t RDM0 : 1;    /*!< [0..0] Controls the reload timing of the TPBAn period setting
+                                        *   register (TPBAnCMP0) and TPBAn timer output level register
+                                        *   (TPBAnTOL) values.                                                        */
+            uint8_t : 7;
+        } RDM_b;
+    };
+    __IM uint8_t  RESERVED10;
+    __IM uint16_t RESERVED11;
+
+    union
+    {
+        __IOM uint8_t TO;              /*!< (@ 0x0000011C) TPBAn Timer Output Register                                */
+
+        struct
+        {
+            __IOM uint8_t TO0 : 1;     /*!< [0..0] Sets or indicates the output level of TPBAnO pin.                  */
+            uint8_t           : 7;
+        } TO_b;
+    };
+    __IM uint8_t  RESERVED12;
+    __IM uint16_t RESERVED13;
+
+    union
+    {
+        __IOM uint8_t TOE;             /*!< (@ 0x00000120) TPBAn Timer Output Enable Register                         */
+
+        struct
+        {
+            __IOM uint8_t TOE0 : 1;    /*!< [0..0] Enables or disables the timer output (TPBAnO).                     */
+            uint8_t            : 7;
+        } TOE_b;
+    };
+    __IM uint8_t  RESERVED14;
+    __IM uint16_t RESERVED15;
+
+    union
+    {
+        __IOM uint8_t TOL;             /*!< (@ 0x00000124) TPBAn Timer Output Level Register                          */
+
+        struct
+        {
+            __IOM uint8_t TOL0 : 1;    /*!< [0..0] Specifies the active level of the timer output.                    */
+            uint8_t            : 7;
+        } TOL_b;
+    };
+    __IM uint8_t  RESERVED16;
+    __IM uint16_t RESERVED17;
+
+    union
+    {
+        __IM uint8_t TE;               /*!< (@ 0x00000128) TPBAn Enable Status Register                               */
+
+        struct
+        {
+            __IM uint8_t TE0 : 1;      /*!< [0..0] Indicates whether the timer counter is operating or stopped.       */
+            uint8_t          : 7;
+        } TE_b;
+    };
+    __IM uint8_t  RESERVED18;
+    __IM uint16_t RESERVED19;
+
+    union
+    {
+        __IOM uint8_t TS;              /*!< (@ 0x0000012C) TPBAn Start Trigger Register                               */
+
+        struct
+        {
+            __OM uint8_t TS0 : 1;      /*!< [0..0] This bit is a trigger bit that enables the timer counter.          */
+            uint8_t          : 7;
+        } TS_b;
+    };
+    __IM uint8_t  RESERVED20;
+    __IM uint16_t RESERVED21;
+
+    union
+    {
+        __IOM uint8_t TT;              /*!< (@ 0x00000130) TPBAn Stop Trigger Register                                */
+
+        struct
+        {
+            __OM uint8_t TT0 : 1;      /*!< [0..0] This bit is a trigger bit that disables the timer counter.         */
+            uint8_t          : 7;
+        } TT_b;
+    };
+    __IM uint8_t  RESERVED22;
+    __IM uint16_t RESERVED23[103];
+
+    union
+    {
+        __IOM uint8_t CTL;             /*!< (@ 0x00000200) TPBAn Control Register                                     */
+
+        struct
+        {
+            __IOM uint8_t DPS : 1;     /*!< [0..0] Selects the duty setting pattern mode.                             */
+            uint8_t           : 3;
+            __IOM uint8_t PRS : 2;     /*!< [5..4] Selects the count clock.                                           */
+            uint8_t           : 2;
+        } CTL_b;
+    };
+    __IM uint8_t  RESERVED24;
+    __IM uint16_t RESERVED25;
+} R_TPBA_Type;                         /*!< Size = 516 (0x204)                                                        */
+
+/* =========================================================================================================================== */
 /* ================                                          R_TPTM                                           ================ */
 /* =========================================================================================================================== */
 
@@ -79473,6 +79958,14 @@ typedef struct                         /*!< (@ 0xFFFBB000) R_TPTM Structure     
  #define R_GUARD_DTS_BASE           0xFFC68000UL
  #define R_ETNB0_BASE               0xFF0A2000UL
  #define R_ETNB1_BASE               0xFF0A4000UL
+ #define R_FCMDAREA0_BASE           0xFFA20000UL
+ #define R_FCMDAREA1_BASE           0xFFA30000UL
+ #define R_FCMDAREA2_BASE           0xFFA40000UL
+ #define R_FACI0_BASE               0xFFA10000UL
+ #define R_FACI1_BASE               0xFFA14000UL
+ #define R_FACI2_BASE               0xFFA18000UL
+ #define R_FLMD_BASE                0xFFA00000UL
+ #define R_FHVE_BASE                0xFF984800UL
  #define R_FLXA0_BASE               0x10020000UL
  #define R_FLXA1_BASE               0x10021000UL
  #define R_GTM0_CMP_BASE            0xFF600200UL
@@ -79696,6 +80189,12 @@ typedef struct                         /*!< (@ 0xFFFBB000) R_TPTM Structure     
  #define R_RLN323_BASE              0xFFC7C580UL
  #define R_RTCA0_BASE               0xFF997000UL
  #define R_ADCJ2_SELB_BASE          0xFF9A3800UL
+ #define R_TAUJ0_BASE               0xFFBF7000UL
+ #define R_TAUJ1_BASE               0xFFBF7200UL
+ #define R_TAUJ2_BASE               0xFFE80000UL
+ #define R_TAUJ3_BASE               0xFFE81000UL
+ #define R_TPBA0_BASE               0xFFBFA000UL
+ #define R_TPBA1_BASE               0xFFBFA800UL
  #define R_TPTM_BASE                0xFFFBB000UL
 
 /** @} */ /* End of group Device_Peripheral_peripheralAddr */
@@ -79877,6 +80376,14 @@ typedef struct                         /*!< (@ 0xFFFBB000) R_TPTM Structure     
  #define R_GUARD_DTS           ((R_GUARD_DTS_Type *) R_GUARD_DTS_BASE)
  #define R_ETNB0               ((R_ETNB0_Type *) R_ETNB0_BASE)
  #define R_ETNB1               ((R_ETNB1_Type *) R_ETNB1_BASE)
+ #define R_FCMDAREA0           ((R_FCMDAREA0_Type *) R_FCMDAREA0_BASE)
+ #define R_FCMDAREA1           ((R_FCMDAREA1_Type *) R_FCMDAREA1_BASE)
+ #define R_FCMDAREA2           ((R_FCMDAREA2_Type *) R_FCMDAREA2_BASE)
+ #define R_FACI0               ((R_FACI0_Type *) R_FACI0_BASE)
+ #define R_FACI1               ((R_FACI1_Type *) R_FACI1_BASE)
+ #define R_FACI2               ((R_FACI2_Type *) R_FACI2_BASE)
+ #define R_FLMD                ((R_FLMD_Type *) R_FLMD_BASE)
+ #define R_FHVE                ((R_FHVE_Type *) R_FHVE_BASE)
  #define R_FLXA0               ((R_FLXA0_Type *) R_FLXA0_BASE)
  #define R_FLXA1               ((R_FLXA0_Type *) R_FLXA1_BASE)
  #define R_GTM0_CMP            ((R_GTM0_CMP_Type *) R_GTM0_CMP_BASE)
@@ -80100,6 +80607,12 @@ typedef struct                         /*!< (@ 0xFFFBB000) R_TPTM Structure     
  #define R_RLN323              ((R_RLN30_Type *) R_RLN323_BASE)
  #define R_RTCA0               ((R_RTCA0_Type *) R_RTCA0_BASE)
  #define R_ADCJ2_SELB          ((R_ADCJ2_SELB_Type *) R_ADCJ2_SELB_BASE)
+ #define R_TAUJ0               ((R_TAUJ0_Type *) R_TAUJ0_BASE)
+ #define R_TAUJ1               ((R_TAUJ0_Type *) R_TAUJ1_BASE)
+ #define R_TAUJ2               ((R_TAUJ0_Type *) R_TAUJ2_BASE)
+ #define R_TAUJ3               ((R_TAUJ0_Type *) R_TAUJ3_BASE)
+ #define R_TPBA0               ((R_TPBA_Type *) R_TPBA0_BASE)
+ #define R_TPBA1               ((R_TPBA_Type *) R_TPBA1_BASE)
  #define R_TPTM                ((R_TPTM_Type *) R_TPTM_BASE)
 
 /** @} */ /* End of group Device_Peripheral_declaration */
@@ -83893,6 +84406,18 @@ typedef struct                         /*!< (@ 0xFFFBB000) R_TPTM Structure     
  #define R_GTM0_ATOM_CLS_CH_ATOM_CH_CN0_CN0_Pos                   (0UL)          /*!< CN0 (Bit 0)                                           */
  #define R_GTM0_ATOM_CLS_CH_ATOM_CH_CN0_CN0_Msk                   (0xffffffUL)   /*!< CN0 (Bitfield-Mask: 0xffffff)                         */
 /* =====================================================  ATOM_CH_STAT  ====================================================== */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_OL_Pos                   (0UL)          /*!< OL (Bit 0)                                            */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_OL_Msk                   (0x1UL)        /*!< OL (Bitfield-Mask: 0x01)                              */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_ACBI_Pos                 (16UL)         /*!< ACBI (Bit 16)                                         */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_ACBI_Msk                 (0x1f0000UL)   /*!< ACBI (Bitfield-Mask: 0x1f)                            */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_DV_Pos                   (21UL)         /*!< DV (Bit 21)                                           */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_DV_Msk                   (0x200000UL)   /*!< DV (Bitfield-Mask: 0x01)                              */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_WRF_Pos                  (22UL)         /*!< WRF (Bit 22)                                          */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_WRF_Msk                  (0x400000UL)   /*!< WRF (Bitfield-Mask: 0x01)                             */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_DR_Pos                   (23UL)         /*!< DR (Bit 23)                                           */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_DR_Msk                   (0x800000UL)   /*!< DR (Bitfield-Mask: 0x01)                              */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_ACBO_Pos                 (24UL)         /*!< ACBO (Bit 24)                                         */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_ACBO_Msk                 (0x1f000000UL) /*!< ACBO (Bitfield-Mask: 0x1f)                            */
 /* ==================================================  ATOM_CH_IRQ_NOTIFY  =================================================== */
  #define R_GTM0_ATOM_CLS_CH_ATOM_CH_IRQ_NOTIFY_CCU0TC_Pos         (0UL)          /*!< CCU0TC (Bit 0)                                        */
  #define R_GTM0_ATOM_CLS_CH_ATOM_CH_IRQ_NOTIFY_CCU0TC_Msk         (0x1UL)        /*!< CCU0TC (Bitfield-Mask: 0x01)                          */
@@ -85264,6 +85789,50 @@ typedef struct                         /*!< (@ 0xFFFBB000) R_TPTM Structure     
  #define R_GUARD_IBG_TPTM_PROT__SPID_SPID_Msk    (0xffffffffUL) /*!< SPID (Bitfield-Mask: 0xffffffff)                      */
 
 /* =========================================================================================================================== */
+/* ================                                            CH                                             ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  EN  =========================================================== */
+ #define R_IPIR_PE_CH_EN_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_PE_CH_EN_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ==========================================================  FLG  ========================================================== */
+ #define R_IPIR_PE_CH_FLG_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_PE_CH_FLG_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =========================================================  FCLR  ========================================================== */
+ #define R_IPIR_PE_CH_FCLR_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_PE_CH_FCLR_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* ==========================================================  REQ  ========================================================== */
+ #define R_IPIR_PE_CH_REQ_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_PE_CH_REQ_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =========================================================  RCLR  ========================================================== */
+ #define R_IPIR_PE_CH_RCLR_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_PE_CH_RCLR_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+
+/* =========================================================================================================================== */
+/* ================                                            PE                                             ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================================================================================== */
+/* ================                                            CH                                             ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  ENS  ========================================================== */
+ #define R_IPIR_CH_ENS_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_CH_ENS_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* =========================================================  FLGS  ========================================================== */
+ #define R_IPIR_CH_FLGS_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_CH_FLGS_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =========================================================  FCLRS  ========================================================= */
+ #define R_IPIR_CH_FCLRS_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_CH_FCLRS_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =========================================================  REQS  ========================================================== */
+ #define R_IPIR_CH_REQS_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_CH_REQS_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =========================================================  RCLRS  ========================================================= */
+ #define R_IPIR_CH_RCLRS_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_CH_RCLRS_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+
+/* =========================================================================================================================== */
 /* ================                                          PBG_CTR                                          ================ */
 /* =========================================================================================================================== */
 
@@ -86030,6 +86599,72 @@ typedef struct                         /*!< (@ 0xFFFBB000) R_TPTM Structure     
 /* =========================================================================================================================== */
 /* ================                                           MB_CH                                           ================ */
 /* =========================================================================================================================== */
+
+/* =========================================================================================================================== */
+/* ================                                            CDR                                            ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  CDR  ========================================================== */
+ #define R_TAUJ0_CDR_CDR_CDR_Pos    (0UL)          /*!< CDR (Bit 0)                                           */
+ #define R_TAUJ0_CDR_CDR_CDR_Msk    (0xffffffffUL) /*!< CDR (Bitfield-Mask: 0xffffffff)                       */
+
+/* =========================================================================================================================== */
+/* ================                                            CNT                                            ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  CNT  ========================================================== */
+ #define R_TAUJ0_CNT_CNT_CNT_Pos    (0UL)          /*!< CNT (Bit 0)                                           */
+ #define R_TAUJ0_CNT_CNT_CNT_Msk    (0xffffffffUL) /*!< CNT (Bitfield-Mask: 0xffffffff)                       */
+
+/* =========================================================================================================================== */
+/* ================                                           CMOR                                            ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  CMOR  ========================================================== */
+ #define R_TAUJ0_CMOR_CMOR_MD_Pos     (0UL)      /*!< MD (Bit 0)                                            */
+ #define R_TAUJ0_CMOR_CMOR_MD_Msk     (0x1fUL)   /*!< MD (Bitfield-Mask: 0x1f)                              */
+ #define R_TAUJ0_CMOR_CMOR_COS_Pos    (6UL)      /*!< COS (Bit 6)                                           */
+ #define R_TAUJ0_CMOR_CMOR_COS_Msk    (0xc0UL)   /*!< COS (Bitfield-Mask: 0x03)                             */
+ #define R_TAUJ0_CMOR_CMOR_STS_Pos    (8UL)      /*!< STS (Bit 8)                                           */
+ #define R_TAUJ0_CMOR_CMOR_STS_Msk    (0x700UL)  /*!< STS (Bitfield-Mask: 0x07)                             */
+ #define R_TAUJ0_CMOR_CMOR_MAS_Pos    (11UL)     /*!< MAS (Bit 11)                                          */
+ #define R_TAUJ0_CMOR_CMOR_MAS_Msk    (0x800UL)  /*!< MAS (Bitfield-Mask: 0x01)                             */
+ #define R_TAUJ0_CMOR_CMOR_CCS_Pos    (12UL)     /*!< CCS (Bit 12)                                          */
+ #define R_TAUJ0_CMOR_CMOR_CCS_Msk    (0x3000UL) /*!< CCS (Bitfield-Mask: 0x03)                             */
+ #define R_TAUJ0_CMOR_CMOR_CKS_Pos    (14UL)     /*!< CKS (Bit 14)                                          */
+ #define R_TAUJ0_CMOR_CMOR_CKS_Msk    (0xc000UL) /*!< CKS (Bitfield-Mask: 0x03)                             */
+
+/* =========================================================================================================================== */
+/* ================                                           CMUR                                            ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  CMUR  ========================================================== */
+ #define R_TAUJ0_CMUR_CMUR_TIS_Pos    (0UL)   /*!< TIS (Bit 0)                                           */
+ #define R_TAUJ0_CMUR_CMUR_TIS_Msk    (0x3UL) /*!< TIS (Bitfield-Mask: 0x03)                             */
+
+/* =========================================================================================================================== */
+/* ================                                            CSR                                            ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  CSR  ========================================================== */
+ #define R_TAUJ0_CSR_CSR_OVF_Pos    (0UL)   /*!< OVF (Bit 0)                                           */
+ #define R_TAUJ0_CSR_CSR_OVF_Msk    (0x1UL) /*!< OVF (Bitfield-Mask: 0x01)                             */
+
+/* =========================================================================================================================== */
+/* ================                                            CSC                                            ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  CSC  ========================================================== */
+ #define R_TAUJ0_CSC_CSC_CLOV_Pos    (0UL)   /*!< CLOV (Bit 0)                                          */
+ #define R_TAUJ0_CSC_CSC_CLOV_Msk    (0x1UL) /*!< CLOV (Bitfield-Mask: 0x01)                            */
+
+/* =========================================================================================================================== */
+/* ================                                         DUTY_BUF                                          ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  BUF  ========================================================== */
+ #define R_TPBA0_DUTY_BUF_BUF_BUFm_Pos    (0UL)      /*!< BUFm (Bit 0)                                          */
+ #define R_TPBA0_DUTY_BUF_BUF_BUFm_Msk    (0xffffUL) /*!< BUFm (Bitfield-Mask: 0xffff)                          */
 
 /* =========================================================================================================================== */
 /* ================                                          TPTM_PE                                          ================ */
@@ -90792,6 +91427,8 @@ typedef struct                         /*!< (@ 0xFFFBB000) R_TPTM Structure     
 /* ========================================================  CNTVAL  ========================================================= */
  #define R_LPS_CNTVAL_CNT1n_Pos       (8UL)          /*!< CNT1n (Bit 8)                                         */
  #define R_LPS_CNTVAL_CNT1n_Msk       (0xff00UL)     /*!< CNT1n (Bitfield-Mask: 0xff)                           */
+ #define R_LPS_CNTVAL_CNT0n_Pos       (0UL)          /*!< CNT0n (Bit 0)                                         */
+ #define R_LPS_CNTVAL_CNT0n_Msk       (0xffUL)       /*!< CNT0n (Bitfield-Mask: 0xff)                           */
 /* =========================================================  SOSTR  ========================================================= */
  #define R_LPS_SOSTR_SOF_Pos          (0UL)          /*!< SOF (Bit 0)                                           */
  #define R_LPS_SOSTR_SOF_Msk          (0x1UL)        /*!< SOF (Bitfield-Mask: 0x01)                             */
@@ -104790,6 +105427,551 @@ typedef struct                         /*!< (@ 0xFFFBB000) R_TPTM Structure     
  #define R_ETNB1_SGRCIE_RCIE_Msk          (0x1UL)        /*!< RCIE (Bitfield-Mask: 0x01)                            */
 
 /* =========================================================================================================================== */
+/* ================                                        R_FCMDAREA0                                        ================ */
+/* =========================================================================================================================== */
+
+/* ======================================================  FACI_CMD32  ======================================================= */
+ #define R_FCMDAREA0_FACI_CMD32_CMD_Pos    (0UL)          /*!< CMD (Bit 0)                                           */
+ #define R_FCMDAREA0_FACI_CMD32_CMD_Msk    (0xffffffffUL) /*!< CMD (Bitfield-Mask: 0xffffffff)                       */
+
+/* =========================================================================================================================== */
+/* ================                                        R_FCMDAREA1                                        ================ */
+/* =========================================================================================================================== */
+
+/* ======================================================  FACI_CMD32  ======================================================= */
+ #define R_FCMDAREA1_FACI_CMD32_CMD_Pos    (0UL)          /*!< CMD (Bit 0)                                           */
+ #define R_FCMDAREA1_FACI_CMD32_CMD_Msk    (0xffffffffUL) /*!< CMD (Bitfield-Mask: 0xffffffff)                       */
+
+/* =========================================================================================================================== */
+/* ================                                        R_FCMDAREA2                                        ================ */
+/* =========================================================================================================================== */
+
+/* ======================================================  FACI_CMD32  ======================================================= */
+ #define R_FCMDAREA2_FACI_CMD32_CMD_Pos    (0UL)          /*!< CMD (Bit 0)                                           */
+ #define R_FCMDAREA2_FACI_CMD32_CMD_Msk    (0xffffffffUL) /*!< CMD (Bitfield-Mask: 0xffffffff)                       */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FACI0                                          ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  FPMON  ========================================================= */
+ #define R_FACI0_FPMON_SFWE_Pos           (7UL)          /*!< SFWE (Bit 7)                                          */
+ #define R_FACI0_FPMON_SFWE_Msk           (0x80UL)       /*!< SFWE (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FASTAT  ========================================================= */
+ #define R_FACI0_FASTAT_CFAE_Pos          (7UL)          /*!< CFAE (Bit 7)                                          */
+ #define R_FACI0_FASTAT_CFAE_Msk          (0x80UL)       /*!< CFAE (Bitfield-Mask: 0x01)                            */
+ #define R_FACI0_FASTAT_CMDLK_Pos         (4UL)          /*!< CMDLK (Bit 4)                                         */
+ #define R_FACI0_FASTAT_CMDLK_Msk         (0x10UL)       /*!< CMDLK (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FASTAT_DFAE_Pos          (3UL)          /*!< DFAE (Bit 3)                                          */
+ #define R_FACI0_FASTAT_DFAE_Msk          (0x8UL)        /*!< DFAE (Bitfield-Mask: 0x01)                            */
+ #define R_FACI0_FASTAT_ECRCT_Pos         (0UL)          /*!< ECRCT (Bit 0)                                         */
+ #define R_FACI0_FASTAT_ECRCT_Msk         (0x1UL)        /*!< ECRCT (Bitfield-Mask: 0x01)                           */
+/* ========================================================  FAEINT  ========================================================= */
+ #define R_FACI0_FAEINT_CFAEIE_Pos        (7UL)          /*!< CFAEIE (Bit 7)                                        */
+ #define R_FACI0_FAEINT_CFAEIE_Msk        (0x80UL)       /*!< CFAEIE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FAEINT_CMDLKIE_Pos       (4UL)          /*!< CMDLKIE (Bit 4)                                       */
+ #define R_FACI0_FAEINT_CMDLKIE_Msk       (0x10UL)       /*!< CMDLKIE (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FAEINT_DFAEIE_Pos        (3UL)          /*!< DFAEIE (Bit 3)                                        */
+ #define R_FACI0_FAEINT_DFAEIE_Msk        (0x8UL)        /*!< DFAEIE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FAEINT_ECRCTIE_Pos       (0UL)          /*!< ECRCTIE (Bit 0)                                       */
+ #define R_FACI0_FAEINT_ECRCTIE_Msk       (0x1UL)        /*!< ECRCTIE (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FSADDR  ========================================================= */
+ #define R_FACI0_FSADDR_FSADDR_Pos        (0UL)          /*!< FSADDR (Bit 0)                                        */
+ #define R_FACI0_FSADDR_FSADDR_Msk        (0xffffffffUL) /*!< FSADDR (Bitfield-Mask: 0xffffffff)                    */
+/* ========================================================  FEADDR  ========================================================= */
+ #define R_FACI0_FEADDR_FEADDR_Pos        (0UL)          /*!< FEADDR (Bit 0)                                        */
+ #define R_FACI0_FEADDR_FEADDR_Msk        (0xffffffffUL) /*!< FEADDR (Bitfield-Mask: 0xffffffff)                    */
+/* =======================================================  FCVAPROT  ======================================================== */
+ #define R_FACI0_FCVAPROT_KEY_Pos         (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI0_FCVAPROT_KEY_Msk         (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI0_FCVAPROT_CVAPROT_Pos     (0UL)          /*!< CVAPROT (Bit 0)                                       */
+ #define R_FACI0_FCVAPROT_CVAPROT_Msk     (0x1UL)        /*!< CVAPROT (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FSTATR  ========================================================= */
+ #define R_FACI0_FSTATR_ERCDTCT_Pos       (29UL)         /*!< ERCDTCT (Bit 29)                                      */
+ #define R_FACI0_FSTATR_ERCDTCT_Msk       (0x20000000UL) /*!< ERCDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_ERCCRCT_Pos       (28UL)         /*!< ERCCRCT (Bit 28)                                      */
+ #define R_FACI0_FSTATR_ERCCRCT_Msk       (0x10000000UL) /*!< ERCCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_SWTDTCT_Pos       (27UL)         /*!< SWTDTCT (Bit 27)                                      */
+ #define R_FACI0_FSTATR_SWTDTCT_Msk       (0x8000000UL)  /*!< SWTDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_SWTCRCT_Pos       (26UL)         /*!< SWTCRCT (Bit 26)                                      */
+ #define R_FACI0_FSTATR_SWTCRCT_Msk       (0x4000000UL)  /*!< SWTCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_SECDTCT_Pos       (25UL)         /*!< SECDTCT (Bit 25)                                      */
+ #define R_FACI0_FSTATR_SECDTCT_Msk       (0x2000000UL)  /*!< SECDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_SECCRCT_Pos       (24UL)         /*!< SECCRCT (Bit 24)                                      */
+ #define R_FACI0_FSTATR_SECCRCT_Msk       (0x1000000UL)  /*!< SECCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_ILGCOMERR_Pos     (23UL)         /*!< ILGCOMERR (Bit 23)                                    */
+ #define R_FACI0_FSTATR_ILGCOMERR_Msk     (0x800000UL)   /*!< ILGCOMERR (Bitfield-Mask: 0x01)                       */
+ #define R_FACI0_FSTATR_FESETERR_Pos      (22UL)         /*!< FESETERR (Bit 22)                                     */
+ #define R_FACI0_FSTATR_FESETERR_Msk      (0x400000UL)   /*!< FESETERR (Bitfield-Mask: 0x01)                        */
+ #define R_FACI0_FSTATR_SECERR_Pos        (21UL)         /*!< SECERR (Bit 21)                                       */
+ #define R_FACI0_FSTATR_SECERR_Msk        (0x200000UL)   /*!< SECERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_OTERR_Pos         (20UL)         /*!< OTERR (Bit 20)                                        */
+ #define R_FACI0_FSTATR_OTERR_Msk         (0x100000UL)   /*!< OTERR (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FSTATR_EBFULL_Pos        (18UL)         /*!< EBFULL (Bit 18)                                       */
+ #define R_FACI0_FSTATR_EBFULL_Msk        (0x40000UL)    /*!< EBFULL (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_BPLDTCT_Pos       (17UL)         /*!< BPLDTCT (Bit 17)                                      */
+ #define R_FACI0_FSTATR_BPLDTCT_Msk       (0x20000UL)    /*!< BPLDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_BPLCRCT_Pos       (16UL)         /*!< BPLCRCT (Bit 16)                                      */
+ #define R_FACI0_FSTATR_BPLCRCT_Msk       (0x10000UL)    /*!< BPLCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_FRDY_Pos          (15UL)         /*!< FRDY (Bit 15)                                         */
+ #define R_FACI0_FSTATR_FRDY_Msk          (0x8000UL)     /*!< FRDY (Bitfield-Mask: 0x01)                            */
+ #define R_FACI0_FSTATR_ILGLERR_Pos       (14UL)         /*!< ILGLERR (Bit 14)                                      */
+ #define R_FACI0_FSTATR_ILGLERR_Msk       (0x4000UL)     /*!< ILGLERR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_ERSERR_Pos        (13UL)         /*!< ERSERR (Bit 13)                                       */
+ #define R_FACI0_FSTATR_ERSERR_Msk        (0x2000UL)     /*!< ERSERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_PRGERR_Pos        (12UL)         /*!< PRGERR (Bit 12)                                       */
+ #define R_FACI0_FSTATR_PRGERR_Msk        (0x1000UL)     /*!< PRGERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_SUSRDY_Pos        (11UL)         /*!< SUSRDY (Bit 11)                                       */
+ #define R_FACI0_FSTATR_SUSRDY_Msk        (0x800UL)      /*!< SUSRDY (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_DBFULL_Pos        (10UL)         /*!< DBFULL (Bit 10)                                       */
+ #define R_FACI0_FSTATR_DBFULL_Msk        (0x400UL)      /*!< DBFULL (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_ERSSPD_Pos        (9UL)          /*!< ERSSPD (Bit 9)                                        */
+ #define R_FACI0_FSTATR_ERSSPD_Msk        (0x200UL)      /*!< ERSSPD (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_PRGSPD_Pos        (8UL)          /*!< PRGSPD (Bit 8)                                        */
+ #define R_FACI0_FSTATR_PRGSPD_Msk        (0x100UL)      /*!< PRGSPD (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_FHVEERR_Pos       (6UL)          /*!< FHVEERR (Bit 6)                                       */
+ #define R_FACI0_FSTATR_FHVEERR_Msk       (0x40UL)       /*!< FHVEERR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_CFGDTCT_Pos       (5UL)          /*!< CFGDTCT (Bit 5)                                       */
+ #define R_FACI0_FSTATR_CFGDTCT_Msk       (0x20UL)       /*!< CFGDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_CFGCRCT_Pos       (4UL)          /*!< CFGCRCT (Bit 4)                                       */
+ #define R_FACI0_FSTATR_CFGCRCT_Msk       (0x10UL)       /*!< CFGCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_TBLDTCT_Pos       (3UL)          /*!< TBLDTCT (Bit 3)                                       */
+ #define R_FACI0_FSTATR_TBLDTCT_Msk       (0x8UL)        /*!< TBLDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_TBLCRCT_Pos       (2UL)          /*!< TBLCRCT (Bit 2)                                       */
+ #define R_FACI0_FSTATR_TBLCRCT_Msk       (0x4UL)        /*!< TBLCRCT (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FENTRYR  ======================================================== */
+ #define R_FACI0_FENTRYR_KEY_Pos          (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI0_FENTRYR_KEY_Msk          (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI0_FENTRYR_FENTRYD_Pos      (7UL)          /*!< FENTRYD (Bit 7)                                       */
+ #define R_FACI0_FENTRYR_FENTRYD_Msk      (0x80UL)       /*!< FENTRYD (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FENTRYR_FENTRYC_Pos      (0UL)          /*!< FENTRYC (Bit 0)                                       */
+ #define R_FACI0_FENTRYR_FENTRYC_Msk      (0x1UL)        /*!< FENTRYC (Bitfield-Mask: 0x01)                         */
+/* =======================================================  FSUINITR  ======================================================== */
+ #define R_FACI0_FSUINITR_KEY_Pos         (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI0_FSUINITR_KEY_Msk         (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI0_FSUINITR_SUINIT_Pos      (0UL)          /*!< SUINIT (Bit 0)                                        */
+ #define R_FACI0_FSUINITR_SUINIT_Msk      (0x1UL)        /*!< SUINIT (Bitfield-Mask: 0x01)                          */
+/* =========================================================  FCMDR  ========================================================= */
+ #define R_FACI0_FCMDR_CMDR_Pos           (8UL)          /*!< CMDR (Bit 8)                                          */
+ #define R_FACI0_FCMDR_CMDR_Msk           (0xff00UL)     /*!< CMDR (Bitfield-Mask: 0xff)                            */
+ #define R_FACI0_FCMDR_PCMDR_Pos          (0UL)          /*!< PCMDR (Bit 0)                                         */
+ #define R_FACI0_FCMDR_PCMDR_Msk          (0xffUL)       /*!< PCMDR (Bitfield-Mask: 0xff)                           */
+/* ========================================================  FCMDMON  ======================================================== */
+ #define R_FACI0_FCMDMON_MSTCM_Pos        (31UL)         /*!< MSTCM (Bit 31)                                        */
+ #define R_FACI0_FCMDMON_MSTCM_Msk        (0x80000000UL) /*!< MSTCM (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FCMDMON_FENTRYDM_Pos     (25UL)         /*!< FENTRYDM (Bit 25)                                     */
+ #define R_FACI0_FCMDMON_FENTRYDM_Msk     (0x2000000UL)  /*!< FENTRYDM (Bitfield-Mask: 0x01)                        */
+ #define R_FACI0_FCMDMON_FENTRYCM_Pos     (24UL)         /*!< FENTRYCM (Bit 24)                                     */
+ #define R_FACI0_FCMDMON_FENTRYCM_Msk     (0x1000000UL)  /*!< FENTRYCM (Bitfield-Mask: 0x01)                        */
+ #define R_FACI0_FCMDMON_CMDM_Pos         (16UL)         /*!< CMDM (Bit 16)                                         */
+ #define R_FACI0_FCMDMON_CMDM_Msk         (0xff0000UL)   /*!< CMDM (Bitfield-Mask: 0xff)                            */
+ #define R_FACI0_FCMDMON_PMSTCM_Pos       (15UL)         /*!< PMSTCM (Bit 15)                                       */
+ #define R_FACI0_FCMDMON_PMSTCM_Msk       (0x8000UL)     /*!< PMSTCM (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FCMDMON_PFENTRYDM_Pos    (9UL)          /*!< PFENTRYDM (Bit 9)                                     */
+ #define R_FACI0_FCMDMON_PFENTRYDM_Msk    (0x200UL)      /*!< PFENTRYDM (Bitfield-Mask: 0x01)                       */
+ #define R_FACI0_FCMDMON_PFENTRYCM_Pos    (8UL)          /*!< PFENTRYCM (Bit 8)                                     */
+ #define R_FACI0_FCMDMON_PFENTRYCM_Msk    (0x100UL)      /*!< PFENTRYCM (Bitfield-Mask: 0x01)                       */
+ #define R_FACI0_FCMDMON_PCMDM_Pos        (0UL)          /*!< PCMDM (Bit 0)                                         */
+ #define R_FACI0_FCMDMON_PCMDM_Msk        (0xffUL)       /*!< PCMDM (Bitfield-Mask: 0xff)                           */
+/* =======================================================  FSWASTAT  ======================================================== */
+ #define R_FACI0_FSWASTAT_BPVA0_Pos       (4UL)          /*!< BPVA0 (Bit 4)                                         */
+ #define R_FACI0_FSWASTAT_BPVA0_Msk       (0x10UL)       /*!< BPVA0 (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FSWASTAT_SECVA_Pos       (3UL)          /*!< SECVA (Bit 3)                                         */
+ #define R_FACI0_FSWASTAT_SECVA_Msk       (0x8UL)        /*!< SECVA (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FSWASTAT_CFGVA_Pos       (2UL)          /*!< CFGVA (Bit 2)                                         */
+ #define R_FACI0_FSWASTAT_CFGVA_Msk       (0x4UL)        /*!< CFGVA (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FSWASTAT_SWAS_Pos        (1UL)          /*!< SWAS (Bit 1)                                          */
+ #define R_FACI0_FSWASTAT_SWAS_Msk        (0x2UL)        /*!< SWAS (Bitfield-Mask: 0x01)                            */
+ #define R_FACI0_FSWASTAT_SWVA_Pos        (0UL)          /*!< SWVA (Bit 0)                                          */
+ #define R_FACI0_FSWASTAT_SWVA_Msk        (0x1UL)        /*!< SWVA (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FPESTAT  ======================================================== */
+ #define R_FACI0_FPESTAT_PEERRST_Pos      (0UL)          /*!< PEERRST (Bit 0)                                       */
+ #define R_FACI0_FPESTAT_PEERRST_Msk      (0xffUL)       /*!< PEERRST (Bitfield-Mask: 0xff)                         */
+/* ========================================================  FBCCNT  ========================================================= */
+ #define R_FACI0_FBCCNT_BCDIR_Pos         (0UL)          /*!< BCDIR (Bit 0)                                         */
+ #define R_FACI0_FBCCNT_BCDIR_Msk         (0x1UL)        /*!< BCDIR (Bitfield-Mask: 0x01)                           */
+/* ========================================================  FBCSTAT  ======================================================== */
+ #define R_FACI0_FBCSTAT_BCST_Pos         (0UL)          /*!< BCST (Bit 0)                                          */
+ #define R_FACI0_FBCSTAT_BCST_Msk         (0x1UL)        /*!< BCST (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FPSADDR  ======================================================== */
+ #define R_FACI0_FPSADDR_PSADR_Pos        (0UL)          /*!< PSADR (Bit 0)                                         */
+ #define R_FACI0_FPSADDR_PSADR_Msk        (0x1fffffUL)   /*!< PSADR (Bitfield-Mask: 0x1fffff)                       */
+/* =========================================================  FCPSR  ========================================================= */
+ #define R_FACI0_FCPSR_ESUSPMD_Pos        (0UL)          /*!< ESUSPMD (Bit 0)                                       */
+ #define R_FACI0_FCPSR_ESUSPMD_Msk        (0x1UL)        /*!< ESUSPMD (Bitfield-Mask: 0x01)                         */
+/* =======================================================  FECCEMON  ======================================================== */
+ #define R_FACI0_FECCEMON_FAPARM_Pos      (10UL)         /*!< FAPARM (Bit 10)                                       */
+ #define R_FACI0_FECCEMON_FAPARM_Msk      (0x400UL)      /*!< FAPARM (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FECCEMON_FECCM_Pos       (0UL)          /*!< FECCM (Bit 0)                                         */
+ #define R_FACI0_FECCEMON_FECCM_Msk       (0x3ffUL)      /*!< FECCM (Bitfield-Mask: 0x3ff)                          */
+/* ========================================================  FECCTMD  ======================================================== */
+ #define R_FACI0_FECCTMD_KEY_Pos          (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI0_FECCTMD_KEY_Msk          (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI0_FECCTMD_CECCVE_Pos       (5UL)          /*!< CECCVE (Bit 5)                                        */
+ #define R_FACI0_FECCTMD_CECCVE_Msk       (0x20UL)       /*!< CECCVE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FECCTMD_DECCVE_Pos       (4UL)          /*!< DECCVE (Bit 4)                                        */
+ #define R_FACI0_FECCTMD_DECCVE_Msk       (0x10UL)       /*!< DECCVE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FECCTMD_ECCDISE_Pos      (0UL)          /*!< ECCDISE (Bit 0)                                       */
+ #define R_FACI0_FECCTMD_ECCDISE_Msk      (0x1UL)        /*!< ECCDISE (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FDMYECC  ======================================================== */
+ #define R_FACI0_FDMYECC_DMYAPAR_Pos      (10UL)         /*!< DMYAPAR (Bit 10)                                      */
+ #define R_FACI0_FDMYECC_DMYAPAR_Msk      (0x400UL)      /*!< DMYAPAR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FDMYECC_DMYECC_Pos       (0UL)          /*!< DMYECC (Bit 0)                                        */
+ #define R_FACI0_FDMYECC_DMYECC_Msk       (0x3ffUL)      /*!< DMYECC (Bitfield-Mask: 0x3ff)                         */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FACI1                                          ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  FPMON  ========================================================= */
+ #define R_FACI1_FPMON_SFWE_Pos           (7UL)          /*!< SFWE (Bit 7)                                          */
+ #define R_FACI1_FPMON_SFWE_Msk           (0x80UL)       /*!< SFWE (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FASTAT  ========================================================= */
+ #define R_FACI1_FASTAT_CFAE_Pos          (7UL)          /*!< CFAE (Bit 7)                                          */
+ #define R_FACI1_FASTAT_CFAE_Msk          (0x80UL)       /*!< CFAE (Bitfield-Mask: 0x01)                            */
+ #define R_FACI1_FASTAT_CMDLK_Pos         (4UL)          /*!< CMDLK (Bit 4)                                         */
+ #define R_FACI1_FASTAT_CMDLK_Msk         (0x10UL)       /*!< CMDLK (Bitfield-Mask: 0x01)                           */
+ #define R_FACI1_FASTAT_DFAE_Pos          (3UL)          /*!< DFAE (Bit 3)                                          */
+ #define R_FACI1_FASTAT_DFAE_Msk          (0x8UL)        /*!< DFAE (Bitfield-Mask: 0x01)                            */
+ #define R_FACI1_FASTAT_ECRCT_Pos         (0UL)          /*!< ECRCT (Bit 0)                                         */
+ #define R_FACI1_FASTAT_ECRCT_Msk         (0x1UL)        /*!< ECRCT (Bitfield-Mask: 0x01)                           */
+/* ========================================================  FAEINT  ========================================================= */
+ #define R_FACI1_FAEINT_CFAEIE_Pos        (7UL)          /*!< CFAEIE (Bit 7)                                        */
+ #define R_FACI1_FAEINT_CFAEIE_Msk        (0x80UL)       /*!< CFAEIE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FAEINT_CMDLKIE_Pos       (4UL)          /*!< CMDLKIE (Bit 4)                                       */
+ #define R_FACI1_FAEINT_CMDLKIE_Msk       (0x10UL)       /*!< CMDLKIE (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FAEINT_DFAEIE_Pos        (3UL)          /*!< DFAEIE (Bit 3)                                        */
+ #define R_FACI1_FAEINT_DFAEIE_Msk        (0x8UL)        /*!< DFAEIE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FAEINT_ECRCTIE_Pos       (0UL)          /*!< ECRCTIE (Bit 0)                                       */
+ #define R_FACI1_FAEINT_ECRCTIE_Msk       (0x1UL)        /*!< ECRCTIE (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FSADDR  ========================================================= */
+ #define R_FACI1_FSADDR_FSADDR_Pos        (0UL)          /*!< FSADDR (Bit 0)                                        */
+ #define R_FACI1_FSADDR_FSADDR_Msk        (0xffffffffUL) /*!< FSADDR (Bitfield-Mask: 0xffffffff)                    */
+/* ========================================================  FEADDR  ========================================================= */
+ #define R_FACI1_FEADDR_FEADDR_Pos        (0UL)          /*!< FEADDR (Bit 0)                                        */
+ #define R_FACI1_FEADDR_FEADDR_Msk        (0xffffffffUL) /*!< FEADDR (Bitfield-Mask: 0xffffffff)                    */
+/* =======================================================  FCVAPROT  ======================================================== */
+ #define R_FACI1_FCVAPROT_KEY_Pos         (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI1_FCVAPROT_KEY_Msk         (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI1_FCVAPROT_CVAPROT_Pos     (0UL)          /*!< CVAPROT (Bit 0)                                       */
+ #define R_FACI1_FCVAPROT_CVAPROT_Msk     (0x1UL)        /*!< CVAPROT (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FSTATR  ========================================================= */
+ #define R_FACI1_FSTATR_ERCDTCT_Pos       (29UL)         /*!< ERCDTCT (Bit 29)                                      */
+ #define R_FACI1_FSTATR_ERCDTCT_Msk       (0x20000000UL) /*!< ERCDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_ERCCRCT_Pos       (28UL)         /*!< ERCCRCT (Bit 28)                                      */
+ #define R_FACI1_FSTATR_ERCCRCT_Msk       (0x10000000UL) /*!< ERCCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_SWTDTCT_Pos       (27UL)         /*!< SWTDTCT (Bit 27)                                      */
+ #define R_FACI1_FSTATR_SWTDTCT_Msk       (0x8000000UL)  /*!< SWTDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_SWTCRCT_Pos       (26UL)         /*!< SWTCRCT (Bit 26)                                      */
+ #define R_FACI1_FSTATR_SWTCRCT_Msk       (0x4000000UL)  /*!< SWTCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_SECDTCT_Pos       (25UL)         /*!< SECDTCT (Bit 25)                                      */
+ #define R_FACI1_FSTATR_SECDTCT_Msk       (0x2000000UL)  /*!< SECDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_SECCRCT_Pos       (24UL)         /*!< SECCRCT (Bit 24)                                      */
+ #define R_FACI1_FSTATR_SECCRCT_Msk       (0x1000000UL)  /*!< SECCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_ILGCOMERR_Pos     (23UL)         /*!< ILGCOMERR (Bit 23)                                    */
+ #define R_FACI1_FSTATR_ILGCOMERR_Msk     (0x800000UL)   /*!< ILGCOMERR (Bitfield-Mask: 0x01)                       */
+ #define R_FACI1_FSTATR_FESETERR_Pos      (22UL)         /*!< FESETERR (Bit 22)                                     */
+ #define R_FACI1_FSTATR_FESETERR_Msk      (0x400000UL)   /*!< FESETERR (Bitfield-Mask: 0x01)                        */
+ #define R_FACI1_FSTATR_SECERR_Pos        (21UL)         /*!< SECERR (Bit 21)                                       */
+ #define R_FACI1_FSTATR_SECERR_Msk        (0x200000UL)   /*!< SECERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FSTATR_OTERR_Pos         (20UL)         /*!< OTERR (Bit 20)                                        */
+ #define R_FACI1_FSTATR_OTERR_Msk         (0x100000UL)   /*!< OTERR (Bitfield-Mask: 0x01)                           */
+ #define R_FACI1_FSTATR_EBFULL_Pos        (18UL)         /*!< EBFULL (Bit 18)                                       */
+ #define R_FACI1_FSTATR_EBFULL_Msk        (0x40000UL)    /*!< EBFULL (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FSTATR_BPLDTCT_Pos       (17UL)         /*!< BPLDTCT (Bit 17)                                      */
+ #define R_FACI1_FSTATR_BPLDTCT_Msk       (0x20000UL)    /*!< BPLDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_BPLCRCT_Pos       (16UL)         /*!< BPLCRCT (Bit 16)                                      */
+ #define R_FACI1_FSTATR_BPLCRCT_Msk       (0x10000UL)    /*!< BPLCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_FRDY_Pos          (15UL)         /*!< FRDY (Bit 15)                                         */
+ #define R_FACI1_FSTATR_FRDY_Msk          (0x8000UL)     /*!< FRDY (Bitfield-Mask: 0x01)                            */
+ #define R_FACI1_FSTATR_ILGLERR_Pos       (14UL)         /*!< ILGLERR (Bit 14)                                      */
+ #define R_FACI1_FSTATR_ILGLERR_Msk       (0x4000UL)     /*!< ILGLERR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_ERSERR_Pos        (13UL)         /*!< ERSERR (Bit 13)                                       */
+ #define R_FACI1_FSTATR_ERSERR_Msk        (0x2000UL)     /*!< ERSERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FSTATR_PRGERR_Pos        (12UL)         /*!< PRGERR (Bit 12)                                       */
+ #define R_FACI1_FSTATR_PRGERR_Msk        (0x1000UL)     /*!< PRGERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FSTATR_SUSRDY_Pos        (11UL)         /*!< SUSRDY (Bit 11)                                       */
+ #define R_FACI1_FSTATR_SUSRDY_Msk        (0x800UL)      /*!< SUSRDY (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FSTATR_DBFULL_Pos        (10UL)         /*!< DBFULL (Bit 10)                                       */
+ #define R_FACI1_FSTATR_DBFULL_Msk        (0x400UL)      /*!< DBFULL (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FSTATR_ERSSPD_Pos        (9UL)          /*!< ERSSPD (Bit 9)                                        */
+ #define R_FACI1_FSTATR_ERSSPD_Msk        (0x200UL)      /*!< ERSSPD (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FSTATR_PRGSPD_Pos        (8UL)          /*!< PRGSPD (Bit 8)                                        */
+ #define R_FACI1_FSTATR_PRGSPD_Msk        (0x100UL)      /*!< PRGSPD (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FSTATR_FHVEERR_Pos       (6UL)          /*!< FHVEERR (Bit 6)                                       */
+ #define R_FACI1_FSTATR_FHVEERR_Msk       (0x40UL)       /*!< FHVEERR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_CFGDTCT_Pos       (5UL)          /*!< CFGDTCT (Bit 5)                                       */
+ #define R_FACI1_FSTATR_CFGDTCT_Msk       (0x20UL)       /*!< CFGDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_CFGCRCT_Pos       (4UL)          /*!< CFGCRCT (Bit 4)                                       */
+ #define R_FACI1_FSTATR_CFGCRCT_Msk       (0x10UL)       /*!< CFGCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_TBLDTCT_Pos       (3UL)          /*!< TBLDTCT (Bit 3)                                       */
+ #define R_FACI1_FSTATR_TBLDTCT_Msk       (0x8UL)        /*!< TBLDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FSTATR_TBLCRCT_Pos       (2UL)          /*!< TBLCRCT (Bit 2)                                       */
+ #define R_FACI1_FSTATR_TBLCRCT_Msk       (0x4UL)        /*!< TBLCRCT (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FENTRYR  ======================================================== */
+ #define R_FACI1_FENTRYR_KEY_Pos          (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI1_FENTRYR_KEY_Msk          (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI1_FENTRYR_FENTRYD_Pos      (7UL)          /*!< FENTRYD (Bit 7)                                       */
+ #define R_FACI1_FENTRYR_FENTRYD_Msk      (0x80UL)       /*!< FENTRYD (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FENTRYR_FENTRYC_Pos      (0UL)          /*!< FENTRYC (Bit 0)                                       */
+ #define R_FACI1_FENTRYR_FENTRYC_Msk      (0x1UL)        /*!< FENTRYC (Bitfield-Mask: 0x01)                         */
+/* =======================================================  FSUINITR  ======================================================== */
+ #define R_FACI1_FSUINITR_KEY_Pos         (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI1_FSUINITR_KEY_Msk         (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI1_FSUINITR_SUINIT_Pos      (0UL)          /*!< SUINIT (Bit 0)                                        */
+ #define R_FACI1_FSUINITR_SUINIT_Msk      (0x1UL)        /*!< SUINIT (Bitfield-Mask: 0x01)                          */
+/* =========================================================  FCMDR  ========================================================= */
+ #define R_FACI1_FCMDR_CMDR_Pos           (8UL)          /*!< CMDR (Bit 8)                                          */
+ #define R_FACI1_FCMDR_CMDR_Msk           (0xff00UL)     /*!< CMDR (Bitfield-Mask: 0xff)                            */
+ #define R_FACI1_FCMDR_PCMDR_Pos          (0UL)          /*!< PCMDR (Bit 0)                                         */
+ #define R_FACI1_FCMDR_PCMDR_Msk          (0xffUL)       /*!< PCMDR (Bitfield-Mask: 0xff)                           */
+/* ========================================================  FCMDMON  ======================================================== */
+ #define R_FACI1_FCMDMON_MSTCM_Pos        (31UL)         /*!< MSTCM (Bit 31)                                        */
+ #define R_FACI1_FCMDMON_MSTCM_Msk        (0x80000000UL) /*!< MSTCM (Bitfield-Mask: 0x01)                           */
+ #define R_FACI1_FCMDMON_FENTRYDM_Pos     (25UL)         /*!< FENTRYDM (Bit 25)                                     */
+ #define R_FACI1_FCMDMON_FENTRYDM_Msk     (0x2000000UL)  /*!< FENTRYDM (Bitfield-Mask: 0x01)                        */
+ #define R_FACI1_FCMDMON_FENTRYCM_Pos     (24UL)         /*!< FENTRYCM (Bit 24)                                     */
+ #define R_FACI1_FCMDMON_FENTRYCM_Msk     (0x1000000UL)  /*!< FENTRYCM (Bitfield-Mask: 0x01)                        */
+ #define R_FACI1_FCMDMON_CMDM_Pos         (16UL)         /*!< CMDM (Bit 16)                                         */
+ #define R_FACI1_FCMDMON_CMDM_Msk         (0xff0000UL)   /*!< CMDM (Bitfield-Mask: 0xff)                            */
+ #define R_FACI1_FCMDMON_PMSTCM_Pos       (15UL)         /*!< PMSTCM (Bit 15)                                       */
+ #define R_FACI1_FCMDMON_PMSTCM_Msk       (0x8000UL)     /*!< PMSTCM (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FCMDMON_PFENTRYDM_Pos    (9UL)          /*!< PFENTRYDM (Bit 9)                                     */
+ #define R_FACI1_FCMDMON_PFENTRYDM_Msk    (0x200UL)      /*!< PFENTRYDM (Bitfield-Mask: 0x01)                       */
+ #define R_FACI1_FCMDMON_PFENTRYCM_Pos    (8UL)          /*!< PFENTRYCM (Bit 8)                                     */
+ #define R_FACI1_FCMDMON_PFENTRYCM_Msk    (0x100UL)      /*!< PFENTRYCM (Bitfield-Mask: 0x01)                       */
+ #define R_FACI1_FCMDMON_PCMDM_Pos        (0UL)          /*!< PCMDM (Bit 0)                                         */
+ #define R_FACI1_FCMDMON_PCMDM_Msk        (0xffUL)       /*!< PCMDM (Bitfield-Mask: 0xff)                           */
+/* ========================================================  FPESTAT  ======================================================== */
+ #define R_FACI1_FPESTAT_PEERRST_Pos      (0UL)          /*!< PEERRST (Bit 0)                                       */
+ #define R_FACI1_FPESTAT_PEERRST_Msk      (0xffUL)       /*!< PEERRST (Bitfield-Mask: 0xff)                         */
+/* ========================================================  FBCCNT  ========================================================= */
+ #define R_FACI1_FBCCNT_BCDIR_Pos         (0UL)          /*!< BCDIR (Bit 0)                                         */
+ #define R_FACI1_FBCCNT_BCDIR_Msk         (0x1UL)        /*!< BCDIR (Bitfield-Mask: 0x01)                           */
+/* ========================================================  FBCSTAT  ======================================================== */
+ #define R_FACI1_FBCSTAT_BCST_Pos         (0UL)          /*!< BCST (Bit 0)                                          */
+ #define R_FACI1_FBCSTAT_BCST_Msk         (0x1UL)        /*!< BCST (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FPSADDR  ======================================================== */
+ #define R_FACI1_FPSADDR_PSADR_Pos        (0UL)          /*!< PSADR (Bit 0)                                         */
+ #define R_FACI1_FPSADDR_PSADR_Msk        (0x1fffffUL)   /*!< PSADR (Bitfield-Mask: 0x1fffff)                       */
+/* =========================================================  FCPSR  ========================================================= */
+ #define R_FACI1_FCPSR_ESUSPMD_Pos        (0UL)          /*!< ESUSPMD (Bit 0)                                       */
+ #define R_FACI1_FCPSR_ESUSPMD_Msk        (0x1UL)        /*!< ESUSPMD (Bitfield-Mask: 0x01)                         */
+/* =======================================================  FECCEMON  ======================================================== */
+ #define R_FACI1_FECCEMON_FAPARM_Pos      (10UL)         /*!< FAPARM (Bit 10)                                       */
+ #define R_FACI1_FECCEMON_FAPARM_Msk      (0x400UL)      /*!< FAPARM (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FECCEMON_FECCM_Pos       (0UL)          /*!< FECCM (Bit 0)                                         */
+ #define R_FACI1_FECCEMON_FECCM_Msk       (0x3ffUL)      /*!< FECCM (Bitfield-Mask: 0x3ff)                          */
+/* ========================================================  FECCTMD  ======================================================== */
+ #define R_FACI1_FECCTMD_KEY_Pos          (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI1_FECCTMD_KEY_Msk          (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI1_FECCTMD_CECCVE_Pos       (5UL)          /*!< CECCVE (Bit 5)                                        */
+ #define R_FACI1_FECCTMD_CECCVE_Msk       (0x20UL)       /*!< CECCVE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FECCTMD_DECCVE_Pos       (4UL)          /*!< DECCVE (Bit 4)                                        */
+ #define R_FACI1_FECCTMD_DECCVE_Msk       (0x10UL)       /*!< DECCVE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI1_FECCTMD_ECCDISE_Pos      (0UL)          /*!< ECCDISE (Bit 0)                                       */
+ #define R_FACI1_FECCTMD_ECCDISE_Msk      (0x1UL)        /*!< ECCDISE (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FDMYECC  ======================================================== */
+ #define R_FACI1_FDMYECC_DMYAPAR_Pos      (10UL)         /*!< DMYAPAR (Bit 10)                                      */
+ #define R_FACI1_FDMYECC_DMYAPAR_Msk      (0x400UL)      /*!< DMYAPAR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI1_FDMYECC_DMYECC_Pos       (0UL)          /*!< DMYECC (Bit 0)                                        */
+ #define R_FACI1_FDMYECC_DMYECC_Msk       (0x3ffUL)      /*!< DMYECC (Bitfield-Mask: 0x3ff)                         */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FACI2                                          ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  FPMON  ========================================================= */
+ #define R_FACI2_FPMON_SFWE_Pos           (7UL)          /*!< SFWE (Bit 7)                                          */
+ #define R_FACI2_FPMON_SFWE_Msk           (0x80UL)       /*!< SFWE (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FASTAT  ========================================================= */
+ #define R_FACI2_FASTAT_CFAE_Pos          (7UL)          /*!< CFAE (Bit 7)                                          */
+ #define R_FACI2_FASTAT_CFAE_Msk          (0x80UL)       /*!< CFAE (Bitfield-Mask: 0x01)                            */
+ #define R_FACI2_FASTAT_CMDLK_Pos         (4UL)          /*!< CMDLK (Bit 4)                                         */
+ #define R_FACI2_FASTAT_CMDLK_Msk         (0x10UL)       /*!< CMDLK (Bitfield-Mask: 0x01)                           */
+ #define R_FACI2_FASTAT_DFAE_Pos          (3UL)          /*!< DFAE (Bit 3)                                          */
+ #define R_FACI2_FASTAT_DFAE_Msk          (0x8UL)        /*!< DFAE (Bitfield-Mask: 0x01)                            */
+ #define R_FACI2_FASTAT_ECRCT_Pos         (0UL)          /*!< ECRCT (Bit 0)                                         */
+ #define R_FACI2_FASTAT_ECRCT_Msk         (0x1UL)        /*!< ECRCT (Bitfield-Mask: 0x01)                           */
+/* ========================================================  FAEINT  ========================================================= */
+ #define R_FACI2_FAEINT_CFAEIE_Pos        (7UL)          /*!< CFAEIE (Bit 7)                                        */
+ #define R_FACI2_FAEINT_CFAEIE_Msk        (0x80UL)       /*!< CFAEIE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FAEINT_CMDLKIE_Pos       (4UL)          /*!< CMDLKIE (Bit 4)                                       */
+ #define R_FACI2_FAEINT_CMDLKIE_Msk       (0x10UL)       /*!< CMDLKIE (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FAEINT_DFAEIE_Pos        (3UL)          /*!< DFAEIE (Bit 3)                                        */
+ #define R_FACI2_FAEINT_DFAEIE_Msk        (0x8UL)        /*!< DFAEIE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FAEINT_ECRCTIE_Pos       (0UL)          /*!< ECRCTIE (Bit 0)                                       */
+ #define R_FACI2_FAEINT_ECRCTIE_Msk       (0x1UL)        /*!< ECRCTIE (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FSADDR  ========================================================= */
+ #define R_FACI2_FSADDR_FSADDR_Pos        (0UL)          /*!< FSADDR (Bit 0)                                        */
+ #define R_FACI2_FSADDR_FSADDR_Msk        (0xffffffffUL) /*!< FSADDR (Bitfield-Mask: 0xffffffff)                    */
+/* ========================================================  FEADDR  ========================================================= */
+ #define R_FACI2_FEADDR_FEADDR_Pos        (0UL)          /*!< FEADDR (Bit 0)                                        */
+ #define R_FACI2_FEADDR_FEADDR_Msk        (0xffffffffUL) /*!< FEADDR (Bitfield-Mask: 0xffffffff)                    */
+/* =======================================================  FCVAPROT  ======================================================== */
+ #define R_FACI2_FCVAPROT_KEY_Pos         (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI2_FCVAPROT_KEY_Msk         (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI2_FCVAPROT_CVAPROT_Pos     (0UL)          /*!< CVAPROT (Bit 0)                                       */
+ #define R_FACI2_FCVAPROT_CVAPROT_Msk     (0x1UL)        /*!< CVAPROT (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FSTATR  ========================================================= */
+ #define R_FACI2_FSTATR_ERCDTCT_Pos       (29UL)         /*!< ERCDTCT (Bit 29)                                      */
+ #define R_FACI2_FSTATR_ERCDTCT_Msk       (0x20000000UL) /*!< ERCDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_ERCCRCT_Pos       (28UL)         /*!< ERCCRCT (Bit 28)                                      */
+ #define R_FACI2_FSTATR_ERCCRCT_Msk       (0x10000000UL) /*!< ERCCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_SWTDTCT_Pos       (27UL)         /*!< SWTDTCT (Bit 27)                                      */
+ #define R_FACI2_FSTATR_SWTDTCT_Msk       (0x8000000UL)  /*!< SWTDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_SWTCRCT_Pos       (26UL)         /*!< SWTCRCT (Bit 26)                                      */
+ #define R_FACI2_FSTATR_SWTCRCT_Msk       (0x4000000UL)  /*!< SWTCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_SECDTCT_Pos       (25UL)         /*!< SECDTCT (Bit 25)                                      */
+ #define R_FACI2_FSTATR_SECDTCT_Msk       (0x2000000UL)  /*!< SECDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_SECCRCT_Pos       (24UL)         /*!< SECCRCT (Bit 24)                                      */
+ #define R_FACI2_FSTATR_SECCRCT_Msk       (0x1000000UL)  /*!< SECCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_ILGCOMERR_Pos     (23UL)         /*!< ILGCOMERR (Bit 23)                                    */
+ #define R_FACI2_FSTATR_ILGCOMERR_Msk     (0x800000UL)   /*!< ILGCOMERR (Bitfield-Mask: 0x01)                       */
+ #define R_FACI2_FSTATR_FESETERR_Pos      (22UL)         /*!< FESETERR (Bit 22)                                     */
+ #define R_FACI2_FSTATR_FESETERR_Msk      (0x400000UL)   /*!< FESETERR (Bitfield-Mask: 0x01)                        */
+ #define R_FACI2_FSTATR_SECERR_Pos        (21UL)         /*!< SECERR (Bit 21)                                       */
+ #define R_FACI2_FSTATR_SECERR_Msk        (0x200000UL)   /*!< SECERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_OTERR_Pos         (20UL)         /*!< OTERR (Bit 20)                                        */
+ #define R_FACI2_FSTATR_OTERR_Msk         (0x100000UL)   /*!< OTERR (Bitfield-Mask: 0x01)                           */
+ #define R_FACI2_FSTATR_EBFULL_Pos        (18UL)         /*!< EBFULL (Bit 18)                                       */
+ #define R_FACI2_FSTATR_EBFULL_Msk        (0x40000UL)    /*!< EBFULL (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_BPLDTCT_Pos       (17UL)         /*!< BPLDTCT (Bit 17)                                      */
+ #define R_FACI2_FSTATR_BPLDTCT_Msk       (0x20000UL)    /*!< BPLDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_BPLCRCT_Pos       (16UL)         /*!< BPLCRCT (Bit 16)                                      */
+ #define R_FACI2_FSTATR_BPLCRCT_Msk       (0x10000UL)    /*!< BPLCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_FRDY_Pos          (15UL)         /*!< FRDY (Bit 15)                                         */
+ #define R_FACI2_FSTATR_FRDY_Msk          (0x8000UL)     /*!< FRDY (Bitfield-Mask: 0x01)                            */
+ #define R_FACI2_FSTATR_ILGLERR_Pos       (14UL)         /*!< ILGLERR (Bit 14)                                      */
+ #define R_FACI2_FSTATR_ILGLERR_Msk       (0x4000UL)     /*!< ILGLERR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_ERSERR_Pos        (13UL)         /*!< ERSERR (Bit 13)                                       */
+ #define R_FACI2_FSTATR_ERSERR_Msk        (0x2000UL)     /*!< ERSERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_PRGERR_Pos        (12UL)         /*!< PRGERR (Bit 12)                                       */
+ #define R_FACI2_FSTATR_PRGERR_Msk        (0x1000UL)     /*!< PRGERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_SUSRDY_Pos        (11UL)         /*!< SUSRDY (Bit 11)                                       */
+ #define R_FACI2_FSTATR_SUSRDY_Msk        (0x800UL)      /*!< SUSRDY (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_DBFULL_Pos        (10UL)         /*!< DBFULL (Bit 10)                                       */
+ #define R_FACI2_FSTATR_DBFULL_Msk        (0x400UL)      /*!< DBFULL (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_ERSSPD_Pos        (9UL)          /*!< ERSSPD (Bit 9)                                        */
+ #define R_FACI2_FSTATR_ERSSPD_Msk        (0x200UL)      /*!< ERSSPD (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_PRGSPD_Pos        (8UL)          /*!< PRGSPD (Bit 8)                                        */
+ #define R_FACI2_FSTATR_PRGSPD_Msk        (0x100UL)      /*!< PRGSPD (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_FHVEERR_Pos       (6UL)          /*!< FHVEERR (Bit 6)                                       */
+ #define R_FACI2_FSTATR_FHVEERR_Msk       (0x40UL)       /*!< FHVEERR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_CFGDTCT_Pos       (5UL)          /*!< CFGDTCT (Bit 5)                                       */
+ #define R_FACI2_FSTATR_CFGDTCT_Msk       (0x20UL)       /*!< CFGDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_CFGCRCT_Pos       (4UL)          /*!< CFGCRCT (Bit 4)                                       */
+ #define R_FACI2_FSTATR_CFGCRCT_Msk       (0x10UL)       /*!< CFGCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_TBLDTCT_Pos       (3UL)          /*!< TBLDTCT (Bit 3)                                       */
+ #define R_FACI2_FSTATR_TBLDTCT_Msk       (0x8UL)        /*!< TBLDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_TBLCRCT_Pos       (2UL)          /*!< TBLCRCT (Bit 2)                                       */
+ #define R_FACI2_FSTATR_TBLCRCT_Msk       (0x4UL)        /*!< TBLCRCT (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FENTRYR  ======================================================== */
+ #define R_FACI2_FENTRYR_KEY_Pos          (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI2_FENTRYR_KEY_Msk          (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI2_FENTRYR_FENTRYD_Pos      (7UL)          /*!< FENTRYD (Bit 7)                                       */
+ #define R_FACI2_FENTRYR_FENTRYD_Msk      (0x80UL)       /*!< FENTRYD (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FENTRYR_FENTRYC_Pos      (0UL)          /*!< FENTRYC (Bit 0)                                       */
+ #define R_FACI2_FENTRYR_FENTRYC_Msk      (0x1UL)        /*!< FENTRYC (Bitfield-Mask: 0x01)                         */
+/* =======================================================  FSUINITR  ======================================================== */
+ #define R_FACI2_FSUINITR_KEY_Pos         (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI2_FSUINITR_KEY_Msk         (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI2_FSUINITR_SUINIT_Pos      (0UL)          /*!< SUINIT (Bit 0)                                        */
+ #define R_FACI2_FSUINITR_SUINIT_Msk      (0x1UL)        /*!< SUINIT (Bitfield-Mask: 0x01)                          */
+/* =========================================================  FCMDR  ========================================================= */
+ #define R_FACI2_FCMDR_CMDR_Pos           (8UL)          /*!< CMDR (Bit 8)                                          */
+ #define R_FACI2_FCMDR_CMDR_Msk           (0xff00UL)     /*!< CMDR (Bitfield-Mask: 0xff)                            */
+ #define R_FACI2_FCMDR_PCMDR_Pos          (0UL)          /*!< PCMDR (Bit 0)                                         */
+ #define R_FACI2_FCMDR_PCMDR_Msk          (0xffUL)       /*!< PCMDR (Bitfield-Mask: 0xff)                           */
+/* ========================================================  FCMDMON  ======================================================== */
+ #define R_FACI2_FCMDMON_MSTCM_Pos        (31UL)         /*!< MSTCM (Bit 31)                                        */
+ #define R_FACI2_FCMDMON_MSTCM_Msk        (0x80000000UL) /*!< MSTCM (Bitfield-Mask: 0x01)                           */
+ #define R_FACI2_FCMDMON_FENTRYDM_Pos     (25UL)         /*!< FENTRYDM (Bit 25)                                     */
+ #define R_FACI2_FCMDMON_FENTRYDM_Msk     (0x2000000UL)  /*!< FENTRYDM (Bitfield-Mask: 0x01)                        */
+ #define R_FACI2_FCMDMON_FENTRYCM_Pos     (24UL)         /*!< FENTRYCM (Bit 24)                                     */
+ #define R_FACI2_FCMDMON_FENTRYCM_Msk     (0x1000000UL)  /*!< FENTRYCM (Bitfield-Mask: 0x01)                        */
+ #define R_FACI2_FCMDMON_CMDM_Pos         (16UL)         /*!< CMDM (Bit 16)                                         */
+ #define R_FACI2_FCMDMON_CMDM_Msk         (0xff0000UL)   /*!< CMDM (Bitfield-Mask: 0xff)                            */
+ #define R_FACI2_FCMDMON_PMSTCM_Pos       (15UL)         /*!< PMSTCM (Bit 15)                                       */
+ #define R_FACI2_FCMDMON_PMSTCM_Msk       (0x8000UL)     /*!< PMSTCM (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FCMDMON_PFENTRYDM_Pos    (9UL)          /*!< PFENTRYDM (Bit 9)                                     */
+ #define R_FACI2_FCMDMON_PFENTRYDM_Msk    (0x200UL)      /*!< PFENTRYDM (Bitfield-Mask: 0x01)                       */
+ #define R_FACI2_FCMDMON_PFENTRYCM_Pos    (8UL)          /*!< PFENTRYCM (Bit 8)                                     */
+ #define R_FACI2_FCMDMON_PFENTRYCM_Msk    (0x100UL)      /*!< PFENTRYCM (Bitfield-Mask: 0x01)                       */
+ #define R_FACI2_FCMDMON_PCMDM_Pos        (0UL)          /*!< PCMDM (Bit 0)                                         */
+ #define R_FACI2_FCMDMON_PCMDM_Msk        (0xffUL)       /*!< PCMDM (Bitfield-Mask: 0xff)                           */
+/* ========================================================  FPESTAT  ======================================================== */
+ #define R_FACI2_FPESTAT_PEERRST_Pos      (0UL)          /*!< PEERRST (Bit 0)                                       */
+ #define R_FACI2_FPESTAT_PEERRST_Msk      (0xffUL)       /*!< PEERRST (Bitfield-Mask: 0xff)                         */
+/* ========================================================  FBCCNT  ========================================================= */
+ #define R_FACI2_FBCCNT_BCDIR_Pos         (0UL)          /*!< BCDIR (Bit 0)                                         */
+ #define R_FACI2_FBCCNT_BCDIR_Msk         (0x1UL)        /*!< BCDIR (Bitfield-Mask: 0x01)                           */
+/* ========================================================  FBCSTAT  ======================================================== */
+ #define R_FACI2_FBCSTAT_BCST_Pos         (0UL)          /*!< BCST (Bit 0)                                          */
+ #define R_FACI2_FBCSTAT_BCST_Msk         (0x1UL)        /*!< BCST (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FPSADDR  ======================================================== */
+ #define R_FACI2_FPSADDR_PSADR_Pos        (0UL)          /*!< PSADR (Bit 0)                                         */
+ #define R_FACI2_FPSADDR_PSADR_Msk        (0x1fffffUL)   /*!< PSADR (Bitfield-Mask: 0x1fffff)                       */
+/* =========================================================  FCPSR  ========================================================= */
+ #define R_FACI2_FCPSR_ESUSPMD_Pos        (0UL)          /*!< ESUSPMD (Bit 0)                                       */
+ #define R_FACI2_FCPSR_ESUSPMD_Msk        (0x1UL)        /*!< ESUSPMD (Bitfield-Mask: 0x01)                         */
+/* =======================================================  FECCEMON  ======================================================== */
+ #define R_FACI2_FECCEMON_FAPARM_Pos      (10UL)         /*!< FAPARM (Bit 10)                                       */
+ #define R_FACI2_FECCEMON_FAPARM_Msk      (0x400UL)      /*!< FAPARM (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FECCEMON_FECCM_Pos       (0UL)          /*!< FECCM (Bit 0)                                         */
+ #define R_FACI2_FECCEMON_FECCM_Msk       (0x3ffUL)      /*!< FECCM (Bitfield-Mask: 0x3ff)                          */
+/* ========================================================  FECCTMD  ======================================================== */
+ #define R_FACI2_FECCTMD_KEY_Pos          (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI2_FECCTMD_KEY_Msk          (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI2_FECCTMD_CECCVE_Pos       (5UL)          /*!< CECCVE (Bit 5)                                        */
+ #define R_FACI2_FECCTMD_CECCVE_Msk       (0x20UL)       /*!< CECCVE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FECCTMD_DECCVE_Pos       (4UL)          /*!< DECCVE (Bit 4)                                        */
+ #define R_FACI2_FECCTMD_DECCVE_Msk       (0x10UL)       /*!< DECCVE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FECCTMD_ECCDISE_Pos      (0UL)          /*!< ECCDISE (Bit 0)                                       */
+ #define R_FACI2_FECCTMD_ECCDISE_Msk      (0x1UL)        /*!< ECCDISE (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FDMYECC  ======================================================== */
+ #define R_FACI2_FDMYECC_DMYAPAR_Pos      (10UL)         /*!< DMYAPAR (Bit 10)                                      */
+ #define R_FACI2_FDMYECC_DMYAPAR_Msk      (0x400UL)      /*!< DMYAPAR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FDMYECC_DMYECC_Pos       (0UL)          /*!< DMYECC (Bit 0)                                        */
+ #define R_FACI2_FDMYECC_DMYECC_Msk       (0x3ffUL)      /*!< DMYECC (Bitfield-Mask: 0x3ff)                         */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FLMD                                           ================ */
+/* =========================================================================================================================== */
+
+/* ========================================================  FLMDCNT  ======================================================== */
+ #define R_FLMD_FLMDCNT_SFWE_Pos          (0UL)   /*!< SFWE (Bit 0)                                          */
+ #define R_FLMD_FLMDCNT_SFWE_Msk          (0x1UL) /*!< SFWE (Bitfield-Mask: 0x01)                            */
+/* ======================================================  FLMDFPLOCK  ======================================================= */
+ #define R_FLMD_FLMDFPLOCK_FP1LOCK_Pos    (1UL)   /*!< FP1LOCK (Bit 1)                                       */
+ #define R_FLMD_FLMDFPLOCK_FP1LOCK_Msk    (0x2UL) /*!< FP1LOCK (Bitfield-Mask: 0x01)                         */
+ #define R_FLMD_FLMDFPLOCK_FP0LOCK_Pos    (0UL)   /*!< FP0LOCK (Bit 0)                                       */
+ #define R_FLMD_FLMDFPLOCK_FP0LOCK_Msk    (0x1UL) /*!< FP0LOCK (Bitfield-Mask: 0x01)                         */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FHVE                                           ================ */
+/* =========================================================================================================================== */
+
+/* =======================================================  FHVE3FP0  ======================================================== */
+ #define R_FHVE_FHVE3FP0_FHVE3CNT_Pos      (0UL)   /*!< FHVE3CNT (Bit 0)                                      */
+ #define R_FHVE_FHVE3FP0_FHVE3CNT_Msk      (0x1UL) /*!< FHVE3CNT (Bitfield-Mask: 0x01)                        */
+/* =======================================================  FHVE3FP1  ======================================================== */
+ #define R_FHVE_FHVE3FP1_FHVE3CNT_Pos      (0UL)   /*!< FHVE3CNT (Bit 0)                                      */
+ #define R_FHVE_FHVE3FP1_FHVE3CNT_Msk      (0x1UL) /*!< FHVE3CNT (Bitfield-Mask: 0x01)                        */
+/* =======================================================  FHVE3FP2  ======================================================== */
+ #define R_FHVE_FHVE3FP2_FHVE3CNT_Pos      (0UL)   /*!< FHVE3CNT (Bit 0)                                      */
+ #define R_FHVE_FHVE3FP2_FHVE3CNT_Msk      (0x1UL) /*!< FHVE3CNT (Bitfield-Mask: 0x01)                        */
+/* =======================================================  FHVE15FP0  ======================================================= */
+ #define R_FHVE_FHVE15FP0_FHVE15CNT_Pos    (0UL)   /*!< FHVE15CNT (Bit 0)                                     */
+ #define R_FHVE_FHVE15FP0_FHVE15CNT_Msk    (0x1UL) /*!< FHVE15CNT (Bitfield-Mask: 0x01)                       */
+/* =======================================================  FHVE15FP1  ======================================================= */
+ #define R_FHVE_FHVE15FP1_FHVE15CNT_Pos    (0UL)   /*!< FHVE15CNT (Bit 0)                                     */
+ #define R_FHVE_FHVE15FP1_FHVE15CNT_Msk    (0x1UL) /*!< FHVE15CNT (Bitfield-Mask: 0x01)                       */
+/* =======================================================  FHVE15FP2  ======================================================= */
+ #define R_FHVE_FHVE15FP2_FHVE15CNT_Pos    (0UL)   /*!< FHVE15CNT (Bit 0)                                     */
+ #define R_FHVE_FHVE15FP2_FHVE15CNT_Msk    (0x1UL) /*!< FHVE15CNT (Bitfield-Mask: 0x01)                       */
+
+/* =========================================================================================================================== */
 /* ================                                          R_FLXA0                                          ================ */
 /* =========================================================================================================================== */
 
@@ -109206,275 +110388,6 @@ typedef struct                         /*!< (@ 0xFFFBB000) R_TPTM Structure     
 /* ================                                          R_IPIR                                           ================ */
 /* =========================================================================================================================== */
 
-/* ========================================================  IPI0ENS  ======================================================== */
- #define R_IPIR_IPI0ENS_EN_Pos    (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI0ENS_EN_Msk    (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI1ENS  ======================================================== */
- #define R_IPIR_IPI1ENS_EN_Pos    (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI1ENS_EN_Msk    (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI2ENS  ======================================================== */
- #define R_IPIR_IPI2ENS_EN_Pos    (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI2ENS_EN_Msk    (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI3ENS  ======================================================== */
- #define R_IPIR_IPI3ENS_EN_Pos    (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI3ENS_EN_Msk    (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* =======================================================  IPI0FLGS  ======================================================== */
-/* =======================================================  IPI1FLGS  ======================================================== */
-/* =======================================================  IPI2FLGS  ======================================================== */
-/* =======================================================  IPI3FLGS  ======================================================== */
-/* =======================================================  IPI0FCLRS  ======================================================= */
-/* =======================================================  IPI1FCLRS  ======================================================= */
-/* =======================================================  IPI2FCLRS  ======================================================= */
-/* =======================================================  IPI3FCLRS  ======================================================= */
-/* =======================================================  IPI0REQS  ======================================================== */
-/* =======================================================  IPI1REQS  ======================================================== */
-/* =======================================================  IPI2REQS  ======================================================== */
-/* =======================================================  IPI3REQS  ======================================================== */
-/* =======================================================  IPI0RCLRS  ======================================================= */
-/* =======================================================  IPI1RCLRS  ======================================================= */
-/* =======================================================  IPI2RCLRS  ======================================================= */
-/* =======================================================  IPI3RCLRS  ======================================================= */
-/* ========================================================  IPI0EN0  ======================================================== */
- #define R_IPIR_IPI0EN0_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI0EN0_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI1EN0  ======================================================== */
- #define R_IPIR_IPI1EN0_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI1EN0_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI2EN0  ======================================================== */
- #define R_IPIR_IPI2EN0_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI2EN0_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI3EN0  ======================================================== */
- #define R_IPIR_IPI3EN0_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI3EN0_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI0EN1  ======================================================== */
- #define R_IPIR_IPI0EN1_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI0EN1_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI1EN1  ======================================================== */
- #define R_IPIR_IPI1EN1_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI1EN1_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI2EN1  ======================================================== */
- #define R_IPIR_IPI2EN1_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI2EN1_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI3EN1  ======================================================== */
- #define R_IPIR_IPI3EN1_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI3EN1_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI0EN2  ======================================================== */
- #define R_IPIR_IPI0EN2_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI0EN2_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI1EN2  ======================================================== */
- #define R_IPIR_IPI1EN2_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI1EN2_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI2EN2  ======================================================== */
- #define R_IPIR_IPI2EN2_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI2EN2_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI3EN2  ======================================================== */
- #define R_IPIR_IPI3EN2_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI3EN2_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI0EN3  ======================================================== */
- #define R_IPIR_IPI0EN3_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI0EN3_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI1EN3  ======================================================== */
- #define R_IPIR_IPI1EN3_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI1EN3_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI2EN3  ======================================================== */
- #define R_IPIR_IPI2EN3_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI2EN3_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* ========================================================  IPI3EN3  ======================================================== */
- #define R_IPIR_IPI3EN3_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI3EN3_EN_Msk        (0xfUL) /*!< EN (Bitfield-Mask: 0x0f)                              */
-/* =======================================================  IPI0FLG0  ======================================================== */
- #define R_IPIR_IPI0FLG0_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI0FLG0_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI1FLG0  ======================================================== */
- #define R_IPIR_IPI1FLG0_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI1FLG0_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI2FLG0  ======================================================== */
- #define R_IPIR_IPI2FLG0_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI2FLG0_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI3FLG0  ======================================================== */
- #define R_IPIR_IPI3FLG0_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI3FLG0_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI0FLG1  ======================================================== */
- #define R_IPIR_IPI0FLG1_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI0FLG1_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI1FLG1  ======================================================== */
- #define R_IPIR_IPI1FLG1_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI1FLG1_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI2FLG1  ======================================================== */
- #define R_IPIR_IPI2FLG1_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI2FLG1_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI3FLG1  ======================================================== */
- #define R_IPIR_IPI3FLG1_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI3FLG1_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI0FLG2  ======================================================== */
- #define R_IPIR_IPI0FLG2_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI0FLG2_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI1FLG2  ======================================================== */
- #define R_IPIR_IPI1FLG2_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI1FLG2_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI2FLG2  ======================================================== */
- #define R_IPIR_IPI2FLG2_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI2FLG2_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI3FLG2  ======================================================== */
- #define R_IPIR_IPI3FLG2_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI3FLG2_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI0FLG3  ======================================================== */
- #define R_IPIR_IPI0FLG3_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI0FLG3_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI1FLG3  ======================================================== */
- #define R_IPIR_IPI1FLG3_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI1FLG3_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI2FLG3  ======================================================== */
- #define R_IPIR_IPI2FLG3_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI2FLG3_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI3FLG3  ======================================================== */
- #define R_IPIR_IPI3FLG3_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI3FLG3_FLG_Msk      (0xfUL) /*!< FLG (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI0FCLR0  ======================================================= */
- #define R_IPIR_IPI0FCLR0_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI0FCLR0_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI1FCLR0  ======================================================= */
- #define R_IPIR_IPI1FCLR0_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI1FCLR0_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI2FCLR0  ======================================================= */
- #define R_IPIR_IPI2FCLR0_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI2FCLR0_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI3FCLR0  ======================================================= */
- #define R_IPIR_IPI3FCLR0_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI3FCLR0_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI0FCLR1  ======================================================= */
- #define R_IPIR_IPI0FCLR1_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI0FCLR1_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI1FCLR1  ======================================================= */
- #define R_IPIR_IPI1FCLR1_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI1FCLR1_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI2FCLR1  ======================================================= */
- #define R_IPIR_IPI2FCLR1_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI2FCLR1_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI3FCLR1  ======================================================= */
- #define R_IPIR_IPI3FCLR1_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI3FCLR1_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI0FCLR2  ======================================================= */
- #define R_IPIR_IPI0FCLR2_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI0FCLR2_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI1FCLR2  ======================================================= */
- #define R_IPIR_IPI1FCLR2_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI1FCLR2_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI2FCLR2  ======================================================= */
- #define R_IPIR_IPI2FCLR2_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI2FCLR2_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI3FCLR2  ======================================================= */
- #define R_IPIR_IPI3FCLR2_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI3FCLR2_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI0FCLR3  ======================================================= */
- #define R_IPIR_IPI0FCLR3_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI0FCLR3_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI1FCLR3  ======================================================= */
- #define R_IPIR_IPI1FCLR3_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI1FCLR3_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI2FCLR3  ======================================================= */
- #define R_IPIR_IPI2FCLR3_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI2FCLR3_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI3FCLR3  ======================================================= */
- #define R_IPIR_IPI3FCLR3_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI3FCLR3_FCLR_Msk    (0xfUL) /*!< FCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI0REQ0  ======================================================== */
- #define R_IPIR_IPI0REQ0_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI0REQ0_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI1REQ0  ======================================================== */
- #define R_IPIR_IPI1REQ0_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI1REQ0_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI2REQ0  ======================================================== */
- #define R_IPIR_IPI2REQ0_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI2REQ0_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI3REQ0  ======================================================== */
- #define R_IPIR_IPI3REQ0_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI3REQ0_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI0REQ1  ======================================================== */
- #define R_IPIR_IPI0REQ1_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI0REQ1_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI1REQ1  ======================================================== */
- #define R_IPIR_IPI1REQ1_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI1REQ1_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI2REQ1  ======================================================== */
- #define R_IPIR_IPI2REQ1_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI2REQ1_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI3REQ1  ======================================================== */
- #define R_IPIR_IPI3REQ1_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI3REQ1_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI0REQ2  ======================================================== */
- #define R_IPIR_IPI0REQ2_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI0REQ2_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI1REQ2  ======================================================== */
- #define R_IPIR_IPI1REQ2_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI1REQ2_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI2REQ2  ======================================================== */
- #define R_IPIR_IPI2REQ2_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI2REQ2_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI3REQ2  ======================================================== */
- #define R_IPIR_IPI3REQ2_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI3REQ2_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI0REQ3  ======================================================== */
- #define R_IPIR_IPI0REQ3_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI0REQ3_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI1REQ3  ======================================================== */
- #define R_IPIR_IPI1REQ3_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI1REQ3_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI2REQ3  ======================================================== */
- #define R_IPIR_IPI2REQ3_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI2REQ3_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI3REQ3  ======================================================== */
- #define R_IPIR_IPI3REQ3_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI3REQ3_REQ_Msk      (0xfUL) /*!< REQ (Bitfield-Mask: 0x0f)                             */
-/* =======================================================  IPI0RCLR0  ======================================================= */
- #define R_IPIR_IPI0RCLR0_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI0RCLR0_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI1RCLR0  ======================================================= */
- #define R_IPIR_IPI1RCLR0_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI1RCLR0_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI2RCLR0  ======================================================= */
- #define R_IPIR_IPI2RCLR0_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI2RCLR0_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI3RCLR0  ======================================================= */
- #define R_IPIR_IPI3RCLR0_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI3RCLR0_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI0RCLR1  ======================================================= */
- #define R_IPIR_IPI0RCLR1_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI0RCLR1_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI1RCLR1  ======================================================= */
- #define R_IPIR_IPI1RCLR1_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI1RCLR1_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI2RCLR1  ======================================================= */
- #define R_IPIR_IPI2RCLR1_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI2RCLR1_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI3RCLR1  ======================================================= */
- #define R_IPIR_IPI3RCLR1_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI3RCLR1_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI0RCLR2  ======================================================= */
- #define R_IPIR_IPI0RCLR2_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI0RCLR2_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI1RCLR2  ======================================================= */
- #define R_IPIR_IPI1RCLR2_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI1RCLR2_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI2RCLR2  ======================================================= */
- #define R_IPIR_IPI2RCLR2_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI2RCLR2_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI3RCLR2  ======================================================= */
- #define R_IPIR_IPI3RCLR2_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI3RCLR2_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI0RCLR3  ======================================================= */
- #define R_IPIR_IPI0RCLR3_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI0RCLR3_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI1RCLR3  ======================================================= */
- #define R_IPIR_IPI1RCLR3_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI1RCLR3_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI2RCLR3  ======================================================= */
- #define R_IPIR_IPI2RCLR3_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI2RCLR3_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-/* =======================================================  IPI3RCLR3  ======================================================= */
- #define R_IPIR_IPI3RCLR3_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI3RCLR3_RCLR_Msk    (0xfUL) /*!< RCLR (Bitfield-Mask: 0x0f)                            */
-
 /* =========================================================================================================================== */
 /* ================                                          R_LTSC                                           ================ */
 /* =========================================================================================================================== */
@@ -112809,6 +113722,112 @@ typedef struct                         /*!< (@ 0xFFFBB000) R_TPTM Structure     
  #define R_ADCJ2_SELB_ADCJnSGTSEL_T0SEL1_Msk    (0x2UL)  /*!< T0SEL1 (Bitfield-Mask: 0x01)                          */
  #define R_ADCJ2_SELB_ADCJnSGTSEL_T0SEL0_Pos    (0UL)    /*!< T0SEL0 (Bit 0)                                        */
  #define R_ADCJ2_SELB_ADCJnSGTSEL_T0SEL0_Msk    (0x1UL)  /*!< T0SEL0 (Bitfield-Mask: 0x01)                          */
+
+/* =========================================================================================================================== */
+/* ================                                          R_TAUJ0                                          ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  TPS  ========================================================== */
+ #define R_TAUJ0_TPS_PRS3_Pos    (12UL)     /*!< PRS3 (Bit 12)                                         */
+ #define R_TAUJ0_TPS_PRS3_Msk    (0xf000UL) /*!< PRS3 (Bitfield-Mask: 0x0f)                            */
+ #define R_TAUJ0_TPS_PRS2_Pos    (8UL)      /*!< PRS2 (Bit 8)                                          */
+ #define R_TAUJ0_TPS_PRS2_Msk    (0xf00UL)  /*!< PRS2 (Bitfield-Mask: 0x0f)                            */
+ #define R_TAUJ0_TPS_PRS1_Pos    (4UL)      /*!< PRS1 (Bit 4)                                          */
+ #define R_TAUJ0_TPS_PRS1_Msk    (0xf0UL)   /*!< PRS1 (Bitfield-Mask: 0x0f)                            */
+ #define R_TAUJ0_TPS_PRS0_Pos    (0UL)      /*!< PRS0 (Bit 0)                                          */
+ #define R_TAUJ0_TPS_PRS0_Msk    (0xfUL)    /*!< PRS0 (Bitfield-Mask: 0x0f)                            */
+/* ==========================================================  BRS  ========================================================== */
+ #define R_TAUJ0_BRS_BRS_Pos     (0UL)      /*!< BRS (Bit 0)                                           */
+ #define R_TAUJ0_BRS_BRS_Msk     (0xffUL)   /*!< BRS (Bitfield-Mask: 0xff)                             */
+/* ==========================================================  TS  =========================================================== */
+ #define R_TAUJ0_TS_TS_Pos       (0UL)      /*!< TS (Bit 0)                                            */
+ #define R_TAUJ0_TS_TS_Msk       (0xfUL)    /*!< TS (Bitfield-Mask: 0x0f)                              */
+/* ==========================================================  TE  =========================================================== */
+ #define R_TAUJ0_TE_TE_Pos       (0UL)      /*!< TE (Bit 0)                                            */
+ #define R_TAUJ0_TE_TE_Msk       (0xfUL)    /*!< TE (Bitfield-Mask: 0x0f)                              */
+/* ==========================================================  TT  =========================================================== */
+ #define R_TAUJ0_TT_TT_Pos       (0UL)      /*!< TT (Bit 0)                                            */
+ #define R_TAUJ0_TT_TT_Msk       (0xfUL)    /*!< TT (Bitfield-Mask: 0x0f)                              */
+/* ==========================================================  TOE  ========================================================== */
+ #define R_TAUJ0_TOE_TOE_Pos     (0UL)      /*!< TOE (Bit 0)                                           */
+ #define R_TAUJ0_TOE_TOE_Msk     (0xfUL)    /*!< TOE (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  TO  =========================================================== */
+ #define R_TAUJ0_TO_TO_Pos       (0UL)      /*!< TO (Bit 0)                                            */
+ #define R_TAUJ0_TO_TO_Msk       (0xfUL)    /*!< TO (Bitfield-Mask: 0x0f)                              */
+/* ==========================================================  TOM  ========================================================== */
+ #define R_TAUJ0_TOM_TOM_Pos     (0UL)      /*!< TOM (Bit 0)                                           */
+ #define R_TAUJ0_TOM_TOM_Msk     (0xfUL)    /*!< TOM (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  TOC  ========================================================== */
+ #define R_TAUJ0_TOC_TOC_Pos     (0UL)      /*!< TOC (Bit 0)                                           */
+ #define R_TAUJ0_TOC_TOC_Msk     (0xfUL)    /*!< TOC (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  TOL  ========================================================== */
+ #define R_TAUJ0_TOL_TOL_Pos     (0UL)      /*!< TOL (Bit 0)                                           */
+ #define R_TAUJ0_TOL_TOL_Msk     (0xfUL)    /*!< TOL (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  RDE  ========================================================== */
+ #define R_TAUJ0_RDE_RDE_Pos     (0UL)      /*!< RDE (Bit 0)                                           */
+ #define R_TAUJ0_RDE_RDE_Msk     (0xfUL)    /*!< RDE (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  RDM  ========================================================== */
+ #define R_TAUJ0_RDM_RDM_Pos     (0UL)      /*!< RDM (Bit 0)                                           */
+ #define R_TAUJ0_RDM_RDM_Msk     (0xfUL)    /*!< RDM (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  RDT  ========================================================== */
+ #define R_TAUJ0_RDT_RDT_Pos     (0UL)      /*!< RDT (Bit 0)                                           */
+ #define R_TAUJ0_RDT_RDT_Msk     (0xfUL)    /*!< RDT (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  RSF  ========================================================== */
+ #define R_TAUJ0_RSF_RSF_Pos     (0UL)      /*!< RSF (Bit 0)                                           */
+ #define R_TAUJ0_RSF_RSF_Msk     (0xfUL)    /*!< RSF (Bitfield-Mask: 0x0f)                             */
+
+/* =========================================================================================================================== */
+/* ================                                          R_TPBA                                           ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  CTL  ========================================================== */
+ #define R_TPBA0_CTL_PRS_Pos      (4UL)      /*!< PRS (Bit 4)                                           */
+ #define R_TPBA0_CTL_PRS_Msk      (0x30UL)   /*!< PRS (Bitfield-Mask: 0x03)                             */
+ #define R_TPBA0_CTL_DPS_Pos      (0UL)      /*!< DPS (Bit 0)                                           */
+ #define R_TPBA0_CTL_DPS_Msk      (0x1UL)    /*!< DPS (Bitfield-Mask: 0x01)                             */
+/* ==========================================================  RDM  ========================================================== */
+ #define R_TPBA0_RDM_RDM0_Pos     (0UL)      /*!< RDM0 (Bit 0)                                          */
+ #define R_TPBA0_RDM_RDM0_Msk     (0x1UL)    /*!< RDM0 (Bitfield-Mask: 0x01)                            */
+/* ==========================================================  RSF  ========================================================== */
+ #define R_TPBA0_RSF_RSF1_Pos     (1UL)      /*!< RSF1 (Bit 1)                                          */
+ #define R_TPBA0_RSF_RSF1_Msk     (0x2UL)    /*!< RSF1 (Bitfield-Mask: 0x01)                            */
+ #define R_TPBA0_RSF_RSF0_Pos     (0UL)      /*!< RSF0 (Bit 0)                                          */
+ #define R_TPBA0_RSF_RSF0_Msk     (0x1UL)    /*!< RSF0 (Bitfield-Mask: 0x01)                            */
+/* ==========================================================  RDT  ========================================================== */
+ #define R_TPBA0_RDT_RDT1_Pos     (1UL)      /*!< RDT1 (Bit 1)                                          */
+ #define R_TPBA0_RDT_RDT1_Msk     (0x2UL)    /*!< RDT1 (Bitfield-Mask: 0x01)                            */
+ #define R_TPBA0_RDT_RDT0_Pos     (0UL)      /*!< RDT0 (Bit 0)                                          */
+ #define R_TPBA0_RDT_RDT0_Msk     (0x1UL)    /*!< RDT0 (Bitfield-Mask: 0x01)                            */
+/* ==========================================================  TOE  ========================================================== */
+ #define R_TPBA0_TOE_TOE0_Pos     (0UL)      /*!< TOE0 (Bit 0)                                          */
+ #define R_TPBA0_TOE_TOE0_Msk     (0x1UL)    /*!< TOE0 (Bitfield-Mask: 0x01)                            */
+/* ==========================================================  TO  =========================================================== */
+ #define R_TPBA0_TO_TO0_Pos       (0UL)      /*!< TO0 (Bit 0)                                           */
+ #define R_TPBA0_TO_TO0_Msk       (0x1UL)    /*!< TO0 (Bitfield-Mask: 0x01)                             */
+/* ==========================================================  TOL  ========================================================== */
+ #define R_TPBA0_TOL_TOL0_Pos     (0UL)      /*!< TOL0 (Bit 0)                                          */
+ #define R_TPBA0_TOL_TOL0_Msk     (0x1UL)    /*!< TOL0 (Bitfield-Mask: 0x01)                            */
+/* =========================================================  CMP0  ========================================================== */
+ #define R_TPBA0_CMP0_CMP0_Pos    (0UL)      /*!< CMP0 (Bit 0)                                          */
+ #define R_TPBA0_CMP0_CMP0_Msk    (0xffffUL) /*!< CMP0 (Bitfield-Mask: 0xffff)                          */
+/* =========================================================  CMP1  ========================================================== */
+ #define R_TPBA0_CMP1_CMP1_Pos    (0UL)      /*!< CMP1 (Bit 0)                                          */
+ #define R_TPBA0_CMP1_CMP1_Msk    (0x7fUL)   /*!< CMP1 (Bitfield-Mask: 0x7f)                            */
+/* =========================================================  CNT0  ========================================================== */
+ #define R_TPBA0_CNT0_CNT0_Pos    (0UL)      /*!< CNT0 (Bit 0)                                          */
+ #define R_TPBA0_CNT0_CNT0_Msk    (0xffffUL) /*!< CNT0 (Bitfield-Mask: 0xffff)                          */
+/* =========================================================  CNT1  ========================================================== */
+ #define R_TPBA0_CNT1_CNT1_Pos    (0UL)      /*!< CNT1 (Bit 0)                                          */
+ #define R_TPBA0_CNT1_CNT1_Msk    (0x7fUL)   /*!< CNT1 (Bitfield-Mask: 0x7f)                            */
+/* ==========================================================  TE  =========================================================== */
+ #define R_TPBA0_TE_TE0_Pos       (0UL)      /*!< TE0 (Bit 0)                                           */
+ #define R_TPBA0_TE_TE0_Msk       (0x1UL)    /*!< TE0 (Bitfield-Mask: 0x01)                             */
+/* ==========================================================  TS  =========================================================== */
+ #define R_TPBA0_TS_TS0_Pos       (0UL)      /*!< TS0 (Bit 0)                                           */
+ #define R_TPBA0_TS_TS0_Msk       (0x1UL)    /*!< TS0 (Bitfield-Mask: 0x01)                             */
+/* ==========================================================  TT  =========================================================== */
+ #define R_TPBA0_TT_TT0_Pos       (0UL)      /*!< TT0 (Bit 0)                                           */
+ #define R_TPBA0_TT_TT0_Msk       (0x1UL)    /*!< TT0 (Bitfield-Mask: 0x01)                             */
 
 /* =========================================================================================================================== */
 /* ================                                          R_TPTM                                           ================ */

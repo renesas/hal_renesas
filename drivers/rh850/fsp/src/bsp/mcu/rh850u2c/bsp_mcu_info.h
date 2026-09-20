@@ -4,6 +4,8 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU_RH850
  * @defgroup BSP_MCU_RH850U2CX BSP U2CX MCU
@@ -11,6 +13,8 @@
  *
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 #ifndef BSP_MCU_INFO_H
 #define BSP_MCU_INFO_H
@@ -44,7 +48,7 @@
  #endif
 
 /** Which interrupts can have callbacks registered. */
-typedef enum e_bsp_grp_irq
+typedef enum e_bsp_grp_irq                     /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_GRP_IRQ_EXTERNAL_NMI              = 0, ///< External NMI interrupt
     BSP_GRP_IRQ_SECURE_WDT_OVERFLOW_FEINT = 1, ///< Secure WDT overflow FEINT

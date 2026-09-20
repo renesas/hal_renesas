@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
-#include "bsp_mpu.h"
+#include "bsp_mpu.h"                   /* PRQA S 0380 # DP_MSR_D-1.1-C99_UC1 & DP_MSR_D-1.1-C11_UC1 */
 
 /***********************************************************************************************************************
  * Variables and functions
@@ -22,29 +22,29 @@
  **********************************************************************************************************************/
 static bsp_mpu_region_t g_bsp_mpu_regions[] =
 {
-    BSP_MPU_REGIONn_CONFIG(00)
-    BSP_MPU_REGIONn_CONFIG(01)
-    BSP_MPU_REGIONn_CONFIG(02)
-    BSP_MPU_REGIONn_CONFIG(03)
-    BSP_MPU_REGIONn_CONFIG(04)
-    BSP_MPU_REGIONn_CONFIG(05)
-    BSP_MPU_REGIONn_CONFIG(06)
-    BSP_MPU_REGIONn_CONFIG(07)
-    BSP_MPU_REGIONn_CONFIG(08)
-    BSP_MPU_REGIONn_CONFIG(09)
-    BSP_MPU_REGIONn_CONFIG(10)
-    BSP_MPU_REGIONn_CONFIG(11)
-    BSP_MPU_REGIONn_CONFIG(12)
-    BSP_MPU_REGIONn_CONFIG(13)
-    BSP_MPU_REGIONn_CONFIG(14)
-    BSP_MPU_REGIONn_CONFIG(15)
-    BSP_MPU_REGIONn_CONFIG(16)
-    BSP_MPU_REGIONn_CONFIG(17)
-    BSP_MPU_REGIONn_CONFIG(18)
-    BSP_MPU_REGIONn_CONFIG(19)
-    BSP_MPU_REGIONn_CONFIG(20)
-    BSP_MPU_REGIONn_CONFIG(21)
-    BSP_MPU_REGIONn_CONFIG(22)
+    BSP_MPU_REGIONn_CONFIG(00)         /* PRQA S 1395 # DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(01)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(02)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(03)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(04)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(05)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(06)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(07)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(08)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(09)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(10)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(11)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(12)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(13)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(14)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(15)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(16)         /* PRQA S 1395, 1281 # DP_MSR_R-9.6_UC1, DP_MSR_R-7.2_UC1 */
+    BSP_MPU_REGIONn_CONFIG(17)         /* PRQA S 1281, 1395 # DP_MSR_R-7.2_UC1, DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(18)         /* PRQA S 1395, 1281 # DP_MSR_R-9.6_UC1, DP_MSR_R-7.2_UC1 */
+    BSP_MPU_REGIONn_CONFIG(19)         /* PRQA S 1395 # DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(20)         /* PRQA S 1395 # DP_MSR_R-9.6_UC1 */
+    BSP_MPU_REGIONn_CONFIG(21)         /* PRQA S 1395, 1281 # DP_MSR_R-9.6_UC1, DP_MSR_R-7.2_UC1 */
+    BSP_MPU_REGIONn_CONFIG(22)         /* PRQA S 1395 # DP_MSR_R-9.6_UC1 */
     BSP_MPU_REGIONn_CONFIG(23)
 #if (32U == BSP_MPU_TOTAL_REGIONS_SUPPORTED)
     BSP_MPU_REGIONn_CONFIG(24)
@@ -58,11 +58,13 @@ static bsp_mpu_region_t g_bsp_mpu_regions[] =
 #endif
 };
 
-bsp_mpu_config_t g_bsp_mpu_config =
+bsp_mpu_config_t g_bsp_mpu_config =    /* PRQA S 1533 # Advisory R-8.9 */
 {
     .mpu_region     = g_bsp_mpu_regions,
     .num_of_regions = BSP_MPU_NUMBER_OF_REGIONS_ENABLED,
 };
+
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
 
 /*******************************************************************************************************************//**
  * This function sets up the MPU by clearing non-configured regions and initializing all configured regions.
@@ -72,19 +74,34 @@ bsp_mpu_config_t g_bsp_mpu_config =
  *
  * @retval  FSP_SUCCESS              Region was enabled successfully.
  * @retval  FSP_ERR_ASSERTION        Region's index exceeded max regions supported.
+ *                                   p_config is NULL.
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 fsp_err_t R_BSP_MPUEnable (const bsp_mpu_config_t * const p_config)
 {
+#if BSP_CFG_PARAM_CHECKING_ENABLE
+
+    /* Check whether the p_config is NULL */
+    FSP_ASSERT(NULL != p_config);
+#endif
+
     fsp_err_t          err                = FSP_SUCCESS;
     uint8_t            region_num         = 0U;
-    bsp_mpu_region_t * mpu_regions        = (bsp_mpu_region_t *) (p_config->mpu_region);
+    bsp_mpu_region_t * mpu_regions        = (bsp_mpu_region_t *) (p_config->mpu_region); /* PRQA S 3678 # Advisory R-8.13 */
     uint8_t            max_num_of_regions = RH850_MPU_NumberofRegionsGet();
 
-    /* Check whether number of regions need to be configurated exceed max regions supported */
+    /* Check whether number of regions need to be configured exceed max regions supported */
     FSP_ASSERT(p_config->num_of_regions <= max_num_of_regions);
 
     /* Disable the MPU */
     RH850_MPU_Disable();
+
+    for (region_num = 0U; region_num < max_num_of_regions; region_num++)
+    {
+        RH850_MPU_RegionSet(region_num, 0U, 0U);
+        RH850_MPU_AttrSet(region_num, 0U);
+    }
 
     /* Initialize all configured regions */
     for (region_num = 0U; region_num < p_config->num_of_regions; region_num++)
@@ -113,7 +130,7 @@ fsp_err_t R_BSP_MPUEnable (const bsp_mpu_config_t * const p_config)
  *
  * @retval None
  **********************************************************************************************************************/
-void R_BSP_MPUDisable (void)
+void R_BSP_MPUDisable (void)           /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     uint8_t index;
     uint8_t max_num_of_regions = RH850_MPU_NumberofRegionsGet();
@@ -140,7 +157,7 @@ void R_BSP_MPUDisable (void)
  *
  * @retval Number of regions enabled
  **********************************************************************************************************************/
-uint8_t R_BSP_MPURegionCountGet (void)
+uint8_t R_BSP_MPURegionCountGet (void) /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     uint8_t  region_num;
     uint8_t  region_count = 0U;
@@ -170,7 +187,7 @@ uint8_t R_BSP_MPURegionCountGet (void)
  **********************************************************************************************************************/
 void R_BSP_MPUSetMPIDx (uint8_t no_of_reg, uint8_t value)
 {
-    value &= BSP_MPU_MPID_MASK;
+    value &= BSP_MPU_MPID_MASK;        /* PRQA S 1338 # Advisory R-17.8 */
 
     /* Set value for specific MPID register */
     RH850_MPU_MpidSet(no_of_reg, value);
@@ -183,12 +200,19 @@ void R_BSP_MPUSetMPIDx (uint8_t no_of_reg, uint8_t value)
  *
  * @retval  FSP_SUCCESS              Region was enabled successfully.
  * @retval  FSP_ERR_ASSERTION        r_index exceeded max region supported.
+ *                                   p_region is NULL.
  **********************************************************************************************************************/
-fsp_err_t R_BSP_MPURegionEnable (bsp_mpu_region_t * const p_region)
+fsp_err_t R_BSP_MPURegionEnable (bsp_mpu_region_t * const p_region) /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     fsp_err_t err = FSP_SUCCESS;
     uint32_t  attr_value;
     uint8_t   max_num_of_regions = RH850_MPU_NumberofRegionsGet();
+
+#if BSP_CFG_PARAM_CHECKING_ENABLE
+
+    /* Check whether the p_region is NULL */
+    FSP_ASSERT(NULL != p_region);
+#endif
 
     /* Check whether region's index exceed max regions supported */
     FSP_ASSERT(p_region->no_of_region < max_num_of_regions);
@@ -214,12 +238,19 @@ fsp_err_t R_BSP_MPURegionEnable (bsp_mpu_region_t * const p_region)
  *
  * @retval  FSP_SUCCESS              Region was disabled successfully.
  * @retval  FSP_ERR_ASSERTION        r_index exceeded max region supported.
+ *                                   p_region is NULL.
  **********************************************************************************************************************/
-fsp_err_t R_BSP_MPURegionDisable (bsp_mpu_region_t * const p_region)
+fsp_err_t R_BSP_MPURegionDisable (bsp_mpu_region_t * const p_region) /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     fsp_err_t err = FSP_SUCCESS;
     uint32_t  attr_value;
     uint8_t   max_num_of_regions = RH850_MPU_NumberofRegionsGet();
+
+#if BSP_CFG_PARAM_CHECKING_ENABLE
+
+    /* Check whether the p_region is NULL */
+    FSP_ASSERT(NULL != p_region);
+#endif
 
     /* Check whether region's index exceed max regions supported */
     FSP_ASSERT(p_region->no_of_region < max_num_of_regions);
@@ -245,11 +276,18 @@ fsp_err_t R_BSP_MPURegionDisable (bsp_mpu_region_t * const p_region)
  *
  * @retval  FSP_SUCCESS              Region was configured successfully.
  * @retval  FSP_ERR_ASSERTION        r_index exceeded max region supported.
+ *                                   p_region is NULL.
  **********************************************************************************************************************/
-fsp_err_t R_BSP_MPURegionSet (bsp_mpu_region_t * const p_region)
+fsp_err_t R_BSP_MPURegionSet (bsp_mpu_region_t * const p_region) /* PRQA S 1503, 3673 # DP_MSR_R-2.1_UC1, Advisory R-8.13 */
 {
     fsp_err_t err                = FSP_SUCCESS;
     uint8_t   max_num_of_regions = RH850_MPU_NumberofRegionsGet();
+
+#if BSP_CFG_PARAM_CHECKING_ENABLE
+
+    /* Check whether the p_region is NULL */
+    FSP_ASSERT(NULL != p_region);
+#endif
 
     /* Check whether region's index exceed max regions supported */
     FSP_ASSERT(p_region->no_of_region < max_num_of_regions);
@@ -271,18 +309,25 @@ fsp_err_t R_BSP_MPURegionSet (bsp_mpu_region_t * const p_region)
  *
  * @retval  FSP_SUCCESS              Get region successfully.
  * @retval  FSP_ERR_ASSERTION        r_index exceeded max region supported.
+ *                                   p_region_data is NULL.
  **********************************************************************************************************************/
-fsp_err_t R_BSP_MPURegionGet (bsp_mpu_region_t * const p_region_data, uint8_t r_index)
+fsp_err_t R_BSP_MPURegionGet (bsp_mpu_region_t * const p_region_data, uint8_t r_index) /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     fsp_err_t err = FSP_SUCCESS;
     uint32_t  attr_value;
     uint8_t   max_num_of_regions = RH850_MPU_NumberofRegionsGet();
 
+#if BSP_CFG_PARAM_CHECKING_ENABLE
+
+    /* Check whether the p_region_data is NULL */
+    FSP_ASSERT(NULL != p_region_data);
+#endif
+
     /* Check whether region's index exceed max regions supported */
     FSP_ASSERT(r_index < max_num_of_regions);
 
     p_region_data->start_address = RH850_MPU_LowerAddressGet(r_index);
-    p_region_data->size          = RH850_MPU_UpperAddressGet(r_index) - RH850_MPU_LowerAddressGet(r_index);
+    p_region_data->size          = RH850_MPU_UpperAddressGet(r_index) - p_region_data->start_address;
     attr_value = RH850_MPU_AttrGet(r_index);
     p_region_data->region_attr.attribute = attr_value;
     p_region_data->no_of_region          = r_index;
@@ -300,12 +345,19 @@ fsp_err_t R_BSP_MPURegionGet (bsp_mpu_region_t * const p_region_data, uint8_t r_
  * @param[in]  size                                Size of region.
  * @param[out]  p_status                           Pointer to the variable that stores the status result.
  **********************************************************************************************************************/
-void R_BSP_MPUExecuteMemProtectionCheck (uint8_t                      spid,
+void R_BSP_MPUExecuteMemProtectionCheck (uint8_t                      spid, /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
                                          uint32_t                     lower_add,
-                                         uint32_t                     size,
+                                         uint32_t                     size, /* PRQA S 1710 # Advisory D-4.5 */
                                          bsp_mpu_mem_check_status_t * p_status)
 {
     rh850_mpu_mem_status_t mem_check_status;
+
+#if BSP_CFG_PARAM_CHECKING_ENABLE
+    if (NULL == p_status)
+    {
+        return;
+    }
+#endif
 
     RH850_MPU_ExecMemProtectCheck(spid, lower_add, size, &mem_check_status);
     p_status->mpu_status.mem_check_status = mem_check_status.mpu_status.status;

@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
-#include "bsp_api.h"
+#include "bsp_api.h"                   /* PRQA S 0380 # DP_MSR_D-1.1-C99_UC1 & DP_MSR_D-1.1-C11_UC1 */
 #include "bsp_guard_driver.h"
 
 /***********************************************************************************************************************
@@ -67,7 +67,7 @@ const uint32_t g_pbgprot_baseaddress[] =
 };
 
 /** Array of all PBG control groups base address */
-const uint32_t g_pbgprot_control_baseaddress[] =
+const uint32_t g_pbgprot_control_baseaddress[] = /* PRQA S 1533 # Advisory R-8.9 */
 {
     [BSP_PBG_GROUP_PBG00]   = (uint32_t) R_PBG00_BASE,
     [BSP_PBG_GROUP_PBG01]   = (uint32_t) R_PBG00_BASE,
@@ -139,7 +139,7 @@ const uint32_t g_pbgkcprot_baseaddress[] =
 };
 
 /** Array of all IBG control base address */
-const uint32_t g_ibg_baseaddress[] =
+const uint32_t g_ibg_baseaddress[] =   /* PRQA S 1533 # Advisory R-8.9 */
 {
 #if (BSP_FEATURE_IPIR_GUARD_IS_AVAILABLE)
     [BSP_IBG_CONTROL_IPIR_Rn] = (uint32_t) R_GUARD_IBG_IPIR_BASE,
@@ -157,7 +157,7 @@ const uint32_t g_ibg_baseaddress[] =
 };
 
 /** Array of all IBG protection control base address */
-const uint32_t g_ibgprot_baseaddress[] =
+const uint32_t g_ibgprot_baseaddress[] = /* PRQA S 1533 # Advisory R-8.9 */
 {
 #if (BSP_FEATURE_IPIR_GUARD_IS_AVAILABLE)
     [BSP_IBG_CONTROL_IPIR_Rn] = (uint32_t) R_IBG00_IPIGPROT0_Rn_BASE,
@@ -175,7 +175,7 @@ const uint32_t g_ibgprot_baseaddress[] =
 };
 
 /** Array of all IBG module base address */
-const uint32_t g_ibg_module_baseaddress[] =
+const uint32_t g_ibg_module_baseaddress[] = /* PRQA S 1533 # Advisory R-8.9 */
 {
 #if (BSP_FEATURE_IPIR_GUARD_IS_AVAILABLE)
     [BSP_GUARD_IPIR_MODULE] = (uint32_t) R_GUARD_IBG_IPIR_BASE,
@@ -187,7 +187,7 @@ const uint32_t g_ibg_module_baseaddress[] =
 };
 
 /** Array of all PEG base address */
-const uint32_t g_peg_baseaddress[] =
+const uint32_t g_peg_baseaddress[] =   /* PRQA S 1533 # Advisory R-8.9 */
 {
     [BSP_PEG_CONTROL_PE0] = (uint32_t) R_GUARD_PE0_BASE,
 #if (BSP_FEATURE_PE1_GUARD_IS_AVAILABLE)
@@ -196,7 +196,7 @@ const uint32_t g_peg_baseaddress[] =
 };
 
 /** Array of all PEGCAP_S base address */
-const uint32_t g_pegcap_s_baseaddress[] =
+const uint32_t g_pegcap_s_baseaddress[] = /* PRQA S 1533 # Advisory R-8.9 */
 {
     [BSP_PEG_CONTROL_PE0] = (uint32_t) R_PEGCAP_S_PE0CL0_BASE,
 #if (BSP_FEATURE_PE1_GUARD_IS_AVAILABLE)
@@ -205,7 +205,7 @@ const uint32_t g_pegcap_s_baseaddress[] =
 };
 
 /** Array of all Local Ram base address */
-const uint32_t g_peg_lram_baseaddress[] =
+const uint32_t g_peg_lram_baseaddress[] = /* PRQA S 1533 # Advisory R-8.9 */
 {
     [BSP_PEG_CONTROL_PE0] = (uint32_t) R_GUARD_PE0_LRAM_BASE,
 #if (BSP_FEATURE_PE1_GUARD_IS_AVAILABLE)
@@ -214,7 +214,7 @@ const uint32_t g_peg_lram_baseaddress[] =
 };
 
 /** Array of all CRG base address */
-const uint32_t g_crg_baseaddress[] =
+const uint32_t g_crg_baseaddress[] =   /* PRQA S 1533 # Advisory R-8.9 */
 {
 #if (BSP_FEATURE_CRAM00_GUARD_IS_AVAILABLE)
     [BSP_CRG_CONTROL_CRAM00] = (uint32_t) R_GUARD_CRAMCRG00_BASE,
@@ -228,7 +228,7 @@ const uint32_t g_crg_baseaddress[] =
 };
 
 /** Array of all Cluster Ram base address */
-const uint32_t g_crg_cram_baseaddress[] =
+const uint32_t g_crg_cram_baseaddress[] = /* PRQA S 1533 # Advisory R-8.9 */
 {
 #if (BSP_FEATURE_CRAM00_GUARD_IS_AVAILABLE)
     [BSP_CRG_CONTROL_CRAM00] = (uint32_t) R_GUARD_CRG_CRAM00_BASE,
@@ -241,27 +241,27 @@ const uint32_t g_crg_cram_baseaddress[] =
 #endif
 };
 
-const uint32_t g_crgcap_baseaddress[][BSP_FEATURE_CRAM_GUARD_STATUS_MAX] =
+const uint32_t g_crgcap_baseaddress[][BSP_FEATURE_CRAM_GUARD_STATUS_MAX] = /* PRQA S 1533 # Advisory R-8.9 */
 {
 #if (BSP_FEATURE_CRAM00_GUARD_IS_AVAILABLE)
     [BSP_CRG_CONTROL_CRAM00] =
     {
-    R_CRGCAP_CRAMHCL00_BASE,
-    R_CRGCAP_CRAMLCL00_BASE,
+    R_CRGCAP_CRAMHCL00_BASE,           /* PRQA S 1257 # DP_MSR_R-10.3_UC1 */
+    R_CRGCAP_CRAMLCL00_BASE,           /* PRQA S 1257 # DP_MSR_R-10.3_UC1 */
     },
 #endif
 #if (BSP_FEATURE_CRAM01_GUARD_IS_AVAILABLE)
     [BSP_CRG_CONTROL_CRAM01] =
     {
-    R_CRGCAP_CRAMHCL01_BASE,
-    R_CRGCAP_CRAMLCL01_BASE,
+    R_CRGCAP_CRAMHCL01_BASE,           /* PRQA S 1257 # DP_MSR_R-10.3_UC1 */
+    R_CRGCAP_CRAMLCL01_BASE,           /* PRQA S 1257 # DP_MSR_R-10.3_UC1 */
     },
 #endif
 #if (BSP_FEATURE_CRAM02_GUARD_IS_AVAILABLE)
     [BSP_CRG_CONTROL_CRAM02] =
     {
-    R_CRGCAP_CRAMHCL02_BASE,
-    R_CRGCAP_CRAMLCL02_BASE,
+    R_CRGCAP_CRAMHCL02_BASE,           /* PRQA S 1257 # DP_MSR_R-10.3_UC1 */
+    R_CRGCAP_CRAMLCL02_BASE,           /* PRQA S 1257 # DP_MSR_R-10.3_UC1 */
     },
 #endif
 };
@@ -273,7 +273,7 @@ const uint32_t g_dmacg_baseaddress[] =
     [BSP_DMAG_UNIT_1] = (uint32_t) R_GUARD_DMAC1_BASE
 };
 
-const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
+const bsp_module_pbg_info_t g_bsp_module_pbg_info_table[] = /* PRQA S 1533 # Advisory R-8.9 */
 {
     [BSP_GUARD_BSP_MODULE] =
             {
@@ -295,7 +295,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             {
             .pbg_group   = BSP_PBG_GROUP_PBG20,
             .pbg_channel = (BSP_PBG_CHANNEL_00 | BSP_PBG_CHANNEL_01 | BSP_PBG_CHANNEL_02 | BSP_PBG_CHANNEL_03 |
-                            BSP_PBG_CHANNEL_08)
+                            BSP_PBG_CHANNEL_08) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG30,
@@ -377,7 +377,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG50,
-            .pbg_channel = (BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11)
+            .pbg_channel = (BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             }
             },
@@ -403,7 +403,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG20,
-            .pbg_channel = (BSP_PBG_CHANNEL_09)
+            .pbg_channel = (BSP_PBG_CHANNEL_09) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             }
             },
@@ -414,7 +414,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG20,
-            .pbg_channel = (BSP_PBG_CHANNEL_10)
+            .pbg_channel = (BSP_PBG_CHANNEL_10) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             }
             },
@@ -425,11 +425,11 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG20,
-            .pbg_channel = (BSP_PBG_CHANNEL_11)
+            .pbg_channel = (BSP_PBG_CHANNEL_11) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG50,
-            .pbg_channel = (BSP_PBG_CHANNEL_15)
+            .pbg_channel = (BSP_PBG_CHANNEL_15) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG11H0,
@@ -444,7 +444,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG20,
-            .pbg_channel = (BSP_PBG_CHANNEL_12)
+            .pbg_channel = (BSP_PBG_CHANNEL_12) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             }
             },
@@ -455,20 +455,20 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG20,
-            .pbg_channel = (BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15)
+            .pbg_channel = (BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG21,
             .pbg_channel = (BSP_PBG_CHANNEL_00 | BSP_PBG_CHANNEL_01 | BSP_PBG_CHANNEL_02 | BSP_PBG_CHANNEL_03 |
                             BSP_PBG_CHANNEL_04 | BSP_PBG_CHANNEL_05 | BSP_PBG_CHANNEL_07 |
-                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11 |
-                            BSP_PBG_CHANNEL_12 | BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_15)
+                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11 | /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
+                            BSP_PBG_CHANNEL_12 | BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_15)                       /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG22,
             .pbg_channel = (BSP_PBG_CHANNEL_00 | BSP_PBG_CHANNEL_01 | BSP_PBG_CHANNEL_02 | BSP_PBG_CHANNEL_03 |
                             BSP_PBG_CHANNEL_04 | BSP_PBG_CHANNEL_05 | BSP_PBG_CHANNEL_06 | BSP_PBG_CHANNEL_07 |
-                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11)
+                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             }
             },
@@ -497,12 +497,12 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             {
             .pbg_group   = BSP_PBG_GROUP_PBG30,
             .pbg_channel = (BSP_PBG_CHANNEL_06 | BSP_PBG_CHANNEL_07 |
-                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10)
+                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG40,
             .pbg_channel = (BSP_PBG_CHANNEL_06 | BSP_PBG_CHANNEL_07 |
-                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10)
+                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             }
             },
@@ -513,12 +513,12 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG30,
-            .pbg_channel = (BSP_PBG_CHANNEL_11 |
-                            BSP_PBG_CHANNEL_12 | BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15)
+            .pbg_channel = (BSP_PBG_CHANNEL_11 |                                                               /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
+                            BSP_PBG_CHANNEL_12 | BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG40,
-            .pbg_channel = (BSP_PBG_CHANNEL_12 | BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15)
+            .pbg_channel = (BSP_PBG_CHANNEL_12 | BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             }
             },
@@ -544,7 +544,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG40,
-            .pbg_channel = (BSP_PBG_CHANNEL_11)
+            .pbg_channel = (BSP_PBG_CHANNEL_11) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG90,
@@ -563,7 +563,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG40,
-            .pbg_channel = (BSP_PBG_CHANNEL_11)
+            .pbg_channel = (BSP_PBG_CHANNEL_11) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG90,
@@ -633,7 +633,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG50,
-            .pbg_channel = (BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09)
+            .pbg_channel = (BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG11H0,
@@ -648,7 +648,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG50,
-            .pbg_channel = (BSP_PBG_CHANNEL_12)
+            .pbg_channel = (BSP_PBG_CHANNEL_12) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG11H1,
@@ -663,7 +663,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG50,
-            .pbg_channel = (BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14)
+            .pbg_channel = (BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG11H1,
@@ -695,8 +695,8 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .pbg_group   = BSP_PBG_GROUP_PBG51,
             .pbg_channel = (BSP_PBG_CHANNEL_03 |
                             BSP_PBG_CHANNEL_04 | BSP_PBG_CHANNEL_05 | BSP_PBG_CHANNEL_06 | BSP_PBG_CHANNEL_07 |
-                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11 |
-                            BSP_PBG_CHANNEL_12)
+                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11 | /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
+                            BSP_PBG_CHANNEL_12)                                                                 /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG8L0,
@@ -705,8 +705,8 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             {
             .pbg_group   = BSP_PBG_GROUP_PBG11H0,
             .pbg_channel = (BSP_PBG_CHANNEL_07 |
-                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11 |
-                            BSP_PBG_CHANNEL_12 | BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15)
+                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11 | /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
+                            BSP_PBG_CHANNEL_12 | BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15)  /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             }
             },
@@ -718,11 +718,11 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG51,
-            .pbg_channel = (BSP_PBG_CHANNEL_15)
+            .pbg_channel = (BSP_PBG_CHANNEL_15) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             }
             },
-#endif                                 /* #if (BSP_FEATURE_MMCA_IS_AVAILABLE) */
+#endif                                          /* #if (BSP_FEATURE_MMCA_IS_AVAILABLE) */ /* PRQA S 2053 # Advisory D-4.4 */
     [BSP_GUARD_OTS_MODULE] =
             {
             .no_of_element     = 1,
@@ -803,7 +803,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             },
             }
             },
-#endif                                 /* #if (BSP_FEATURE_ETND_IS_AVAILABLE) */
+#endif                                 /* #if (BSP_FEATURE_ETND_IS_AVAILABLE) */ /* PRQA S 2053 # Advisory D-4.4 */
     [BSP_GUARD_RI3C_MODULE] =
             {
             .no_of_element     = 1,
@@ -811,7 +811,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG8L0,
-            .pbg_channel = (BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11)
+            .pbg_channel = (BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             }
             },
@@ -822,7 +822,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .properties        = (bsp_module_pbg_properties_t[]) {
             {
             .pbg_group   = BSP_PBG_GROUP_PBG8L0,
-            .pbg_channel = (BSP_PBG_CHANNEL_12)
+            .pbg_channel = (BSP_PBG_CHANNEL_12) /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG90,
@@ -872,8 +872,8 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             .pbg_group   = BSP_PBG_GROUP_PBG100,
             .pbg_channel = (BSP_PBG_CHANNEL_02 | BSP_PBG_CHANNEL_03 |
                             BSP_PBG_CHANNEL_04 | BSP_PBG_CHANNEL_05 | BSP_PBG_CHANNEL_06 | BSP_PBG_CHANNEL_07 |
-                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11 |
-                            BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15)
+                            BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11 | /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
+                            BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15)                       /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .pbg_group   = BSP_PBG_GROUP_PBG101,
@@ -931,7 +931,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             },
             }
             },
-#endif                                 /* #if (BSP_FEATURE_PSI5S_IS_AVAILABLE)*/
+#endif                                 /* #if (BSP_FEATURE_PSI5S_IS_AVAILABLE)*/ /* PRQA S 2053 # Advisory D-4.4 */
 #if (BSP_FEATURE_FLXA_IS_AVAILABLE)
     [BSP_GUARD_FLXA_MODULE] =
             {
@@ -944,7 +944,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             }
             }
             },
-#endif                                 /* #if (BSP_FEATURE_FLXA_IS_AVAILABLE)*/
+#endif                                 /* #if (BSP_FEATURE_FLXA_IS_AVAILABLE)*/ /* PRQA S 2053 # Advisory D-4.4 */
     [BSP_GUARD_SFMA_MODULE] =
             {
             .no_of_element     = 1,
@@ -979,7 +979,7 @@ const bsp_module_pbg_info_t g_bsp_module_pgb_info_table[] =
             },
 };
 
-const bsp_module_ibg_info_t g_bsp_module_ibg_info_table[] =
+const bsp_module_ibg_info_t g_bsp_module_ibg_info_table[] = /* PRQA S 1533 # Advisory R-8.9 */
 {
 #if (BSP_FEATURE_IPIR_GUARD_IS_AVAILABLE)
     [BSP_GUARD_IPIR_MODULE] =
@@ -1013,8 +1013,8 @@ const bsp_module_ibg_info_t g_bsp_module_ibg_info_table[] =
             .ibg_channel =
                 (BSP_PBG_CHANNEL_00 | BSP_PBG_CHANNEL_01 | BSP_PBG_CHANNEL_02 | BSP_PBG_CHANNEL_03 |
                  BSP_PBG_CHANNEL_04 | BSP_PBG_CHANNEL_05 | BSP_PBG_CHANNEL_06 | BSP_PBG_CHANNEL_07 |
-                 BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11 |
-                 BSP_PBG_CHANNEL_12 | BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15)
+                 BSP_PBG_CHANNEL_08 | BSP_PBG_CHANNEL_09 | BSP_PBG_CHANNEL_10 | BSP_PBG_CHANNEL_11 | /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
+                 BSP_PBG_CHANNEL_12 | BSP_PBG_CHANNEL_13 | BSP_PBG_CHANNEL_14 | BSP_PBG_CHANNEL_15)  /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
             },
             {
             .ibg_control = BSP_IBG_CONTROL_BARR_16,
@@ -1061,7 +1061,7 @@ const bsp_module_ibg_info_t g_bsp_module_ibg_info_table[] =
             },
 };
 
-const bsp_intc1_lram_info_t g_bsp_intc1_lram_info_table[] =
+const bsp_intc1_lram_info_t g_bsp_intc1_lram_info_table[] = /* PRQA S 1533 # Advisory R-8.9 */
 {
     [BSP_PEG_CONTROL_PE0] =
     {
@@ -1077,7 +1077,7 @@ const bsp_intc1_lram_info_t g_bsp_intc1_lram_info_table[] =
 #endif
 };
 
-const bsp_cram_info_t g_bsp_cram_info_table[] =
+const bsp_cram_info_t g_bsp_cram_info_table[] = /* PRQA S 1533 # Advisory R-8.9 */
 {
 #if (BSP_FEATURE_CRAM00_GUARD_IS_AVAILABLE)
     [BSP_CRG_CONTROL_CRAM00] =

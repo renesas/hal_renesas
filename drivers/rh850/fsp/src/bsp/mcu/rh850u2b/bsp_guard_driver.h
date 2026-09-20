@@ -18,44 +18,46 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
-#define BSP_GUARD_READ_WRITE_ACCESS              0x153                          ///< Full read/write access in Supervisor & User modes
+#define BSP_GUARD_READ_WRITE_ACCESS              0x153U                                                            ///< Full read/write access in Supervisor & User modes
 
-#define BSP_GUARD_CHANNEL_DEFAULT                (0)                            ///< Default guard channel index
-#define BSP_GUARD_DATAFLOW_BASE_ADDRESS          (0x00)                         ///< Dataflow processor base address
+#define BSP_GUARD_CHANNEL_DEFAULT                (0U)                                                              ///< Default guard channel index
+#define BSP_GUARD_DATAFLOW_BASE_ADDRESS          (0x00U) /* PRQA S 1534 # Advisory R-2.5 */                        ///< Dataflow processor base address
 
-#define BSP_GUARD_KCPROT_ADDRESS_OFFSET          0x18                           ///< Offset to KCPROT register
+#define BSP_GUARD_KCPROT_ADDRESS_OFFSET          0x18U                                                             ///< Offset to KCPROT register
 
-#define BSP_PBG_CHANNEL_ADDRESS_OFFSET           0x08                           ///< Offset to PBG channel
-#define BSP_PBG_KCPROT_ADDRESS_OFFSET            0x18                           ///< Offset to PBG KCPROT
+#define BSP_PBG_CHANNEL_ADDRESS_OFFSET           0x08U                                                             ///< Offset to PBG channel
+#define BSP_PBG_KCPROT_ADDRESS_OFFSET            0x18U                                                             ///< Offset to PBG KCPROT
 
-#define BSP_IBG_IPIR_PROT_CHANNEL_OFFSET         0x10                           ///< IBG IPIR protection channel offset
-#define BSP_IBG_BARR_TPTM_PROT_CHANNEL_OFFSET    0x08                           ///< IBG BARR/TPTM protection channel offset
+#define BSP_IBG_IPIR_PROT_CHANNEL_OFFSET         0x10U                                                             ///< IBG IPIR protection channel offset
+#define BSP_IBG_BARR_TPTM_PROT_CHANNEL_OFFSET    0x08U                                                             ///< IBG BARR/TPTM protection channel offset
 
-#define R_GUARD_PE0_LRAM_BASE                    0xFDC00000UL                   ///< PE0 local RAM base
-#define R_GUARD_PE1_LRAM_BASE                    0xFDA00000UL                   ///< PE1 local RAM base
-#define R_GUARD_PE2_LRAM_BASE                    0xFD800000UL                   ///< PE2 local RAM base
-#define R_GUARD_PE3_LRAM_BASE                    0xFD600000UL                   ///< PE3 local RAM base
+#define R_GUARD_PE0_LRAM_BASE                    0xFDC00000UL                                                      ///< PE0 local RAM base
+#define R_GUARD_PE1_LRAM_BASE                    0xFDA00000UL                                                      ///< PE1 local RAM base
+#define R_GUARD_PE2_LRAM_BASE                    0xFD800000UL                                                      ///< PE2 local RAM base
+#define R_GUARD_PE3_LRAM_BASE                    0xFD600000UL /* PRQA S 1534 # Advisory R-2.5 */                   ///< PE3 local RAM base
 
-#define R_GUARD_CRG_CRAM0_BASE                   0xFE000000UL                   ///< CRG shared RAM0 base
-#define R_GUARD_CRG_CRAM1_BASE                   0xFE080000UL                   ///< CRG shared RAM1 base
+#define R_GUARD_CRG_CRAM0_BASE                   0xFE000000UL                                                      ///< CRG shared RAM0 base
+#define R_GUARD_CRG_CRAM1_BASE                   0xFE080000UL /* PRQA S 1534 # Advisory R-2.5 */                   ///< CRG shared RAM1 base
 
-#define R_IBG00_IPIGPROT0_Rn_BASE                0xFFC6A280UL                   ///< IBG00 IPIGPROT0 Rn base
-#define R_IBG00_IPIGPROT0_Tn_BASE                0xFFC6A288UL                   ///< IBG00 IPIGPROT0 Tn base
-#define R_IBG00_IPIGPROT0_4_BASE                 0xFFC6A2C0UL                   ///< IBG00 IPIGPROT0 4 base
+#define R_IBG00_IPIGPROT0_Rn_BASE                0xFFC6A280UL                                                      ///< IBG00 IPIGPROT0 Rn base
+#define R_IBG00_IPIGPROT0_Tn_BASE                0xFFC6A288UL                                                      ///< IBG00 IPIGPROT0 Tn base
+#define R_IBG00_IPIGPROT0_4_BASE                 0xFFC6A2C0UL                                                      ///< IBG00 IPIGPROT0 4 base
 
-#define R_IBG01_BRGPROT0_n_BASE                  0xFFC6A080UL                   ///< IBG01 BRGPROT0 n base
-#define R_IBG01_BRGPROT0_16_BASE                 0xFFC6A100UL                   ///< IBG01 BRGPROT0 16 base
+#define R_IBG01_BRGPROT0_n_BASE                  0xFFC6A080UL                                                      ///< IBG01 BRGPROT0 n base
+#define R_IBG01_BRGPROT0_16_BASE                 0xFFC6A100UL                                                      ///< IBG01 BRGPROT0 16 base
 
-#define R_IBG02_TPTGPROT0_IFn_BASE               0xFFC6A680UL                   ///< IBG02 TPTGPROT0 IFn base
-#define R_IBG02_TPTGPROT0_Un_BASE                0xFFC6A6C0UL                   ///< IBG02 TPTGPROT0 Un base
-#define R_IBG02_TPTGPROT0_U8_BASE                0xFFC6A700UL                   ///< IBG02 TPTGPROT0 U8 base
-#define R_IBG02_TPTGPROT0_U9_BASE                0xFFC6A708UL                   ///< IBG02 TPTGPROT0 U9 base
+#define R_IBG02_TPTGPROT0_IFn_BASE               0xFFC6A680UL                                                      ///< IBG02 TPTGPROT0 IFn base
+#define R_IBG02_TPTGPROT0_Un_BASE                0xFFC6A6C0UL                                                      ///< IBG02 TPTGPROT0 Un base
+#define R_IBG02_TPTGPROT0_U8_BASE                0xFFC6A700UL                                                      ///< IBG02 TPTGPROT0 U8 base
+#define R_IBG02_TPTGPROT0_U9_BASE                0xFFC6A708UL                                                      ///< IBG02 TPTGPROT0 U9 base
 
-#define BSP_GUARD_MAX_32BITS                     0xFFFFFFFFUL                   ///< Max 32-bit mask value
+#define BSP_GUARD_MAX_32BITS                     0xFFFFFFFFUL                                                      ///< Max 32-bit mask value
 
-#define BSP_GUARD_DATAFLOW_WRITE_PROTECTION      BSP_GUARD_DFP_WRITE_PROTECTION ///< Dataflow write-protection alias
+#define BSP_GUARD_DATAFLOW_WRITE_PROTECTION      BSP_GUARD_DFP_WRITE_PROTECTION /* PRQA S 1534 # Advisory R-2.5 */ ///< Dataflow write-protection alias
 
-#define BSP_GUARD_GET_BIT(value)    (__SCH1R(value) - 1)                        ///< Search bit 1 from the LSB
+#define BSP_GUARD_GET_BIT(value)    ((uint32_t) __SCH1R(value) - 1U) /* PRQA S 3472 # Advisory D-4.9 */            ///< Search bit 1 from the LSB
+
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
 
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU_RH850U2BX
@@ -64,12 +66,14 @@ FSP_HEADER
  * @{
  **********************************************************************************************************************/
 
+/* PRQA S 0292 -- */
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /** PBus and HBus Guard group */
-typedef enum e_bsp_pbg_group
+typedef enum e_bsp_pbg_group           /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_PBG_GROUP_PBG00 = 0,           ///< PBG group PBG00
     BSP_PBG_GROUP_PBG01,               ///< PBG group PBG01
@@ -112,7 +116,7 @@ typedef enum e_bsp_pbg_group
 } bsp_pbg_group_t;
 
 /** Guard module IDs*/
-typedef enum e_bsp_module_pbg_id
+typedef enum e_bsp_module_pbg_id       /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_GUARD_BSP_MODULE,              ///< Guard module BSP
     BSP_GUARD_BIST_MODULE,             ///< Guard module BIST
@@ -206,10 +210,10 @@ typedef enum e_bsp_module_pbg_id
     BSP_GUARD_SFMA_MODULE,             ///< Guard module SFMA
 
     BSP_MODULE_PBG_TOTAL_INDEX_END     ///< Total PBG guard module count
-} bsp_module_pbg_id_t;
+} bsp_module_pbg_id_t;                 /* PRQA S 1535 # Advisory R-2.3 */
 
 /** Guard types for configuring/status protection */
-typedef enum e_bsp_guard_type
+typedef enum e_bsp_guard_type          /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_GUARD_TYPE_PE_GUARD,           ///< PE Guard: Protects PE Local RAM and INTC1 registers
     BSP_GUARD_TYPE_CRAM_GUARD,         ///< Cluster RAM Guard: Protects Cluster RAM area
@@ -223,17 +227,17 @@ typedef enum e_bsp_guard_type
 } bsp_guard_type_t;
 
 /** Guard control register types */
-typedef enum e_bsp_guard_ctr_reg
+typedef enum e_bsp_guard_ctr_reg       /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_GUARD_REG_PROT = 0,            ///< Protection control register
     BSP_GUARD_REG_SPID,                ///< SPID setting register
     BSP_GUARD_REG_BAD,                 ///< Base address register
     BSP_GUARD_REG_ADV,                 ///< Address valid setting register
     BSP_GUARD_REG_COUNT                ///< Total number of guard control registers
-} bsp_guard_ctr_reg_t;
+} bsp_guard_ctr_reg_t;                 /* PRQA S 1535 # Advisory R-2.3 */
 
 /** I-Bus guard control target */
-typedef enum e_bsp_ibg_control
+typedef enum e_bsp_ibg_control         /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_IBG_CONTROL_IPIR_Rn = 0,       ///< I-Bus group0 registers (Rn)
     BSP_IBG_CONTROL_IPIR_Tn,           ///< I-Bus group0 registers (Tn)
@@ -248,7 +252,7 @@ typedef enum e_bsp_ibg_control
 } bsp_ibg_control_t;
 
 /** I-Bus guard module IDs */
-typedef enum e_bsp_module_ibg_id
+typedef enum e_bsp_module_ibg_id       /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_GUARD_IPIR_MODULE = 0,         ///< IPIR module
     BSP_GUARD_BARR_MODULE,             ///< BARR module
@@ -257,7 +261,7 @@ typedef enum e_bsp_module_ibg_id
 } bsp_module_ibg_id_t;
 
 /** PE guard control targets */
-typedef enum e_bsp_peg_control
+typedef enum e_bsp_peg_control         /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_PEG_CONTROL_PE0 = 0,           ///< Guard for PE0 Local RAM area & INTC1 register area
     BSP_PEG_CONTROL_PE1,               ///< Guard for PE1 Local RAM area & INTC1 register area
@@ -269,7 +273,7 @@ typedef enum e_bsp_peg_control
 } bsp_peg_control_t;
 
 /** Cluster RAM guard control targets */
-typedef enum e_bsp_crg_control
+typedef enum e_bsp_crg_control         /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_CRG_CONTROL_CRAM0 = 0,         ///< Guard for Cluster 0 RAM
 #if (BSP_FEATURE_CRAM1_GUARD_IS_AVAILABLE)
@@ -279,7 +283,7 @@ typedef enum e_bsp_crg_control
 } bsp_crg_control_t;
 
 /** INTC2 guard control targets (Group register) */
-typedef enum e_bsp_intc2g_control
+typedef enum e_bsp_intc2g_control       /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_INTC2G_CONTROL_EIBD_I2EIBG = 0, ///< Guard access to EIBDn/I2EIBGn register
     BSP_INTC2G_CONTROL_IMR,             ///< Guard access to IMRn register
@@ -288,7 +292,7 @@ typedef enum e_bsp_intc2g_control
 } bsp_intc2g_control_t;
 
 /** DTS guard control targets (Group register) */
-typedef enum e_bsp_dtsg_control
+typedef enum e_bsp_dtsg_control        /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_DTSG_CONTROL_COMMON_REG = 0,   ///< Guard access to DTS common registers
     BSP_DTSG_CONTROL_CHANNEL_REG,      ///< Guard access to DTS channel registers
@@ -296,7 +300,7 @@ typedef enum e_bsp_dtsg_control
 } bsp_dtsg_control_t;
 
 /** DMA guard control targets (Group register) */
-typedef enum e_bsp_dmag_control
+typedef enum e_bsp_dmag_control        /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_DMAG_CONTROL_GLOBAL_REG = 0,   ///< Guard access to sDMAC global registers
     BSP_DMAG_CONTROL_DRAM_REG,         ///< Guard access to sDMAC descriptor RAM
@@ -306,7 +310,7 @@ typedef enum e_bsp_dmag_control
 } bsp_dmag_control_t;
 
 /** sDMAC guard control targets (Units) */
-typedef enum e_bsp_dmag_unit
+typedef enum e_bsp_dmag_unit           /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_DMAG_UNIT_0 = 0,               ///< sDMAC Unit 0
 #if (BSP_FEATURE_DMAC_MAX_UNIT == 2)
@@ -316,138 +320,138 @@ typedef enum e_bsp_dmag_unit
 } bsp_dmag_unit_t;
 
 /** Guard enable setting */
-typedef enum e_bsp_guard_setting
+typedef enum e_bsp_guard_setting                                                                    /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_GUARD_SETTING_DISABLE = 0,     ///< Disable guard setting
-    BSP_GUARD_SETTING_ENABLE  = 1,     ///< Enable guard setting
+    BSP_GUARD_SETTING_DISABLE = 0U,                                                                 ///< Disable guard setting
+    BSP_GUARD_SETTING_ENABLE  = 1U                                                                  ///< Enable guard setting
 } bsp_guard_setting_t;
 
 /** Guard debug access control */
-typedef enum e_bsp_guard_debug
+typedef enum e_bsp_guard_debug                                                                      /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_GUARD_DEBUG_DEPENDS = 0,       ///< R/W depends on other protection settings
-    BSP_GUARD_DEBUG_ENABLE  = 1        ///< R/W enabled for debug master
+    BSP_GUARD_DEBUG_DEPENDS = 0U,                                                                   ///< R/W depends on other protection settings
+    BSP_GUARD_DEBUG_ENABLE  = 1U                                                                    ///< R/W enabled for debug master
 } bsp_guard_debug_t;
 
 /** Guard user mode access control */
-typedef enum e_bsp_guard_um
+typedef enum e_bsp_guard_um                                                                         /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_GUARD_UM_DISABLE = 0,          ///< Disable user mode access (R/W)
-    BSP_GUARD_UM_ENABLE  = 1           ///< Enable user mode access (R/W depends on protection settings)
+    BSP_GUARD_UM_DISABLE = 0U,                                                                      ///< Disable user mode access (R/W)
+    BSP_GUARD_UM_ENABLE  = 1U                                                                       ///< Enable user mode access (R/W depends on protection settings)
 } bsp_guard_um_t;
 
 /** Guard write access control */
-typedef enum e_bsp_guard_write
+typedef enum e_bsp_guard_write                                                                      /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_GUARD_WRITE_USE_SPID  = 0,     ///< Write uses SPID check (SPID is used as judgment condition)
-    BSP_GUARD_WRITE_ALLOW_ALL = 1      ///< Write allows all (SPID is NOT used as judgment condition)
+    BSP_GUARD_WRITE_USE_SPID  = 0U,                                                                 ///< Write uses SPID check (SPID is used as judgment condition)
+    BSP_GUARD_WRITE_ALLOW_ALL = 1U                                                                  ///< Write allows all (SPID is NOT used as judgment condition)
 } bsp_guard_write_t;
 
 /** Guard read access control */
-typedef enum e_bsp_guard_read
+typedef enum e_bsp_guard_read                                                                       /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_GUARD_READ_USE_SPID  = 0,      ///< Read uses SPID check (SPID is used as judgment condition)
-    BSP_GUARD_READ_ALLOW_ALL = 1       ///< Read allows all (SPID is NOT used as judgment condition)
+    BSP_GUARD_READ_USE_SPID  = 0U,                                                                  ///< Read uses SPID check (SPID is used as judgment condition)
+    BSP_GUARD_READ_ALLOW_ALL = 1U                                                                   ///< Read allows all (SPID is NOT used as judgment condition)
 } bsp_guard_read_t;
 
 /** Guard secure access control */
-typedef enum e_bsp_guard_secure
+typedef enum e_bsp_guard_secure                                                                     /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_GUARD_SECURE_DISABLE = 0,      ///< R/W disabled for non-secure master
-    BSP_GUARD_SECURE_ENABLE  = 1,      ///< R/W depends on other protection settings
+    BSP_GUARD_SECURE_DISABLE = 0U,                                                                  ///< R/W disabled for non-secure master
+    BSP_GUARD_SECURE_ENABLE  = 1U                                                                   ///< R/W depends on other protection settings
 } bsp_guard_secure_t;
 
 /** Guard lock setting control */
-typedef enum e_bsp_guard_lock
+typedef enum e_bsp_guard_lock                                                                       /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_GUARD_LOCK_DISABLE = 0,        ///< Allow re-configure protect setting rewrite
-    BSP_GUARD_LOCK_ENABLE  = 1,        ///< Block further writes until reset
+    BSP_GUARD_LOCK_DISABLE = 0U,                                                                    ///< Allow re-configure protect setting rewrite
+    BSP_GUARD_LOCK_ENABLE  = 1U                                                                     ///< Block further writes until reset
 } bsp_guard_lock_t;
 
 /** MPID permissions for SPID entries */
-typedef enum e_bsp_guard_mpid
+typedef enum e_bsp_guard_mpid                                                                       /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_GUARD_MPID_NONE = 0,           ///< No SPID permitted (MPID[7:0] = 00000000B)
+    BSP_GUARD_MPID_NONE = 0,                                                                        ///< No SPID permitted (MPID[7:0] = 00000000B)
 
-    BSP_GUARD_MPID_0 = (1 << 0),       ///< Permit SPID set in MPID0 (MPID[0] = 1)
-    BSP_GUARD_MPID_1 = (1 << 1),       ///< Permit SPID set in MPID1 (MPID[1] = 1)
-    BSP_GUARD_MPID_2 = (1 << 2),       ///< Permit SPID set in MPID2 (MPID[2] = 1)
-    BSP_GUARD_MPID_3 = (1 << 3),       ///< Permit SPID set in MPID3 (MPID[3] = 1)
-    BSP_GUARD_MPID_4 = (1 << 4),       ///< Permit SPID set in MPID4 (MPID[4] = 1)
-    BSP_GUARD_MPID_5 = (1 << 5),       ///< Permit SPID set in MPID5 (MPID[5] = 1)
-    BSP_GUARD_MPID_6 = (1 << 6),       ///< Permit SPID set in MPID6 (MPID[6] = 1)
-    BSP_GUARD_MPID_7 = (1 << 7),       ///< Permit SPID set in MPID7 (MPID[7] = 1)
-} bsp_guard_mpid_t;
+    BSP_GUARD_MPID_0 = ((uint8_t) 1U << 0),                                                         ///< Permit SPID set in MPID0 (MPID[0] = 1)
+    BSP_GUARD_MPID_1 = ((uint8_t) 1U << 1),                                                         ///< Permit SPID set in MPID1 (MPID[1] = 1)
+    BSP_GUARD_MPID_2 = ((uint8_t) 1U << 2),                                                         ///< Permit SPID set in MPID2 (MPID[2] = 1)
+    BSP_GUARD_MPID_3 = ((uint8_t) 1U << 3),                                                         ///< Permit SPID set in MPID3 (MPID[3] = 1)
+    BSP_GUARD_MPID_4 = ((uint8_t) 1U << 4),                                                         ///< Permit SPID set in MPID4 (MPID[4] = 1)
+    BSP_GUARD_MPID_5 = ((uint8_t) 1U << 5),                                                         ///< Permit SPID set in MPID5 (MPID[5] = 1)
+    BSP_GUARD_MPID_6 = ((uint8_t) 1U << 6),                                                         ///< Permit SPID set in MPID6 (MPID[6] = 1)
+    BSP_GUARD_MPID_7 = ((uint8_t) 1U << 7),                                                         ///< Permit SPID set in MPID7 (MPID[7] = 1)
+} bsp_guard_mpid_t;                                                                                 /* PRQA S 1535 # Advisory R-2.3 */
 
-/** SPID access permissions (0–31) */
-typedef enum e_bsp_guard_set_spid
+/** SPID access permissions (0-31) */
+typedef enum e_bsp_guard_set_spid                                                                   /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_GUARD_SET_SPID_NONE = 0,       ///< No SPID access
+    BSP_GUARD_SET_SPID_NONE = 0U,                                                                   ///< No SPID access
 
-    BSP_GUARD_SET_SPID0  = (1 << 0),   ///< Enable access for SPID = 0
-    BSP_GUARD_SET_SPID1  = (1 << 1),   ///< Enable access for SPID = 1
-    BSP_GUARD_SET_SPID2  = (1 << 2),   ///< Enable access for SPID = 2
-    BSP_GUARD_SET_SPID3  = (1 << 3),   ///< Enable access for SPID = 3
-    BSP_GUARD_SET_SPID4  = (1 << 4),   ///< Enable access for SPID = 4
-    BSP_GUARD_SET_SPID5  = (1 << 5),   ///< Enable access for SPID = 5
-    BSP_GUARD_SET_SPID6  = (1 << 6),   ///< Enable access for SPID = 6
-    BSP_GUARD_SET_SPID7  = (1 << 7),   ///< Enable access for SPID = 7
-    BSP_GUARD_SET_SPID8  = (1 << 8),   ///< Enable access for SPID = 8
-    BSP_GUARD_SET_SPID9  = (1 << 9),   ///< Enable access for SPID = 9
-    BSP_GUARD_SET_SPID10 = (1 << 10),  ///< Enable access for SPID = 10
-    BSP_GUARD_SET_SPID11 = (1 << 11),  ///< Enable access for SPID = 11
-    BSP_GUARD_SET_SPID12 = (1 << 12),  ///< Enable access for SPID = 12
-    BSP_GUARD_SET_SPID13 = (1 << 13),  ///< Enable access for SPID = 13
-    BSP_GUARD_SET_SPID14 = (1 << 14),  ///< Enable access for SPID = 14
-    BSP_GUARD_SET_SPID15 = (1 << 15),  ///< Enable access for SPID = 15
-    BSP_GUARD_SET_SPID16 = (1 << 16),  ///< Enable access for SPID = 16
-    BSP_GUARD_SET_SPID17 = (1 << 17),  ///< Enable access for SPID = 17
-    BSP_GUARD_SET_SPID18 = (1 << 18),  ///< Enable access for SPID = 18
-    BSP_GUARD_SET_SPID19 = (1 << 19),  ///< Enable access for SPID = 19
-    BSP_GUARD_SET_SPID20 = (1 << 20),  ///< Enable access for SPID = 20
-    BSP_GUARD_SET_SPID21 = (1 << 21),  ///< Enable access for SPID = 21
-    BSP_GUARD_SET_SPID22 = (1 << 22),  ///< Enable access for SPID = 22
-    BSP_GUARD_SET_SPID23 = (1 << 23),  ///< Enable access for SPID = 23
-    BSP_GUARD_SET_SPID24 = (1 << 24),  ///< Enable access for SPID = 24
-    BSP_GUARD_SET_SPID25 = (1 << 25),  ///< Enable access for SPID = 25
-    BSP_GUARD_SET_SPID26 = (1 << 26),  ///< Enable access for SPID = 26
-    BSP_GUARD_SET_SPID27 = (1 << 27),  ///< Enable access for SPID = 27
-    BSP_GUARD_SET_SPID28 = (1 << 28),  ///< Enable access for SPID = 28
-    BSP_GUARD_SET_SPID29 = (1 << 29),  ///< Enable access for SPID = 29
-    BSP_GUARD_SET_SPID30 = (1 << 30),  ///< Enable access for SPID = 30
-    BSP_GUARD_SET_SPID31 = (1 << 31)   ///< Enable access for SPID = 31
-} bsp_guard_set_spid_t;
+    BSP_GUARD_SET_SPID0  = ((uint32_t) 1U << 0),                                                    ///< Enable access for SPID = 0
+    BSP_GUARD_SET_SPID1  = ((uint32_t) 1U << 1),                                                    ///< Enable access for SPID = 1
+    BSP_GUARD_SET_SPID2  = ((uint32_t) 1U << 2),                                                    ///< Enable access for SPID = 2
+    BSP_GUARD_SET_SPID3  = ((uint32_t) 1U << 3),                                                    ///< Enable access for SPID = 3
+    BSP_GUARD_SET_SPID4  = ((uint32_t) 1U << 4),                                                    ///< Enable access for SPID = 4
+    BSP_GUARD_SET_SPID5  = ((uint32_t) 1U << 5),                                                    ///< Enable access for SPID = 5
+    BSP_GUARD_SET_SPID6  = ((uint32_t) 1U << 6),                                                    ///< Enable access for SPID = 6
+    BSP_GUARD_SET_SPID7  = ((uint32_t) 1U << 7),                                                    ///< Enable access for SPID = 7
+    BSP_GUARD_SET_SPID8  = ((uint32_t) 1U << 8),                                                    ///< Enable access for SPID = 8
+    BSP_GUARD_SET_SPID9  = ((uint32_t) 1U << 9),                                                    ///< Enable access for SPID = 9
+    BSP_GUARD_SET_SPID10 = ((uint32_t) 1U << 10),                                                   ///< Enable access for SPID = 10
+    BSP_GUARD_SET_SPID11 = ((uint32_t) 1U << 11),                                                   ///< Enable access for SPID = 11
+    BSP_GUARD_SET_SPID12 = ((uint32_t) 1U << 12),                                                   ///< Enable access for SPID = 12
+    BSP_GUARD_SET_SPID13 = ((uint32_t) 1U << 13),                                                   ///< Enable access for SPID = 13
+    BSP_GUARD_SET_SPID14 = ((uint32_t) 1U << 14),                                                   ///< Enable access for SPID = 14
+    BSP_GUARD_SET_SPID15 = ((uint32_t) 1U << 15),                                                   ///< Enable access for SPID = 15
+    BSP_GUARD_SET_SPID16 = ((uint32_t) 1U << 16),                                                   ///< Enable access for SPID = 16
+    BSP_GUARD_SET_SPID17 = ((uint32_t) 1U << 17),                                                   ///< Enable access for SPID = 17
+    BSP_GUARD_SET_SPID18 = ((uint32_t) 1U << 18),                                                   ///< Enable access for SPID = 18
+    BSP_GUARD_SET_SPID19 = ((uint32_t) 1U << 19),                                                   ///< Enable access for SPID = 19
+    BSP_GUARD_SET_SPID20 = ((uint32_t) 1U << 20),                                                   ///< Enable access for SPID = 20
+    BSP_GUARD_SET_SPID21 = ((uint32_t) 1U << 21),                                                   ///< Enable access for SPID = 21
+    BSP_GUARD_SET_SPID22 = ((uint32_t) 1U << 22),                                                   ///< Enable access for SPID = 22
+    BSP_GUARD_SET_SPID23 = ((uint32_t) 1U << 23),                                                   ///< Enable access for SPID = 23
+    BSP_GUARD_SET_SPID24 = ((uint32_t) 1U << 24),                                                   ///< Enable access for SPID = 24
+    BSP_GUARD_SET_SPID25 = ((uint32_t) 1U << 25),                                                   ///< Enable access for SPID = 25
+    BSP_GUARD_SET_SPID26 = ((uint32_t) 1U << 26),                                                   ///< Enable access for SPID = 26
+    BSP_GUARD_SET_SPID27 = ((uint32_t) 1U << 27),                                                   ///< Enable access for SPID = 27
+    BSP_GUARD_SET_SPID28 = ((uint32_t) 1U << 28),                                                   ///< Enable access for SPID = 28
+    BSP_GUARD_SET_SPID29 = ((uint32_t) 1U << 29),                                                   ///< Enable access for SPID = 29
+    BSP_GUARD_SET_SPID30 = ((uint32_t) 1U << 30),                                                   ///< Enable access for SPID = 30
+    BSP_GUARD_SET_SPID31 = (1 << 31) /* PRQA S 0499, 4543 # DP_MSR_R-12.2_UC1, DP_MSR_R-10.1_UC1 */ ///< Enable access for SPID = 31
+} bsp_guard_set_spid_t;                                                                             /* PRQA S 1535 # Advisory R-2.3 */
 
 /** PE guard region size settings */
-typedef enum e_bsp_peg_region_size
+typedef enum e_bsp_peg_region_size                                                                  /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_PEG_REGION_SIZE_4KB  = 0x3FFF, ///< 4KB   - Requires Address 4KB alignment
-    BSP_PEG_REGION_SIZE_8KB  = 0x3FFE, ///< 8KB   - Requires Address 8KB alignment
-    BSP_PEG_REGION_SIZE_16KB = 0x3FFC, ///< 16KB  - Requires Address 16KB alignment
-    BSP_PEG_REGION_SIZE_32KB = 0x3FF8, ///< 32KB  - Requires Address 32KB alignment
-    BSP_PEG_REGION_SIZE_64KB = 0x3FF0, ///< 64KB  - Requires Address 64KB alignment
-    BSP_PEG_REGION_SIZE_MAX  = 0x0000  ///< MAX    - Protects entire Local RAM region
-} bsp_peg_region_size_t;
+    BSP_PEG_REGION_SIZE_4KB  = 0x3FFF,                                                              ///< 4KB   - Requires Address 4KB alignment
+    BSP_PEG_REGION_SIZE_8KB  = 0x3FFE,                                                              ///< 8KB   - Requires Address 8KB alignment
+    BSP_PEG_REGION_SIZE_16KB = 0x3FFC,                                                              ///< 16KB  - Requires Address 16KB alignment
+    BSP_PEG_REGION_SIZE_32KB = 0x3FF8,                                                              ///< 32KB  - Requires Address 32KB alignment
+    BSP_PEG_REGION_SIZE_64KB = 0x3FF0,                                                              ///< 64KB  - Requires Address 64KB alignment
+    BSP_PEG_REGION_SIZE_MAX  = 0x0000                                                               ///< MAX    - Protects entire Local RAM region
+} bsp_peg_region_size_t;                                                                            /* PRQA S 1535 # Advisory R-2.3 */
 
 /** Cluster RAM guard region size settings */
-typedef enum e_bsp_crg_region_size
+typedef enum e_bsp_crg_region_size                                                                  /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_CRG_REGION_SIZE_256B  = 0x7FF, ///< 256B  - Requires Address 256B alignment
-    BSP_CRG_REGION_SIZE_512B  = 0x7FE, ///< 512B  - Requires Address 512B alignment
-    BSP_CRG_REGION_SIZE_1KB   = 0x7FC, ///< 1KB   - Requires Address 1KB alignment
-    BSP_CRG_REGION_SIZE_2KB   = 0x7F8, ///< 2KB   - Requires Address 2KB alignment
-    BSP_CRG_REGION_SIZE_4KB   = 0x7F0, ///< 4KB   - Requires Address 4KB alignment
-    BSP_CRG_REGION_SIZE_8KB   = 0x7E0, ///< 8KB   - Requires Address 8KB alignment
-    BSP_CRG_REGION_SIZE_16KB  = 0x7C0, ///< 16KB  - Requires Address 16KB alignment
-    BSP_CRG_REGION_SIZE_32KB  = 0x780, ///< 32KB  - Requires Address 32KB alignment
-    BSP_CRG_REGION_SIZE_64KB  = 0x700, ///< 64KB  - Requires Address 64KB alignment
-    BSP_CRG_REGION_SIZE_128KB = 0x600, ///< 128KB - Requires Address 128KB alignment
-    BSP_CRG_REGION_SIZE_256KB = 0x400, ///< 256KB - Requires Address 256KB alignment
-    BSP_CRG_REGION_SIZE_512KB = 0x000, ///< 512KB - Protects entire Cluster RAM region
-} bsp_crg_region_size_t;
+    BSP_CRG_REGION_SIZE_256B  = 0x7FF,                                                              ///< 256B  - Requires Address 256B alignment
+    BSP_CRG_REGION_SIZE_512B  = 0x7FE,                                                              ///< 512B  - Requires Address 512B alignment
+    BSP_CRG_REGION_SIZE_1KB   = 0x7FC,                                                              ///< 1KB   - Requires Address 1KB alignment
+    BSP_CRG_REGION_SIZE_2KB   = 0x7F8,                                                              ///< 2KB   - Requires Address 2KB alignment
+    BSP_CRG_REGION_SIZE_4KB   = 0x7F0,                                                              ///< 4KB   - Requires Address 4KB alignment
+    BSP_CRG_REGION_SIZE_8KB   = 0x7E0,                                                              ///< 8KB   - Requires Address 8KB alignment
+    BSP_CRG_REGION_SIZE_16KB  = 0x7C0,                                                              ///< 16KB  - Requires Address 16KB alignment
+    BSP_CRG_REGION_SIZE_32KB  = 0x780,                                                              ///< 32KB  - Requires Address 32KB alignment
+    BSP_CRG_REGION_SIZE_64KB  = 0x700,                                                              ///< 64KB  - Requires Address 64KB alignment
+    BSP_CRG_REGION_SIZE_128KB = 0x600,                                                              ///< 128KB - Requires Address 128KB alignment
+    BSP_CRG_REGION_SIZE_256KB = 0x400,                                                              ///< 256KB - Requires Address 256KB alignment
+    BSP_CRG_REGION_SIZE_512KB = 0x000,                                                              ///< 512KB - Protects entire Cluster RAM region
+} bsp_crg_region_size_t;                                                                            /* PRQA S 1535 # Advisory R-2.3 */
 
 /** PE guard protection configuration */
-typedef struct st_bsp_peg_protection_setting
+typedef struct st_bsp_peg_protection_setting                                                        /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Specifies which PE's Local RAM and INTC1 areas to protect */
     bsp_peg_control_t control;
@@ -456,31 +460,33 @@ typedef struct st_bsp_peg_protection_setting
     uint8_t channel;
 
     /** Protection Control setting */
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         struct
         {
-            bsp_guard_read_t  read_global    : 1; ///< Read Global Enable
-            bsp_guard_write_t write_global   : 1; ///< Write Global Enable
+            bsp_guard_read_t  read_global    : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Read Global Enable
+            bsp_guard_write_t write_global   : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Write Global Enable
             uint32_t                         : 2;
-            bsp_guard_um_t user_mode         : 1; ///< User Mode setting
+            bsp_guard_um_t user_mode         : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< User Mode setting
             uint32_t                         : 1;
-            bsp_guard_debug_t debug_mode     : 1; ///< Debug Master Enable
+            bsp_guard_debug_t debug_mode     : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Debug Master Enable
             uint32_t                         : 1;
-            bsp_guard_setting_t guard_enable : 1; ///< Guard Enable
+            bsp_guard_setting_t guard_enable : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Guard Enable
             uint32_t                         : 23;
-        } protect_setting_b;                      ///< Protection attribute setting
+        } protect_setting_b;                                                                                                                                                                    ///< Protection attribute setting
 
-        uint32_t protect_setting;                 ///< Direct access to all protection control settings
-    };
+        uint32_t protect_setting;                                                                                                                                                               ///< Direct access to all protection control settings
+    };                                                                                                                                                                                          /* PRQA S 0660 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    /* PRQA S 0750 -- */
 
-    uint32_t spid;                                ///< SPIDs permitted to access this region
-    uint32_t base_address;                        ///< Start address of protected region (4KB aligned)
-    uint32_t valid_address;                       ///< Address mask defining region size
+    uint32_t spid;                                                                                                                                                                              ///< SPIDs permitted to access this region
+    uint32_t base_address;                                                                                                                                                                      ///< Start address of protected region (4KB aligned)
+    uint32_t valid_address;                                                                                                                                                                     ///< Address mask defining region size
 } bsp_peg_protection_setting_t;
 
 /** Cluster RAM guard protection configuration */
-typedef struct st_bsp_crg_protection_setting
+typedef struct st_bsp_crg_protection_setting                                                                                                                                                    /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Specifies which Cluster RAM areas to protect */
     bsp_crg_control_t control;
@@ -489,30 +495,32 @@ typedef struct st_bsp_crg_protection_setting
     uint8_t channel;
 
     /** Protection Control setting */
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         struct
         {
-            bsp_guard_read_t  read_global    : 1; ///< Read Global Enable
-            bsp_guard_write_t write_global   : 1; ///< Write Global Enable
+            bsp_guard_read_t  read_global    : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Read Global Enable
+            bsp_guard_write_t write_global   : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Write Global Enable
             uint32_t                         : 2;
-            bsp_guard_um_t user_mode         : 1; ///< User Mode setting
+            bsp_guard_um_t user_mode         : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< User Mode setting
             uint32_t                         : 1;
-            bsp_guard_debug_t debug_mode     : 1; ///< Debug Master Enable
+            bsp_guard_debug_t debug_mode     : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Debug Master Enable
             uint32_t                         : 1;
-            bsp_guard_setting_t guard_enable : 1; ///< Guard Enable
+            bsp_guard_setting_t guard_enable : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Guard Enable
             uint32_t                         : 23;
-        }        protect_setting_b;               ///< Protection attribute setting
-        uint32_t protect_setting;                 ///< Direct access to all protection control settings
-    };
+        }        protect_setting_b;                                                                                                                                                             ///< Protection attribute setting
+        uint32_t protect_setting;                                                                                                                                                               ///< Direct access to all protection control settings
+    };                                                                                                                                                                                          /* PRQA S 0660 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    /* PRQA S 0750 -- */
 
-    uint32_t spid;                                ///< SPIDs permitted to access this region
-    uint32_t base_address;                        ///< Start address of protected region (256B aligned)
-    uint32_t valid_address;                       ///< Address mask defining region size
+    uint32_t spid;                                                                                                                                                                              ///< SPIDs permitted to access this region
+    uint32_t base_address;                                                                                                                                                                      ///< Start address of protected region (256B aligned)
+    uint32_t valid_address;                                                                                                                                                                     ///< Address mask defining region size
 } bsp_crg_protection_setting_t;
 
 /** INTC2 guard protection configuration */
-typedef struct st_bsp_intc2g_protection_setting
+typedef struct st_bsp_intc2g_protection_setting                                                                                                                                                 /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Specifies which INTC2 register group to protect (EIC/EEIC, EIBD/I2EIBG, or IMR) */
     bsp_intc2g_control_t control;
@@ -521,31 +529,33 @@ typedef struct st_bsp_intc2g_protection_setting
     uint16_t channel;
 
     /** Protection Control setting */
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         struct
         {
-            bsp_guard_read_t  read_global    : 1; ///< Read Global enable
-            bsp_guard_write_t write_global   : 1; ///< Write Global enable
+            bsp_guard_read_t  read_global    : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Read Global enable
+            bsp_guard_write_t write_global   : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Write Global enable
             uint32_t                         : 2;
-            bsp_guard_um_t user_mode         : 1; ///< User Mode setting
+            bsp_guard_um_t user_mode         : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< User Mode setting
             uint32_t                         : 1;
-            bsp_guard_debug_t debug_mode     : 1; ///< Debug Master setting
+            bsp_guard_debug_t debug_mode     : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Debug Master setting
             uint32_t                         : 1;
-            bsp_guard_setting_t guard_enable : 1; ///< Guard Enable
+            bsp_guard_setting_t guard_enable : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Guard Enable
             uint32_t                         : 7;
-            uint32_t mpid_permit             : 8; ///< MPID bitmap
+            uint32_t mpid_permit             : 8;                                                                                                                                               ///< MPID bitmap
             uint32_t                         : 8;
-        }        protect_setting_b;               ///< Protection attribute setting
-        uint32_t protect_setting;                 ///< Direct access to all protection control settings
-    };
+        }        protect_setting_b;                                                                                                                                                             ///< Protection attribute setting
+        uint32_t protect_setting;                                                                                                                                                               ///< Direct access to all protection control settings
+    };                                                                                                                                                                                          /* PRQA S 0660 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    /* PRQA S 0750 -- */
 
     /** SPID settings array (8 elements): Each element specifies one SPID value (0-31) that can be referenced by MPID bitmap */
     uint32_t spid[8];
 } bsp_intc2g_protection_setting_t;
 
 /** sDMAC guard protection configuration */
-typedef struct st_bsp_dmag_protection_setting
+typedef struct st_bsp_dmag_protection_setting /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Specifies which sDMAC unit to protect */
     bsp_dmag_unit_t unit;
@@ -557,31 +567,33 @@ typedef struct st_bsp_dmag_protection_setting
     uint16_t channel;
 
     /** Protection Control setting */
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         struct
         {
-            bsp_guard_read_t  read_global    : 1; ///< Read Global Enable
-            bsp_guard_write_t write_global   : 1; ///< Write Global Enable
+            bsp_guard_read_t  read_global    : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Read Global Enable
+            bsp_guard_write_t write_global   : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Write Global Enable
             uint32_t                         : 2;
-            bsp_guard_um_t user_mode         : 1; ///< User Mode setting
+            bsp_guard_um_t user_mode         : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< User Mode setting
             uint32_t                         : 1;
-            bsp_guard_debug_t debug_mode     : 1; ///< Debug Master setting
+            bsp_guard_debug_t debug_mode     : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Debug Master setting
             uint32_t                         : 1;
-            bsp_guard_setting_t guard_enable : 1; ///< Guard Enable
+            bsp_guard_setting_t guard_enable : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Guard Enable
             uint32_t                         : 7;
-            uint32_t mpid_permit             : 8; ///< MPID bitmap
+            uint32_t mpid_permit             : 8;                                                                                                                                               ///< MPID bitmap
             uint32_t                         : 8;
-        }        protect_setting_b;               ///< Protection attribute setting
-        uint32_t protect_setting;                 ///< Direct access to all protection control settings
-    };
+        }        protect_setting_b;                                                                                                                                                             ///< Protection attribute setting
+        uint32_t protect_setting;                                                                                                                                                               ///< Direct access to all protection control settings
+    };                                                                                                                                                                                          /* PRQA S 0660 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    /* PRQA S 0750 -- */
 
     /** SPID settings array (8 elements): Each element specifies one SPID value (0-31) that can be referenced by MPID bitmap */
     uint32_t spid[8];
 } bsp_dmag_protection_setting_t;
 
 /** DTS guard protection configuration */
-typedef struct st_bsp_dtsg_protection_setting
+typedef struct st_bsp_dtsg_protection_setting /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Specifies which DTS register group to protect (common or channel-specific) */
     bsp_dtsg_control_t control;
@@ -590,31 +602,33 @@ typedef struct st_bsp_dtsg_protection_setting
     uint16_t channel;
 
     /** Protection Control setting */
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         struct
         {
-            bsp_guard_read_t  read_global    : 1; ///< Read Global Enable
-            bsp_guard_write_t write_global   : 1; ///< Write Global Enable
+            bsp_guard_read_t  read_global    : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Read Global Enable
+            bsp_guard_write_t write_global   : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Write Global Enable
             uint32_t                         : 2;
-            bsp_guard_um_t user_mode         : 1; ///< User Mode setting
+            bsp_guard_um_t user_mode         : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< User Mode setting
             uint32_t                         : 1;
-            bsp_guard_debug_t debug_mode     : 1; ///< Debug Master setting
+            bsp_guard_debug_t debug_mode     : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Debug Master setting
             uint32_t                         : 1;
-            bsp_guard_setting_t guard_enable : 1; ///< Guard Enable
+            bsp_guard_setting_t guard_enable : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Guard Enable
             uint32_t                         : 7;
-            uint32_t mpid_permit             : 8; ///< MPID bitmap
+            uint32_t mpid_permit             : 8;                                                                                                                                               ///< MPID bitmap
             uint32_t                         : 8;
-        }        protect_setting_b;               ///< Protection attribute setting
-        uint32_t protect_setting;                 ///< Direct access to all protection control settings
-    };
+        }        protect_setting_b;                                                                                                                                                             ///< Protection attribute setting
+        uint32_t protect_setting;                                                                                                                                                               ///< Direct access to all protection control settings
+    };                                                                                                                                                                                          /* PRQA S 0660 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    /* PRQA S 0750 -- */
 
     /** SPID settings array (8 elements): Each element specifies one SPID value (0-31) that can be referenced by MPID bitmap */
     uint32_t spid[8];
 } bsp_dtsg_protection_setting_t;
 
 /** PBG/HBG guard protection configuration */
-typedef struct st_bsp_pbg_protection_setting
+typedef struct st_bsp_pbg_protection_setting /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Bus group target: Specifies which PBG or HBG group to protect */
     bsp_pbg_group_t group;
@@ -623,29 +637,31 @@ typedef struct st_bsp_pbg_protection_setting
     uint8_t channel;
 
     /** Protection Control setting */
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         struct
         {
-            bsp_guard_read_t  read_global     : 1; ///< Read Global enable
-            bsp_guard_write_t write_global    : 1; ///< Write Global enable
+            bsp_guard_read_t  read_global     : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Read Global enable
+            bsp_guard_write_t write_global    : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Write Global enable
             uint32_t                          : 2;
-            bsp_guard_um_t user_mode          : 1; ///< User Mode setting
+            bsp_guard_um_t user_mode          : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< User Mode setting
             uint32_t                          : 1;
-            bsp_guard_debug_t   debug_mode    : 1; ///< Debug Master setting
-            bsp_guard_secure_t  secure_master : 1; ///< Secure Master setting
-            bsp_guard_setting_t guard_enable  : 1; ///< Guard Enable: Disable
+            bsp_guard_debug_t   debug_mode    : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Debug Master setting
+            bsp_guard_secure_t  secure_master : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Secure Master setting
+            bsp_guard_setting_t guard_enable  : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Guard Enable: Disable
             uint32_t                          : 22;
-            bsp_guard_lock_t lock             : 1; ///< Lock Prevents modification when set
-        }        protect_setting_b;                ///< Protection attribute setting
-        uint32_t protect_setting;                  ///< Direct access to all protection control settings
-    };
+            bsp_guard_lock_t lock             : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Lock Prevents modification when set
+        }        protect_setting_b;                                                                                                                                                              ///< Protection attribute setting
+        uint32_t protect_setting;                                                                                                                                                                ///< Direct access to all protection control settings
+    };                                                                                                                                                                                           /* PRQA S 0660 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    /* PRQA S 0750 -- */
 
-    uint32_t spid;                                 ///< SPIDs permitted to access this region
+    uint32_t spid;                                                                                                                                                                               ///< SPIDs permitted to access this region
 } bsp_pbg_protection_setting_t;
 
 /** I-Bus guard protection configuration */
-typedef struct st_bsp_ibg_protection_setting
+typedef struct st_bsp_ibg_protection_setting                                                                                                                                                     /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Specifies which I-Bus module register group to protect
      *  - IPIR (Rn/Tn/4), BarrierSync (n/16), or TPTM (IFn/Un/U8/U9)
@@ -656,59 +672,64 @@ typedef struct st_bsp_ibg_protection_setting
     uint8_t channel;
 
     /** Protection Control setting */
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         struct
         {
-            bsp_guard_read_t  read_global    : 1; ///< Read Global Enable
-            bsp_guard_write_t write_global   : 1; ///< Write Global Enable
+            bsp_guard_read_t  read_global    : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Read Global Enable
+            bsp_guard_write_t write_global   : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Write Global Enable
             uint32_t                         : 2;
-            bsp_guard_um_t user_mode         : 1; ///< User Mode setting
+            bsp_guard_um_t user_mode         : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< User Mode setting
             uint32_t                         : 1;
-            bsp_guard_debug_t debug_mode     : 1; ///< Debug Master setting
+            bsp_guard_debug_t debug_mode     : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Debug Master setting
             uint32_t                         : 1;
-            bsp_guard_setting_t guard_enable : 1; ///< Guard Enable
+            bsp_guard_setting_t guard_enable : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Guard Enable
             uint32_t                         : 23;
-        }        protect_setting_b;               ///< Protection attribute setting
-        uint32_t protect_setting;                 ///< Direct access to all protection control settings
-    };
+        }        protect_setting_b;                                                                                                                                                             ///< Protection attribute setting
+        uint32_t protect_setting;                                                                                                                                                               ///< Direct access to all protection control settings
+    };                                                                                                                                                                                          /* PRQA S 0660 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    /* PRQA S 0750 -- */
 
-    uint32_t spid;                                ///< SPIDs permitted to access this region
+    uint32_t spid;                                                                                                                                                                              ///< SPIDs permitted to access this region
 } bsp_ibg_protection_setting_t;
 
 /** Data flow processor guard protection configuration */
-typedef struct st_bsp_dataflowgrd_protection_setting
+typedef struct st_bsp_dataflowgrd_protection_setting                                                                                                                                            /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Channel number (0-7) to configure protection region */
     uint8_t channel;
 
     /** Protection Control setting */
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         struct
         {
-            bsp_guard_read_t  read_global    : 1; ///< Read Global Enable
-            bsp_guard_write_t write_global   : 1; ///< Write Global Enable
+            bsp_guard_read_t  read_global    : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Read Global Enable
+            bsp_guard_write_t write_global   : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Write Global Enable
             uint32_t                         : 2;
-            bsp_guard_um_t user_mode         : 1; ///< User Mode setting
+            bsp_guard_um_t user_mode         : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< User Mode setting
             uint32_t                         : 1;
-            bsp_guard_debug_t debug_mode     : 1; ///< Debug Master setting
+            bsp_guard_debug_t debug_mode     : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Debug Master setting
             uint32_t                         : 1;
-            bsp_guard_setting_t guard_enable : 1; ///< Guard Enable
+            bsp_guard_setting_t guard_enable : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */ ///< Guard Enable
             uint32_t                         : 23;
-        }        protect_setting_b;               ///< Protection attribute setting
-        uint32_t protect_setting;                 ///< Direct access to all protection control settings
-    };
+        }        protect_setting_b;                                                                                                                                                             ///< Protection attribute setting
+        uint32_t protect_setting;                                                                                                                                                               ///< Direct access to all protection control settings
+    };                                                                                                                                                                                          /* PRQA S 0660 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    /* PRQA S 0750 -- */
 
-    uint32_t spid;                                ///< SPIDs permitted to access this region
-    uint32_t base_address;                        ///< Start address of protected region (4KB aligned)
-    uint32_t valid_address;                       ///< Address mask defining region size
+    uint32_t spid;                                                                                                                                                                              ///< SPIDs permitted to access this region
+    uint32_t base_address;                                                                                                                                                                      ///< Start address of protected region (4KB aligned)
+    uint32_t valid_address;                                                                                                                                                                     ///< Address mask defining region size
 } bsp_dataflowgrd_protection_setting_t;
 
 /** Guard protection setting structure for all guard types. Use the appropriate member based on the target guard module. */
-typedef struct st_bsp_guard_protection_setting
+typedef struct st_bsp_guard_protection_setting                                                                                                                                                  /* PRQA S 3630, 1536 # Advisory D-4.8, Advisory R-2.4 */
 {
     /** Guard module-specific protection settings */
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         /** PE Guard settings */
@@ -735,45 +756,49 @@ typedef struct st_bsp_guard_protection_setting
         /** DFP Guard settings */
         bsp_dataflowgrd_protection_setting_t dataflowgrd_setting;
     } slave_guard_protection;
+
+    /* PRQA S 0750 -- */
 } bsp_guard_protection_setting_t;
 
 /** Guard protection status error codes */
-typedef enum e_bsp_protection_status_error
+typedef enum e_bsp_protection_status_error   /* PRQA S 1536 # Advisory R-2.4 */
 {
-    BSP_PROTECTION_STATUS_ERROR_NONE = 0, ///< No guard error detected
-    BSP_PROTECTION_STATUS_ERROR_DETECTED, ///< Guard error detected
-    BSP_PROTECTION_STATUS_ERROR_OVERFLOW  ///< Guard error overflow occurred (new error while previous error not cleared)
+    BSP_PROTECTION_STATUS_ERROR_NONE = 0,    ///< No guard error detected
+    BSP_PROTECTION_STATUS_ERROR_DETECTED,    ///< Guard error detected
+    BSP_PROTECTION_STATUS_ERROR_OVERFLOW     ///< Guard error overflow occurred (new error while previous error not cleared)
 } bsp_protection_status_error_t;
 
 /** Guard protection error status information */
-typedef struct st_bsp_protection_status
+typedef struct st_bsp_protection_status      /* PRQA S 1536 # Advisory R-2.4 */
 {
     bsp_protection_status_error_t errstatus; ///< Guard error status
 
     uint32_t err_access_address;             ///< Address without access permission that caused the guard error
 
     /** Error access attributes */
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         struct
         {
-            bsp_guard_write_t write : 1; ///< Access type (0=Read, 1=Write) when guard error occurred
+            bsp_guard_write_t write : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */                       ///< Access type (0=Read, 1=Write) when guard error occurred
             uint32_t                : 5;
-            uint32_t           spid : 5; ///< SPID[4:0] - Access attribute of SPID when guard error occurred
-            bsp_guard_um_t     um   : 1; ///< UM - User Mode access attribute when guard error occurred
-            bsp_guard_debug_t  dbg  : 1; ///< DBG - Debug access attribute when guard error occurred
-            bsp_guard_secure_t sec  : 1; ///< SEC - Secure access attribute when guard error occurred
+            uint32_t           spid : 5;                                                                                                                                                                     ///< SPID[4:0] - Access attribute of SPID when guard error occurred
+            bsp_guard_um_t     um   : 1; /* PRQA S 0634, 0635, 3660, 1710 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1, Advisory D-4.5 */ ///< UM - User Mode access attribute when guard error occurred
+            bsp_guard_debug_t  dbg  : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */                       ///< DBG - Debug access attribute when guard error occurred
+            bsp_guard_secure_t sec  : 1; /* PRQA S 0634, 0635, 3660 # DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1, DP_MSR_R-6.1_UC1 & DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, DP_MSR_R-6.2_UC1 */                       ///< SEC - Secure access attribute when guard error occurred
             uint32_t                : 18;
-        } err_attribute_b;               ///< Error attribute fields
+        } err_attribute_b;                                                                                                                                                                                   ///< Error attribute fields
 
-        uint32_t err_attribute;          ///< Direct access to error attribute register
-    };
+        uint32_t err_attribute;                                                                                                                                                                              ///< Direct access to error attribute register
+    };                                                                                                                                                                                                       /* PRQA S 0660 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    /* PRQA S 0750 -- */
 
-    uint32_t spid_error_status;          ///< SPID error status bitmap showing which SPID(s) caused guard errors
+    uint32_t spid_error_status;                                                                                                                                                                              ///< SPID error status bitmap showing which SPID(s) caused guard errors
 } bsp_protection_status_t;
 
 /** PE Guard protection error status information */
-typedef struct st_bsp_peg_protection_status
+typedef struct st_bsp_peg_protection_status                                                                                                                                                                  /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Specifies which PE's Local RAM and INTC1 areas to get protect status */
     bsp_peg_control_t control;
@@ -797,7 +822,7 @@ typedef struct st_bsp_peg_protection_status
 } bsp_peg_protection_status_t;
 
 /** CLuster RAM Guard protection error status information */
-typedef struct st_bsp_crg_protection_status
+typedef struct st_bsp_crg_protection_status /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Specifies which Cluster RAM areas to get protect status */
     bsp_crg_control_t control;
@@ -825,7 +850,7 @@ typedef struct st_bsp_crg_protection_status
 } bsp_crg_protection_status_t;
 
 /** sDMAC guard protection status for a specific DMA unit */
-typedef struct st_bsp_dmac_guard_protection_status
+typedef struct st_bsp_dmac_guard_protection_status /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Specifies which sDMAC unit to get protect staus*/
     bsp_dmag_unit_t dma_guard_unit;
@@ -835,7 +860,7 @@ typedef struct st_bsp_dmac_guard_protection_status
 } bsp_dmac_guard_protection_status_t;
 
 /** I-Bus guard protection status for a specific module */
-typedef struct st_bsp_ibg_protection_status
+typedef struct st_bsp_ibg_protection_status /* PRQA S 1536 # Advisory R-2.4 */
 {
     /** Specifies which I-Bus module to get protect staus*/
     bsp_module_ibg_id_t module;
@@ -845,7 +870,7 @@ typedef struct st_bsp_ibg_protection_status
 } bsp_ibg_protection_status_t;
 
 /** PBG/HBG guard protection status for a specific group */
-typedef struct st_bsp_pbg_protection_status
+typedef struct st_bsp_pbg_protection_status /* PRQA S 1536 # Advisory R-2.4 */
 {
     /**  Specifies which PBG or HBG group to get protect status*/
     bsp_pbg_group_t group;
@@ -855,9 +880,10 @@ typedef struct st_bsp_pbg_protection_status
 } bsp_pbg_protection_status_t;
 
 /** Guard protection status structure for all guard types. Use the appropriate member based on the target guard module. */
-typedef struct st_bsp_guard_protection_status
+typedef struct st_bsp_guard_protection_status /* PRQA S 3630, 1536 # Advisory D-4.8, Advisory R-2.4 */
 {
     /** Guard module-specific protection status */
+    /* PRQA S 0750 ++ # Advisory R-19.2 */
     union
     {
         /** PE Guard status */
@@ -883,7 +909,8 @@ typedef struct st_bsp_guard_protection_status
 
         /** DFP Guard status */
         bsp_protection_status_t dataflowgrd_status;
-    };
+    };                                 /* PRQA S 0660 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    /* PRQA S 0750 -- */
 } bsp_guard_protection_status_t;
 
 /** Function pointer type for applying guard protection settings */
@@ -893,72 +920,70 @@ typedef void (* bsp_protection_setting)(const bsp_guard_protection_setting_t * p
 typedef void (* bsp_protection_status)(bsp_guard_protection_status_t * p_status);
 
 /** Properties of a PBG module including group and channel information */
-typedef struct st_bsp_module_pbg_properties
+typedef struct st_bsp_module_pbg_properties         /* PRQA S 3630, 1536 # Advisory D-4.8, Advisory R-2.4 */
 {
-    bsp_pbg_group_t pbg_group;         ///< Guard group
-    uint32_t        pbg_channel;       ///< Guard channel, bit position indicate the channel.
+    bsp_pbg_group_t pbg_group;                      ///< Guard group
+    uint32_t        pbg_channel;                    ///< Guard channel, bit position indicate the channel.
 } bsp_module_pbg_properties_t;
 
 /** PBG module info */
-typedef struct st_bsp_module_pbg_info
+typedef struct st_bsp_module_pbg_info               /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint8_t no_of_element;                    ///< Number of elements
-    uint8_t initial_cfg_value;                ///< Initial configuration value
-    bsp_module_pbg_properties_t * properties; ///< Pointer to PBG module properties
+    uint8_t no_of_element;                          ///< Number of elements
+    uint8_t initial_cfg_value;                      ///< Initial configuration value
+    const bsp_module_pbg_properties_t * properties; ///< Pointer to PBG module properties
 } bsp_module_pbg_info_t;
 
 /** IBG module properties */
-typedef struct st_bsp_module_ibg_properties
+typedef struct st_bsp_module_ibg_properties         /* PRQA S 3630, 1536 # Advisory D-4.8, Advisory R-2.4 */
 {
-    bsp_ibg_control_t ibg_control;     ///< IBGuard target
-    uint16_t          ibg_channel;     ///< IBGuard target channel, bit position indicate the channel.
+    bsp_ibg_control_t ibg_control;                  ///< IBGuard target
+    uint16_t          ibg_channel;                  ///< IBGuard target channel, bit position indicate the channel.
 } bsp_module_ibg_properties_t;
 
 /** IBG module info */
-typedef struct st_bsp_module_ibg_info
+typedef struct st_bsp_module_ibg_info               /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint8_t no_of_element;                    ///< Number of elements
-    uint8_t initial_cfg_value;                ///< Initial configuration value
-    bsp_module_ibg_properties_t * properties; ///< Pointer to IBG module properties
+    uint8_t no_of_element;                          ///< Number of elements
+    uint8_t initial_cfg_value;                      ///< Initial configuration value
+    const bsp_module_ibg_properties_t * properties; ///< Pointer to IBG module properties
 } bsp_module_ibg_info_t;
 
 /** INTC1 & Local RAM protection info */
-typedef struct st_bsp_intc1_lram_info
+typedef struct st_bsp_intc1_lram_info               /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint8_t           initial_cfg_value; ///< Initial configuration flag
-    bsp_peg_control_t lram_peg;          ///< protection control identifier for INTC1 and Local RAM protection
+    uint8_t           initial_cfg_value;            ///< Initial configuration flag
+    bsp_peg_control_t lram_peg;                     ///< protection control identifier for INTC1 and Local RAM protection
 } bsp_intc1_lram_info_t;
 
 /** Cluster RAM protection info */
-typedef struct st_bsp_cram_info
+typedef struct st_bsp_cram_info                     /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint8_t           initial_cfg_value; ///< Initial configuration flag
-    bsp_crg_control_t cram_crg;          ///< protection control identifier for Cluster RAM protection
+    uint8_t           initial_cfg_value;            ///< Initial configuration flag
+    bsp_crg_control_t cram_crg;                     ///< protection control identifier for Cluster RAM protection
 } bsp_cram_info_t;
 
 /***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
-extern const bsp_module_pbg_info_t  g_bsp_module_pgb_info_table[BSP_MODULE_PBG_TOTAL_INDEX_END];
-extern const bsp_module_ibg_info_t  g_bsp_module_ibg_info_table[BSP_MODULE_IBG_TOTAL_INDEX_END];
-extern const uint32_t               g_pbgprot_baseaddress[BSP_PBG_GROUP_NUM];
-extern const uint32_t               g_pbgkcprot_baseaddress[BSP_PBG_GROUP_NUM];
-extern const uint32_t               g_pbgprot_control_baseaddress[BSP_PBG_GROUP_NUM];
-extern const bsp_intc1_lram_info_t  g_bsp_intc1_lram_info_table[BSP_PEG_CONTROL_NUM];
-extern const bsp_cram_info_t        g_bsp_cram_info_table[BSP_CRG_CONTROL_NUM];
-extern const uint32_t               g_peg_lram_baseaddress[BSP_PEG_CONTROL_NUM];
-extern const uint32_t               g_ibg_baseaddress[BSP_IBG_CONTROL_NUM];
-extern const uint32_t               g_ibgprot_baseaddress[BSP_IBG_CONTROL_NUM];
-extern const uint32_t               g_ibg_module_baseaddress[BSP_MODULE_IBG_TOTAL_INDEX_END];
-extern const uint32_t               g_peg_baseaddress[BSP_PEG_CONTROL_NUM];
-extern const uint32_t               g_pegcap_s_baseaddress[BSP_PEG_CONTROL_NUM];
-extern const uint32_t               g_pegcap_m_baseaddress[BSP_PEG_CONTROL_NUM];
-extern const uint32_t               g_crg_baseaddress[BSP_CRG_CONTROL_NUM];
-extern const uint32_t               g_crgcap_baseaddress[BSP_CRG_CONTROL_NUM][BSP_FEATURE_CRAM_GUARD_STATUS_MAX];
-extern const uint32_t               g_crg_cram_baseaddress[BSP_CRG_CONTROL_NUM];
-extern const uint32_t               g_dmacg_baseaddress[BSP_DMAG_UNIT_NUM];
-extern const bsp_protection_setting guard_protection_setting[BSP_GUARD_TYPE_NUM];
-extern const bsp_protection_status  guard_protection_status[BSP_GUARD_TYPE_NUM];
+extern const bsp_module_pbg_info_t g_bsp_module_pbg_info_table[BSP_MODULE_PBG_TOTAL_INDEX_END];
+extern const bsp_module_ibg_info_t g_bsp_module_ibg_info_table[BSP_MODULE_IBG_TOTAL_INDEX_END];
+extern const uint32_t              g_pbgprot_baseaddress[BSP_PBG_GROUP_NUM];
+extern const uint32_t              g_pbgkcprot_baseaddress[BSP_PBG_GROUP_NUM];
+extern const uint32_t              g_pbgprot_control_baseaddress[BSP_PBG_GROUP_NUM];
+extern const bsp_intc1_lram_info_t g_bsp_intc1_lram_info_table[BSP_PEG_CONTROL_NUM];
+extern const bsp_cram_info_t       g_bsp_cram_info_table[BSP_CRG_CONTROL_NUM];
+extern const uint32_t              g_peg_lram_baseaddress[BSP_PEG_CONTROL_NUM];
+extern const uint32_t              g_ibg_baseaddress[BSP_IBG_CONTROL_NUM];
+extern const uint32_t              g_ibgprot_baseaddress[BSP_IBG_CONTROL_NUM];
+extern const uint32_t              g_ibg_module_baseaddress[BSP_MODULE_IBG_TOTAL_INDEX_END];
+extern const uint32_t              g_peg_baseaddress[BSP_PEG_CONTROL_NUM];
+extern const uint32_t              g_pegcap_s_baseaddress[BSP_PEG_CONTROL_NUM];
+extern const uint32_t              g_pegcap_m_baseaddress[BSP_PEG_CONTROL_NUM];
+extern const uint32_t              g_crg_baseaddress[BSP_CRG_CONTROL_NUM];
+extern const uint32_t              g_crgcap_baseaddress[BSP_CRG_CONTROL_NUM][BSP_FEATURE_CRAM_GUARD_STATUS_MAX];
+extern const uint32_t              g_crg_cram_baseaddress[BSP_CRG_CONTROL_NUM];
+extern const uint32_t              g_dmacg_baseaddress[BSP_DMAG_UNIT_NUM];
 
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)

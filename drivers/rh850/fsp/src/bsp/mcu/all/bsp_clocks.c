@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
-#include "bsp_api.h"
+#include "bsp_api.h"                   /* PRQA S 0380 # DP_MSR_D-1.1-C99_UC1 & DP_MSR_D-1.1-C11_UC1 */
 #include "bsp_clocks.h"
 
 /***********************************************************************************************************************
@@ -26,6 +26,8 @@
  * Private global variables and functions
  **********************************************************************************************************************/
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU
  * @defgroup BSP_CLOCK BSP Clock
@@ -34,12 +36,14 @@
  * @{
  **********************************************************************************************************************/
 
+/* PRQA S 0292 -- */
+
 /*******************************************************************************************************************//**
  * Initializes system clocks.  Makes no assumptions about current register settings.
  **********************************************************************************************************************/
 void R_BSP_InitClock (void)
 {
-    /* Depend on the operation of each system */
+    /* Initialize clocks using the device-specific clock driver. */
     bsp_clock_driver_init();
 }
 
@@ -48,13 +52,22 @@ void R_BSP_InitClock (void)
  *
  * @param[in]   clock                 Element number of the array that defines the frequency of each clock.
  *
- * @retval      g_clock_freq[clock]   Clock frequency.
+ * @retval     Clock frequency.
  *
  * @return     Frequency of requested clock in Hertz.
  **********************************************************************************************************************/
-uint32_t R_FSP_SystemClockHzGet (fsp_priv_clock_t clock)
+uint32_t R_FSP_SystemClockHzGet (fsp_priv_clock_t clock) /* PRQA S 4603 # DP_MSR_R-21.2_UC1 */
 {
-    return g_clock_freq[clock];
+#if BSP_CFG_PARAM_CHECKING_ENABLE
+    if (clock >= FSP_PRIV_CLOCK_NUM)
+    {
+        return 0U;
+    }
+#endif
+
+    uint32_t clock_freq = r_bsp_clock_hz_calculate(clock);
+
+    return clock_freq;
 }
 
 /*******************************************************************************************************************//**

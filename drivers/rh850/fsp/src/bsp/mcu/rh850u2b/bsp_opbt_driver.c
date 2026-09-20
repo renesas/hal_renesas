@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
-#include "bsp_api.h"
+#include "bsp_api.h"                   /* PRQA S 0380 # DP_MSR_D-1.1-C99_UC1 & DP_MSR_D-1.1-C11_UC1 */
 #include "bsp_opbt_driver.h"
 
 /***********************************************************************************************************************
@@ -34,7 +34,7 @@
  * OPBT setting
  **********************************************************************************************************************/
 #if BSP_OPBT_CFG_SETTING_ENABLE
-BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_DATA, BSP_PRAGMA_SECTION_OPTION_BYTE)
+BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_ROM_DATA, BSP_PRAGMA_SECTION_OPTION_BYTE)
 const bsp_opbt_setting_t g_bsp_OPBT_setting =
 {
 /* SOFTWARE CONFIGURATION OPBT 0 **********************************************/
@@ -276,5 +276,5 @@ const bsp_opbt_setting_t g_bsp_OPBT_setting =
 /* OPBT40 **********************************************************************/
     .OPBT_OPBT40_setting              = BSP_OPBT_SETTING_OPBT40
 };
-BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_DATA, BSP_PRAGMA_SECTION_DEFAULT)
+BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_ROM_DATA, BSP_PRAGMA_SECTION_DEFAULT)
 #endif

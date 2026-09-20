@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
-#include "bsp_api.h"
+#include "bsp_api.h"                   /* PRQA S 0380 # DP_MSR_D-1.1-C99_UC1 & DP_MSR_D-1.1-C11_UC1 */
 #include "bsp_io.h"
 
 /***********************************************************************************************************************
@@ -29,9 +29,9 @@
 /** PORT base address */
 R_PORT_Type * R_BSP_PORT_TYPE[] =
 {
-    R_BSP_PORT,                        ///< Base PORT instance
-    R_BSP_JPORT,                       ///< Base JPORT instance
-    R_BSP_APORT                        ///< Base APORT instance
+    R_BSP_PORT, /* PRQA S 0306, 3108 # Advisory R-11.4, DP_MSR_R-3.1_UC1 */                          ///< Base PORT instance
+    R_BSP_JPORT, /* PRQA S 0306, 1281, 3108 # Advisory R-11.4, DP_MSR_R-7.2_UC1, DP_MSR_R-3.1_UC1 */ ///< Base JPORT instance
+    R_BSP_APORT /* PRQA S 0306, 1840, 3108 # Advisory R-11.4, DP_MSR_R-10.4_UC1, DP_MSR_R-3.1_UC1 */ ///< Base APORT instance
 };
 
 /***********************************************************************************************************************

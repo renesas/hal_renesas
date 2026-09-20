@@ -4,6 +4,8 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU_RH850U2A16
  * @defgroup BSP_DTSC_U2A16 BSP DTSC
@@ -11,6 +13,8 @@
  *
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 #ifndef BSP_DTSC_H
 #define BSP_DTSC_H
@@ -27,7 +31,8 @@
  **********************************************************************************************************************/
 
 /** DMA Trigger Factor */
-typedef enum dtsc_trigger_event_u2a16
+/* PRQA S 1507 ++ # DP_MSR_R-5.6_UC1 */
+typedef enum dtsc_trigger_event_u2a16                    /* PRQA S 1536 # Advisory R-2.4 */
 {
     DTSC_TRIGGER_EVENT_ADCJ_INTADCJ0I0         = (0),    ///< INTADCJ0I0
     DTSC_TRIGGER_EVENT_ADCJ_INTADCJ0I1         = (1),    ///< INTADCJ0I1
@@ -512,7 +517,8 @@ typedef enum dtsc_trigger_event_u2a16
     DTSC_TRIGGER_EVENT_PORT_INTP38             = (510),  ///< INTP38
     DTSC_TRIGGER_EVENT_PORT_INTP39             = (511),  ///< INTP39
     DTSC_TRIGGER_EVENT_SOFTWARE                = (768U), ///< SOFTWARE TRIGGER
-} dtsc_trigger_event_t;
+} dtsc_trigger_event_t;                                  /* PRQA S 1535 # Advisory R-2.3 */
+/* PRQA S 1507 -- */
 
 /***********************************************************************************************************************
  * Exported global variables (to be accessed by other files)

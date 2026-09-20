@@ -5,7 +5,7 @@
  *
  * @file     r7f7026x.h
  * @brief    RH850 HeaderFile
- * @version  0.4.0
+ * @version  1.0.0
  */
 
 /** @addtogroup Renesas Electronics Corporation
@@ -1585,685 +1585,6 @@ typedef struct
     };
     __IM uint32_t RESERVED[9];
 } R_MSPI0_INTF_MSPI0_INTF_CMM_Type;    /*!< Size = 48 (0x30)                                                          */
-
-/**
- * @brief R_GTM0_CDTM_CLS_DTM_CH_DTV [CH_DTV] (DTM Channel for CH[0..3]_DTV)
- */
-typedef struct
-{
-    union
-    {
-        __IOM uint32_t CDTM_DTM_CH_DTV;  /*!< (@ 0x00000000) CDTM[i]-DTM[d] channel [x] dead time reload values.        */
-
-        struct
-        {
-            __IOM uint32_t RELRISE : 13; /*!< [12..0] Reload value for rising edge dead time.                           */
-            uint32_t               : 3;
-            __IOM uint32_t RELFALL : 13; /*!< [28..16] Reload value for falling edge dead time.                         */
-            uint32_t               : 2;
-            __IOM uint32_t HRES    : 1;  /*!< [31..31] High-resolution PWM support.0 : High-resolution PWM
-                                          *   support off1 : High-resolution PWM support on                             */
-        } CDTM_DTM_CH_DTV_b;
-    };
-} R_GTM0_CDTM_CLS_DTM_CH_DTV_Type;       /*!< Size = 4 (0x4)                                                            */
-
-/**
- * @brief R_GTM0_CDTM_CLS_DTM_CH_DTV_SR [CH_DTV_SR] (DTM Channel for CH[0..3]_DTV_SR)
- */
-typedef struct
-{
-    union
-    {
-        __IOM uint32_t CDTM_DTM_CH_DTV_SR;          /*!< (@ 0x00000000) CDTM[i]-DTM[d] channel [x] dead time shadow values.        */
-
-        struct
-        {
-            __IOM uint32_t RELRISE_SR         : 13; /*!< [12..0] Shadow value for rising edge dead time.                           */
-            uint32_t                          : 1;
-            __IOM uint32_t RELRISE_UPD_FE0RE1 : 1;  /*!< [14..14] Control if falling edge or rising edge triggers update
-                                                     *   of CDTM[i]_DTM[d]_CH[x]_DTV.RELRISE.0 : update of CDTM[i]_DTM[d]_CH[x]_DT
-                                                     *   .RELRISE triggered by falling edge1 : update of CDTM[i]_DTM[d]_CH[x]_DTV.
-                                                     *   ELRISE triggered by rising edge                                           */
-            __IOM uint32_t RELRISE_UPD_EN : 1;      /*!< [15..15] Control bit to enable update of CDTM[i]_DTM[d]_CH[x]_DTV.RELRISE.0
-                                                     *   : update mechanism of CDTM[i]_DTM[d]_CH[x]_DTV.RELRISE
-                                                     *   disabled1 : update mechanism of CDTM[i]_DTM[d]_CH[x]_DTV.RELRISE
-                                                     *   enabled                                                                   */
-            __IOM uint32_t RELFALL_SR         : 13; /*!< [28..16] Shadow value for falling edge dead time.                         */
-            uint32_t                          : 1;
-            __IOM uint32_t RELFALL_UPD_FE0RE1 : 1;  /*!< [30..30] Control if falling edge or rising edge triggers update
-                                                     *   of CDTM[i]_DTM[d]_CH[x]_DTV.RELFALL.0 : update of CDTM[i]_DTM[d]_CH[x]_DT
-                                                     *   .RELFALL triggered by falling edge1 : update of CDTM[i]_DTM[d]_CH[x]_DTV.
-                                                     *   ELFALL triggered by rising edge                                           */
-            __IOM uint32_t RELFALL_UPD_EN : 1;      /*!< [31..31] Control bit to enable update of CDTM[i]_DTM[d]_CH[x]_DTV.RELFALL.0
-                                                     *   : update mechanism of CDTM[i]_DTM[d]_CH[x]_DTV.RELFALL
-                                                     *   disabled1 : update mechanism of CDTM[i]_DTM[d]_CH[x]_DTV.RELFALL
-                                                     *   enabled                                                                   */
-        } CDTM_DTM_CH_DTV_SR_b;
-    };
-} R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_Type;               /*!< Size = 4 (0x4)                                                            */
-
-/**
- * @brief R_GTM0_CDTM_CLS_DTM [DTM] (DTM Instance [0..7])
- */
-typedef struct
-{
-    union
-    {
-        __IOM uint32_t CDTM_DTM_CTRL;         /*!< (@ 0x00000000) CDTM[i]-DTM[d] global configuration and control
-                                               *                  register.                                                  */
-
-        struct
-        {
-            __IOM uint32_t CLK_SEL : 2;       /*!< [1..0] Clock resolution selection.Case (d < 4)00 : CLS[i]_CLK
-                                               *   resolution selected (cluster clock)01 : CCM[i]_CLK_RES[0:0]
-                                               *   resolution in use, selected input CLK_RES[0:0]10 : CCM[i]_FXCLK_RES[0:0]
-                                               *   resolution in use, selected input CLK_RES[1:1](DTM is connected
-                                               *   to TOM)11 : CCM[i]_FXCLK_RES[1:1] resolution in use, selected
-                                               *   input CLK_RES[2:2] (DTM is connected to TOM)Case (d > 3
-                                               *   && d <= 11)00 : CLS[i]_CLK resolution selected (cluster
-                                               *   clock)01 : CCM[i]_CLK_RES[0:0] resolution in use, selected
-                                               *   input CLK_RES[0:0]10 : CCM                                                */
-            __IOM uint32_t DTM_SEL : 2;       /*!< [3..2] Select DTM update and PSU_SHUT_OFF reset signal.00 :
-                                               *   select falling edge on DTM[d] channel 0 input01 : select
-                                               *   rising edge on DTM[d] channel 0 input10 : select falling
-                                               *   edge on DTM[d - 1] channel 0 input11 : select rising edge
-                                               *   on DTM[d - 1] channel 0 inputNote:On value 0b00 and 0b01
-                                               *   shutoff is executed by signal TIM_CH_IN0, TIM_CH_IN1 or
-                                               *   DTM_AUX_IN.On value 0b10 and 0b11 shutoff is executed by
-                                               *   signal DTM_PSU_IN.                                                        */
-            __IOM uint32_t UPD_MODE : 3;      /*!< [6..4] Update mode.000 : asynchronous update - CDTM[i]_DTM[d]_CH_CTRL2_SR
-                                               *   not used for update of CDTM[i]_DTM[d]_CH_CTRL2001 : shutoff
-                                               *   release by writing 1 to bit CDTM[i]_DTM[d]_CTRL.SHUT_OFF_RST010
-                                               *   : shutoff release by signal DTM_PREV_IN0_REDGE or DTM_PREV_IN0_FEDGE
-                                               *   or DTM_IN_REDGE or DTM_IN_FEDGE defined by bit field CDTM[i]_DTM[d]_CTRL.
-                                               *   TM_SEL011 : shutoff release by shutoff signal PSU_SHUT_OFF
-                                               *   (defined by bits CDTM[i]_DTM[d]_PS_CTRL.PSU_IN_SEL and
-                                               *   CDTM[i]_DTM[d]_PS_CTRL.IN_POL and CDTM[i]_DTM[d]_CTRL.DTM_SEL[2           */
-            __IOM uint32_t CH_SHUTOFF_EN : 1; /*!< [7..7] Individual shutoff feature enable.0 : individual shutoff
-                                               *   feature disabled1 : individual shutoff feature enabled                    */
-            __IOM uint32_t SR_UPD_EN : 1;     /*!< [8..8] Shadow register update enable.0 : no update of CDTM[i]_DTM[d]_CH_CTRL2_
-                                               *   R.SL0_0_SR, CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_1_SR,CDTM[i]_DTM[d]_CH_CTRL2_S
-                                               *   .SL0_2_SR, CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_3_SR bits,CDTM[i]_DTM[d]_CH_CTR
-                                               *   2_SR.SL1_0_SR bits, CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_1_SR
-                                               *   bits,CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_2_SR bits and CDTM[i]_DTM[d]_CH_CTRL2
-                                               *   SR.SL1_3_SR bits.1 : update of CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_0_SR,
-                                               *   CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_1_SR,CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_2_SR,
-                                               *   CDTM[i]_DTM[d]_CH_CT                                                      */
-            uint32_t                    : 7;
-            __IOM uint32_t SHUT_OFF_RST : 1;  /*!< [16..16] Shut off reset.0 : No action1 : shutoff resetNote:Writing
-                                               *   a 0b1 releases shutoff (resets signal SHUTOFF_SYNC_0 if
-                                               *   selected by CDTM[i]_DTM[d]_CTRL.UPD_MODE[2:0]=0b001)                      */
-            uint32_t : 15;
-        } CDTM_DTM_CTRL_b;
-    };
-
-    union
-    {
-        __IOM uint32_t CDTM_DTM_CH_CTRL1;  /*!< (@ 0x00000004) CDTM[i]-DTM[d] channel control register 1.                 */
-
-        struct
-        {
-            __IOM uint32_t O1SEL_0 : 1;    /*!< [0..0] Output 1 select channel 0.0 : inverse dead time signal
-                                            *   selected1 : special function on output 1 selected (defined
-                                            *   by CDTM[i]_DTM[d]_CH_CTRL1.O1F_0)                                         */
-            __IOM uint32_t I1SEL_0 : 1;    /*!< [1..1] Input 1 select channel 0.0 : signal PSU_SHIFT[0:0] selected1
-                                            *   : signal DTM_COUT3_I from DTM[d - 1] selectedNote:If d
-                                            *   is even, CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_0 is not implemented.              */
-            uint32_t              : 1;
-            __IOM uint32_t SWAP_0 : 1;     /*!< [3..3] Swap outputs DTM_OUT0[0:0] of instance d and DTM_OUT1[0:0]
-                                            *   of instance d (before final output register).0 : outputs
-                                            *   not swapped1 : swap outputs DTM_OUT0[0:0] of instance d
-                                            *   and DTM_OUT1[0:0] of instance d                                           */
-            __IOM uint32_t O1F_0 : 2;      /*!< [5..4] Output 1 function channel 0.00 : Signal EDGE_TRIGG_[x]
-                                            *   of channel [x=0] is selected01 : XOR of signal CII[x]_MUX
-                                            *   of channel [x=0] of instance [d] and signal PSU_SHIFT[0:0]
-                                            *   / DTM_COUT3_I10 : AND of signal CII[x]_MUX of channel [x=0]
-                                            *   of instance [d] and signal PSU_SHIFT[0:0] / DTM_COUT3_I11
-                                            *   : DTM_IN_T[0:0] of instance d selected                                    */
-            __IOM uint32_t XDT_EN_0_1 : 1; /*!< [6..6] Cross dead time enable on channel 0 and 1.0 : cross dead
-                                            *   time disabled on channel 0 and 11 : cross dead time enabled
-                                            *   on channel 0 and 1Note:When a '1' is written to bit CDTM[i]_DTM[d]_CH_CTR
-                                            *   1.XDT_EN_0_1, the internal register IN[x]_DLY1, IN[x]_DLY2and
-                                            *   the counter DT_DOWN_CNT are reset to '0' (x = {0, 1})CDTM[i]_DTM[d]_CH_CT
-                                            *   L3.TSEL0_0 and CDTM[i]_DTM[d]_CH_CTRL1.SH_EN_1 must be
-                                            *   '0'for using cross dead time to avoid wrong input signals.CDTM[i]_DTM[d]_
-                                            *   H_CTRL3.TSEL0_1 and CDTM[i]_DTM[d]_CH_CTRL1.SH_EN_1 mus                   */
-            uint32_t               : 1;
-            __IOM uint32_t O1SEL_1 : 1;    /*!< [8..8] Output 1 select channel 1.0 : inverse dead time signal
-                                            *   selected1 : special function on output 1 selected (defined
-                                            *   by CDTM[i]_DTM[d]_CH_CTRL1.O1F_1)                                         */
-            __IOM uint32_t I1SEL_1 : 1;    /*!< [9..9] Input 1 select channel 1.0 : signal PSU_SHIFT[1:1] selected1
-                                            *   : signal COUT[0:0] selected                                               */
-            __IOM uint32_t SH_EN_1 : 1;    /*!< [10..10] Shift enable channel 1.0 : switch between DTM inputs
-                                            *   of channel [x] and DTM_IN_PREV by PSU_SHIFT or CH_OUT_I(depends
-                                            *   to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_1) is disabled1 : switch
-                                            *   between DTM inputs of channel [x] and DTM_IN_PREV by PSU_SHIFT
-                                            *   or CH_OUT_I(depends to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_1)
-                                            *   is enabled                                                                */
-            __IOM uint32_t SWAP_1 : 1;     /*!< [11..11] Swap outputs DTM_OUT0[1:1] of instance d and DTM_OUT1[1:1]
-                                            *   of instance d (before final output register).0 : outputs
-                                            *   not swapped1 : swap outputs DTM_OUT0[1:1] of instance d
-                                            *   and DTM_OUT1[1:1] of instance d                                           */
-            __IOM uint32_t O1F_1 : 2;      /*!< [13..12] Output 1 function channel 1.00 : Signal EDGE_TRIGG_[x]
-                                            *   of channel [x=1] is selected01 : XOR of signal CII[x]_MUX
-                                            *   of channel [x=1] of instance [d] and signal PSU_SHIFT[1:1]
-                                            *   / COUT[0:0]10 : AND of signal CII[x]_MUX of channel [x=1]
-                                            *   of instance [d] and signal PSU_SHIFT[1:1] / COUT[0:0]11
-                                            *   : DTM_IN_T[1:1] of instance d selected                                    */
-            uint32_t               : 2;
-            __IOM uint32_t O1SEL_2 : 1;    /*!< [16..16] Output 1 select channel 2.0 : inverse dead time signal
-                                            *   selected1 : special function on output 1 selected (defined
-                                            *   by CDTM[i]_DTM[d]_CH_CTRL1.O1F_2)                                         */
-            __IOM uint32_t I1SEL_2 : 1;    /*!< [17..17] Input 1 select channel 2.0 : signal PSU_SHIFT[2:2]
-                                            *   selected1 : signal COUT[1:1] selected                                     */
-            __IM uint32_t SH_EN_2 : 1;     /*!< [18..18] Shift enable channel 2.0 : switch between DTM inputs
-                                            *   of channel [x] and DTM_IN_PREV by PSU_SHIFT or CH_OUT_I(depends
-                                            *   to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_2) is disabled1 : switch
-                                            *   between DTM inputs of channel [x] and DTM_IN_PREV by PSU_SHIFT
-                                            *   or CH_OUT_I(depends to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_2)
-                                            *   is enabled                                                                */
-            __IOM uint32_t SWAP_2 : 1;     /*!< [19..19] Swap outputs DTM_OUT0[2:2] of instance d and DTM_OUT1[2:2]
-                                            *   of instance d (before final output register).0 : outputs
-                                            *   not swapped1 : swap outputs DTM_OUT0[2:2] of instance d
-                                            *   and DTM_OUT1[2:2] of instance d                                           */
-            __IOM uint32_t O1F_2 : 2;      /*!< [21..20] Output 1 function channel 2.00 : Signal EDGE_TRIGG_[x]
-                                            *   of channel [x=2] is selected01 : XOR of signal CII[x]_MUX
-                                            *   of channel [x=2] of instance [d] and signal PSU_SHIFT[2:2]
-                                            *   / COUT[1:1]10 : AND of signal CII[x]_MUX of channel [x=2]
-                                            *   of instance [d] and signal PSU_SHIFT[2:2] / COUT[1:1]11
-                                            *   : DTM_IN_T[2:2] of instance d selected                                    */
-            __IOM uint32_t XDT_EN_2_3 : 1; /*!< [22..22] Cross dead time enable on channel 2 and 3.0 : cross
-                                            *   dead time disabled on channel 2 and 31 : cross dead time
-                                            *   enabled on channel 2 and 3Note:When a '1' is written to
-                                            *   bit CDTM[i]_DTM[d]_CH_CTRL1.XDT_EN_2_3, the internal register
-                                            *   IN[x]_DLY1, IN[x]_DLY2and DT_DOWN_CNT are reset to '0'
-                                            *   (x = {2, 3})CDTM[i]_DTM[d]_CH_CTRL3.TSEL0_2, CDTM[i]_DTM[d]_CH_CTRL3.TSEL
-                                            *   _3, CDTM[i]_DTM[d]_CH_CTRL1.SH_EN_2and CDTM[i]_DTM[d]_CH_CTRL1.SH_EN_3
-                                            *   must be '0' for using cross dead time to avoid wrong input
-                                            *   signals.                                                                  */
-            uint32_t               : 1;
-            __IOM uint32_t O1SEL_3 : 1;    /*!< [24..24] Output 1 select channel 3.0 : inverse dead time signal
-                                            *   selected1 : special function on output 1 selected (defined
-                                            *   by CDTM[i]_DTM[d]_CH_CTRL1.O1F_3)                                         */
-            __IOM uint32_t I1SEL_3 : 1;    /*!< [25..25] Input 1 select channel 3.0 : signal PSU_SHIFT[3:3]
-                                            *   selected1 : signal COUT[2:2] selected                                     */
-            __IOM uint32_t SH_EN_3 : 1;    /*!< [26..26] Shift enable channel 3.0 : switch between DTM inputs
-                                            *   of channel [x] and DTM_IN_PREV by PSU_SHIFT or CH_OUT_I(depends
-                                            *   to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_3) is disabled1 : switch
-                                            *   between DTM inputs of channel [x] and DTM_IN_PREV by PSU_SHIFT
-                                            *   or CH_OUT_I(depends to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_3)
-                                            *   is enabled                                                                */
-            __IOM uint32_t SWAP_3 : 1;     /*!< [27..27] Swap outputs DTM_OUT0[3:3] of instance d and DTM_OUT1[3:3]
-                                            *   of instance d (before final output register).0 : outputs
-                                            *   not swapped1 : swap outputs DTM_OUT0[3:3] of instance d
-                                            *   and DTM_OUT1[3:3] of instance d                                           */
-            __IOM uint32_t O1F_3 : 2;      /*!< [29..28] Output 1 function channel 3.00 : Signal EDGE_TRIGG_[x]
-                                            *   of channel [x=3] is selected01 : XOR of signal CII[x]_MUX
-                                            *   of channel [x=3] of instance [d] and signal PSU_SHIFT[3:3]
-                                            *   / COUT[2:2]10 : AND of signal CII[x]_MUX of channel [x=3]
-                                            *   of instance [d] and signal PSU_SHIFT[3:3] / COUT[2:2]11
-                                            *   : DTM_IN_T[3:3] of instance d selected                                    */
-            uint32_t : 2;
-        } CDTM_DTM_CH_CTRL1_b;
-    };
-
-    union
-    {
-        __IOM uint32_t CDTM_DTM_CH_CTRL2; /*!< (@ 0x00000008) CDTM[i]-DTM[d] channel control register 2.                 */
-
-        struct
-        {
-            __IOM uint32_t POL0_0 : 1;    /*!< [0..0] Polarity on output 0 channel 0.0 : Output signal not
-                                           *   inverted1 : Output signal inverted                                        */
-            __IOM uint32_t OC0_0 : 1;     /*!< [1..1] Output 0 control channel 0.0 : Functional output1 : Constant
-                                           *   output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL0_0                           */
-            __IOM uint32_t SL0_0 : 1;     /*!< [2..2] Signal level on output 0 channel 0.0 : set Signal Level
-                                           *   to 01 : set Signal Level to 1                                             */
-            __IOM uint32_t DT0_0 : 1;     /*!< [3..3] Dead time path enable on output 0 channel 0.0 : direct
-                                           *   path from DTM_IN[0:0] to DTM_OUT0[0:0] of instance d enabled1
-                                           *   : dead time path enabled                                                  */
-            __IOM uint32_t POL1_0 : 1;    /*!< [4..4] Polarity on output 1 channel 0.0 : Output signal not
-                                           *   inverted1 : Output signal inverted                                        */
-            __IOM uint32_t OC1_0 : 1;     /*!< [5..5] Output 1 control channel 0.0 : Functional output1 : Constant
-                                           *   output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL1_0                           */
-            __IOM uint32_t SL1_0 : 1;     /*!< [6..6] Signal level on output 1 channel 0.0 : set Signal Level
-                                           *   to 01 : set Signal Level to 1                                             */
-            __IOM uint32_t DT1_0 : 1;     /*!< [7..7] Dead time path enable on output 1 channel 0.0 : direct
-                                           *   path from DTM_IN[0:0] to DTM_OUT1[0:0] of instance d enabled1
-                                           *   : path for DTM functions enabled like dead time or multiple
-                                           *   signal combinations                                                       */
-            __IOM uint32_t POL0_1 : 1;    /*!< [8..8] Polarity on output 0 channel 1.0 : Output signal not
-                                           *   inverted1 : Output signal inverted                                        */
-            __IOM uint32_t OC0_1 : 1;     /*!< [9..9] Output 0 control channel 1.0 : Functional output1 : Constant
-                                           *   output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL0_1                           */
-            __IOM uint32_t SL0_1 : 1;     /*!< [10..10] Signal level on output 0 channel 1.0 : set Signal Level
-                                           *   to 01 : set Signal Level to 1                                             */
-            __IOM uint32_t DT0_1 : 1;     /*!< [11..11] Dead time path enable on output 0 channel 1.0 : direct
-                                           *   path from DTM_IN[0:0] to DTM_OUT0[0:0] of instance d enabled1
-                                           *   : dead time path enabled                                                  */
-            __IOM uint32_t POL1_1 : 1;    /*!< [12..12] Polarity on output 1 channel 1.0 : Output signal not
-                                           *   inverted1 : Output signal inverted                                        */
-            __IOM uint32_t OC1_1 : 1;     /*!< [13..13] Output 1 control channel 1.0 : Functional output1 :
-                                           *   Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL1_1                  */
-            __IOM uint32_t SL1_1 : 1;     /*!< [14..14] Signal level on output 1 channel 1.0 : set Signal Level
-                                           *   to 01 : set Signal Level to 1                                             */
-            __IOM uint32_t DT1_1 : 1;     /*!< [15..15] Dead time path enable on output 1 channel 1.0 : direct
-                                           *   path from DTM_IN[1:1] to DTM_OUT1[1:1] of instance d enabled1
-                                           *   : path for DTM functions enabled like dead time or multiple
-                                           *   signal combinations                                                       */
-            __IOM uint32_t POL0_2 : 1;    /*!< [16..16] Polarity on output 0 channel 2.0 : Output signal not
-                                           *   inverted1 : Output signal inverted                                        */
-            __IOM uint32_t OC0_2 : 1;     /*!< [17..17] Output 0 control channel 2.0 : Functional output1 :
-                                           *   Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL0_2                  */
-            __IOM uint32_t SL0_2 : 1;     /*!< [18..18] Signal level on output 0 channel 2.0 : set Signal Level
-                                           *   to 01 : set Signal Level to 1                                             */
-            __IOM uint32_t DT0_2 : 1;     /*!< [19..19] Dead time path enable on output 0 channel 2.0 : direct
-                                           *   path from DTM_IN[2:2] to DTM_OUT0[2:2] of instance d enabled1
-                                           *   : dead time path enabled                                                  */
-            __IOM uint32_t POL1_2 : 1;    /*!< [20..20] Polarity on output 1 channel 2.0 : Output signal not
-                                           *   inverted1 : Output signal inverted                                        */
-            __IOM uint32_t OC1_2 : 1;     /*!< [21..21] Output 1 control channel 2.0 : Functional output1 :
-                                           *   Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL1_2                  */
-            __IOM uint32_t SL1_2 : 1;     /*!< [22..22] Signal level on output 1 channel 2.0 : set Signal Level
-                                           *   to 01 : set Signal Level to 1                                             */
-            __IOM uint32_t DT1_2 : 1;     /*!< [23..23] Dead time path enable on output 1 channel 2.0 : direct
-                                           *   path from DTM_IN[2:2] to DTM_OUT1[2:2] of instance d enabled1
-                                           *   : path for DTM functions enabled like dead time or multiple
-                                           *   signal combinations                                                       */
-            __IOM uint32_t POL0_3 : 1;    /*!< [24..24] Polarity on output 0 channel 3.0 : Output signal not
-                                           *   inverted1 : Output signal inverted                                        */
-            __IOM uint32_t OC0_3 : 1;     /*!< [25..25] Output 0 control channel 3.0 : Functional output1 :
-                                           *   Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL0_3                  */
-            __IOM uint32_t SL0_3 : 1;     /*!< [26..26] Signal level on output 0 channel 3.0 : set Signal Level
-                                           *   to 01 : set Signal Level to 1                                             */
-            __IOM uint32_t DT0_3 : 1;     /*!< [27..27] Dead time path enable on output 0 channel 3.0 : direct
-                                           *   path from DTM_IN[3:3] to DTM_OUT0[3:3] of instance d enabled1
-                                           *   : dead time path enabled                                                  */
-            __IOM uint32_t POL1_3 : 1;    /*!< [28..28] Polarity on output 1 channel 3.0 : Output signal not
-                                           *   inverted1 : Output signal inverted                                        */
-            __IOM uint32_t OC1_3 : 1;     /*!< [29..29] Output 1 control channel 3.0 : Functional output1 :
-                                           *   Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL1_3                  */
-            __IOM uint32_t SL1_3 : 1;     /*!< [30..30] Signal level on output 1 channel 3.0 : set Signal Level
-                                           *   to 01 : set Signal Level to 1                                             */
-            __IOM uint32_t DT1_3 : 1;     /*!< [31..31] Dead time path enable on output 1 channel 3.0 : direct
-                                           *   path from DTM_IN[3:3] to DTM_OUT1[3:3] of instance d enabled1
-                                           *   : path for DTM functions enabled like dead time or multiple
-                                           *   signal combinations                                                       */
-        } CDTM_DTM_CH_CTRL2_b;
-    };
-
-    union
-    {
-        __IOM uint32_t CDTM_DTM_CH_CTRL2_SR; /*!< (@ 0x0000000C) CDTM[i]-DTM[d] channel control register 2 shadow.          */
-
-        struct
-        {
-            __IOM uint32_t POL0_0_SR : 1;    /*!< [0..0] Polarity on output 0 channel 0 shadow register.0 : Output
-                                              *   signal not inverted1 : Output signal inverted                             */
-            __IOM uint32_t OC0_0_SR : 1;     /*!< [1..1] Output 0 control channel 0 shadow register.0 : Functional
-                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_0_SR  */
-            __IOM uint32_t SL0_0_SR : 1;     /*!< [2..2] Signal level on output 0 channel 0 shadow register.0
-                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t DT0_0_SR : 1;     /*!< [3..3] Dead time path enable on output 0 channel 0 shadow register.0
-                                              *   : direct path from DTM_IN[0:0] to DTM_OUT0[0:0] of instance
-                                              *   d enabled1 : dead time path enabled                                       */
-            __IOM uint32_t POL1_0_SR : 1;    /*!< [4..4] Polarity on output 1 channel 0 shadow register.0 : Output
-                                              *   signal not inverted1 : Output signal inverted                             */
-            __IOM uint32_t OC1_0_SR : 1;     /*!< [5..5] Output 1 control channel 0 shadow register.0 : Functional
-                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_0_SR  */
-            __IOM uint32_t SL1_0_SR : 1;     /*!< [6..6] Signal level on output 1 channel 0 shadow register.0
-                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t DT1_0_SR : 1;     /*!< [7..7] Dead time path enable on output 1 channel 0 shadow register.0
-                                              *   : direct path from DTM_IN[0:0] to DTM_OUT1[0:0] of instance
-                                              *   d enabled1 : path for DTM functions enabled like dead time
-                                              *   or multiple signal combinations                                           */
-            __IOM uint32_t POL0_1_SR : 1;    /*!< [8..8] Polarity on output 0 channel 1 shadow register.0 : Output
-                                              *   signal not inverted1 : Output signal inverted                             */
-            __IOM uint32_t OC0_1_SR : 1;     /*!< [9..9] Output 0 control channel 1 shadow register.0 : Functional
-                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_1_SR  */
-            __IOM uint32_t SL0_1_SR : 1;     /*!< [10..10] Signal level on output 0 channel 1 shadow register.0
-                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t DT0_1_SR : 1;     /*!< [11..11] Dead time path enable on output 0 channel 1 shadow
-                                              *   register.0 : direct path from DTM_IN[1:1] to DTM_OUT0[1:1]
-                                              *   of instance d enabled1 : dead time path enabled                           */
-            __IOM uint32_t POL1_1_SR : 1;    /*!< [12..12] Polarity on output 1 channel 1 shadow register.0 :
-                                              *   Output signal not inverted1 : Output signal inverted                      */
-            __IOM uint32_t OC1_1_SR : 1;     /*!< [13..13] Output 1 control channel 1 shadow register.0 : Functional
-                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_1_SR  */
-            __IOM uint32_t SL1_1_SR : 1;     /*!< [14..14] Signal level on output 1 channel 1 shadow register.0
-                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t DT1_1_SR : 1;     /*!< [15..15] Dead time path enable on output 1 channel 1 shadow
-                                              *   register.0 : direct path from DTM_IN[1:1] to DTM_OUT1[1:1]
-                                              *   of instance d1 : path for DTM functions enabled like dead
-                                              *   time or multiple signal combinations                                      */
-            __IOM uint32_t POL0_2_SR : 1;    /*!< [16..16] Polarity on output 0 channel 2 shadow register.0 :
-                                              *   Output signal not inverted1 : Output signal inverted                      */
-            __IOM uint32_t OC0_2_SR : 1;     /*!< [17..17] Output 0 control channel 2 shadow register.0 : Functional
-                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_2_SR  */
-            __IOM uint32_t SL0_2_SR : 1;     /*!< [18..18] Signal level on output 0 channel 2 shadow register.0
-                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t DT0_2_SR : 1;     /*!< [19..19] Dead time path enable on output 0 channel 2 shadow
-                                              *   register.0 : direct path from DTM_IN[2:2] to DTM_OUT0[2:2]
-                                              *   of instance d1 : dead time path enabled                                   */
-            __IOM uint32_t POL1_2_SR : 1;    /*!< [20..20] Polarity on output 1 channel 2 shadow register.0 :
-                                              *   Output signal not inverted1 : Output signal inverted                      */
-            __IOM uint32_t OC1_2_SR : 1;     /*!< [21..21] Output 1 control channel 2 shadow register.0 : Functional
-                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_2_SR  */
-            __IOM uint32_t SL1_2_SR : 1;     /*!< [22..22] Signal level on output 1 channel 2 shadow register.0
-                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t DT1_2_SR : 1;     /*!< [23..23] Dead time path enable on output 1 channel 2 shadow
-                                              *   register.0 : direct path from DTM_IN[2:2] to DTM_OUT1[2:2]
-                                              *   of instance d1 : path for DTM functions enabled like dead
-                                              *   time or multiple signal combinations                                      */
-            __IOM uint32_t POL0_3_SR : 1;    /*!< [24..24] Polarity on output 0 channel 3 shadow register.0 :
-                                              *   Output signal not inverted1 : Output signal inverted                      */
-            __IOM uint32_t OC0_3_SR : 1;     /*!< [25..25] Output 0 control channel 3 shadow register.0 : Functional
-                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_3_SR  */
-            __IOM uint32_t SL0_3_SR : 1;     /*!< [26..26] Signal level on output 0 channel 3 shadow register.0
-                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t DT0_3_SR : 1;     /*!< [27..27] Dead time path enable on output 0 channel 3.0 : direct
-                                              *   path from DTM_IN[3:3] to DTM_OUT0[3:3] of instance d enabled1
-                                              *   : dead time path enabled                                                  */
-            __IOM uint32_t POL1_3_SR : 1;    /*!< [28..28] Polarity on output 1 channel 3 shadow register.0 :
-                                              *   Output signal not inverted1 : Output signal inverted                      */
-            __IOM uint32_t OC1_3_SR : 1;     /*!< [29..29] Output 1 control channel 3 shadow register.0 : Functional
-                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_3_SR  */
-            __IOM uint32_t SL1_3_SR : 1;     /*!< [30..30] Signal level on output 1 channel 3 shadow register.0
-                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t DT1_3_SR : 1;     /*!< [31..31] Dead time path enable on output 1 channel 3 shadow
-                                              *   register.0 : direct path from DTM_IN[3:3] to DTM_OUT1[3:3]
-                                              *   of instance d1 : path for DTM functions enabled like dead
-                                              *   time or multiple signal combinations                                      */
-        } CDTM_DTM_CH_CTRL2_SR_b;
-    };
-
-    union
-    {
-        __IOM uint32_t CDTM_DTM_PS_CTRL;             /*!< (@ 0x00000010) CDTM[i]-DTM[d] phase shift unit configuration
-                                                      *                  and control register.                                      */
-
-        struct
-        {
-            __IOM uint32_t RELBLK : 10;              /*!< [9..0] Reload value blanking window.Note:A value of 0x000 resets
-                                                      *   counter BLK_DOWN_CNT                                                      */
-            uint32_t                  : 6;
-            __IOM uint32_t PSU_IN_SEL : 1;           /*!< [16..16] PSU input select.0 : TIM_CH_IN0 or TIM_CH_IN1 selected1
-                                                      *   : DTM_AUX_IN selected                                                     */
-            __IOM uint32_t IN_POL : 1;               /*!< [17..17] Input polarity.0 : input signal is not inverted1 :
-                                                      *   input signal is inverted                                                  */
-            __IOM uint32_t TIM_SEL   : 1;            /*!< [18..18] TIM input select.0 : select TIM_CH_IN01 : select TIM_CH_IN1      */
-            uint32_t                 : 1;
-            __IOM uint32_t SHIFT_SEL : 2;            /*!< [21..20] Shift select.00 : trigger signal for reloading DOWN
-                                                      *   COUNTER is IN_EDGE[0:0] of DTM channel [0]; signal TIM_CH_IN0
-                                                      *   or TIM_CH_IN1 orDTM_AUX_IN[0:0] or DTM_PSU_IN via signal
-                                                      *   EXT_CTRL_GATED is connected via signal PSU_SHIFT[1:1] to
-                                                      *   DTM channel 101 : trigger signal for reloading DOWN COUNTER
-                                                      *   is IN_EDGE[1:1] of DTM channel [1]; signal TIM_CH_IN0 or
-                                                      *   TIM_CH_IN1 orDTM_AUX_IN[0:0] or DTM_PSU_IN via signal EXT_CTRL_GATED
-                                                      *   is connected via signal PSU_SHIFT[2:2] to DTM channel 210
-                                                      *   : trigger signal for reloading DOWN COU                                   */
-            uint32_t : 10;
-        } CDTM_DTM_PS_CTRL_b;
-    };
-    __IOM R_GTM0_CDTM_CLS_DTM_CH_DTV_Type CH_DTV[4]; /*!< (@ 0x00000014) DTM Channel for CH[0..3]_DTV                             */
-
-    union
-    {
-        __IOM uint32_t CDTM_DTM_CH_SR;               /*!< (@ 0x00000024) CDTM[i]-DTM[d] channel shadow register.                    */
-
-        struct
-        {
-            __IOM uint32_t SL0_0_SR_SR : 1;          /*!< [0..0] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_0_SR.0
-                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t SL1_0_SR_SR : 1;          /*!< [1..1] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_0_SR.0
-                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t SL0_1_SR_SR : 1;          /*!< [2..2] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_1_SR.0
-                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t SL1_1_SR_SR : 1;          /*!< [3..3] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_1_SR.0
-                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t SL0_2_SR_SR : 1;          /*!< [4..4] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_2_SR.0
-                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t SL1_2_SR_SR : 1;          /*!< [5..5] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_2_SR.0
-                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t SL0_3_SR_SR : 1;          /*!< [6..6] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_3_SR.0
-                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
-            __IOM uint32_t SL1_3_SR_SR : 1;          /*!< [7..7] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_3_SR.0
-                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
-            uint32_t : 24;
-        } CDTM_DTM_CH_SR_b;
-    };
-
-    union
-    {
-        __IOM uint32_t CDTM_DTM_CH_CTRL3; /*!< (@ 0x00000028) CDTM[i]-DTM[d] channel control register 3.                 */
-
-        struct
-        {
-            __IOM uint32_t CII0 : 1;      /*!< [0..0] Combinational input invert channel 0.0 : do not invert
-                                           *   input1 : invert input                                                     */
-            __IOM uint32_t CIS0 : 1;      /*!< [1..1] Combinational input select channel 0.0 : select the input
-                                           *   DTM_IN[0:0] or DTM_IN_T[0:0] of instance d(CDTM[i]_DTM[d]_CH_CTRL3.TSEL0_
-                                           *   selects one of the two input signals)1 : select internal
-                                           *   signal EDGE_TRIGG_[0]                                                     */
-            __IOM uint32_t TSEL0_0 : 1;   /*!< [2..2] Input selection for dead time / edge trigger generation.0
-                                           *   : use DTM_IN[0:0] of instance d as input for dead time
-                                           *   / edge trigger generation1 : use DTM_IN_T[0:0] of instance
-                                           *   d as input for dead time / edge trigger generation                        */
-            __IOM uint32_t TSEL1_0 : 1;   /*!< [3..3] Input selection combinational logic path.0 : use DTM_IN[0:0]
-                                           *   of instance d as input for combinational logic path1 :
-                                           *   use DTM_IN_T[0:0] of instance d as input for combinational
-                                           *   logic path                                                                */
-            uint32_t            : 4;
-            __IOM uint32_t CII1 : 1;      /*!< [8..8] Combinational input invert channel 1.0 : do not invert
-                                           *   input1 : invert input                                                     */
-            __IOM uint32_t CIS1 : 1;      /*!< [9..9] Combinational input select channel 1.0 : select the input
-                                           *   DTM_IN[1:1] or DTM_IN_T[1:1] of instance d(CDTM[i]_DTM[d]_CH_CTRL3.TSEL0_
-                                           *   selects one of the two input signals)1 : select internal
-                                           *   signal EDGE_TRIGG_[1]                                                     */
-            __IOM uint32_t TSEL0_1 : 1;   /*!< [10..10] Input selection for dead time / edge trigger generation.0
-                                           *   : use DTM_IN[1:1] of instance d as input for dead time
-                                           *   / edge trigger generation1 : use DTM_IN_T[1:1] of instance
-                                           *   d as input for dead time / edge trigger generation                        */
-            __IOM uint32_t TSEL1_1 : 1;   /*!< [11..11] Input selection combinational logic path.0 : use DTM_IN[1:1]
-                                           *   of instance d as input for combinational logic path1 :
-                                           *   use DTM_IN_T[1:1] of instance d as input for combinational
-                                           *   logic path                                                                */
-            uint32_t            : 4;
-            __IOM uint32_t CII2 : 1;      /*!< [16..16] Combinational input invert channel 2.0 : do not invert
-                                           *   input1 : invert input                                                     */
-            __IOM uint32_t CIS2 : 1;      /*!< [17..17] Combinational input select channel 2.0 : select the
-                                           *   input DTM_IN[2:2] or DTM_IN_T[2:2] of instance d(CDTM[i]_DTM[d]_CH_CTRL3.
-                                           *   SEL0_2 selects one of the two input signals)1 : select
-                                           *   internal signal EDGE_TRIGG_[2]                                            */
-            __IOM uint32_t TSEL0_2 : 1;   /*!< [18..18] Input selection for dead time / edge trigger generation.0
-                                           *   : use DTM_IN[2:2] of instance d as input for dead time
-                                           *   / edge trigger generation1 : use DTM_IN_T[2:2] of instance
-                                           *   d as input for dead time / edge trigger generation                        */
-            __IOM uint32_t TSEL1_2 : 1;   /*!< [19..19] Input selection combinational logic path.0 : use DTM_IN[2:2]
-                                           *   of instance d as input for combinational logic path1 :
-                                           *   use DTM_IN_T[2:2] of instance d as input for combinational
-                                           *   logic path                                                                */
-            uint32_t            : 4;
-            __IOM uint32_t CII3 : 1;      /*!< [24..24] Combinational input invert channel 3.0 : do not invert
-                                           *   input1 : invert input                                                     */
-            __IOM uint32_t CIS3 : 1;      /*!< [25..25] Combinational input select channel 3.0 : select the
-                                           *   input DTM_IN[3:3] or DTM_IN_T[3:3] of instance d(CDTM[i]_DTM[d]_CH_CTRL3.
-                                           *   SEL0_3 selects one of the two input signals)1 : select
-                                           *   internal signal EDGE_TRIGG_[3]                                            */
-            __IOM uint32_t TSEL0_3 : 1;   /*!< [26..26] Input selection for dead time / edge trigger generation.0
-                                           *   : use DTM_IN[3:3] of instance d as input for dead time
-                                           *   / edge trigger generation1 : use DTM_IN_T[3:3] of instance
-                                           *   d as input for dead time / edge trigger generation                        */
-            __IOM uint32_t TSEL1_3 : 1;   /*!< [27..27] Input selection combinational logic path.0 : use DTM_IN[3:3]
-                                           *   of instance d as input for combinational logic path1 :
-                                           *   use DTM_IN_T[3:3] of instance d as input for combinational
-                                           *   logic path                                                                */
-            uint32_t : 4;
-        } CDTM_DTM_CH_CTRL3_b;
-    };
-
-    union
-    {
-        __IOM uint32_t CDTM_DTM_CTRL2;                     /*!< (@ 0x0000002C) CDTM[i]-DTM[d] global configuration and control
-                                                            *                  register 2.                                                */
-
-        struct
-        {
-            __IOM uint32_t SHUTOFF_SEL_0 : 3;              /*!< [2..0] Channel 0: Select input signal to be used as shutoff
-                                                            *   signal.000 : TIM_CH_IN0 selected001 : TIM_CH_IN1 selected010
-                                                            *   : DTM_AUX_IN[2:2] of instance d (DTM_AUX_IN[0:0] of instance
-                                                            *   d - 1) selected011 : DTM_AUX_IN[3:3] of instance d (DTM_AUX_IN[1:1]
-                                                            *   of instance d - 1) selected100 : DTM_AUX_IN[0:0] of instance
-                                                            *   d selected101 : DTM_AUX_IN[1:1] of instance d selected110
-                                                            *   : '0' selected111 : '1' selectedNote:This bit field is
-                                                            *   write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_0 = 0.                  */
-            __IOM uint32_t SHUTOFF_POL_0 : 1;              /*!< [3..3] Channel 0: Configure if the selected shutoff input signal
-                                                            *   used as shutoff output signal is inverted or not.0 : inverter
-                                                            *   disabled1 : inverter enabledNote:This bit field is write-protected
-                                                            *   by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_0 = 0.                                  */
-            __IOM uint32_t UPD_MODE_0 : 2;                 /*!< [5..4] Channel 0: Control the update mode of the internal SHUTOFF_SYNC_0
-                                                            *   signal.00 : internal signal SHUTOFF_SYNC_0 is cleared;
-                                                            *   a set is not possible01 : signal PSU_SHUT_OFF[0:0] sets
-                                                            *   internal signal SHUTOFF_SYNC_0;internal signal SHUTOFF_SYNC_0
-                                                            *   is cleared depending onbit field CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_010
-                                                            *   : signal PSU_SHUT_OFF[0:0] sets internal signal SHUTOFF_SYNC_0;internal
-                                                            *   signal SHUTOFF_SYNC_0 is cleared by signal DTM_PREV_IN0_REDGE
-                                                            *   orDTM_PREV_IN0_FEDGE or DTM_IN_REDGE of channel 0 or DTM_IN_FEDGE
-                                                            *   o                                                                         */
-            __IOM uint32_t SHUT_OFF_RST_0 : 1;             /*!< [6..6] Channel 0: Clear of internal signal SHUTOFF_SYNC_0 if
-                                                            *   selected as control source.0 : No action1 : shutoff reset
-                                                            *   (clear of internal signal SHUTOFF_SYNC_0 enabled)Note:This
-                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_0
-                                                            *   = 0.                                                                      */
-            __IOM uint32_t WR_EN_0 : 1;                    /*!< [7..7] Channel 0: Write enable of bit fields.0 : writing of
-                                                            *   the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_SEL_0, CDTM[i]_DTM[d]_CTRL2.S
-                                                            *   UTOFF_POL_0,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_0, CDTM[i]_DTM[d]_CTRL2.SHUT_OF
-                                                            *   _RST_0 disabled1 : writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF
-                                                            *   SEL_0, CDTM[i]_DTM[d]_CTRL2.SHUTOFF_POL_0,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_0
-                                                            *   CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_0 enabledNote:Write enable
-                                                            *   bit field always read as zero, because no storage element
-                                                            *   implemented.                                                              */
-            __IOM uint32_t SHUTOFF_SEL_1 : 3;              /*!< [10..8] Channel 1: Select input signal to be used as shutoff
-                                                            *   signal.000 : TIM_CH_IN0 selected001 : TIM_CH_IN1 selected010
-                                                            *   : DTM_AUX_IN[2:2] of DTM instance d (DTM_AUX_IN[0:0] of
-                                                            *   DTM instance d - 1) selected011 : DTM_AUX_IN[3:3] of DTM
-                                                            *   instance d (DTM_AUX_IN[1:1] of DTM instance d - 1) selected100
-                                                            *   : DTM_AUX_IN[0:0] of DTM instance d selected101 : DTM_AUX_IN[1:1]
-                                                            *   of DTM instance d selected110 : '0' selected111 : '1' selectedNote:This
-                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_1
-                                                            *   = 0.                                                                      */
-            __IOM uint32_t SHUTOFF_POL_1 : 1;              /*!< [11..11] Channel 1: Configure if the selected shutoff input
-                                                            *   signal used as shutoff output signal is inverted or not.0
-                                                            *   : inverter disabled1 : inverter enabledNote:This bit field
-                                                            *   is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_1
-                                                            *   = 0.                                                                      */
-            __IOM uint32_t UPD_MODE_1 : 2;                 /*!< [13..12] Channel 1: Control the update mode of the internal
-                                                            *   SHUTOFF_SYNC_1 signal.00 : internal signal SHUTOFF_SYNC_1
-                                                            *   is cleared; a set is not possible01 : signal PSU_SHUT_OFF[1:1]
-                                                            *   sets internal signal SHUTOFF_SYNC_1;internal signal SHUTOFF_SYNC_1
-                                                            *   is cleared depending tobit field CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_110
-                                                            *   : signal PSU_SHUT_OFF[1:1] sets internal signal SHUTOFF_SYNC_1;internal
-                                                            *   signal SHUTOFF_SYNC_1 is cleared by signal DTM_PREV_IN0_REDGE
-                                                            *   orDTM_PREV_IN0_FEDGE or DTM_IN_REDGE of channel 0 or DTM_IN_FEDGE
-                                                            *   o                                                                         */
-            __IOM uint32_t SHUT_OFF_RST_1 : 1;             /*!< [14..14] Channel 1: Clear of internal signal SHUTOFF_SYNC_1
-                                                            *   if selected as control source.0 : No action1 : shutoff
-                                                            *   reset (clear of internal signal SHUTOFF_SYNC_1 enabled)Note:This
-                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_1
-                                                            *   = 0.                                                                      */
-            __IOM uint32_t WR_EN_1 : 1;                    /*!< [15..15] Channel 1: Write enable of bit fields.0 : writing of
-                                                            *   the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_SEL_1, CDTM[i]_DTM[d]_CTRL2.S
-                                                            *   UTOFF_POL_1,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_1, CDTM[i]_DTM[d]_CTRL2.SHUT_OF
-                                                            *   _RST_1 disabled1 : writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF
-                                                            *   SEL_1, CDTM[i]_DTM[d]_CTRL2.SHUTOFF_POL_1,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_1
-                                                            *   CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_1 enabledNote:Writing
-                                                            *   a 1 - enables the writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_
-                                                            *   EL_1,CDTM[i]_DTM[d]_CTRL2.SHUTO                                           */
-            __IOM uint32_t SHUTOFF_SEL_2 : 3;              /*!< [18..16] Channel 2: Select input signal to be used as shutoff
-                                                            *   signal.000 : TIM_CH_IN0 selected001 : TIM_CH_IN1 selected010
-                                                            *   : DTM_AUX_IN[2:2] of DTM instance d (DTM_AUX_IN[0:0] of
-                                                            *   DTM instance d - 1) selected011 : DTM_AUX_IN[3:3] of DTM
-                                                            *   instance d (DTM_AUX_IN[1:1] of DTM instance d - 1) selected100
-                                                            *   : DTM_AUX_IN[0:0] of DTM instance d selected101 : DTM_AUX_IN[1:1]
-                                                            *   of DTM instance d selected110 : '0' selected111 : '1' selectedNote:This
-                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_2
-                                                            *   = 0.                                                                      */
-            __IOM uint32_t SHUTOFF_POL_2 : 1;              /*!< [19..19] Channel 2: Configure if the selected shutoff input
-                                                            *   signal used as shutoff output signal is inverted or not.0
-                                                            *   : inverter disabled1 : inverter enabledNote:This bit field
-                                                            *   is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_2
-                                                            *   = 0.                                                                      */
-            __IOM uint32_t UPD_MODE_2 : 2;                 /*!< [21..20] Channel 2: Control the update mode of the internal
-                                                            *   SHUTOFF_SYNC_2 signal.00 : internal signal SHUTOFF_SYNC_2
-                                                            *   is cleared; a set is not possible01 : signal PSU_SHUT_OFF[2:2]
-                                                            *   sets internal signal SHUTOFF_SYNC_2;internal signal SHUTOFF_SYNC_2
-                                                            *   is cleared depending tobit field CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_210
-                                                            *   : signal PSU_SHUT_OFF[2:2] sets internal signal SHUTOFF_SYNC_2;internal
-                                                            *   signal SHUTOFF_SYNC_2 is cleared by signal DTM_PREV_IN0_REDGE
-                                                            *   orDTM_PREV_IN0_FEDGE or DTM_IN_REDGE of channel 0 or DTM_IN_FEDGE
-                                                            *   o                                                                         */
-            __IOM uint32_t SHUT_OFF_RST_2 : 1;             /*!< [22..22] Channel 2: Clear of internal signal SHUTOFF_SYNC_2
-                                                            *   if selected as control source.0 : No action1 : shutoff
-                                                            *   reset (clear of internal signal SHUTOFF_SYNC_2 enabled)Note:This
-                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_2
-                                                            *   = 0.                                                                      */
-            __IOM uint32_t WR_EN_2 : 1;                    /*!< [23..23] Channel 2: Write enable of bit fields.0 : writing of
-                                                            *   the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_SEL_2, CDTM[i]_DTM[d]_CTRL2.S
-                                                            *   UTOFF_POL_2,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_2, CDTM[i]_DTM[d]_CTRL2.SHUT_OF
-                                                            *   _RST_2 disabled1 : writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF
-                                                            *   SEL_2, CDTM[i]_DTM[d]_CTRL2.SHUTOFF_POL_2,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_2
-                                                            *   CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_2 enabledNote:Writing
-                                                            *   a 1 - enables the writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_
-                                                            *   EL_2,CDTM[i]_DTM[d]_CTRL2.SHUTO                                           */
-            __IOM uint32_t SHUTOFF_SEL_3 : 3;              /*!< [26..24] Channel 3: Select input signal to be used as shutoff
-                                                            *   signal.000 : TIM_CH_IN0 selected001 : TIM_CH_IN1 selected010
-                                                            *   : DTM_AUX_IN[2:2] of DTM instance d (DTM_AUX_IN[0:0] of
-                                                            *   DTM instance d - 1) selected011 : DTM_AUX_IN[3:3] of DTM
-                                                            *   instance d (DTM_AUX_IN[1:1] of DTM instance d - 1) selected100
-                                                            *   : DTM_AUX_IN[0:0] of DTM instance d selected101 : DTM_AUX_IN[1:1]
-                                                            *   of DTM instance d selected110 : '0' selected111 : '1' selectedNote:This
-                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_3
-                                                            *   = 0.                                                                      */
-            __IOM uint32_t SHUTOFF_POL_3 : 1;              /*!< [27..27] Channel 3: Configure if the selected shutoff input
-                                                            *   signal used as shutoff output signal is inverted or not.0
-                                                            *   : inverter disabled1 : inverter enabledNote:This bit field
-                                                            *   is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_3
-                                                            *   = 0.                                                                      */
-            __IOM uint32_t UPD_MODE_3 : 2;                 /*!< [29..28] Channel 3: Control the update mode of the internal
-                                                            *   SHUTOFF_SYNC_3 signal.00 : internal signal SHUTOFF_SYNC_3
-                                                            *   is cleared; a set is not possible01 : signal PSU_SHUT_OFF[3:3]
-                                                            *   sets internal signal SHUTOFF_SYNC_3;internal signal SHUTOFF_SYNC_3
-                                                            *   is cleared depending tobit field CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_310
-                                                            *   : signal PSU_SHUT_OFF[3:3] sets internal signal SHUTOFF_SYNC_3;internal
-                                                            *   signal SHUTOFF_SYNC_3 is cleared by signal DTM_PREV_IN0_REDGE
-                                                            *   orDTM_PREV_IN0_FEDGE or DTM_IN_REDGE of channel 0 or DTM_IN_FEDGE
-                                                            *   o                                                                         */
-            __IOM uint32_t SHUT_OFF_RST_3 : 1;             /*!< [30..30] Channel 3: Clear of internal signal SHUTOFF_SYNC_3
-                                                            *   if selected as control source.0 : No action1 : shutoff
-                                                            *   reset (clear of internal signal SHUTOFF_SYNC_3 enabled)Note:This
-                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_3
-                                                            *   = 0.                                                                      */
-            __IOM uint32_t WR_EN_3 : 1;                    /*!< [31..31] Channel 3: Write enable of bit fields.0 : writing of
-                                                            *   the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_SEL_3, CDTM[i]_DTM[d]_CTRL2.S
-                                                            *   UTOFF_POL_3,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_3, CDTM[i]_DTM[d]_CTRL2.SHUT_OF
-                                                            *   _RST_3 disabled1 : writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF
-                                                            *   SEL_3, CDTM[i]_DTM[d]_CTRL2.SHUTOFF_POL_3,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_3
-                                                            *   CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_3 enabledNote:Writing
-                                                            *   a 1 - enables the writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_
-                                                            *   EL_3,CDTM[i]_DTM[d]_CTRL2.SHUTO                                           */
-        } CDTM_DTM_CTRL2_b;
-    };
-    __IOM R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_Type CH_DTV_SR[4]; /*!< (@ 0x00000030) DTM Channel for CH[0..3]_DTV_SR                    */
-} R_GTM0_CDTM_CLS_DTM_Type;                                /*!< Size = 64 (0x40)                                                          */
-
-/**
- * @brief R_GTM0_CDTM_CLS [CLS] (Cluster for DTM Instance [0..6])
- */
-typedef struct
-{
-    __IOM R_GTM0_CDTM_CLS_DTM_Type DTM[8]; /*!< (@ 0x00000000) DTM Instance [0..7]                                        */
-    __IM uint32_t RESERVED[32640];
-} R_GTM0_CDTM_CLS_Type;                    /*!< Size = 131072 (0x20000)                                                   */
 
 /**
  * @brief R_DMAC0_sDMAC_CH [sDMAC_CH] (DMA Channel Registers)
@@ -8492,15 +7813,31 @@ typedef struct
 
     union
     {
-        __IOM uint32_t ATOM_CH_CN0;        /*!< (@ 0x00000018) ATOM[i] channel [x] CCU0 counter register                  */
+        __IOM uint32_t ATOM_CH_CN0;    /*!< (@ 0x00000018) ATOM[i] channel [x] CCU0 counter register                  */
 
         struct
         {
-            __IOM uint32_t CN0 : 24;       /*!< [23..0] CN0[23:0]                                                         */
+            __IOM uint32_t CN0 : 24;   /*!< [23..0] CN0[23:0]                                                         */
             uint32_t           : 8;
         } ATOM_CH_CN0_b;
     };
-    __IOM uint32_t ATOM_CH_STAT;           /*!< (@ 0x0000001C) ATOM[i] channel [x] status register                        */
+
+    union
+    {
+        __IOM uint32_t ATOM_CH_STAT;   /*!< (@ 0x0000001C) ATOM[i] channel [x] status register                        */
+
+        struct
+        {
+            __IOM uint32_t OL   : 1;   /*!< [0..0] Output signal level of ATOM-OUT[x:x].                              */
+            uint32_t            : 15;
+            __IM uint32_t  ACBI : 5;   /*!< [20..16] ATOM Mode control bits.                                          */
+            __IM uint32_t  DV   : 1;   /*!< [21..21] Valid ARU Data stored in compare registers.                      */
+            __IOM uint32_t WRF  : 1;   /*!< [22..22] Write request of CPU failed for late update.                     */
+            __IM uint32_t  DR   : 1;   /*!< [23..23] ARU data rejected flag                                           */
+            __IM uint32_t  ACBO : 5;   /*!< [28..24] ATOM Internal status bits.                                       */
+            uint32_t            : 3;
+        } ATOM_CH_STAT_b;
+    };
 
     union
     {
@@ -8804,8 +8141,7 @@ typedef struct
 
         struct
         {
-            uint32_t                : 1;
-            __IOM uint32_t AXI_ADDR : 31; /*!< [31..1] Address for the AXI transaction.                                  */
+            __IOM uint32_t AXI_ADDR : 32;  /*!< [31..0] Address for the AXI transaction.                                  */
         } AXIM_SLOT_ADDR_LOW_b;
     };
     __IM uint32_t RESERVED;
@@ -9010,6 +8346,685 @@ typedef struct
     __IOM R_GTM0_AXIM_CLS_SLOT_Type SLOT[4]; /*!< (@ 0x00000020) [0..3]                                                     */
     __IM uint32_t RESERVED1[32728];
 } R_GTM0_AXIM_CLS_Type;                      /*!< Size = 131072 (0x20000)                                                   */
+
+/**
+ * @brief R_GTM0_CDTM_CLS_DTM_CH_DTV [CH_DTV] (DTM Channel for CH[0..3]_DTV)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint32_t CDTM_DTM_CH_DTV;  /*!< (@ 0x00000000) CDTM[i]-DTM[d] channel [x] dead time reload values.        */
+
+        struct
+        {
+            __IOM uint32_t RELRISE : 13; /*!< [12..0] Reload value for rising edge dead time.                           */
+            uint32_t               : 3;
+            __IOM uint32_t RELFALL : 13; /*!< [28..16] Reload value for falling edge dead time.                         */
+            uint32_t               : 2;
+            __IOM uint32_t HRES    : 1;  /*!< [31..31] High-resolution PWM support.0 : High-resolution PWM
+                                          *   support off1 : High-resolution PWM support on                             */
+        } CDTM_DTM_CH_DTV_b;
+    };
+} R_GTM0_CDTM_CLS_DTM_CH_DTV_Type;       /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_GTM0_CDTM_CLS_DTM_CH_DTV_SR [CH_DTV_SR] (DTM Channel for CH[0..3]_DTV_SR)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint32_t CDTM_DTM_CH_DTV_SR;          /*!< (@ 0x00000000) CDTM[i]-DTM[d] channel [x] dead time shadow values.        */
+
+        struct
+        {
+            __IOM uint32_t RELRISE_SR         : 13; /*!< [12..0] Shadow value for rising edge dead time.                           */
+            uint32_t                          : 1;
+            __IOM uint32_t RELRISE_UPD_FE0RE1 : 1;  /*!< [14..14] Control if falling edge or rising edge triggers update
+                                                     *   of CDTM[i]_DTM[d]_CH[x]_DTV.RELRISE.0 : update of CDTM[i]_DTM[d]_CH[x]_DT
+                                                     *   .RELRISE triggered by falling edge1 : update of CDTM[i]_DTM[d]_CH[x]_DTV.
+                                                     *   ELRISE triggered by rising edge                                           */
+            __IOM uint32_t RELRISE_UPD_EN : 1;      /*!< [15..15] Control bit to enable update of CDTM[i]_DTM[d]_CH[x]_DTV.RELRISE.0
+                                                     *   : update mechanism of CDTM[i]_DTM[d]_CH[x]_DTV.RELRISE
+                                                     *   disabled1 : update mechanism of CDTM[i]_DTM[d]_CH[x]_DTV.RELRISE
+                                                     *   enabled                                                                   */
+            __IOM uint32_t RELFALL_SR         : 13; /*!< [28..16] Shadow value for falling edge dead time.                         */
+            uint32_t                          : 1;
+            __IOM uint32_t RELFALL_UPD_FE0RE1 : 1;  /*!< [30..30] Control if falling edge or rising edge triggers update
+                                                     *   of CDTM[i]_DTM[d]_CH[x]_DTV.RELFALL.0 : update of CDTM[i]_DTM[d]_CH[x]_DT
+                                                     *   .RELFALL triggered by falling edge1 : update of CDTM[i]_DTM[d]_CH[x]_DTV.
+                                                     *   ELFALL triggered by rising edge                                           */
+            __IOM uint32_t RELFALL_UPD_EN : 1;      /*!< [31..31] Control bit to enable update of CDTM[i]_DTM[d]_CH[x]_DTV.RELFALL.0
+                                                     *   : update mechanism of CDTM[i]_DTM[d]_CH[x]_DTV.RELFALL
+                                                     *   disabled1 : update mechanism of CDTM[i]_DTM[d]_CH[x]_DTV.RELFALL
+                                                     *   enabled                                                                   */
+        } CDTM_DTM_CH_DTV_SR_b;
+    };
+} R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_Type;               /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_GTM0_CDTM_CLS_DTM [DTM] (DTM Instance [0..7])
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint32_t CDTM_DTM_CTRL;         /*!< (@ 0x00000000) CDTM[i]-DTM[d] global configuration and control
+                                               *                  register.                                                  */
+
+        struct
+        {
+            __IOM uint32_t CLK_SEL : 2;       /*!< [1..0] Clock resolution selection.Case (d < 4)00 : CLS[i]_CLK
+                                               *   resolution selected (cluster clock)01 : CCM[i]_CLK_RES[0:0]
+                                               *   resolution in use, selected input CLK_RES[0:0]10 : CCM[i]_FXCLK_RES[0:0]
+                                               *   resolution in use, selected input CLK_RES[1:1](DTM is connected
+                                               *   to TOM)11 : CCM[i]_FXCLK_RES[1:1] resolution in use, selected
+                                               *   input CLK_RES[2:2] (DTM is connected to TOM)Case (d > 3
+                                               *   && d <= 11)00 : CLS[i]_CLK resolution selected (cluster
+                                               *   clock)01 : CCM[i]_CLK_RES[0:0] resolution in use, selected
+                                               *   input CLK_RES[0:0]10 : CCM                                                */
+            __IOM uint32_t DTM_SEL : 2;       /*!< [3..2] Select DTM update and PSU_SHUT_OFF reset signal.00 :
+                                               *   select falling edge on DTM[d] channel 0 input01 : select
+                                               *   rising edge on DTM[d] channel 0 input10 : select falling
+                                               *   edge on DTM[d - 1] channel 0 input11 : select rising edge
+                                               *   on DTM[d - 1] channel 0 inputNote:On value 0b00 and 0b01
+                                               *   shutoff is executed by signal TIM_CH_IN0, TIM_CH_IN1 or
+                                               *   DTM_AUX_IN.On value 0b10 and 0b11 shutoff is executed by
+                                               *   signal DTM_PSU_IN.                                                        */
+            __IOM uint32_t UPD_MODE : 3;      /*!< [6..4] Update mode.000 : asynchronous update - CDTM[i]_DTM[d]_CH_CTRL2_SR
+                                               *   not used for update of CDTM[i]_DTM[d]_CH_CTRL2001 : shutoff
+                                               *   release by writing 1 to bit CDTM[i]_DTM[d]_CTRL.SHUT_OFF_RST010
+                                               *   : shutoff release by signal DTM_PREV_IN0_REDGE or DTM_PREV_IN0_FEDGE
+                                               *   or DTM_IN_REDGE or DTM_IN_FEDGE defined by bit field CDTM[i]_DTM[d]_CTRL.
+                                               *   TM_SEL011 : shutoff release by shutoff signal PSU_SHUT_OFF
+                                               *   (defined by bits CDTM[i]_DTM[d]_PS_CTRL.PSU_IN_SEL and
+                                               *   CDTM[i]_DTM[d]_PS_CTRL.IN_POL and CDTM[i]_DTM[d]_CTRL.DTM_SEL[2           */
+            __IOM uint32_t CH_SHUTOFF_EN : 1; /*!< [7..7] Individual shutoff feature enable.0 : individual shutoff
+                                               *   feature disabled1 : individual shutoff feature enabled                    */
+            __IOM uint32_t SR_UPD_EN : 1;     /*!< [8..8] Shadow register update enable.0 : no update of CDTM[i]_DTM[d]_CH_CTRL2_
+                                               *   R.SL0_0_SR, CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_1_SR,CDTM[i]_DTM[d]_CH_CTRL2_S
+                                               *   .SL0_2_SR, CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_3_SR bits,CDTM[i]_DTM[d]_CH_CTR
+                                               *   2_SR.SL1_0_SR bits, CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_1_SR
+                                               *   bits,CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_2_SR bits and CDTM[i]_DTM[d]_CH_CTRL2
+                                               *   SR.SL1_3_SR bits.1 : update of CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_0_SR,
+                                               *   CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_1_SR,CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_2_SR,
+                                               *   CDTM[i]_DTM[d]_CH_CT                                                      */
+            uint32_t                    : 7;
+            __IOM uint32_t SHUT_OFF_RST : 1;  /*!< [16..16] Shut off reset.0 : No action1 : shutoff resetNote:Writing
+                                               *   a 0b1 releases shutoff (resets signal SHUTOFF_SYNC_0 if
+                                               *   selected by CDTM[i]_DTM[d]_CTRL.UPD_MODE[2:0]=0b001)                      */
+            uint32_t : 15;
+        } CDTM_DTM_CTRL_b;
+    };
+
+    union
+    {
+        __IOM uint32_t CDTM_DTM_CH_CTRL1;  /*!< (@ 0x00000004) CDTM[i]-DTM[d] channel control register 1.                 */
+
+        struct
+        {
+            __IOM uint32_t O1SEL_0 : 1;    /*!< [0..0] Output 1 select channel 0.0 : inverse dead time signal
+                                            *   selected1 : special function on output 1 selected (defined
+                                            *   by CDTM[i]_DTM[d]_CH_CTRL1.O1F_0)                                         */
+            __IOM uint32_t I1SEL_0 : 1;    /*!< [1..1] Input 1 select channel 0.0 : signal PSU_SHIFT[0:0] selected1
+                                            *   : signal DTM_COUT3_I from DTM[d - 1] selectedNote:If d
+                                            *   is even, CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_0 is not implemented.              */
+            uint32_t              : 1;
+            __IOM uint32_t SWAP_0 : 1;     /*!< [3..3] Swap outputs DTM_OUT0[0:0] of instance d and DTM_OUT1[0:0]
+                                            *   of instance d (before final output register).0 : outputs
+                                            *   not swapped1 : swap outputs DTM_OUT0[0:0] of instance d
+                                            *   and DTM_OUT1[0:0] of instance d                                           */
+            __IOM uint32_t O1F_0 : 2;      /*!< [5..4] Output 1 function channel 0.00 : Signal EDGE_TRIGG_[x]
+                                            *   of channel [x=0] is selected01 : XOR of signal CII[x]_MUX
+                                            *   of channel [x=0] of instance [d] and signal PSU_SHIFT[0:0]
+                                            *   / DTM_COUT3_I10 : AND of signal CII[x]_MUX of channel [x=0]
+                                            *   of instance [d] and signal PSU_SHIFT[0:0] / DTM_COUT3_I11
+                                            *   : DTM_IN_T[0:0] of instance d selected                                    */
+            __IOM uint32_t XDT_EN_0_1 : 1; /*!< [6..6] Cross dead time enable on channel 0 and 1.0 : cross dead
+                                            *   time disabled on channel 0 and 11 : cross dead time enabled
+                                            *   on channel 0 and 1Note:When a '1' is written to bit CDTM[i]_DTM[d]_CH_CTR
+                                            *   1.XDT_EN_0_1, the internal register IN[x]_DLY1, IN[x]_DLY2and
+                                            *   the counter DT_DOWN_CNT are reset to '0' (x = {0, 1})CDTM[i]_DTM[d]_CH_CT
+                                            *   L3.TSEL0_0 and CDTM[i]_DTM[d]_CH_CTRL1.SH_EN_1 must be
+                                            *   '0'for using cross dead time to avoid wrong input signals.CDTM[i]_DTM[d]_
+                                            *   H_CTRL3.TSEL0_1 and CDTM[i]_DTM[d]_CH_CTRL1.SH_EN_1 mus                   */
+            uint32_t               : 1;
+            __IOM uint32_t O1SEL_1 : 1;    /*!< [8..8] Output 1 select channel 1.0 : inverse dead time signal
+                                            *   selected1 : special function on output 1 selected (defined
+                                            *   by CDTM[i]_DTM[d]_CH_CTRL1.O1F_1)                                         */
+            __IOM uint32_t I1SEL_1 : 1;    /*!< [9..9] Input 1 select channel 1.0 : signal PSU_SHIFT[1:1] selected1
+                                            *   : signal COUT[0:0] selected                                               */
+            __IOM uint32_t SH_EN_1 : 1;    /*!< [10..10] Shift enable channel 1.0 : switch between DTM inputs
+                                            *   of channel [x] and DTM_IN_PREV by PSU_SHIFT or CH_OUT_I(depends
+                                            *   to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_1) is disabled1 : switch
+                                            *   between DTM inputs of channel [x] and DTM_IN_PREV by PSU_SHIFT
+                                            *   or CH_OUT_I(depends to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_1)
+                                            *   is enabled                                                                */
+            __IOM uint32_t SWAP_1 : 1;     /*!< [11..11] Swap outputs DTM_OUT0[1:1] of instance d and DTM_OUT1[1:1]
+                                            *   of instance d (before final output register).0 : outputs
+                                            *   not swapped1 : swap outputs DTM_OUT0[1:1] of instance d
+                                            *   and DTM_OUT1[1:1] of instance d                                           */
+            __IOM uint32_t O1F_1 : 2;      /*!< [13..12] Output 1 function channel 1.00 : Signal EDGE_TRIGG_[x]
+                                            *   of channel [x=1] is selected01 : XOR of signal CII[x]_MUX
+                                            *   of channel [x=1] of instance [d] and signal PSU_SHIFT[1:1]
+                                            *   / COUT[0:0]10 : AND of signal CII[x]_MUX of channel [x=1]
+                                            *   of instance [d] and signal PSU_SHIFT[1:1] / COUT[0:0]11
+                                            *   : DTM_IN_T[1:1] of instance d selected                                    */
+            uint32_t               : 2;
+            __IOM uint32_t O1SEL_2 : 1;    /*!< [16..16] Output 1 select channel 2.0 : inverse dead time signal
+                                            *   selected1 : special function on output 1 selected (defined
+                                            *   by CDTM[i]_DTM[d]_CH_CTRL1.O1F_2)                                         */
+            __IOM uint32_t I1SEL_2 : 1;    /*!< [17..17] Input 1 select channel 2.0 : signal PSU_SHIFT[2:2]
+                                            *   selected1 : signal COUT[1:1] selected                                     */
+            __IOM uint32_t SH_EN_2 : 1;    /*!< [18..18] Shift enable channel 2.0 : switch between DTM inputs
+                                            *   of channel [x] and DTM_IN_PREV by PSU_SHIFT or CH_OUT_I(depends
+                                            *   to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_2) is disabled1 : switch
+                                            *   between DTM inputs of channel [x] and DTM_IN_PREV by PSU_SHIFT
+                                            *   or CH_OUT_I(depends to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_2)
+                                            *   is enabled                                                                */
+            __IOM uint32_t SWAP_2 : 1;     /*!< [19..19] Swap outputs DTM_OUT0[2:2] of instance d and DTM_OUT1[2:2]
+                                            *   of instance d (before final output register).0 : outputs
+                                            *   not swapped1 : swap outputs DTM_OUT0[2:2] of instance d
+                                            *   and DTM_OUT1[2:2] of instance d                                           */
+            __IOM uint32_t O1F_2 : 2;      /*!< [21..20] Output 1 function channel 2.00 : Signal EDGE_TRIGG_[x]
+                                            *   of channel [x=2] is selected01 : XOR of signal CII[x]_MUX
+                                            *   of channel [x=2] of instance [d] and signal PSU_SHIFT[2:2]
+                                            *   / COUT[1:1]10 : AND of signal CII[x]_MUX of channel [x=2]
+                                            *   of instance [d] and signal PSU_SHIFT[2:2] / COUT[1:1]11
+                                            *   : DTM_IN_T[2:2] of instance d selected                                    */
+            __IOM uint32_t XDT_EN_2_3 : 1; /*!< [22..22] Cross dead time enable on channel 2 and 3.0 : cross
+                                            *   dead time disabled on channel 2 and 31 : cross dead time
+                                            *   enabled on channel 2 and 3Note:When a '1' is written to
+                                            *   bit CDTM[i]_DTM[d]_CH_CTRL1.XDT_EN_2_3, the internal register
+                                            *   IN[x]_DLY1, IN[x]_DLY2and DT_DOWN_CNT are reset to '0'
+                                            *   (x = {2, 3})CDTM[i]_DTM[d]_CH_CTRL3.TSEL0_2, CDTM[i]_DTM[d]_CH_CTRL3.TSEL
+                                            *   _3, CDTM[i]_DTM[d]_CH_CTRL1.SH_EN_2and CDTM[i]_DTM[d]_CH_CTRL1.SH_EN_3
+                                            *   must be '0' for using cross dead time to avoid wrong input
+                                            *   signals.                                                                  */
+            uint32_t               : 1;
+            __IOM uint32_t O1SEL_3 : 1;    /*!< [24..24] Output 1 select channel 3.0 : inverse dead time signal
+                                            *   selected1 : special function on output 1 selected (defined
+                                            *   by CDTM[i]_DTM[d]_CH_CTRL1.O1F_3)                                         */
+            __IOM uint32_t I1SEL_3 : 1;    /*!< [25..25] Input 1 select channel 3.0 : signal PSU_SHIFT[3:3]
+                                            *   selected1 : signal COUT[2:2] selected                                     */
+            __IOM uint32_t SH_EN_3 : 1;    /*!< [26..26] Shift enable channel 3.0 : switch between DTM inputs
+                                            *   of channel [x] and DTM_IN_PREV by PSU_SHIFT or CH_OUT_I(depends
+                                            *   to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_3) is disabled1 : switch
+                                            *   between DTM inputs of channel [x] and DTM_IN_PREV by PSU_SHIFT
+                                            *   or CH_OUT_I(depends to CDTM[i]_DTM[d]_CH_CTRL1.I1SEL_3)
+                                            *   is enabled                                                                */
+            __IOM uint32_t SWAP_3 : 1;     /*!< [27..27] Swap outputs DTM_OUT0[3:3] of instance d and DTM_OUT1[3:3]
+                                            *   of instance d (before final output register).0 : outputs
+                                            *   not swapped1 : swap outputs DTM_OUT0[3:3] of instance d
+                                            *   and DTM_OUT1[3:3] of instance d                                           */
+            __IOM uint32_t O1F_3 : 2;      /*!< [29..28] Output 1 function channel 3.00 : Signal EDGE_TRIGG_[x]
+                                            *   of channel [x=3] is selected01 : XOR of signal CII[x]_MUX
+                                            *   of channel [x=3] of instance [d] and signal PSU_SHIFT[3:3]
+                                            *   / COUT[2:2]10 : AND of signal CII[x]_MUX of channel [x=3]
+                                            *   of instance [d] and signal PSU_SHIFT[3:3] / COUT[2:2]11
+                                            *   : DTM_IN_T[3:3] of instance d selected                                    */
+            uint32_t : 2;
+        } CDTM_DTM_CH_CTRL1_b;
+    };
+
+    union
+    {
+        __IOM uint32_t CDTM_DTM_CH_CTRL2; /*!< (@ 0x00000008) CDTM[i]-DTM[d] channel control register 2.                 */
+
+        struct
+        {
+            __IOM uint32_t POL0_0 : 1;    /*!< [0..0] Polarity on output 0 channel 0.0 : Output signal not
+                                           *   inverted1 : Output signal inverted                                        */
+            __IOM uint32_t OC0_0 : 1;     /*!< [1..1] Output 0 control channel 0.0 : Functional output1 : Constant
+                                           *   output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL0_0                           */
+            __IOM uint32_t SL0_0 : 1;     /*!< [2..2] Signal level on output 0 channel 0.0 : set Signal Level
+                                           *   to 01 : set Signal Level to 1                                             */
+            __IOM uint32_t DT0_0 : 1;     /*!< [3..3] Dead time path enable on output 0 channel 0.0 : direct
+                                           *   path from DTM_IN[0:0] to DTM_OUT0[0:0] of instance d enabled1
+                                           *   : dead time path enabled                                                  */
+            __IOM uint32_t POL1_0 : 1;    /*!< [4..4] Polarity on output 1 channel 0.0 : Output signal not
+                                           *   inverted1 : Output signal inverted                                        */
+            __IOM uint32_t OC1_0 : 1;     /*!< [5..5] Output 1 control channel 0.0 : Functional output1 : Constant
+                                           *   output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL1_0                           */
+            __IOM uint32_t SL1_0 : 1;     /*!< [6..6] Signal level on output 1 channel 0.0 : set Signal Level
+                                           *   to 01 : set Signal Level to 1                                             */
+            __IOM uint32_t DT1_0 : 1;     /*!< [7..7] Dead time path enable on output 1 channel 0.0 : direct
+                                           *   path from DTM_IN[0:0] to DTM_OUT1[0:0] of instance d enabled1
+                                           *   : path for DTM functions enabled like dead time or multiple
+                                           *   signal combinations                                                       */
+            __IOM uint32_t POL0_1 : 1;    /*!< [8..8] Polarity on output 0 channel 1.0 : Output signal not
+                                           *   inverted1 : Output signal inverted                                        */
+            __IOM uint32_t OC0_1 : 1;     /*!< [9..9] Output 0 control channel 1.0 : Functional output1 : Constant
+                                           *   output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL0_1                           */
+            __IOM uint32_t SL0_1 : 1;     /*!< [10..10] Signal level on output 0 channel 1.0 : set Signal Level
+                                           *   to 01 : set Signal Level to 1                                             */
+            __IOM uint32_t DT0_1 : 1;     /*!< [11..11] Dead time path enable on output 0 channel 1.0 : direct
+                                           *   path from DTM_IN[0:0] to DTM_OUT0[0:0] of instance d enabled1
+                                           *   : dead time path enabled                                                  */
+            __IOM uint32_t POL1_1 : 1;    /*!< [12..12] Polarity on output 1 channel 1.0 : Output signal not
+                                           *   inverted1 : Output signal inverted                                        */
+            __IOM uint32_t OC1_1 : 1;     /*!< [13..13] Output 1 control channel 1.0 : Functional output1 :
+                                           *   Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL1_1                  */
+            __IOM uint32_t SL1_1 : 1;     /*!< [14..14] Signal level on output 1 channel 1.0 : set Signal Level
+                                           *   to 01 : set Signal Level to 1                                             */
+            __IOM uint32_t DT1_1 : 1;     /*!< [15..15] Dead time path enable on output 1 channel 1.0 : direct
+                                           *   path from DTM_IN[1:1] to DTM_OUT1[1:1] of instance d enabled1
+                                           *   : path for DTM functions enabled like dead time or multiple
+                                           *   signal combinations                                                       */
+            __IOM uint32_t POL0_2 : 1;    /*!< [16..16] Polarity on output 0 channel 2.0 : Output signal not
+                                           *   inverted1 : Output signal inverted                                        */
+            __IOM uint32_t OC0_2 : 1;     /*!< [17..17] Output 0 control channel 2.0 : Functional output1 :
+                                           *   Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL0_2                  */
+            __IOM uint32_t SL0_2 : 1;     /*!< [18..18] Signal level on output 0 channel 2.0 : set Signal Level
+                                           *   to 01 : set Signal Level to 1                                             */
+            __IOM uint32_t DT0_2 : 1;     /*!< [19..19] Dead time path enable on output 0 channel 2.0 : direct
+                                           *   path from DTM_IN[2:2] to DTM_OUT0[2:2] of instance d enabled1
+                                           *   : dead time path enabled                                                  */
+            __IOM uint32_t POL1_2 : 1;    /*!< [20..20] Polarity on output 1 channel 2.0 : Output signal not
+                                           *   inverted1 : Output signal inverted                                        */
+            __IOM uint32_t OC1_2 : 1;     /*!< [21..21] Output 1 control channel 2.0 : Functional output1 :
+                                           *   Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL1_2                  */
+            __IOM uint32_t SL1_2 : 1;     /*!< [22..22] Signal level on output 1 channel 2.0 : set Signal Level
+                                           *   to 01 : set Signal Level to 1                                             */
+            __IOM uint32_t DT1_2 : 1;     /*!< [23..23] Dead time path enable on output 1 channel 2.0 : direct
+                                           *   path from DTM_IN[2:2] to DTM_OUT1[2:2] of instance d enabled1
+                                           *   : path for DTM functions enabled like dead time or multiple
+                                           *   signal combinations                                                       */
+            __IOM uint32_t POL0_3 : 1;    /*!< [24..24] Polarity on output 0 channel 3.0 : Output signal not
+                                           *   inverted1 : Output signal inverted                                        */
+            __IOM uint32_t OC0_3 : 1;     /*!< [25..25] Output 0 control channel 3.0 : Functional output1 :
+                                           *   Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL0_3                  */
+            __IOM uint32_t SL0_3 : 1;     /*!< [26..26] Signal level on output 0 channel 3.0 : set Signal Level
+                                           *   to 01 : set Signal Level to 1                                             */
+            __IOM uint32_t DT0_3 : 1;     /*!< [27..27] Dead time path enable on output 0 channel 3.0 : direct
+                                           *   path from DTM_IN[3:3] to DTM_OUT0[3:3] of instance d enabled1
+                                           *   : dead time path enabled                                                  */
+            __IOM uint32_t POL1_3 : 1;    /*!< [28..28] Polarity on output 1 channel 3.0 : Output signal not
+                                           *   inverted1 : Output signal inverted                                        */
+            __IOM uint32_t OC1_3 : 1;     /*!< [29..29] Output 1 control channel 3.0 : Functional output1 :
+                                           *   Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2.SL1_3                  */
+            __IOM uint32_t SL1_3 : 1;     /*!< [30..30] Signal level on output 1 channel 3.0 : set Signal Level
+                                           *   to 01 : set Signal Level to 1                                             */
+            __IOM uint32_t DT1_3 : 1;     /*!< [31..31] Dead time path enable on output 1 channel 3.0 : direct
+                                           *   path from DTM_IN[3:3] to DTM_OUT1[3:3] of instance d enabled1
+                                           *   : path for DTM functions enabled like dead time or multiple
+                                           *   signal combinations                                                       */
+        } CDTM_DTM_CH_CTRL2_b;
+    };
+
+    union
+    {
+        __IOM uint32_t CDTM_DTM_CH_CTRL2_SR; /*!< (@ 0x0000000C) CDTM[i]-DTM[d] channel control register 2 shadow.          */
+
+        struct
+        {
+            __IOM uint32_t POL0_0_SR : 1;    /*!< [0..0] Polarity on output 0 channel 0 shadow register.0 : Output
+                                              *   signal not inverted1 : Output signal inverted                             */
+            __IOM uint32_t OC0_0_SR : 1;     /*!< [1..1] Output 0 control channel 0 shadow register.0 : Functional
+                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_0_SR  */
+            __IOM uint32_t SL0_0_SR : 1;     /*!< [2..2] Signal level on output 0 channel 0 shadow register.0
+                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t DT0_0_SR : 1;     /*!< [3..3] Dead time path enable on output 0 channel 0 shadow register.0
+                                              *   : direct path from DTM_IN[0:0] to DTM_OUT0[0:0] of instance
+                                              *   d enabled1 : dead time path enabled                                       */
+            __IOM uint32_t POL1_0_SR : 1;    /*!< [4..4] Polarity on output 1 channel 0 shadow register.0 : Output
+                                              *   signal not inverted1 : Output signal inverted                             */
+            __IOM uint32_t OC1_0_SR : 1;     /*!< [5..5] Output 1 control channel 0 shadow register.0 : Functional
+                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_0_SR  */
+            __IOM uint32_t SL1_0_SR : 1;     /*!< [6..6] Signal level on output 1 channel 0 shadow register.0
+                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t DT1_0_SR : 1;     /*!< [7..7] Dead time path enable on output 1 channel 0 shadow register.0
+                                              *   : direct path from DTM_IN[0:0] to DTM_OUT1[0:0] of instance
+                                              *   d enabled1 : path for DTM functions enabled like dead time
+                                              *   or multiple signal combinations                                           */
+            __IOM uint32_t POL0_1_SR : 1;    /*!< [8..8] Polarity on output 0 channel 1 shadow register.0 : Output
+                                              *   signal not inverted1 : Output signal inverted                             */
+            __IOM uint32_t OC0_1_SR : 1;     /*!< [9..9] Output 0 control channel 1 shadow register.0 : Functional
+                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_1_SR  */
+            __IOM uint32_t SL0_1_SR : 1;     /*!< [10..10] Signal level on output 0 channel 1 shadow register.0
+                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t DT0_1_SR : 1;     /*!< [11..11] Dead time path enable on output 0 channel 1 shadow
+                                              *   register.0 : direct path from DTM_IN[1:1] to DTM_OUT0[1:1]
+                                              *   of instance d enabled1 : dead time path enabled                           */
+            __IOM uint32_t POL1_1_SR : 1;    /*!< [12..12] Polarity on output 1 channel 1 shadow register.0 :
+                                              *   Output signal not inverted1 : Output signal inverted                      */
+            __IOM uint32_t OC1_1_SR : 1;     /*!< [13..13] Output 1 control channel 1 shadow register.0 : Functional
+                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_1_SR  */
+            __IOM uint32_t SL1_1_SR : 1;     /*!< [14..14] Signal level on output 1 channel 1 shadow register.0
+                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t DT1_1_SR : 1;     /*!< [15..15] Dead time path enable on output 1 channel 1 shadow
+                                              *   register.0 : direct path from DTM_IN[1:1] to DTM_OUT1[1:1]
+                                              *   of instance d1 : path for DTM functions enabled like dead
+                                              *   time or multiple signal combinations                                      */
+            __IOM uint32_t POL0_2_SR : 1;    /*!< [16..16] Polarity on output 0 channel 2 shadow register.0 :
+                                              *   Output signal not inverted1 : Output signal inverted                      */
+            __IOM uint32_t OC0_2_SR : 1;     /*!< [17..17] Output 0 control channel 2 shadow register.0 : Functional
+                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_2_SR  */
+            __IOM uint32_t SL0_2_SR : 1;     /*!< [18..18] Signal level on output 0 channel 2 shadow register.0
+                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t DT0_2_SR : 1;     /*!< [19..19] Dead time path enable on output 0 channel 2 shadow
+                                              *   register.0 : direct path from DTM_IN[2:2] to DTM_OUT0[2:2]
+                                              *   of instance d1 : dead time path enabled                                   */
+            __IOM uint32_t POL1_2_SR : 1;    /*!< [20..20] Polarity on output 1 channel 2 shadow register.0 :
+                                              *   Output signal not inverted1 : Output signal inverted                      */
+            __IOM uint32_t OC1_2_SR : 1;     /*!< [21..21] Output 1 control channel 2 shadow register.0 : Functional
+                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_2_SR  */
+            __IOM uint32_t SL1_2_SR : 1;     /*!< [22..22] Signal level on output 1 channel 2 shadow register.0
+                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t DT1_2_SR : 1;     /*!< [23..23] Dead time path enable on output 1 channel 2 shadow
+                                              *   register.0 : direct path from DTM_IN[2:2] to DTM_OUT1[2:2]
+                                              *   of instance d1 : path for DTM functions enabled like dead
+                                              *   time or multiple signal combinations                                      */
+            __IOM uint32_t POL0_3_SR : 1;    /*!< [24..24] Polarity on output 0 channel 3 shadow register.0 :
+                                              *   Output signal not inverted1 : Output signal inverted                      */
+            __IOM uint32_t OC0_3_SR : 1;     /*!< [25..25] Output 0 control channel 3 shadow register.0 : Functional
+                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_3_SR  */
+            __IOM uint32_t SL0_3_SR : 1;     /*!< [26..26] Signal level on output 0 channel 3 shadow register.0
+                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t DT0_3_SR : 1;     /*!< [27..27] Dead time path enable on output 0 channel 3.0 : direct
+                                              *   path from DTM_IN[3:3] to DTM_OUT0[3:3] of instance d enabled1
+                                              *   : dead time path enabled                                                  */
+            __IOM uint32_t POL1_3_SR : 1;    /*!< [28..28] Polarity on output 1 channel 3 shadow register.0 :
+                                              *   Output signal not inverted1 : Output signal inverted                      */
+            __IOM uint32_t OC1_3_SR : 1;     /*!< [29..29] Output 1 control channel 3 shadow register.0 : Functional
+                                              *   output1 : Constant output defined by CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_3_SR  */
+            __IOM uint32_t SL1_3_SR : 1;     /*!< [30..30] Signal level on output 1 channel 3 shadow register.0
+                                              *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t DT1_3_SR : 1;     /*!< [31..31] Dead time path enable on output 1 channel 3 shadow
+                                              *   register.0 : direct path from DTM_IN[3:3] to DTM_OUT1[3:3]
+                                              *   of instance d1 : path for DTM functions enabled like dead
+                                              *   time or multiple signal combinations                                      */
+        } CDTM_DTM_CH_CTRL2_SR_b;
+    };
+
+    union
+    {
+        __IOM uint32_t CDTM_DTM_PS_CTRL;             /*!< (@ 0x00000010) CDTM[i]-DTM[d] phase shift unit configuration
+                                                      *                  and control register.                                      */
+
+        struct
+        {
+            __IOM uint32_t RELBLK : 10;              /*!< [9..0] Reload value blanking window.Note:A value of 0x000 resets
+                                                      *   counter BLK_DOWN_CNT                                                      */
+            uint32_t                  : 6;
+            __IOM uint32_t PSU_IN_SEL : 1;           /*!< [16..16] PSU input select.0 : TIM_CH_IN0 or TIM_CH_IN1 selected1
+                                                      *   : DTM_AUX_IN selected                                                     */
+            __IOM uint32_t IN_POL : 1;               /*!< [17..17] Input polarity.0 : input signal is not inverted1 :
+                                                      *   input signal is inverted                                                  */
+            __IOM uint32_t TIM_SEL   : 1;            /*!< [18..18] TIM input select.0 : select TIM_CH_IN01 : select TIM_CH_IN1      */
+            uint32_t                 : 1;
+            __IOM uint32_t SHIFT_SEL : 2;            /*!< [21..20] Shift select.00 : trigger signal for reloading DOWN
+                                                      *   COUNTER is IN_EDGE[0:0] of DTM channel [0]; signal TIM_CH_IN0
+                                                      *   or TIM_CH_IN1 orDTM_AUX_IN[0:0] or DTM_PSU_IN via signal
+                                                      *   EXT_CTRL_GATED is connected via signal PSU_SHIFT[1:1] to
+                                                      *   DTM channel 101 : trigger signal for reloading DOWN COUNTER
+                                                      *   is IN_EDGE[1:1] of DTM channel [1]; signal TIM_CH_IN0 or
+                                                      *   TIM_CH_IN1 orDTM_AUX_IN[0:0] or DTM_PSU_IN via signal EXT_CTRL_GATED
+                                                      *   is connected via signal PSU_SHIFT[2:2] to DTM channel 210
+                                                      *   : trigger signal for reloading DOWN COU                                   */
+            uint32_t : 10;
+        } CDTM_DTM_PS_CTRL_b;
+    };
+    __IOM R_GTM0_CDTM_CLS_DTM_CH_DTV_Type CH_DTV[4]; /*!< (@ 0x00000014) DTM Channel for CH[0..3]_DTV                             */
+
+    union
+    {
+        __IOM uint32_t CDTM_DTM_CH_SR;               /*!< (@ 0x00000024) CDTM[i]-DTM[d] channel shadow register.                    */
+
+        struct
+        {
+            __IOM uint32_t SL0_0_SR_SR : 1;          /*!< [0..0] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_0_SR.0
+                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t SL1_0_SR_SR : 1;          /*!< [1..1] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_0_SR.0
+                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t SL0_1_SR_SR : 1;          /*!< [2..2] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_1_SR.0
+                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t SL1_1_SR_SR : 1;          /*!< [3..3] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_1_SR.0
+                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t SL0_2_SR_SR : 1;          /*!< [4..4] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_2_SR.0
+                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t SL1_2_SR_SR : 1;          /*!< [5..5] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_2_SR.0
+                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t SL0_3_SR_SR : 1;          /*!< [6..6] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL0_3_SR.0
+                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
+            __IOM uint32_t SL1_3_SR_SR : 1;          /*!< [7..7] Shadow register for bit CDTM[i]_DTM[d]_CH_CTRL2_SR.SL1_3_SR.0
+                                                      *   : set Signal Level to 01 : set Signal Level to 1                          */
+            uint32_t : 24;
+        } CDTM_DTM_CH_SR_b;
+    };
+
+    union
+    {
+        __IOM uint32_t CDTM_DTM_CH_CTRL3; /*!< (@ 0x00000028) CDTM[i]-DTM[d] channel control register 3.                 */
+
+        struct
+        {
+            __IOM uint32_t CII0 : 1;      /*!< [0..0] Combinational input invert channel 0.0 : do not invert
+                                           *   input1 : invert input                                                     */
+            __IOM uint32_t CIS0 : 1;      /*!< [1..1] Combinational input select channel 0.0 : select the input
+                                           *   DTM_IN[0:0] or DTM_IN_T[0:0] of instance d(CDTM[i]_DTM[d]_CH_CTRL3.TSEL0_
+                                           *   selects one of the two input signals)1 : select internal
+                                           *   signal EDGE_TRIGG_[0]                                                     */
+            __IOM uint32_t TSEL0_0 : 1;   /*!< [2..2] Input selection for dead time / edge trigger generation.0
+                                           *   : use DTM_IN[0:0] of instance d as input for dead time
+                                           *   / edge trigger generation1 : use DTM_IN_T[0:0] of instance
+                                           *   d as input for dead time / edge trigger generation                        */
+            __IOM uint32_t TSEL1_0 : 1;   /*!< [3..3] Input selection combinational logic path.0 : use DTM_IN[0:0]
+                                           *   of instance d as input for combinational logic path1 :
+                                           *   use DTM_IN_T[0:0] of instance d as input for combinational
+                                           *   logic path                                                                */
+            uint32_t            : 4;
+            __IOM uint32_t CII1 : 1;      /*!< [8..8] Combinational input invert channel 1.0 : do not invert
+                                           *   input1 : invert input                                                     */
+            __IOM uint32_t CIS1 : 1;      /*!< [9..9] Combinational input select channel 1.0 : select the input
+                                           *   DTM_IN[1:1] or DTM_IN_T[1:1] of instance d(CDTM[i]_DTM[d]_CH_CTRL3.TSEL0_
+                                           *   selects one of the two input signals)1 : select internal
+                                           *   signal EDGE_TRIGG_[1]                                                     */
+            __IOM uint32_t TSEL0_1 : 1;   /*!< [10..10] Input selection for dead time / edge trigger generation.0
+                                           *   : use DTM_IN[1:1] of instance d as input for dead time
+                                           *   / edge trigger generation1 : use DTM_IN_T[1:1] of instance
+                                           *   d as input for dead time / edge trigger generation                        */
+            __IOM uint32_t TSEL1_1 : 1;   /*!< [11..11] Input selection combinational logic path.0 : use DTM_IN[1:1]
+                                           *   of instance d as input for combinational logic path1 :
+                                           *   use DTM_IN_T[1:1] of instance d as input for combinational
+                                           *   logic path                                                                */
+            uint32_t            : 4;
+            __IOM uint32_t CII2 : 1;      /*!< [16..16] Combinational input invert channel 2.0 : do not invert
+                                           *   input1 : invert input                                                     */
+            __IOM uint32_t CIS2 : 1;      /*!< [17..17] Combinational input select channel 2.0 : select the
+                                           *   input DTM_IN[2:2] or DTM_IN_T[2:2] of instance d(CDTM[i]_DTM[d]_CH_CTRL3.
+                                           *   SEL0_2 selects one of the two input signals)1 : select
+                                           *   internal signal EDGE_TRIGG_[2]                                            */
+            __IOM uint32_t TSEL0_2 : 1;   /*!< [18..18] Input selection for dead time / edge trigger generation.0
+                                           *   : use DTM_IN[2:2] of instance d as input for dead time
+                                           *   / edge trigger generation1 : use DTM_IN_T[2:2] of instance
+                                           *   d as input for dead time / edge trigger generation                        */
+            __IOM uint32_t TSEL1_2 : 1;   /*!< [19..19] Input selection combinational logic path.0 : use DTM_IN[2:2]
+                                           *   of instance d as input for combinational logic path1 :
+                                           *   use DTM_IN_T[2:2] of instance d as input for combinational
+                                           *   logic path                                                                */
+            uint32_t            : 4;
+            __IOM uint32_t CII3 : 1;      /*!< [24..24] Combinational input invert channel 3.0 : do not invert
+                                           *   input1 : invert input                                                     */
+            __IOM uint32_t CIS3 : 1;      /*!< [25..25] Combinational input select channel 3.0 : select the
+                                           *   input DTM_IN[3:3] or DTM_IN_T[3:3] of instance d(CDTM[i]_DTM[d]_CH_CTRL3.
+                                           *   SEL0_3 selects one of the two input signals)1 : select
+                                           *   internal signal EDGE_TRIGG_[3]                                            */
+            __IOM uint32_t TSEL0_3 : 1;   /*!< [26..26] Input selection for dead time / edge trigger generation.0
+                                           *   : use DTM_IN[3:3] of instance d as input for dead time
+                                           *   / edge trigger generation1 : use DTM_IN_T[3:3] of instance
+                                           *   d as input for dead time / edge trigger generation                        */
+            __IOM uint32_t TSEL1_3 : 1;   /*!< [27..27] Input selection combinational logic path.0 : use DTM_IN[3:3]
+                                           *   of instance d as input for combinational logic path1 :
+                                           *   use DTM_IN_T[3:3] of instance d as input for combinational
+                                           *   logic path                                                                */
+            uint32_t : 4;
+        } CDTM_DTM_CH_CTRL3_b;
+    };
+
+    union
+    {
+        __IOM uint32_t CDTM_DTM_CTRL2;                     /*!< (@ 0x0000002C) CDTM[i]-DTM[d] global configuration and control
+                                                            *                  register 2.                                                */
+
+        struct
+        {
+            __IOM uint32_t SHUTOFF_SEL_0 : 3;              /*!< [2..0] Channel 0: Select input signal to be used as shutoff
+                                                            *   signal.000 : TIM_CH_IN0 selected001 : TIM_CH_IN1 selected010
+                                                            *   : DTM_AUX_IN[2:2] of instance d (DTM_AUX_IN[0:0] of instance
+                                                            *   d - 1) selected011 : DTM_AUX_IN[3:3] of instance d (DTM_AUX_IN[1:1]
+                                                            *   of instance d - 1) selected100 : DTM_AUX_IN[0:0] of instance
+                                                            *   d selected101 : DTM_AUX_IN[1:1] of instance d selected110
+                                                            *   : '0' selected111 : '1' selectedNote:This bit field is
+                                                            *   write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_0 = 0.                  */
+            __IOM uint32_t SHUTOFF_POL_0 : 1;              /*!< [3..3] Channel 0: Configure if the selected shutoff input signal
+                                                            *   used as shutoff output signal is inverted or not.0 : inverter
+                                                            *   disabled1 : inverter enabledNote:This bit field is write-protected
+                                                            *   by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_0 = 0.                                  */
+            __IOM uint32_t UPD_MODE_0 : 2;                 /*!< [5..4] Channel 0: Control the update mode of the internal SHUTOFF_SYNC_0
+                                                            *   signal.00 : internal signal SHUTOFF_SYNC_0 is cleared;
+                                                            *   a set is not possible01 : signal PSU_SHUT_OFF[0:0] sets
+                                                            *   internal signal SHUTOFF_SYNC_0;internal signal SHUTOFF_SYNC_0
+                                                            *   is cleared depending onbit field CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_010
+                                                            *   : signal PSU_SHUT_OFF[0:0] sets internal signal SHUTOFF_SYNC_0;internal
+                                                            *   signal SHUTOFF_SYNC_0 is cleared by signal DTM_PREV_IN0_REDGE
+                                                            *   orDTM_PREV_IN0_FEDGE or DTM_IN_REDGE of channel 0 or DTM_IN_FEDGE
+                                                            *   o                                                                         */
+            __IOM uint32_t SHUT_OFF_RST_0 : 1;             /*!< [6..6] Channel 0: Clear of internal signal SHUTOFF_SYNC_0 if
+                                                            *   selected as control source.0 : No action1 : shutoff reset
+                                                            *   (clear of internal signal SHUTOFF_SYNC_0 enabled)Note:This
+                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_0
+                                                            *   = 0.                                                                      */
+            __IOM uint32_t WR_EN_0 : 1;                    /*!< [7..7] Channel 0: Write enable of bit fields.0 : writing of
+                                                            *   the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_SEL_0, CDTM[i]_DTM[d]_CTRL2.S
+                                                            *   UTOFF_POL_0,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_0, CDTM[i]_DTM[d]_CTRL2.SHUT_OF
+                                                            *   _RST_0 disabled1 : writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF
+                                                            *   SEL_0, CDTM[i]_DTM[d]_CTRL2.SHUTOFF_POL_0,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_0
+                                                            *   CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_0 enabledNote:Write enable
+                                                            *   bit field always read as zero, because no storage element
+                                                            *   implemented.                                                              */
+            __IOM uint32_t SHUTOFF_SEL_1 : 3;              /*!< [10..8] Channel 1: Select input signal to be used as shutoff
+                                                            *   signal.000 : TIM_CH_IN0 selected001 : TIM_CH_IN1 selected010
+                                                            *   : DTM_AUX_IN[2:2] of DTM instance d (DTM_AUX_IN[0:0] of
+                                                            *   DTM instance d - 1) selected011 : DTM_AUX_IN[3:3] of DTM
+                                                            *   instance d (DTM_AUX_IN[1:1] of DTM instance d - 1) selected100
+                                                            *   : DTM_AUX_IN[0:0] of DTM instance d selected101 : DTM_AUX_IN[1:1]
+                                                            *   of DTM instance d selected110 : '0' selected111 : '1' selectedNote:This
+                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_1
+                                                            *   = 0.                                                                      */
+            __IOM uint32_t SHUTOFF_POL_1 : 1;              /*!< [11..11] Channel 1: Configure if the selected shutoff input
+                                                            *   signal used as shutoff output signal is inverted or not.0
+                                                            *   : inverter disabled1 : inverter enabledNote:This bit field
+                                                            *   is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_1
+                                                            *   = 0.                                                                      */
+            __IOM uint32_t UPD_MODE_1 : 2;                 /*!< [13..12] Channel 1: Control the update mode of the internal
+                                                            *   SHUTOFF_SYNC_1 signal.00 : internal signal SHUTOFF_SYNC_1
+                                                            *   is cleared; a set is not possible01 : signal PSU_SHUT_OFF[1:1]
+                                                            *   sets internal signal SHUTOFF_SYNC_1;internal signal SHUTOFF_SYNC_1
+                                                            *   is cleared depending tobit field CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_110
+                                                            *   : signal PSU_SHUT_OFF[1:1] sets internal signal SHUTOFF_SYNC_1;internal
+                                                            *   signal SHUTOFF_SYNC_1 is cleared by signal DTM_PREV_IN0_REDGE
+                                                            *   orDTM_PREV_IN0_FEDGE or DTM_IN_REDGE of channel 0 or DTM_IN_FEDGE
+                                                            *   o                                                                         */
+            __IOM uint32_t SHUT_OFF_RST_1 : 1;             /*!< [14..14] Channel 1: Clear of internal signal SHUTOFF_SYNC_1
+                                                            *   if selected as control source.0 : No action1 : shutoff
+                                                            *   reset (clear of internal signal SHUTOFF_SYNC_1 enabled)Note:This
+                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_1
+                                                            *   = 0.                                                                      */
+            __IOM uint32_t WR_EN_1 : 1;                    /*!< [15..15] Channel 1: Write enable of bit fields.0 : writing of
+                                                            *   the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_SEL_1, CDTM[i]_DTM[d]_CTRL2.S
+                                                            *   UTOFF_POL_1,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_1, CDTM[i]_DTM[d]_CTRL2.SHUT_OF
+                                                            *   _RST_1 disabled1 : writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF
+                                                            *   SEL_1, CDTM[i]_DTM[d]_CTRL2.SHUTOFF_POL_1,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_1
+                                                            *   CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_1 enabledNote:Writing
+                                                            *   a 1 - enables the writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_
+                                                            *   EL_1,CDTM[i]_DTM[d]_CTRL2.SHUTO                                           */
+            __IOM uint32_t SHUTOFF_SEL_2 : 3;              /*!< [18..16] Channel 2: Select input signal to be used as shutoff
+                                                            *   signal.000 : TIM_CH_IN0 selected001 : TIM_CH_IN1 selected010
+                                                            *   : DTM_AUX_IN[2:2] of DTM instance d (DTM_AUX_IN[0:0] of
+                                                            *   DTM instance d - 1) selected011 : DTM_AUX_IN[3:3] of DTM
+                                                            *   instance d (DTM_AUX_IN[1:1] of DTM instance d - 1) selected100
+                                                            *   : DTM_AUX_IN[0:0] of DTM instance d selected101 : DTM_AUX_IN[1:1]
+                                                            *   of DTM instance d selected110 : '0' selected111 : '1' selectedNote:This
+                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_2
+                                                            *   = 0.                                                                      */
+            __IOM uint32_t SHUTOFF_POL_2 : 1;              /*!< [19..19] Channel 2: Configure if the selected shutoff input
+                                                            *   signal used as shutoff output signal is inverted or not.0
+                                                            *   : inverter disabled1 : inverter enabledNote:This bit field
+                                                            *   is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_2
+                                                            *   = 0.                                                                      */
+            __IOM uint32_t UPD_MODE_2 : 2;                 /*!< [21..20] Channel 2: Control the update mode of the internal
+                                                            *   SHUTOFF_SYNC_2 signal.00 : internal signal SHUTOFF_SYNC_2
+                                                            *   is cleared; a set is not possible01 : signal PSU_SHUT_OFF[2:2]
+                                                            *   sets internal signal SHUTOFF_SYNC_2;internal signal SHUTOFF_SYNC_2
+                                                            *   is cleared depending tobit field CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_210
+                                                            *   : signal PSU_SHUT_OFF[2:2] sets internal signal SHUTOFF_SYNC_2;internal
+                                                            *   signal SHUTOFF_SYNC_2 is cleared by signal DTM_PREV_IN0_REDGE
+                                                            *   orDTM_PREV_IN0_FEDGE or DTM_IN_REDGE of channel 0 or DTM_IN_FEDGE
+                                                            *   o                                                                         */
+            __IOM uint32_t SHUT_OFF_RST_2 : 1;             /*!< [22..22] Channel 2: Clear of internal signal SHUTOFF_SYNC_2
+                                                            *   if selected as control source.0 : No action1 : shutoff
+                                                            *   reset (clear of internal signal SHUTOFF_SYNC_2 enabled)Note:This
+                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_2
+                                                            *   = 0.                                                                      */
+            __IOM uint32_t WR_EN_2 : 1;                    /*!< [23..23] Channel 2: Write enable of bit fields.0 : writing of
+                                                            *   the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_SEL_2, CDTM[i]_DTM[d]_CTRL2.S
+                                                            *   UTOFF_POL_2,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_2, CDTM[i]_DTM[d]_CTRL2.SHUT_OF
+                                                            *   _RST_2 disabled1 : writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF
+                                                            *   SEL_2, CDTM[i]_DTM[d]_CTRL2.SHUTOFF_POL_2,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_2
+                                                            *   CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_2 enabledNote:Writing
+                                                            *   a 1 - enables the writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_
+                                                            *   EL_2,CDTM[i]_DTM[d]_CTRL2.SHUTO                                           */
+            __IOM uint32_t SHUTOFF_SEL_3 : 3;              /*!< [26..24] Channel 3: Select input signal to be used as shutoff
+                                                            *   signal.000 : TIM_CH_IN0 selected001 : TIM_CH_IN1 selected010
+                                                            *   : DTM_AUX_IN[2:2] of DTM instance d (DTM_AUX_IN[0:0] of
+                                                            *   DTM instance d - 1) selected011 : DTM_AUX_IN[3:3] of DTM
+                                                            *   instance d (DTM_AUX_IN[1:1] of DTM instance d - 1) selected100
+                                                            *   : DTM_AUX_IN[0:0] of DTM instance d selected101 : DTM_AUX_IN[1:1]
+                                                            *   of DTM instance d selected110 : '0' selected111 : '1' selectedNote:This
+                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_3
+                                                            *   = 0.                                                                      */
+            __IOM uint32_t SHUTOFF_POL_3 : 1;              /*!< [27..27] Channel 3: Configure if the selected shutoff input
+                                                            *   signal used as shutoff output signal is inverted or not.0
+                                                            *   : inverter disabled1 : inverter enabledNote:This bit field
+                                                            *   is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_3
+                                                            *   = 0.                                                                      */
+            __IOM uint32_t UPD_MODE_3 : 2;                 /*!< [29..28] Channel 3: Control the update mode of the internal
+                                                            *   SHUTOFF_SYNC_3 signal.00 : internal signal SHUTOFF_SYNC_3
+                                                            *   is cleared; a set is not possible01 : signal PSU_SHUT_OFF[3:3]
+                                                            *   sets internal signal SHUTOFF_SYNC_3;internal signal SHUTOFF_SYNC_3
+                                                            *   is cleared depending tobit field CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_310
+                                                            *   : signal PSU_SHUT_OFF[3:3] sets internal signal SHUTOFF_SYNC_3;internal
+                                                            *   signal SHUTOFF_SYNC_3 is cleared by signal DTM_PREV_IN0_REDGE
+                                                            *   orDTM_PREV_IN0_FEDGE or DTM_IN_REDGE of channel 0 or DTM_IN_FEDGE
+                                                            *   o                                                                         */
+            __IOM uint32_t SHUT_OFF_RST_3 : 1;             /*!< [30..30] Channel 3: Clear of internal signal SHUTOFF_SYNC_3
+                                                            *   if selected as control source.0 : No action1 : shutoff
+                                                            *   reset (clear of internal signal SHUTOFF_SYNC_3 enabled)Note:This
+                                                            *   bit field is write-protected by bit CDTM[i]_DTM[d]_CTRL2.WR_EN_3
+                                                            *   = 0.                                                                      */
+            __IOM uint32_t WR_EN_3 : 1;                    /*!< [31..31] Channel 3: Write enable of bit fields.0 : writing of
+                                                            *   the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_SEL_3, CDTM[i]_DTM[d]_CTRL2.S
+                                                            *   UTOFF_POL_3,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_3, CDTM[i]_DTM[d]_CTRL2.SHUT_OF
+                                                            *   _RST_3 disabled1 : writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF
+                                                            *   SEL_3, CDTM[i]_DTM[d]_CTRL2.SHUTOFF_POL_3,CDTM[i]_DTM[d]_CTRL2.UPD_MODE_3
+                                                            *   CDTM[i]_DTM[d]_CTRL2.SHUT_OFF_RST_3 enabledNote:Writing
+                                                            *   a 1 - enables the writing of the bit fields CDTM[i]_DTM[d]_CTRL2.SHUTOFF_
+                                                            *   EL_3,CDTM[i]_DTM[d]_CTRL2.SHUTO                                           */
+        } CDTM_DTM_CTRL2_b;
+    };
+    __IOM R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_Type CH_DTV_SR[4]; /*!< (@ 0x00000030) DTM Channel for CH[0..3]_DTV_SR                    */
+} R_GTM0_CDTM_CLS_DTM_Type;                                /*!< Size = 64 (0x40)                                                          */
+
+/**
+ * @brief R_GTM0_CDTM_CLS [CLS] (Cluster for DTM Instance [0..6])
+ */
+typedef struct
+{
+    __IOM R_GTM0_CDTM_CLS_DTM_Type DTM[8]; /*!< (@ 0x00000000) DTM Instance [0..7]                                        */
+    __IM uint32_t RESERVED[32640];
+} R_GTM0_CDTM_CLS_Type;                    /*!< Size = 131072 (0x20000)                                                   */
 
 /**
  * @brief R_GTM0_TIM_CLS_CH [CH] ([0..7])
@@ -11537,6 +11552,200 @@ typedef struct
 } R_GUARD_IBG_TPTM_PROT_U_Type;        /*!< Size = 8 (0x8)                                                            */
 
 /**
+ * @brief R_IPIR_PE_CH [CH] (Inter Processor Interrupt Channel inside PE block)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint8_t EN;              /*!< (@ 0x00000000) Inter-PE Interrupt Enable Register                         */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } EN_b;
+    };
+    __IM uint8_t RESERVED[3];
+
+    union
+    {
+        __IM uint8_t FLG;              /*!< (@ 0x00000004) Inter-PE Interrupt Request Flag Register                   */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } FLG_b;
+    };
+    __IM uint8_t RESERVED1[3];
+
+    union
+    {
+        __OM uint8_t FCLR;             /*!< (@ 0x00000008) Inter-PE Interrupt Request Flag Clear Register             */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } FCLR_b;
+    };
+    __IM uint8_t RESERVED2[7];
+
+    union
+    {
+        __IOM uint8_t REQ;             /*!< (@ 0x00000010) Inter-PE Interrupt Request Register                        */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } REQ_b;
+    };
+    __IM uint8_t RESERVED3[3];
+
+    union
+    {
+        __OM uint8_t RCLR;             /*!< (@ 0x00000014) Inter-PE Interrupt Request Clear Register                  */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } RCLR_b;
+    };
+    __IM uint8_t RESERVED4[11];
+} R_IPIR_PE_CH_Type;                   /*!< Size = 32 (0x20)                                                          */
+
+/**
+ * @brief R_IPIR_PE [PE] (Inter Processor Interrupt PE Block)
+ */
+typedef struct
+{
+    __IOM R_IPIR_PE_CH_Type CH[4];     /*!< (@ 0x00000000) Inter Processor Interrupt Channel inside PE block          */
+    __IM uint8_t            RESERVED[128];
+} R_IPIR_PE_Type;                      /*!< Size = 256 (0x100)                                                        */
+
+/**
+ * @brief R_IPIR_CH [CH] (Inter Processor Interrupt Shared Channel)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint8_t ENS;             /*!< (@ 0x00000000) Inter-PE Interrupt Enable Shared Register                  */
+
+        struct
+        {
+            __IOM uint8_t EN : 6;      /*!< [5..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
+                                        *   enable the issuance of inter-PE interrupt requests from
+                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
+                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
+            uint8_t : 2;
+        } ENS_b;
+    };
+    __IM uint8_t RESERVED[3];
+
+    union
+    {
+        __IM uint8_t FLGS;             /*!< (@ 0x00000004) Inter-PE Interrupt Request Flag Shared Register            */
+
+        struct
+        {
+            __IM uint8_t FLG : 6;      /*!< [5..0] Inter-PE Interrupt Request Flag.This register indicates
+                                        *   the status of Inter-PE Interrupt request from other PEs.
+                                        *   The x-th bit is automatically updated according to the
+                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
+                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
+                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
+                                        *   the IPInFCLRm[x] bit is set.                                              */
+            uint8_t : 2;
+        } FLGS_b;
+    };
+    __IM uint8_t RESERVED1[3];
+
+    union
+    {
+        __OM uint8_t FCLRS;            /*!< (@ 0x00000008) Inter-PE Interrupt Request Flag Clear Shared
+                                        *                  Register                                                   */
+
+        struct
+        {
+            __OM uint8_t FCLR : 6;     /*!< [5..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
+                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
+                                        *   0is ignored.                                                              */
+            uint8_t : 2;
+        } FCLRS_b;
+    };
+    __IM uint8_t RESERVED2[7];
+
+    union
+    {
+        __IOM uint8_t REQS;            /*!< (@ 0x00000010) Inter-PE Interrupt Request Shared Register                 */
+
+        struct
+        {
+            __IOM uint8_t REQ : 6;     /*!< [5..0] When 1 is written to the x-th bit while the value of
+                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
+                                        *   1.The high level is output to the inter-PE interrupt request
+                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
+                                        *   is written to the x-th bit while the value of the IPInENx[m]
+                                        *   bit is 0:The value of the x-th bit becomes 1.There are
+                                        *   no other operations.When 0 is written to the x-th bit:Writing
+                                        *   0 is ignored.When read:The register value is read out                     */
+            uint8_t : 2;
+        } REQS_b;
+    };
+    __IM uint8_t RESERVED3[3];
+
+    union
+    {
+        __OM uint8_t RCLRS;            /*!< (@ 0x00000014) Inter-PE Interrupt Request Clear Shared Register           */
+
+        struct
+        {
+            __OM uint8_t RCLR : 6;     /*!< [5..0] Inter-Processor Interrupt Request Clear.Writing 1 to
+                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
+                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
+                                        *   at the same time.The transmitting PE allowed to issue inter-processor
+                                        *   interrupt requests by theIPInENx register can also cancel
+                                        *   an inter-processor interrupt request by usingthis bit,
+                                        *   but the receiving PE may in some cases accept the inter-PE
+                                        *   interruptrequest while the cancellation processing takes
+                                        *   place.Writing 0 is ignored. This bit always retu                          */
+            uint8_t : 2;
+        } RCLRS_b;
+    };
+    __IM uint8_t RESERVED4[11];
+} R_IPIR_CH_Type;                      /*!< Size = 32 (0x20)                                                          */
+
+/**
  * @brief R_PBG00_PBG_CTR [PBG_CTR] (PEG Channel protection control register)
  */
 typedef struct
@@ -13484,6 +13693,131 @@ typedef struct
 {
     __IOM R_PSI5S0_MB_CH_FRM_Type FRM[6]; /*!< (@ 0x00000000) PSI5S Receive MailBox ch Register                          */
 } R_PSI5S0_MB_CH_Type;                    /*!< Size = 72 (0x48)                                                          */
+
+/**
+ * @brief R_TAUJ0_CDR [CDR] (TAUJ channel data register)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint32_t CDR;            /*!< (@ 0x00000000) CDR                                                        */
+
+        struct
+        {
+            __IOM uint32_t CDR : 32;   /*!< [31..0] Data register for capture/compare values                          */
+        } CDR_b;
+    };
+} R_TAUJ0_CDR_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_TAUJ0_CNT [CNT] (TAUJ channel counter register)
+ */
+typedef struct
+{
+    union
+    {
+        __IM uint32_t CNT;             /*!< (@ 0x00000000) CNT                                                        */
+
+        struct
+        {
+            __IM uint32_t CNT : 32;    /*!< [31..0] 32-bit counter value.                                             */
+        } CNT_b;
+    };
+} R_TAUJ0_CNT_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_TAUJ0_CMOR [CMOR] (TAUJ channel mode OS register)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint16_t CMOR;           /*!< (@ 0x00000000) CMOR                                                       */
+
+        struct
+        {
+            __IOM uint16_t MD  : 5;    /*!< [4..0] Specifies an operating mode.                                       */
+            uint16_t           : 1;
+            __IOM uint16_t COS : 2;    /*!< [7..6] Specifies the timing for updating capture register TAUJnCDRm
+                                        *   and overflow flag TAUJnCSRm.TAUJnOVF of channel m.These
+                                        *   bits are valid only when channel m is in capture function.The
+                                        *   bits must be fixed to 01B in Capture mode and Capture and
+                                        *   gate count mode.00: TAUJnCDRm - Updated when valid edge
+                                        *   of TAUJnTTINm input is detected.TAUJnCSRm.TAUJnOVF - Updated
+                                        *   (cleared or set) when valid edge of TAUJnTTINm input is
+                                        *   detected:+ Set TAUJnCSRm.TAUJnOVF if a counter overflow
+                                        *   has occurred since the last valid edge was de                             */
+            __IOM uint16_t STS : 3;    /*!< [10..8] Selects an external start trigger.                                */
+            __IOM uint16_t MAS : 1;    /*!< [11..11] Specifies whether the channel is a master channel or
+                                        *   slave channel during synchronouschannel operation. This
+                                        *   bit setting is valid only for even channels (CHm_even).
+                                        *   Odd channels (CHm_odd) arefixed to 0.                                     */
+            __IOM uint16_t CCS : 2;    /*!< [13..12] Selects a count clock for TAUJnCNTm counter.                     */
+            __IOM uint16_t CKS : 2;    /*!< [15..14] Selects an operation clock. An operation clock is used
+                                        *   for the TAUJTTINm input edge detection circuit. Setting
+                                        *   of TAUJnCMORm.TAUJnCCS[1:0] bits also allows the operation
+                                        *   clock to serve asthe TAUJnCNTm counter clock.                             */
+        } CMOR_b;
+    };
+    __IM uint16_t RESERVED;
+} R_TAUJ0_CMOR_Type;                   /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_TAUJ0_CMUR [CMUR] (TAUJ channel mode user register)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint8_t CMUR;            /*!< (@ 0x00000000) CMUR                                                       */
+
+        struct
+        {
+            __IOM uint8_t TIS : 2;     /*!< [1..0] Specifies a valid edge of TAUJTTINm input signal.                  */
+            uint8_t           : 6;
+        } CMUR_b;
+    };
+    __IM uint8_t RESERVED[3];
+} R_TAUJ0_CMUR_Type;                   /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_TAUJ0_CSR [CSR] (TAUJ channel status register)
+ */
+typedef struct
+{
+    union
+    {
+        __IM uint8_t CSR;              /*!< (@ 0x00000000) CSR                                                        */
+
+        struct
+        {
+            __IM uint8_t OVF : 1;      /*!< [0..0] Indicates the counter overflow status.This bit is used
+                                        *   only in the following modes: - Capture mode - Capture and
+                                        *   one-count mode                                                            */
+            uint8_t : 7;
+        } CSR_b;
+    };
+    __IM uint8_t RESERVED[3];
+} R_TAUJ0_CSR_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/**
+ * @brief R_TAUJ0_CSC [CSC] (TAUJ channel status clear trigger register)
+ */
+typedef struct
+{
+    union
+    {
+        __IOM uint8_t CSC;             /*!< (@ 0x00000000) CSC                                                        */
+
+        struct
+        {
+            __OM uint8_t CLOV : 1;     /*!< [0..0] CLOV                                                               */
+            uint8_t           : 7;
+        } CSC_b;
+    };
+    __IM uint8_t RESERVED[3];
+} R_TAUJ0_CSC_Type;                    /*!< Size = 4 (0x4)                                                            */
 
 /**
  * @brief R_TPTM_TPTM_PE [TPTM_PE] (TPTM for PE[0..1])
@@ -55025,19 +55359,6 @@ typedef struct                         /*!< (@ 0xFFD40000) R_KCRC0 Structure    
 } R_KCRC0_Type;                        /*!< Size = 184 (0xb8)                                                         */
 
 /* =========================================================================================================================== */
-/* ================                                        R_GTM0_CDTM                                        ================ */
-/* =========================================================================================================================== */
-
-/**
- * @brief Dead Time Module (DTM) (R_GTM0_CDTM)
- */
-
-typedef struct                         /*!< (@ 0xFF604400) R_GTM0_CDTM Structure                                      */
-{
-    __IOM R_GTM0_CDTM_CLS_Type CLS[7]; /*!< (@ 0x00000000) Cluster for DTM Instance [0..6]                            */
-} R_GTM0_CDTM_Type;                    /*!< Size = 917504 (0xe0000)                                                   */
-
-/* =========================================================================================================================== */
 /* ================                                           R_LPS                                           ================ */
 /* =========================================================================================================================== */
 
@@ -55889,7 +56210,9 @@ typedef struct                         /*!< (@ 0xFF9A3800) R_LPS Structure      
 
         struct
         {
-            uint16_t             : 8;
+            __IOM uint16_t CNT0n : 8;  /*!< [7..0] These bits set the stabilization time of the external
+                                        *   circuit (digital signal source).Stabilization time = (1/(fRH/20))
+                                        *   × 16 × CNT0n (set value)                                                */
             __IOM uint16_t CNT1n : 8;  /*!< [15..8] These bits set the stabilization time of the external
                                         *   circuit (analog signal source).Stabilization time = (1/(fRH/20))
                                         *   × 16 × CNT1n (set value)                                                */
@@ -75529,7 +75852,7 @@ typedef struct                         /*!< (@ 0x18020000) R_CANXL0 Structure   
 /* =========================================================================================================================== */
 
 /**
- * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the R-Car U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMA0)
+ * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the RH850 U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMA0)
  */
 
 typedef struct                           /*!< (@ 0xFF989100) R_CLMA0 Structure                                          */
@@ -75614,7 +75937,7 @@ typedef struct                           /*!< (@ 0xFF989100) R_CLMA0 Structure  
 /* =========================================================================================================================== */
 
 /**
- * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the R-Car U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMAKCPROT)
+ * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the RH850 U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMAKCPROT)
  */
 
 typedef struct                         /*!< (@ 0xFF982700) R_CLMAKCPROT Structure                                     */
@@ -75643,7 +75966,7 @@ typedef struct                         /*!< (@ 0xFF982700) R_CLMAKCPROT Structur
 /* =========================================================================================================================== */
 
 /**
- * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the R-Car U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMAC)
+ * @brief The following sections describe clock monitor A (CLMA).The first section describes the attributes which are specific to the RH850 U2x microcontrollers, including the number of channels, register base addresses, and input/output signal names.The ensuing sections describe the functions relevant to all operations. (R_CLMAC)
  */
 
 typedef struct                             /*!< (@ 0xFF989000) R_CLMAC Structure                                          */
@@ -83045,6 +83368,1069 @@ typedef struct                         /*!< (@ 0xFF97F000) R_ETNF0_T1S Structure
 } R_ETNF0_T1S_Type;                    /*!< Size = 4 (0x4)                                                            */
 
 /* =========================================================================================================================== */
+/* ================                                        R_FCMDAREA0                                        ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief FACI0 Command Issuing Area. Write FACI command bytes here to issue commands to FPSYS0 (Code Flash / Data Flash 0/1). (R_FCMDAREA0)
+ */
+
+typedef struct                         /*!< (@ 0xFFA20000) R_FCMDAREA0 Structure                                      */
+{
+    union
+    {
+        __IOM uint32_t FACI_CMD32;     /*!< (@ 0x00000000) FACI Command Issuing Area (32-bit access). Write
+                                        *                  FACI command codes to this address. Supports
+                                        *                  8/16/32-bit writes.                                        */
+
+        struct
+        {
+            __IOM uint32_t CMD : 32;   /*!< [31..0] FACI Command Data. Write command byte (8-bit) or data
+                                        *   word (16-bit) for FACI command sequences.                                 */
+        } FACI_CMD32_b;
+    };
+} R_FCMDAREA0_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/* =========================================================================================================================== */
+/* ================                                        R_FCMDAREA2                                        ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief FACI2 Command Issuing Area. Write FACI command bytes here to issue commands to FPSYS2 (Data Area 2 / ICUMHB). (R_FCMDAREA2)
+ */
+
+typedef struct                         /*!< (@ 0xFFA40000) R_FCMDAREA2 Structure                                      */
+{
+    union
+    {
+        __IOM uint32_t FACI_CMD32;     /*!< (@ 0x00000000) FACI Command Issuing Area (32-bit access). Write
+                                        *                  FACI command codes to this address. Supports
+                                        *                  8/16/32-bit writes.                                        */
+
+        struct
+        {
+            __IOM uint32_t CMD : 32;   /*!< [31..0] FACI Command Data. Write command byte (8-bit) or data
+                                        *   word (16-bit) for FACI command sequences.                                 */
+        } FACI_CMD32_b;
+    };
+} R_FCMDAREA2_Type;                    /*!< Size = 4 (0x4)                                                            */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FACI0                                          ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief Flash Application Command Interface 0 (FPSYS0). Controls Code Flash Banks A-F, Data Area 0/1, and Hardware Property Area. (R_FACI0)
+ */
+
+typedef struct                         /*!< (@ 0xFFA10000) R_FACI0 Structure                                          */
+{
+    union
+    {
+        __IM uint8_t FPMON;            /*!< (@ 0x00000000) Flash Pin Monitor                                          */
+
+        struct
+        {
+            uint8_t           : 7;
+            __IM uint8_t SFWE : 1;     /*!< [7..7] Flash Write EnableMonitors the status of SFWE bit in
+                                        *   FLMDCNT register.                                                         */
+        } FPMON_b;
+    };
+    __IM uint8_t  RESERVED;
+    __IM uint16_t RESERVED1;
+    __IM uint32_t RESERVED2[3];
+
+    union
+    {
+        __IOM uint8_t FASTAT;          /*!< (@ 0x00000010) Flash Access Status                                        */
+
+        struct
+        {
+            __IM uint8_t ECRCT : 1;    /*!< [0..0] Error Correction Indicates that a 1-bit error has been
+                                        *   corrected when the flash sequencer reads the flash memory
+                                        *   (Configuration Setting Area, Block Protection Area, Security
+                                        *   Setting Area, Erase Counter, SwitchArea, TAG Area or the
+                                        *   P/E parameter table)                                                      */
+            uint8_t            : 2;
+            __IOM uint8_t DFAE : 1;    /*!< [3..3] Data Flash Access Error Indicates whether or not data
+                                        *   flash access error has been generated.                                    */
+            __IM uint8_t CMDLK : 1;    /*!< [4..4] Command Lock Indicates whether flash sequencer is in
+                                        *   the command lock state.                                                   */
+            uint8_t            : 2;
+            __IOM uint8_t CFAE : 1;    /*!< [7..7] Code Flash Access Error Indicates whether or not code
+                                        *   flash access error has been generated.                                    */
+        } FASTAT_b;
+    };
+    __IM uint8_t  RESERVED3;
+    __IM uint16_t RESERVED4;
+
+    union
+    {
+        __IOM uint8_t FAEINT;          /*!< (@ 0x00000014) Flash Access Error Interrupt Enable                        */
+
+        struct
+        {
+            __IOM uint8_t ECRCTIE : 1; /*!< [0..0] Error Correction Interrupt Enable Enables or disables
+                                        *   the FLERR interrupt request when a 1-bit error has been
+                                        *   corrected and the ECRCT bit in FASTAT_n has been set to
+                                        *   1 on the flash memory read (Configuration Setting Area,
+                                        *   Block Protection Area, Security Setting Area, Erase Counter,
+                                        *   Switch Area, TAG Area, or the P/E parameter table).                       */
+            uint8_t              : 2;
+            __IOM uint8_t DFAEIE : 1;  /*!< [3..3] Data Flash Access Error Interrupt Enable Enables or disables
+                                        *   the FLERR interrupt request when data flash access error
+                                        *   occurs and DFAE bit in FASTAT_n becomes 1.                                */
+            __IOM uint8_t CMDLKIE : 1; /*!< [4..4] Command Lock Interrupt Enable Enables or disables the
+                                        *   FLERR interrupt request when flash sequencer enters the
+                                        *   command lock state and CMDLK bit in FASTAT_n becomes 1.                   */
+            uint8_t              : 2;
+            __IOM uint8_t CFAEIE : 1;  /*!< [7..7] Code Flash Access Error Interrupt Enable Enables or disables
+                                        *   the FLERR interrupt request when code flash access error
+                                        *   occurs and CFAE bit in FASTAT_n becomes 1.                                */
+        } FAEINT_b;
+    };
+    __IM uint8_t  RESERVED5;
+    __IM uint16_t RESERVED6;
+    __IM uint32_t RESERVED7[6];
+
+    union
+    {
+        __IOM uint32_t FSADDR;          /*!< (@ 0x00000030) Flash Command Start Address                                */
+
+        struct
+        {
+            __IOM uint32_t FSADDR : 32; /*!< [31..0] Start Address of FACI Command Processing These bits
+                                         *   specify the start address of the FACI command processing.Bits
+                                         *   31 to 28 are ignored in the FACI command processing for
+                                         *   the code flash memory.Bits 31 to 21 are ignored in the
+                                         *   FACI command processing for the data flash memory.Lower
+                                         *   address bits for smaller address than boundary below are
+                                         *   also ignored                                                              */
+        } FSADDR_b;
+    };
+
+    union
+    {
+        __IOM uint32_t FEADDR;          /*!< (@ 0x00000034) Flash Command End Address                                  */
+
+        struct
+        {
+            __IOM uint32_t FEADDR : 32; /*!< [31..0] End Address of FACI Command Target Area Specifies end
+                                         *   address of target area in the Area Erasure or Blank Checking
+                                         *   Command.Bits 31 to 21 are ignored in the FACI command processing.Bits
+                                         *   20 to 0 are used in the inconsistency check between FSADDR
+                                         *   and FEADDR.                                                               */
+        } FEADDR_b;
+    };
+    __IM uint32_t RESERVED8[2];
+
+    union
+    {
+        __IOM uint16_t FCVAPROT;        /*!< (@ 0x00000040) Code Flash Valid Area Protection                           */
+
+        struct
+        {
+            __IOM uint16_t CVAPROT : 1; /*!< [0..0] Code Flash Valid Area Protection Valid area of code flash
+                                         *   is protected from FACI command (Programming, Block Erasure,
+                                         *   Programming/Erasure Resumption) in double map mode                        */
+            uint16_t          : 7;
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key CodeThese bits enable or disable CVAPROT bit modification     */
+        } FCVAPROT_b;
+    };
+    __IM uint16_t RESERVED9;
+    __IM uint32_t RESERVED10[15];
+
+    union
+    {
+        __IM uint32_t FSTATR;          /*!< (@ 0x00000080) Flash Status                                               */
+
+        struct
+        {
+            uint32_t              : 2;
+            __IM uint32_t TBLCRCT : 1;   /*!< [2..2] 1-Bit Error Correction Monitor (P/E Parameter Table )
+                                          *   Indicates that a 1-bit error has been corrected on reading
+                                          *   the P/E parameter table.Flash sequencer reads the P/E parameter
+                                          *   table in Programming, MultiProgramming, DMA Programming,
+                                          *   Block Erasure, Area Erasure, Blank Checking, Property Programming,
+                                          *   Property Erasure, Switchq Programming, Switch Erasure,
+                                          *   TAG Update, TAG Erasure Command processing. When this bit
+                                          *   is 1, the flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t TBLDTCT : 1;   /*!< [3..3] 2-Bit Error Detection Monitor (P/E Parameter Table)Indicates
+                                          *   that a 2-bit error has been detected on reading the P/E
+                                          *   parameter table.Flash sequencer reads the P/E parameter
+                                          *   table in Programming, Multi Programming, DMA Programming,
+                                          *   Block Erasure, Area Erasure, Blank Checking, Property Programming,
+                                          *   Property Erasure, Switch Programming, Switch Erasure, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   1, the flash sequencer is in the command lock state.                      */
+            __IM uint32_t CFGCRCT : 1;   /*!< [4..4] Configuration Setting Area ECC 1-Bit Error Correction
+                                          *   Monitoring Bit Indicates that 1-bit error has been corrected
+                                          *   when flash sequencer is reading Configuration Setting Area.
+                                          *   Flash sequencer reads Configuration Setting Area in Property
+                                          *   Programming, TAG Update, TAG Erasure. When this bit is
+                                          *   “1”, flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t CFGDTCT : 1;   /*!< [5..5] Configuration Setting Area ECC 2-Bit Error Detection
+                                          *   Monitoring Bit Indicates that 2-bit error has been detected
+                                          *   when flash sequencer is reading Configuration Setting Area.
+                                          *   Flash sequencer reads Configuration Setting Area in Property
+                                          *   Programming, TAG Update, TAG Erasure Command processing
+                                          *   When this bit is “1”, flash sequencer is in command
+                                          *   lock state.                                                               */
+            __IM uint32_t FHVEERR : 1;   /*!< [6..6] FHVE Setting ErrorIndicates the violation of the flash
+                                          *   memory programming/erasure protection in the FHVE3FPn register.
+                                          *   When FHVEERR bit is 1, the flash sequencer is in the command
+                                          *   lock state.                                                               */
+            uint32_t             : 1;
+            __IM uint32_t PRGSPD : 1;    /*!< [8..8] Programming Suspension Status Indicates that flash sequencer
+                                          *   has entered the Programming Command Suspension process
+                                          *   or Programming Suspension status.                                         */
+            __IM uint32_t ERSSPD : 1;    /*!< [9..9] Erasure-Suspended StatusIndicates that flash sequencer
+                                          *   has entered the erasure command suspension process or erasure-suspended
+                                          *   status.                                                                   */
+            __IM uint32_t DBFULL : 1;    /*!< [10..10] Data Buffer FullThis bit is always read as "0".                  */
+            __IM uint32_t SUSRDY : 1;    /*!< [11..11] Suspend Ready Indicates whether flash sequencer is
+                                          *   ready to accept the Programming/Erasure Suspension Command.               */
+            __IM uint32_t PRGERR : 1;    /*!< [12..12] Programming ErrorIndicates the result of code or data
+                                          *   flash programming by flash sequencer.                                     */
+            __IM uint32_t ERSERR : 1;    /*!< [13..13] Erasure Error Indicates result of code or data flash
+                                          *   erasure by flash sequencer.                                               */
+            __IM uint32_t ILGLERR : 1;   /*!< [14..14] Illegal ErrorIndicates that flash sequencer has detected
+                                          *   an illegal command or illegal flash memory access. When
+                                          *   this bit is 1, flash sequencer is in the command lock state.              */
+            __IM uint32_t FRDY : 1;      /*!< [15..15] Flash Ready Indicates the processing state in flash
+                                          *   sequencer.                                                                */
+            __IM uint32_t BPLCRCT : 1;   /*!< [16..16] Block Protection Area ECC 1-Bit Error Correction Monitoring
+                                          *   Bit Indicates that 1-bit error has been corrected when
+                                          *   flash sequencer is reading Block Protection Area. Flash
+                                          *   sequencer reads Block Protection Area in Programming, Block
+                                          *   Erasure for the code flash memory or Programming, Multi
+                                          *   Programming, Block Erasure, Area Erasure for the Extended
+                                          *   Data Area or Property Programming, TAG Update, TAG Erasure
+                                          *   Command processing.                                                       */
+            __IM uint32_t BPLDTCT : 1;   /*!< [17..17] Block Protection Area ECC 2-Bit Error Detection Monitoring
+                                          *   BitIndicates that 2-bit error has been detected when flash
+                                          *   sequencer is reading Block Protection Area. Flash sequencer
+                                          *   reads Block Protection Area in Programming, Block Erasure
+                                          *   for the code flash memory or Programming, Multi Programming,
+                                          *   Block Erasure, Area Erasure for the Extended Data Area
+                                          *   or Property Programming, TAG Update, TAG Erasure Command
+                                          *   processing. When this bit is “1”, flash sequencer is
+                                          *   in command lock state.                                                    */
+            __IM uint32_t EBFULL : 1;    /*!< [18..18] FDMYECC_n Buffer Full Indicates the FDMYECC_n buffer
+                                          *   status when issuing the Programming Command. Flash sequencer
+                                          *   incorporates a buffer for FDMYECC_n register (ECC buffer).                */
+            uint32_t            : 1;
+            __IM uint32_t OTERR : 1;     /*!< [20..20] Other Error When this bit is “1”, flash sequencer
+                                          *   enters command lock state.                                                */
+            __IM uint32_t SECERR : 1;    /*!< [21..21] Security Error When this bit is “1”, flash sequencer
+                                          *   enters command lock state.                                                */
+            __IM uint32_t FESETERR : 1;  /*!< [22..22] FENTRY Setting Error When this bit is “1”, flash
+                                          *   sequencer enters command lock state.                                      */
+            __IM uint32_t ILGCOMERR : 1; /*!< [23..23] Illegal Command ErrorWhen this bit is “1”, flash
+                                          *   sequencer enters command lock state.                                      */
+            __IM uint32_t SECCRCT : 1;   /*!< [24..24] Security Setting Area ECC 1-Bit Error Correction Monitoring
+                                          *   Bit Indicates that 1-bit error has been corrected when
+                                          *   flash sequencer is reading Security Setting Area. Flash
+                                          *   sequencer reads Security Setting Area in Property Programming,
+                                          *   TAG Update, TAG Erasure Command processing. When this bit
+                                          *   is “1”, flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t SECDTCT : 1;   /*!< [25..25] Security Setting Area ECC 2-Bit Error Detection Monitoring
+                                          *   BitIndicates that 2-bit error has been detected when flash
+                                          *   sequencer is reading Security Setting Area. Flash sequencer
+                                          *   reads Security Setting Area in Property Programming, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   1, flash sequencer is in command lock state.                              */
+            __IM uint32_t SWTCRCT : 1;   /*!< [26..26] Switch Area and TAG Area ECC 1-Bit Error Correction
+                                          *   Monitoring Bit Indicates that 1-bit error has been detected
+                                          *   when FACI is reading Switch Area and TAG Area. FACI reads
+                                          *   Switch Area and TAG Area in Switch Erasure, TAG Update,
+                                          *   and TAG Erasure Command processing. When this bit is 1,
+                                          *   flash sequencer continues command processing, and does
+                                          *   not enter "Command Lock" state.                                           */
+            __IM uint32_t SWTDTCT : 1;   /*!< [27..27] Switch Area and TAG Area ECC 2-Bit Error Detection
+                                          *   Monitoring BitIndicates that 2-bit error has been detected
+                                          *   when FACI is reading Switch Area and TAG Area. FACI reads
+                                          *   Switch Area and TAG Area in Switch Erasure, TAG Update,
+                                          *   and TAG Erasure Command processing. When this bit is "1",
+                                          *   flash sequencer is in "Command Lock" state.                               */
+            __IM uint32_t ERCCRCT : 1;   /*!< [28..28] Erase counter 1-Bit Error Correction Monitoring Bit
+                                          *   Indicates that 1-bit error has been corrected when FACI
+                                          *   is reading Erase counter. FACI reads Erase counter in Block
+                                          *   Erasure (User Area), Erasure Resumption (User Area) Command
+                                          *   processing. When this bit is "1", flash sequencer continues
+                                          *   command processing, and does not enter "Command Lock" state.              */
+            __IM uint32_t ERCDTCT : 1;   /*!< [29..29] Erase counter ECC 2-Bit Error Detection Monitoring
+                                          *   Bit Indicates that 2-bit error has been detected when FACI
+                                          *   is reading Erase counter. FACI reads Erase counter in Block
+                                          *   Erasure (User Area), Erasure Resumption (User Area) Command
+                                          *   processing. When this bit is "1", flash sequencer is in
+                                          *   "Command Lock" state.                                                     */
+            uint32_t : 2;
+        } FSTATR_b;
+    };
+
+    union
+    {
+        __IOM uint16_t FENTRYR;         /*!< (@ 0x00000084) Flash P/E Mode Entry                                       */
+
+        struct
+        {
+            __IOM uint16_t FENTRYC : 1; /*!< [0..0] Code Flash Programming/Erasure Mode EntryThis bit specifies
+                                         *   programming/erasure mode for code flash.                                  */
+            uint16_t               : 6;
+            __IOM uint16_t FENTRYD : 1; /*!< [7..7] Data Flash Programming/Erasure Mode EntryThis bit specifies
+                                         *   programming/erasure mode for data flash.                                  */
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key CodeThese bits enable or disable FENTRYD and FENTRYC
+                                         *   bits modification.                                                        */
+        } FENTRYR_b;
+    };
+    __IM uint16_t RESERVED11;
+    __IM uint32_t RESERVED12;
+
+    union
+    {
+        __IOM uint16_t FSUINITR;       /*!< (@ 0x0000008C) Flash Sequencer Setup Initialization                       */
+
+        struct
+        {
+            __IOM uint16_t SUINIT : 1; /*!< [0..0] Set-up InitializationInitializes following flash sequencer
+                                        *   set-up registers.FSADDR_nFEADDR_nFENTRYR_nFBCCNT_nFCVAPROT_n.             */
+            uint16_t          : 7;
+            __OM uint16_t KEY : 8;     /*!< [15..8] Key Code These bits enable or disable CVAPROT bit modification    */
+        } FSUINITR_b;
+    };
+    __IM uint16_t RESERVED13;
+    __IM uint32_t RESERVED14[4];
+
+    union
+    {
+        __IM uint16_t FCMDR;           /*!< (@ 0x000000A0) FACI Command Register                                      */
+
+        struct
+        {
+            __IM uint16_t PCMDR : 8;   /*!< [7..0] Previous CommandThese bits store previous command accepted
+                                        *   by each Flash sequencer.                                                  */
+            __IM uint16_t CMDR : 8;    /*!< [15..8] Command These bits store the latest command accepted
+                                        *   by each Flash sequencer.                                                  */
+        } FCMDR_b;
+    };
+    __IM uint16_t RESERVED15;
+
+    union
+    {
+        __IM uint32_t FCMDMON;           /*!< (@ 0x000000A4) Flash Status                                               */
+
+        struct
+        {
+            __IM uint32_t PCMDM : 8;     /*!< [7..0] Previous Command These bits store previous command accepted
+                                          *   by each Flash sequencer.                                                  */
+            __IM uint32_t PFENTRYCM : 1; /*!< [8..8] FENTRYC status Monitor of previous command                         */
+            __IM uint32_t PFENTRYDM : 1; /*!< [9..9] FENTRYD status Monitor of previous command                         */
+            uint32_t                : 5;
+            __IM uint32_t PMSTCM    : 1; /*!< [15..15] Previous Command Master MonitorThe master which issued
+                                          *   Previous command.                                                         */
+            __IM uint32_t CMDM : 8;      /*!< [23..16] Command These bits store the latest command accepted
+                                          *   by each Flash sequencer.                                                  */
+            __IM uint32_t FENTRYCM : 1;  /*!< [24..24] FENTRYC status Monitor of Latest command                         */
+            __IM uint32_t FENTRYDM : 1;  /*!< [25..25] FENTRYD status Monitor of Latest command                         */
+            uint32_t               : 5;
+            __IM uint32_t MSTCM    : 1;  /*!< [31..31] Latest Command Master Monitor The master which issued
+                                          *   Latest command.                                                           */
+        } FCMDMON_b;
+    };
+
+    union
+    {
+        __IM uint8_t FSWASTAT;         /*!< (@ 0x000000A8) Switch Area Status (FACI0 only)                            */
+
+        struct
+        {
+            __IM uint8_t SWVA  : 1;    /*!< [0..0] Valid Area in Switch Area                                          */
+            __IM uint8_t SWAS  : 1;    /*!< [1..1] Switch Area Status                                                 */
+            __IM uint8_t CFGVA : 1;    /*!< [2..2] Valid Area in Configuration Setting Area                           */
+            __IM uint8_t SECVA : 1;    /*!< [3..3] Valid Area in Security Setting Area                                */
+            __IM uint8_t BPVA0 : 1;    /*!< [4..4] Valid Area in Block Protection Area for FPSYS0                     */
+            uint8_t            : 3;
+        } FSWASTAT_b;
+    };
+    __IM uint8_t  RESERVED16;
+    __IM uint16_t RESERVED17;
+    __IM uint32_t RESERVED18[5];
+
+    union
+    {
+        __IM uint16_t FPESTAT;         /*!< (@ 0x000000C0) Flash P/E Status                                           */
+
+        struct
+        {
+            __IM uint16_t PEERRST : 8; /*!< [7..0] Programming/Erasure Error Status Indicates the source
+                                        *   of error that occurs during programming or erasure for
+                                        *   code flash or data flash. This bit value is only valid
+                                        *   if ERSERR or PRGERR bit value in FSTATR_n register is 1,
+                                        *   while FRDY bit in FSTATR_n register is 1.                                 */
+            uint16_t : 8;
+        } FPESTAT_b;
+    };
+    __IM uint16_t RESERVED19;
+    __IM uint32_t RESERVED20[3];
+
+    union
+    {
+        __IOM uint8_t FBCCNT;          /*!< (@ 0x000000D0) Data Flash Blank Check Control                             */
+
+        struct
+        {
+            __IOM uint8_t BCDIR : 1;   /*!< [0..0] Blank Check Direction Specifies addressing mode in blank
+                                        *   checking operation.                                                       */
+            uint8_t : 7;
+        } FBCCNT_b;
+    };
+    __IM uint8_t  RESERVED21;
+    __IM uint16_t RESERVED22;
+
+    union
+    {
+        __IM uint8_t FBCSTAT;          /*!< (@ 0x000000D4) Data Flash Blank Check Status                              */
+
+        struct
+        {
+            __IM uint8_t BCST : 1;     /*!< [0..0] Blank Check Status Indicates the result of the Blank
+                                        *   Checking Command.                                                         */
+            uint8_t : 7;
+        } FBCSTAT_b;
+    };
+    __IM uint8_t  RESERVED23;
+    __IM uint16_t RESERVED24;
+
+    union
+    {
+        __IM uint32_t FPSADDR;         /*!< (@ 0x000000D8) Programmed Area Start Address                              */
+
+        struct
+        {
+            __IM uint32_t PSADR : 21;  /*!< [20..0] Programmed Area Start Address Indicates address of the
+                                        *   first programmed data which is found in Blank Checking
+                                        *   Command execution. These bits stores address offset from
+                                        *   the top address in the data flash memory.This register
+                                        *   value is only valid if BCST bit value in FBCSTAT_n register
+                                        *   is 1, while FRDY bit in FSTATR_n register is 1.When BCST
+                                        *   bit is 0, the PSADR bit holds the address that previously
+                                        *   checked.                                                                  */
+            uint32_t : 11;
+        } FPSADDR_b;
+    };
+    __IM uint32_t RESERVED25[9];
+
+    union
+    {
+        __IM uint16_t FECCEMON;        /*!< (@ 0x00000100) Flash ECC Encoder Monitor                                  */
+
+        struct
+        {
+            __IM uint16_t FECCM : 10;  /*!< [9..0] ECC Monitor Indicates the ECC encoder output.In code
+                                        *   flash programming/erasure modeThe FECCM[9] to FECCM[0]
+                                        *   bits indicate the ECC encoder output for the code flash
+                                        *   memory.In data flash programming/erasure modeThe FECCM[9]
+                                        *   to FECCM[7] bits are fixed to 1.The FECCM[6] to FECCM[0]
+                                        *   indicate the ECC encoder output for the data flash memory.                */
+            __IM uint16_t FAPARM : 1;  /*!< [10..10] Address Parity Monitor Indicates the output from the
+                                        *   address parity generator.In code flash programming/erasure
+                                        *   modeThis bit indicates the output from the address parity
+                                        *   generator.In data flash programming/erasure modeThis bit
+                                        *   is fixed to 1.                                                            */
+            uint16_t : 5;
+        } FECCEMON_b;
+    };
+    __IM uint16_t RESERVED26;
+
+    union
+    {
+        __IOM uint16_t FECCTMD;         /*!< (@ 0x00000104) Flash ECC Test Mode                                        */
+
+        struct
+        {
+            __IOM uint16_t ECCDISE : 1; /*!< [0..0] ECC Encoder Disable Disables the address parity generator
+                                         *   and the ECC encoder. If the address parity generator and
+                                         *   the ECC encoder are disabled, the FDMYECC_n value is written
+                                         *   to the flash memory.                                                      */
+            uint16_t              : 3;
+            __IOM uint16_t DECCVE : 1;  /*!< [4..4] Data Flash Memory ECC Bits Verify Enable Specifies the
+                                         *   verify operation on programming/erasure the data flash
+                                         *   memory.                                                                   */
+            __IOM uint16_t CECCVE : 1;  /*!< [5..5] Code Flash Memory ECC Bits Verify Enable Specifies the
+                                         *   verify operation on programming/erasure the code flash
+                                         *   memory.                                                                   */
+            uint16_t          : 2;
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key Code These bits enable or disable CECCVE, DECCVE,
+                                         *   and ECCDISE bits modification.                                            */
+        } FECCTMD_b;
+    };
+    __IM uint16_t RESERVED27;
+
+    union
+    {
+        __IOM uint16_t FDMYECC;         /*!< (@ 0x00000108) Flash Dummy ECC Register                                   */
+
+        struct
+        {
+            __IOM uint16_t DMYECC : 10; /*!< [9..0] Dummy ECC Specify the ECC value when the ECCDISE bit
+                                         *   is 1.                                                                     */
+            __IOM uint16_t DMYAPAR : 1; /*!< [10..10] Dummy Address Parity Specifies the address parity value
+                                         *   when the ECCDISE bit is 1.                                                */
+            uint16_t : 5;
+        } FDMYECC_b;
+    };
+    __IM uint16_t RESERVED28;
+} R_FACI0_Type;                        /*!< Size = 268 (0x10c)                                                        */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FACI2                                          ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief Flash Application Command Interface 2 (FPSYS2). Controls Data Area 2 (ICUMHB exclusive). Subset of FACI0 - no FAREASELC, FRTSTAT, FRTEINT, FSWASTAT. (R_FACI2)
+ */
+
+typedef struct                         /*!< (@ 0xFFA18000) R_FACI2 Structure                                          */
+{
+    union
+    {
+        __IM uint8_t FPMON;            /*!< (@ 0x00000000) Flash Pin Monitor                                          */
+
+        struct
+        {
+            uint8_t           : 7;
+            __IM uint8_t SFWE : 1;     /*!< [7..7] Flash Write Enable Monitors the status of SFWE bit in
+                                        *   FLMDCNT register.                                                         */
+        } FPMON_b;
+    };
+    __IM uint8_t  RESERVED;
+    __IM uint16_t RESERVED1;
+    __IM uint32_t RESERVED2[3];
+
+    union
+    {
+        __IOM uint8_t FASTAT;          /*!< (@ 0x00000010) Flash Access Status                                        */
+
+        struct
+        {
+            __IM uint8_t ECRCT : 1;    /*!< [0..0] Error Correction Indicates that a 1-bit error has been
+                                        *   corrected when the flash sequencer reads the flash memory
+                                        *   (Configuration Setting Area, Block Protection Area, Security
+                                        *   Setting Area, Erase Counter, SwitchArea, TAG Area or the
+                                        *   P/E parameter table)                                                      */
+            uint8_t            : 2;
+            __IOM uint8_t DFAE : 1;    /*!< [3..3] Data Flash Access Error Indicates whether or not data
+                                        *   flash access error has been generated.                                    */
+            __IM uint8_t CMDLK : 1;    /*!< [4..4] Command Lock Indicates whether flash sequencer is in
+                                        *   the command lock state.                                                   */
+            uint8_t            : 2;
+            __IOM uint8_t CFAE : 1;    /*!< [7..7] Code Flash Access Error Indicates whether or not code
+                                        *   flash access error has been generated.                                    */
+        } FASTAT_b;
+    };
+    __IM uint8_t  RESERVED3;
+    __IM uint16_t RESERVED4;
+
+    union
+    {
+        __IOM uint8_t FAEINT;          /*!< (@ 0x00000014) Flash Access Error Interrupt Enable                        */
+
+        struct
+        {
+            __IOM uint8_t ECRCTIE : 1; /*!< [0..0] Error Correction Interrupt Enable Enables or disables
+                                        *   the FLERR interrupt request when a 1-bit error has been
+                                        *   corrected and the ECRCT bit in FASTAT_n has been set to
+                                        *   1 on the flash memory read (Configuration Setting Area,
+                                        *   Block Protection Area, Security Setting Area, Erase Counter,
+                                        *   Switch Area, TAG Area, or the P/E parameter table).                       */
+            uint8_t              : 2;
+            __IOM uint8_t DFAEIE : 1;  /*!< [3..3] Data Flash Access Error Interrupt Enable Enables or disables
+                                        *   the FLERR interrupt request when data flash access error
+                                        *   occurs and DFAE bit in FASTAT_n becomes 1.                                */
+            __IOM uint8_t CMDLKIE : 1; /*!< [4..4] Command Lock Interrupt Enable Enables or disables the
+                                        *   FLERR interrupt request when flash sequencer enters the
+                                        *   command lock state and CMDLK bit in FASTAT_n becomes 1.                   */
+            uint8_t              : 2;
+            __IOM uint8_t CFAEIE : 1;  /*!< [7..7] Code Flash Access Error Interrupt Enable Enables or disables
+                                        *   the FLERR interrupt request when code flash access error
+                                        *   occurs and CFAE bit in FASTAT_n becomes 1.                                */
+        } FAEINT_b;
+    };
+    __IM uint8_t  RESERVED5;
+    __IM uint16_t RESERVED6;
+    __IM uint32_t RESERVED7[6];
+
+    union
+    {
+        __IOM uint32_t FSADDR;          /*!< (@ 0x00000030) Flash Command Start Address                                */
+
+        struct
+        {
+            __IOM uint32_t FSADDR : 32; /*!< [31..0] Start Address of FACI Command Processing These bits
+                                         *   specify the start address of the FACI command processing.Bits
+                                         *   31 to 28 are ignored in the FACI command processing for
+                                         *   the code flash memory.Bits 31 to 21 are ignored in the
+                                         *   FACI command processing for the data flash memory.Lower
+                                         *   address bits for smaller address than boundary below are
+                                         *   also ignored                                                              */
+        } FSADDR_b;
+    };
+
+    union
+    {
+        __IOM uint32_t FEADDR;          /*!< (@ 0x00000034) Flash Command End Address                                  */
+
+        struct
+        {
+            __IOM uint32_t FEADDR : 32; /*!< [31..0] End Address of FACI Command Target Area Specifies end
+                                         *   address of target area in the Area Erasure or Blank Checking
+                                         *   Command.Bits 31 to 21 are ignored in the FACI command processing.Bits
+                                         *   20 to 0 are used in the inconsistency check between FSADDR
+                                         *   and FEADDR.                                                               */
+        } FEADDR_b;
+    };
+    __IM uint32_t RESERVED8[2];
+
+    union
+    {
+        __IOM uint16_t FCVAPROT;        /*!< (@ 0x00000040) Code Flash Valid Area Protection                           */
+
+        struct
+        {
+            __IOM uint16_t CVAPROT : 1; /*!< [0..0] Code Flash Valid Area Protection Valid area of code flash
+                                         *   is protected from FACI command (Programming, Block Erasure,
+                                         *   Programming/Erasure Resumption) in double map mode                        */
+            uint16_t          : 7;
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key Code These bits enable or disable CVAPROT bit modification    */
+        } FCVAPROT_b;
+    };
+    __IM uint16_t RESERVED9;
+    __IM uint32_t RESERVED10[15];
+
+    union
+    {
+        __IM uint32_t FSTATR;          /*!< (@ 0x00000080) Flash Status                                               */
+
+        struct
+        {
+            uint32_t              : 2;
+            __IM uint32_t TBLCRCT : 1;   /*!< [2..2] 1-Bit Error Correction Monitor (P/E Parameter Table )
+                                          *   Indicates that a 1-bit error has been corrected on reading
+                                          *   the P/E parameter table.Flash sequencer reads the P/E parameter
+                                          *   table in Programming, MultiProgramming, DMA Programming,
+                                          *   Block Erasure, Area Erasure, Blank Checking, Property Programming,
+                                          *   Property Erasure, Switchq Programming, Switch Erasure,
+                                          *   TAG Update, TAG Erasure Command processing. When this bit
+                                          *   is 1, the flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t TBLDTCT : 1;   /*!< [3..3] 2-Bit Error Detection Monitor (P/E Parameter Table)Indicates
+                                          *   that a 2-bit error has been detected on reading the P/E
+                                          *   parameter table.Flash sequencer reads the P/E parameter
+                                          *   table in Programming, Multi Programming, DMA Programming,
+                                          *   Block Erasure, Area Erasure, Blank Checking, Property Programming,
+                                          *   Property Erasure, Switch Programming, Switch Erasure, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   1, the flash sequencer is in the command lock state.                      */
+            __IM uint32_t CFGCRCT : 1;   /*!< [4..4] Configuration Setting Area ECC 1-Bit Error Correction
+                                          *   Monitoring Bit Indicates that 1-bit error has been corrected
+                                          *   when flash sequencer is reading Configuration Setting Area.
+                                          *   Flash sequencer reads Configuration Setting Area in Property
+                                          *   Programming, TAG Update, TAG Erasure. When this bit is
+                                          *   “1”, flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t CFGDTCT : 1;   /*!< [5..5] Configuration Setting Area ECC 2-Bit Error Detection
+                                          *   Monitoring Bit Indicates that 2-bit error has been detected
+                                          *   when flash sequencer is reading Configuration Setting Area.
+                                          *   Flash sequencer reads Configuration Setting Area in Property
+                                          *   Programming, TAG Update, TAG Erasure Command processing
+                                          *   When this bit is 1, flash sequencer is in command lock
+                                          *   state.                                                                    */
+            __IM uint32_t FHVEERR : 1;   /*!< [6..6] FHVE Setting Error Indicates the violation of the flash
+                                          *   memory programming/erasure protection in the FHVE3FPn register.
+                                          *   When FHVEERR bit is 1, the flash sequencer is in the command
+                                          *   lock state.                                                               */
+            uint32_t             : 1;
+            __IM uint32_t PRGSPD : 1;    /*!< [8..8] Programming Suspension Status Indicates that flash sequencer
+                                          *   has entered the Programming Command Suspension process
+                                          *   or Programming Suspension status.                                         */
+            __IM uint32_t ERSSPD : 1;    /*!< [9..9] Erasure-Suspended Status Indicates that flash sequencer
+                                          *   has entered the erasure command suspension process or erasure-suspended
+                                          *   status.                                                                   */
+            __IM uint32_t DBFULL : 1;    /*!< [10..10] Data Buffer Full This bit is always read as "0".                 */
+            __IM uint32_t SUSRDY : 1;    /*!< [11..11] Suspend Ready Indicates whether flash sequencer is
+                                          *   ready to accept the Programming/Erasure Suspension Command.               */
+            __IM uint32_t PRGERR : 1;    /*!< [12..12] Programming Error Indicates the result of code or data
+                                          *   flash programming by flash sequencer.                                     */
+            __IM uint32_t ERSERR : 1;    /*!< [13..13] Erasure ErrorIndicates result of code or data flash
+                                          *   erasure by flash sequencer.                                               */
+            __IM uint32_t ILGLERR : 1;   /*!< [14..14] Illegal Error Indicates that flash sequencer has detected
+                                          *   an illegal command or illegal flash memory access. When
+                                          *   this bit is 1, flash sequencer is in the command lock state.              */
+            __IM uint32_t FRDY : 1;      /*!< [15..15] Flash ReadyIndicates the processing state in flash
+                                          *   sequencer.                                                                */
+            __IM uint32_t BPLCRCT : 1;   /*!< [16..16] Block Protection Area ECC 1-Bit Error Correction Monitoring
+                                          *   Bit Indicates that 1-bit error has been corrected when
+                                          *   flash sequencer is reading Block Protection Area. Flash
+                                          *   sequencer reads Block Protection Area in Programming, Block
+                                          *   Erasure for the code flash memory or Programming, Multi
+                                          *   Programming, Block Erasure, Area Erasure for the Extended
+                                          *   Data Area or Property Programming, TAG Update, TAG Erasure
+                                          *   Command processing.                                                       */
+            __IM uint32_t BPLDTCT : 1;   /*!< [17..17] Block Protection Area ECC 2-Bit Error Detection Monitoring
+                                          *   Bit Indicates that 2-bit error has been detected when flash
+                                          *   sequencer is reading Block Protection Area. Flash sequencer
+                                          *   reads Block Protection Area in Programming, Block Erasure
+                                          *   for the code flash memory or Programming, Multi Programming,
+                                          *   Block Erasure, Area Erasure for the Extended Data Area
+                                          *   or Property Programming, TAG Update, TAG Erasure Command
+                                          *   processing. When this bit is “1”, flash sequencer is
+                                          *   in command lock state.                                                    */
+            __IM uint32_t EBFULL : 1;    /*!< [18..18] FDMYECC_n Buffer Full Indicates the FDMYECC_n buffer
+                                          *   status when issuing the Programming Command. Flash sequencer
+                                          *   incorporates a buffer for FDMYECC_n register (ECC buffer).                */
+            uint32_t            : 1;
+            __IM uint32_t OTERR : 1;     /*!< [20..20] Other Error When this bit is 1, flash sequencer enters
+                                          *   command lock state.                                                       */
+            __IM uint32_t SECERR : 1;    /*!< [21..21] Security Error When this bit is “1”, flash sequencer
+                                          *   enters command lock state.                                                */
+            __IM uint32_t FESETERR : 1;  /*!< [22..22] FENTRY Setting Error When this bit is “1”, flash
+                                          *   sequencer enters command lock state.                                      */
+            __IM uint32_t ILGCOMERR : 1; /*!< [23..23] Illegal Command Error When this bit is “1”, flash
+                                          *   sequencer enters command lock state.                                      */
+            __IM uint32_t SECCRCT : 1;   /*!< [24..24] Security Setting Area ECC 1-Bit Error Correction Monitoring
+                                          *   Bit Indicates that 1-bit error has been corrected when
+                                          *   flash sequencer is reading Security Setting Area. Flash
+                                          *   sequencer reads Security Setting Area in Property Programming,
+                                          *   TAG Update, TAG Erasure Command processing. When this bit
+                                          *   is “1”, flash sequencer continues command processing,
+                                          *   and does not enter command lock state.                                    */
+            __IM uint32_t SECDTCT : 1;   /*!< [25..25] Security Setting Area ECC 2-Bit Error Detection Monitoring
+                                          *   Bit Indicates that 2-bit error has been detected when flash
+                                          *   sequencer is reading Security Setting Area. Flash sequencer
+                                          *   reads Security Setting Area in Property Programming, TAG
+                                          *   Update, TAG Erasure Command processing. When this bit is
+                                          *   “1”, flash sequencer is in command lock state.                        */
+            __IM uint32_t SWTCRCT : 1;   /*!< [26..26] Switch Area and TAG Area ECC 1-Bit Error Correction
+                                          *   Monitoring BitIndicates that 1-bit error has been detected
+                                          *   when FACI is reading Switch Area and TAG Area. FACI reads
+                                          *   Switch Area and TAG Area in Switch Erasure, TAG Update,
+                                          *   and TAG Erasure Command processing. When this bit is "1",
+                                          *   flash sequencer continues command processing, and does
+                                          *   not enter "Command Lock" state.                                           */
+            __IM uint32_t SWTDTCT : 1;   /*!< [27..27] Switch Area and TAG Area ECC 2-Bit Error Detection
+                                          *   Monitoring Bit Indicates that 2-bit error has been detected
+                                          *   when FACI is reading Switch Area and TAG Area. FACI reads
+                                          *   Switch Area and TAG Area in Switch Erasure, TAG Update,
+                                          *   and TAG Erasure Command processing. When this bit is "1",
+                                          *   flash sequencer is in "Command Lock" state.                               */
+            __IM uint32_t ERCCRCT : 1;   /*!< [28..28] Erase counter 1-Bit Error Correction Monitoring Bit
+                                          *   Indicates that 1-bit error has been corrected when FACI
+                                          *   is reading Erase counter. FACI reads Erase counter in Block
+                                          *   Erasure (User Area), Erasure Resumption (User Area) Command
+                                          *   processing. When this bit is 1, flash sequencer continues
+                                          *   command processing, and does not enter "Command Lock" state.              */
+            __IM uint32_t ERCDTCT : 1;   /*!< [29..29] Erase counter ECC 2-Bit Error Detection Monitoring
+                                          *   Bit Indicates that 2-bit error has been detected when FACI
+                                          *   is reading Erase counter. FACI reads Erase counter in Block
+                                          *   Erasure (User Area), Erasure Resumption (User Area) Command
+                                          *   processing. When this bit is 1, flash sequencer is in "Command
+                                          *   Lock" state.                                                              */
+            uint32_t : 2;
+        } FSTATR_b;
+    };
+
+    union
+    {
+        __IOM uint16_t FENTRYR;         /*!< (@ 0x00000084) Flash P/E Mode Entry                                       */
+
+        struct
+        {
+            __IOM uint16_t FENTRYC : 1; /*!< [0..0] Code Flash Programming/Erasure Mode Entry This bit specifies
+                                         *   programming/erasure mode for code flash.                                  */
+            uint16_t               : 6;
+            __IOM uint16_t FENTRYD : 1; /*!< [7..7] Data Flash Programming/Erasure Mode EntryThis bit specifies
+                                         *   programming/erasure mode for data flash.                                  */
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key Code These bits enable or disable FENTRYD and FENTRYC
+                                         *   bits modification.                                                        */
+        } FENTRYR_b;
+    };
+    __IM uint16_t RESERVED11;
+    __IM uint32_t RESERVED12;
+
+    union
+    {
+        __IOM uint16_t FSUINITR;       /*!< (@ 0x0000008C) Flash Sequencer Setup Initialization                       */
+
+        struct
+        {
+            __IOM uint16_t SUINIT : 1; /*!< [0..0] Set-up Initialization Initializes following flash sequencer
+                                        *   set-up registers.FSADDR_nFEADDR_nFENTRYR_nFBCCNT_nFCVAPROT_n.             */
+            uint16_t          : 7;
+            __OM uint16_t KEY : 8;     /*!< [15..8] Key Code These bits enable or disable CVAPROT bit modification    */
+        } FSUINITR_b;
+    };
+    __IM uint16_t RESERVED13;
+    __IM uint32_t RESERVED14[4];
+
+    union
+    {
+        __IM uint16_t FCMDR;           /*!< (@ 0x000000A0) FACI Command Register                                      */
+
+        struct
+        {
+            __IM uint16_t PCMDR : 8;   /*!< [7..0] Previous Command These bits store previous command accepted
+                                        *   by each Flash sequencer.                                                  */
+            __IM uint16_t CMDR : 8;    /*!< [15..8] Command These bits store the latest command accepted
+                                        *   by each Flash sequencer.                                                  */
+        } FCMDR_b;
+    };
+    __IM uint16_t RESERVED15;
+
+    union
+    {
+        __IM uint32_t FCMDMON;           /*!< (@ 0x000000A4) Flash Status                                               */
+
+        struct
+        {
+            __IM uint32_t PCMDM : 8;     /*!< [7..0] Previous Command These bits store previous command accepted
+                                          *   by each Flash sequencer.                                                  */
+            __IM uint32_t PFENTRYCM : 1; /*!< [8..8] FENTRYC status Monitor of previous command                         */
+            __IM uint32_t PFENTRYDM : 1; /*!< [9..9] FENTRYD status Monitor of previous command                         */
+            uint32_t                : 5;
+            __IM uint32_t PMSTCM    : 1; /*!< [15..15] Previous Command Master Monitor The master which issued
+                                          *   Previous command.                                                         */
+            __IM uint32_t CMDM : 8;      /*!< [23..16] CommandThese bits store the latest command accepted
+                                          *   by each Flash sequencer.                                                  */
+            __IM uint32_t FENTRYCM : 1;  /*!< [24..24] FENTRYC status Monitor of Latest command                         */
+            __IM uint32_t FENTRYDM : 1;  /*!< [25..25] FENTRYD status Monitor of Latest command                         */
+            uint32_t               : 5;
+            __IM uint32_t MSTCM    : 1;  /*!< [31..31] Latest Command Master Monitor The master which issued
+                                          *   Latest command.                                                           */
+        } FCMDMON_b;
+    };
+    __IM uint32_t RESERVED16[6];
+
+    union
+    {
+        __IM uint16_t FPESTAT;         /*!< (@ 0x000000C0) Flash P/E Status                                           */
+
+        struct
+        {
+            __IM uint16_t PEERRST : 8; /*!< [7..0] Programming/Erasure Error Status Indicates the source
+                                        *   of error that occurs during programming or erasure for
+                                        *   code flash or data flash. This bit value is only valid
+                                        *   if ERSERR or PRGERR bit value in FSTATR_n register is 1,
+                                        *   while FRDY bit in FSTATR_n register is 1.                                 */
+            uint16_t : 8;
+        } FPESTAT_b;
+    };
+    __IM uint16_t RESERVED17;
+    __IM uint32_t RESERVED18[3];
+
+    union
+    {
+        __IOM uint8_t FBCCNT;          /*!< (@ 0x000000D0) Data Flash Blank Check Control                             */
+
+        struct
+        {
+            __IOM uint8_t BCDIR : 1;   /*!< [0..0] Blank Check Direction Specifies addressing mode in blank
+                                        *   checking operation.                                                       */
+            uint8_t : 7;
+        } FBCCNT_b;
+    };
+    __IM uint8_t  RESERVED19;
+    __IM uint16_t RESERVED20;
+
+    union
+    {
+        __IM uint8_t FBCSTAT;          /*!< (@ 0x000000D4) Data Flash Blank Check Status                              */
+
+        struct
+        {
+            __IM uint8_t BCST : 1;     /*!< [0..0] Blank Check Status Indicates the result of the Blank
+                                        *   Checking Command.                                                         */
+            uint8_t : 7;
+        } FBCSTAT_b;
+    };
+    __IM uint8_t  RESERVED21;
+    __IM uint16_t RESERVED22;
+
+    union
+    {
+        __IM uint32_t FPSADDR;         /*!< (@ 0x000000D8) Programmed Area Start Address                              */
+
+        struct
+        {
+            __IM uint32_t PSADR : 21;  /*!< [20..0] Programmed Area Start Address Indicates address of the
+                                        *   first programmed data which is found in Blank Checking
+                                        *   Command execution. These bits stores address offset from
+                                        *   the top address in the data flash memory.This register
+                                        *   value is only valid if BCST bit value in FBCSTAT_n register
+                                        *   is 1, while FRDY bit in FSTATR_n register is 1.When BCST
+                                        *   bit is 0, the PSADR bit holds the address that previously
+                                        *   checked.                                                                  */
+            uint32_t : 11;
+        } FPSADDR_b;
+    };
+    __IM uint32_t RESERVED23[9];
+
+    union
+    {
+        __IM uint16_t FECCEMON;        /*!< (@ 0x00000100) Flash ECC Encoder Monitor                                  */
+
+        struct
+        {
+            __IM uint16_t FECCM : 10;  /*!< [9..0] ECC MonitorIndicates the ECC encoder output.In code flash
+                                        *   programming/erasure modeThe FECCM[9] to FECCM[0] bits indicate
+                                        *   the ECC encoder output for the code flash memory.In data
+                                        *   flash programming/erasure modeThe FECCM[9] to FECCM[7]
+                                        *   bits are fixed to 1.The FECCM[6] to FECCM[0] indicate the
+                                        *   ECC encoder output for the data flash memory.                             */
+            __IM uint16_t FAPARM : 1;  /*!< [10..10] Address Parity Monitor Indicates the output from the
+                                        *   address parity generator.In code flash programming/erasure
+                                        *   modeThis bit indicates the output from the address parity
+                                        *   generator.In data flash programming/erasure modeThis bit
+                                        *   is fixed to 1.                                                            */
+            uint16_t : 5;
+        } FECCEMON_b;
+    };
+    __IM uint16_t RESERVED24;
+
+    union
+    {
+        __IOM uint16_t FECCTMD;         /*!< (@ 0x00000104) Flash ECC Test Mode                                        */
+
+        struct
+        {
+            __IOM uint16_t ECCDISE : 1; /*!< [0..0] ECC Encoder Disable Disables the address parity generator
+                                         *   and the ECC encoder. If the address parity generator and
+                                         *   the ECC encoder are disabled, the FDMYECC_n value is written
+                                         *   to the flash memory.                                                      */
+            uint16_t              : 3;
+            __IOM uint16_t DECCVE : 1;  /*!< [4..4] Data Flash Memory ECC Bits Verify Enable Specifies the
+                                         *   verify operation on programming/erasure the data flash
+                                         *   memory.                                                                   */
+            __IOM uint16_t CECCVE : 1;  /*!< [5..5] Code Flash Memory ECC Bits Verify Enable Specifies the
+                                         *   verify operation on programming/erasure the code flash
+                                         *   memory.                                                                   */
+            uint16_t          : 2;
+            __OM uint16_t KEY : 8;      /*!< [15..8] Key Code These bits enable or disable CECCVE, DECCVE,
+                                         *   and ECCDISE bits modification.                                            */
+        } FECCTMD_b;
+    };
+    __IM uint16_t RESERVED25;
+
+    union
+    {
+        __IOM uint16_t FDMYECC;        /*!< (@ 0x00000108) Flash Dummy ECC Register                                   */
+
+        struct
+        {
+            __IM uint16_t DMYECC : 10; /*!< [9..0] Dummy ECC Specify the ECC value when the ECCDISE bit
+                                        *   is 1.                                                                     */
+            __IM uint16_t DMYAPAR : 1; /*!< [10..10] Dummy Address Parity Specifies the address parity value
+                                        *   when the ECCDISE bit is 1.                                                */
+            uint16_t : 5;
+        } FDMYECC_b;
+    };
+    __IM uint16_t RESERVED26;
+} R_FACI2_Type;                        /*!< Size = 268 (0x10c)                                                        */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FLMD                                           ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief R_FLMD (R_FLMD)
+ */
+
+typedef struct                         /*!< (@ 0xFFA00000) R_FLMD Structure                                           */
+{
+    union
+    {
+        __IOM uint32_t FLMDCNT;        /*!< (@ 0x00000000) FLMD Control                                               */
+
+        struct
+        {
+            __IOM uint32_t SFWE : 1;   /*!< [0..0] SFWE                                                               */
+            uint32_t            : 31;
+        } FLMDCNT_b;
+    };
+    __IM uint32_t RESERVED[2];
+
+    union
+    {
+        __IOM uint32_t FLMDFPLOCK;      /*!< (@ 0x0000000C) FLMD FACI LOCK                                             */
+
+        struct
+        {
+            __IOM uint32_t FP0LOCK : 1; /*!< [0..0] FP0LOCK                                                            */
+            uint32_t               : 31;
+        } FLMDFPLOCK_b;
+    };
+} R_FLMD_Type;                          /*!< Size = 16 (0x10)                                                          */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FHVE                                           ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief R_FHVE (R_FHVE)
+ */
+
+typedef struct                           /*!< (@ 0xFF984800) R_FHVE Structure                                           */
+{
+    union
+    {
+        __IOM uint32_t FHVE3FP0;         /*!< (@ 0x00000000) FHVE3 Control for FACI0                                    */
+
+        struct
+        {
+            __IOM uint32_t FHVE3CNT : 1; /*!< [0..0] FHVE3CNT                                                           */
+            uint32_t                : 31;
+        } FHVE3FP0_b;
+    };
+
+    union
+    {
+        __IOM uint32_t FHVE15FP0;         /*!< (@ 0x00000004) FHVE15 Control for FACI0                                   */
+
+        struct
+        {
+            __IOM uint32_t FHVE15CNT : 1; /*!< [0..0] FHVE15CNT                                                          */
+            uint32_t                 : 31;
+        } FHVE15FP0_b;
+    };
+    __IM uint32_t RESERVED[6];
+
+    union
+    {
+        __IOM uint32_t FHVE3FP2;         /*!< (@ 0x00000020) FHVE3 Control for FACI2                                    */
+
+        struct
+        {
+            __IOM uint32_t FHVE3CNT : 1; /*!< [0..0] FHVE3CNT                                                           */
+            uint32_t                : 31;
+        } FHVE3FP2_b;
+    };
+
+    union
+    {
+        __IOM uint32_t FHVE15FP2;         /*!< (@ 0x00000024) FHVE15 Control for FACI2                                   */
+
+        struct
+        {
+            __IOM uint32_t FHVE15CNT : 1; /*!< [0..0] FHVE15CNT                                                          */
+            uint32_t                 : 31;
+        } FHVE15FP2_b;
+    };
+} R_FHVE_Type;                            /*!< Size = 40 (0x28)                                                          */
+
+/* =========================================================================================================================== */
 /* ================                                          R_FLXA0                                          ================ */
 /* =========================================================================================================================== */
 
@@ -85144,6 +86530,19 @@ typedef struct                            /*!< (@ 0xFF6206C0) R_GTM0_CMP Structu
         } CMP_EIRQ_EN_b;
     };
 } R_GTM0_CMP_Type;                             /*!< Size = 24 (0x18)                                                          */
+
+/* =========================================================================================================================== */
+/* ================                                        R_GTM0_CDTM                                        ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief Dead Time Module (DTM) (R_GTM0_CDTM)
+ */
+
+typedef struct                         /*!< (@ 0xFF604400) R_GTM0_CDTM Structure                                      */
+{
+    __IOM R_GTM0_CDTM_CLS_Type CLS[7]; /*!< (@ 0x00000000) Cluster for DTM Instance [0..6]                            */
+} R_GTM0_CDTM_Type;                    /*!< Size = 917504 (0xe0000)                                                   */
 
 /* =========================================================================================================================== */
 /* ================                                        R_GTM0_MCS0                                        ================ */
@@ -91633,1289 +93032,10 @@ typedef struct                         /*!< (@ 0xFFC64000) R_GUARD_INTC2 Structu
 
 typedef struct                         /*!< (@ 0xFFFB9000) R_IPIR Structure                                           */
 {
-    union
-    {
-        __IOM uint8_t IPI0ENS;         /*!< (@ 0x00000000) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI0ENS_b;
-    };
-    __IM uint8_t RESERVED[3];
-
-    union
-    {
-        __IM uint8_t IPI0FLGS;         /*!< (@ 0x00000004) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI0FLGS_b;
-    };
-    __IM uint8_t RESERVED1[3];
-
-    union
-    {
-        __OM uint8_t IPI0FCLRS;        /*!< (@ 0x00000008) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI0FCLRS_b;
-    };
-    __IM uint8_t RESERVED2[7];
-
-    union
-    {
-        __IOM uint8_t IPI0REQS;        /*!< (@ 0x00000010) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI0REQS_b;
-    };
-    __IM uint8_t RESERVED3[3];
-
-    union
-    {
-        __OM uint8_t IPI0RCLRS;        /*!< (@ 0x00000014) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI0RCLRS_b;
-    };
-    __IM uint8_t RESERVED4[11];
-
-    union
-    {
-        __IOM uint8_t IPI1ENS;         /*!< (@ 0x00000020) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI1ENS_b;
-    };
-    __IM uint8_t RESERVED5[3];
-
-    union
-    {
-        __IM uint8_t IPI1FLGS;         /*!< (@ 0x00000024) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI1FLGS_b;
-    };
-    __IM uint8_t RESERVED6[3];
-
-    union
-    {
-        __OM uint8_t IPI1FCLRS;        /*!< (@ 0x00000028) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI1FCLRS_b;
-    };
-    __IM uint8_t RESERVED7[7];
-
-    union
-    {
-        __IOM uint8_t IPI1REQS;        /*!< (@ 0x00000030) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI1REQS_b;
-    };
-    __IM uint8_t RESERVED8[3];
-
-    union
-    {
-        __OM uint8_t IPI1RCLRS;        /*!< (@ 0x00000034) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI1RCLRS_b;
-    };
-    __IM uint8_t RESERVED9[11];
-
-    union
-    {
-        __IOM uint8_t IPI2ENS;         /*!< (@ 0x00000040) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI2ENS_b;
-    };
-    __IM uint8_t RESERVED10[3];
-
-    union
-    {
-        __IM uint8_t IPI2FLGS;         /*!< (@ 0x00000044) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI2FLGS_b;
-    };
-    __IM uint8_t RESERVED11[3];
-
-    union
-    {
-        __OM uint8_t IPI2FCLRS;        /*!< (@ 0x00000048) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI2FCLRS_b;
-    };
-    __IM uint8_t RESERVED12[7];
-
-    union
-    {
-        __IOM uint8_t IPI2REQS;        /*!< (@ 0x00000050) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI2REQS_b;
-    };
-    __IM uint8_t RESERVED13[3];
-
-    union
-    {
-        __OM uint8_t IPI2RCLRS;        /*!< (@ 0x00000054) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI2RCLRS_b;
-    };
-    __IM uint8_t RESERVED14[11];
-
-    union
-    {
-        __IOM uint8_t IPI3ENS;         /*!< (@ 0x00000060) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI3ENS_b;
-    };
-    __IM uint8_t RESERVED15[3];
-
-    union
-    {
-        __IM uint8_t IPI3FLGS;         /*!< (@ 0x00000064) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI3FLGS_b;
-    };
-    __IM uint8_t RESERVED16[3];
-
-    union
-    {
-        __OM uint8_t IPI3FCLRS;        /*!< (@ 0x00000068) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI3FCLRS_b;
-    };
-    __IM uint8_t RESERVED17[7];
-
-    union
-    {
-        __IOM uint8_t IPI3REQS;        /*!< (@ 0x00000070) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI3REQS_b;
-    };
-    __IM uint8_t RESERVED18[3];
-
-    union
-    {
-        __OM uint8_t IPI3RCLRS;        /*!< (@ 0x00000074) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI3RCLRS_b;
-    };
-    __IM uint8_t RESERVED19[1931];
-
-    union
-    {
-        __IOM uint8_t IPI0EN0;         /*!< (@ 0x00000800) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI0EN0_b;
-    };
-    __IM uint8_t RESERVED20[3];
-
-    union
-    {
-        __IM uint8_t IPI0FLG0;         /*!< (@ 0x00000804) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI0FLG0_b;
-    };
-    __IM uint8_t RESERVED21[3];
-
-    union
-    {
-        __OM uint8_t IPI0FCLR0;        /*!< (@ 0x00000808) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI0FCLR0_b;
-    };
-    __IM uint8_t RESERVED22[7];
-
-    union
-    {
-        __IOM uint8_t IPI0REQ0;        /*!< (@ 0x00000810) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI0REQ0_b;
-    };
-    __IM uint8_t RESERVED23[3];
-
-    union
-    {
-        __OM uint8_t IPI0RCLR0;        /*!< (@ 0x00000814) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI0RCLR0_b;
-    };
-    __IM uint8_t RESERVED24[11];
-
-    union
-    {
-        __IOM uint8_t IPI1EN0;         /*!< (@ 0x00000820) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI1EN0_b;
-    };
-    __IM uint8_t RESERVED25[3];
-
-    union
-    {
-        __IM uint8_t IPI1FLG0;         /*!< (@ 0x00000824) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI1FLG0_b;
-    };
-    __IM uint8_t RESERVED26[3];
-
-    union
-    {
-        __OM uint8_t IPI1FCLR0;        /*!< (@ 0x00000828) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI1FCLR0_b;
-    };
-    __IM uint8_t RESERVED27[7];
-
-    union
-    {
-        __IOM uint8_t IPI1REQ0;        /*!< (@ 0x00000830) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI1REQ0_b;
-    };
-    __IM uint8_t RESERVED28[3];
-
-    union
-    {
-        __OM uint8_t IPI1RCLR0;        /*!< (@ 0x00000834) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI1RCLR0_b;
-    };
-    __IM uint8_t RESERVED29[11];
-
-    union
-    {
-        __IOM uint8_t IPI2EN0;         /*!< (@ 0x00000840) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI2EN0_b;
-    };
-    __IM uint8_t RESERVED30[3];
-
-    union
-    {
-        __IM uint8_t IPI2FLG0;         /*!< (@ 0x00000844) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI2FLG0_b;
-    };
-    __IM uint8_t RESERVED31[3];
-
-    union
-    {
-        __OM uint8_t IPI2FCLR0;        /*!< (@ 0x00000848) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI2FCLR0_b;
-    };
-    __IM uint8_t RESERVED32[7];
-
-    union
-    {
-        __IOM uint8_t IPI2REQ0;        /*!< (@ 0x00000850) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI2REQ0_b;
-    };
-    __IM uint8_t RESERVED33[3];
-
-    union
-    {
-        __OM uint8_t IPI2RCLR0;        /*!< (@ 0x00000854) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI2RCLR0_b;
-    };
-    __IM uint8_t RESERVED34[11];
-
-    union
-    {
-        __IOM uint8_t IPI3EN0;         /*!< (@ 0x00000860) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI3EN0_b;
-    };
-    __IM uint8_t RESERVED35[3];
-
-    union
-    {
-        __IM uint8_t IPI3FLG0;         /*!< (@ 0x00000864) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI3FLG0_b;
-    };
-    __IM uint8_t RESERVED36[3];
-
-    union
-    {
-        __OM uint8_t IPI3FCLR0;        /*!< (@ 0x00000868) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI3FCLR0_b;
-    };
-    __IM uint8_t RESERVED37[7];
-
-    union
-    {
-        __IOM uint8_t IPI3REQ0;        /*!< (@ 0x00000870) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI3REQ0_b;
-    };
-    __IM uint8_t RESERVED38[3];
-
-    union
-    {
-        __OM uint8_t IPI3RCLR0;        /*!< (@ 0x00000874) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI3RCLR0_b;
-    };
-    __IM uint8_t RESERVED39[139];
-
-    union
-    {
-        __IOM uint8_t IPI0EN1;         /*!< (@ 0x00000900) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI0EN1_b;
-    };
-    __IM uint8_t RESERVED40[3];
-
-    union
-    {
-        __IM uint8_t IPI0FLG1;         /*!< (@ 0x00000904) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI0FLG1_b;
-    };
-    __IM uint8_t RESERVED41[3];
-
-    union
-    {
-        __OM uint8_t IPI0FCLR1;        /*!< (@ 0x00000908) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI0FCLR1_b;
-    };
-    __IM uint8_t RESERVED42[7];
-
-    union
-    {
-        __IOM uint8_t IPI0REQ1;        /*!< (@ 0x00000910) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI0REQ1_b;
-    };
-    __IM uint8_t RESERVED43[3];
-
-    union
-    {
-        __OM uint8_t IPI0RCLR1;        /*!< (@ 0x00000914) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI0RCLR1_b;
-    };
-    __IM uint8_t RESERVED44[11];
-
-    union
-    {
-        __IOM uint8_t IPI1EN1;         /*!< (@ 0x00000920) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI1EN1_b;
-    };
-    __IM uint8_t RESERVED45[3];
-
-    union
-    {
-        __IM uint8_t IPI1FLG1;         /*!< (@ 0x00000924) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI1FLG1_b;
-    };
-    __IM uint8_t RESERVED46[3];
-
-    union
-    {
-        __OM uint8_t IPI1FCLR1;        /*!< (@ 0x00000928) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI1FCLR1_b;
-    };
-    __IM uint8_t RESERVED47[7];
-
-    union
-    {
-        __IOM uint8_t IPI1REQ1;        /*!< (@ 0x00000930) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI1REQ1_b;
-    };
-    __IM uint8_t RESERVED48[3];
-
-    union
-    {
-        __OM uint8_t IPI1RCLR1;        /*!< (@ 0x00000934) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI1RCLR1_b;
-    };
-    __IM uint8_t RESERVED49[11];
-
-    union
-    {
-        __IOM uint8_t IPI2EN1;         /*!< (@ 0x00000940) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI2EN1_b;
-    };
-    __IM uint8_t RESERVED50[3];
-
-    union
-    {
-        __IM uint8_t IPI2FLG1;         /*!< (@ 0x00000944) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI2FLG1_b;
-    };
-    __IM uint8_t RESERVED51[3];
-
-    union
-    {
-        __OM uint8_t IPI2FCLR1;        /*!< (@ 0x00000948) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI2FCLR1_b;
-    };
-    __IM uint8_t RESERVED52[7];
-
-    union
-    {
-        __IOM uint8_t IPI2REQ1;        /*!< (@ 0x00000950) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI2REQ1_b;
-    };
-    __IM uint8_t RESERVED53[3];
-
-    union
-    {
-        __OM uint8_t IPI2RCLR1;        /*!< (@ 0x00000954) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI2RCLR1_b;
-    };
-    __IM uint8_t RESERVED54[11];
-
-    union
-    {
-        __IOM uint8_t IPI3EN1;         /*!< (@ 0x00000960) Inter-PE Interrupt Enable RegisterThis register
-                                        *                  sets the transmitting PE allowed to issue
-                                        *                  inter-PE interrupt requests to PEm.This
-                                        *                  register is used to enable inter-PE interrupt
-                                        *                  requests of PE (PEx) by the receiving PE
-                                        *                  (PEm) itself.                                              */
-
-        struct
-        {
-            __IOM uint8_t EN : 2;      /*!< [1..0] Inter-PE Interrupt Enable.Write 1 to the x-th bit to
-                                        *   enable the issuance of inter-PE interrupt requests from
-                                        *   PEx to PEm. Write 0 to the x-th bit to disable the issuance
-                                        *   of inter-PE interrupt requests from PEx to PEm.                           */
-            uint8_t : 6;
-        } IPI3EN1_b;
-    };
-    __IM uint8_t RESERVED55[3];
-
-    union
-    {
-        __IM uint8_t IPI3FLG1;         /*!< (@ 0x00000964) nter-PE Interrupt Flag RegisterThis register
-                                        *                  indicates the transmitting PE that issued
-                                        *                  an inter-PE interrupt request to PEm.This
-                                        *                  register is used to distinguish the requesting
-                                        *                  PE by PEm when PEm has received an inter-PEinterrupt
-                                        *                  request.                                                   */
-
-        struct
-        {
-            __IM uint8_t FLG : 2;      /*!< [1..0] Inter-PE Interrupt Request Flag.This register indicates
-                                        *   the status of Inter-PE Interrupt request from other PEs.
-                                        *   The x-th bit is automatically updated according to the
-                                        *   IPInREQx[m] change while the value of the IPInENm[x] bit
-                                        *   is 1. The x-th bit is not set if IPInENm[x] is 0, even
-                                        *   if IPInREQx[m] is set.The x-th bit is also cleared when
-                                        *   the IPInFCLRm[x] bit is set.                                              */
-            uint8_t : 6;
-        } IPI3FLG1_b;
-    };
-    __IM uint8_t RESERVED56[3];
-
-    union
-    {
-        __OM uint8_t IPI3FCLR1;        /*!< (@ 0x00000968) Inter-PE Interrupt Clear Register This register
-                                        *                  clears inter-PE interrupt requests to PEm.This
-                                        *                  register is used to clear the request flag
-                                        *                  (IPInFLGm) and the request (IPInREQx) after
-                                        *                  receivingthe Inter-PE interrupt request
-                                        *                  from another PE.                                           */
-
-        struct
-        {
-            __OM uint8_t FCLR : 2;     /*!< [1..0] Inter-PE Interrupt Request Flag ClearIPInFLGm[x] and
-                                        *   IPInREQx[m] can be cleared by writing 1 to this bit. Writing
-                                        *   0is ignored.                                                              */
-            uint8_t : 6;
-        } IPI3FCLR1_b;
-    };
-    __IM uint8_t RESERVED57[7];
-
-    union
-    {
-        __IOM uint8_t IPI3REQ1;        /*!< (@ 0x00000970) Inter-PE Interrupt Request RegisterThis register
-                                        *                  controls Inter-PE interrupt request from
-                                        *                  PEm to other PEs.                                          */
-
-        struct
-        {
-            __IOM uint8_t REQ : 2;     /*!< [1..0] When 1 is written to the x-th bit while the value of
-                                        *   the IPInENx[m] bit is 1:The value of the x-th bit becomes
-                                        *   1.The high level is output to the inter-PE interrupt request
-                                        *   for PEx andIPInFLGx[m] is automatically set to 1.When 1
-                                        *   is written to the x-th bit while the value of the IPInENx[m]
-                                        *   bit is 0:The value of the x-th bit becomes 1.There are
-                                        *   no other operations.When 0 is written to the x-th bit:Writing
-                                        *   0 is ignored.When read:The register value is read out                     */
-            uint8_t : 6;
-        } IPI3REQ1_b;
-    };
-    __IM uint8_t RESERVED58[3];
-
-    union
-    {
-        __OM uint8_t IPI3RCLR1;        /*!< (@ 0x00000974) Inter-PE Interrupt Request Clear RegisterThis
-                                        *                  register clears inter-PE interrupt requests
-                                        *                  for other PEs by PEm.This register is assumed
-                                        *                  to be used to clear inter-PE interrupt requests
-                                        *                  by the transmitting PE.                                    */
-
-        struct
-        {
-            __OM uint8_t RCLR : 2;     /*!< [1..0] Inter-Processor Interrupt Request Clear.Writing 1 to
-                                        *   the x-th bit clears the IPInREQm[x] bit. When the value
-                                        *   ofIPInENx[m] bit is 1, IPInFLGx[m] bit is also cleared
-                                        *   at the same time.The transmitting PE allowed to issue inter-processor
-                                        *   interrupt requests by theIPInENx register can also cancel
-                                        *   an inter-processor interrupt request by usingthis bit,
-                                        *   but the receiving PE may in some cases accept the inter-PE
-                                        *   interruptrequest while the cancellation processing takes
-                                        *   place.Writing 0 is ignored. This bit always retu                          */
-            uint8_t : 6;
-        } IPI3RCLR1_b;
-    };
-} R_IPIR_Type;                         /*!< Size = 2421 (0x975)                                                       */
+    __IOM R_IPIR_CH_Type CH[4];        /*!< (@ 0x00000000) Inter Processor Interrupt Shared Channel                   */
+    __IM uint8_t         RESERVED[1920];
+    __IOM R_IPIR_PE_Type PE[2];        /*!< (@ 0x00000800) Inter Processor Interrupt PE Block                         */
+} R_IPIR_Type;                         /*!< Size = 2560 (0xa00)                                                       */
 
 /* =========================================================================================================================== */
 /* ================                                          R_LTSC                                           ================ */
@@ -99222,7 +99342,7 @@ typedef struct                         /*!< (@ 0xFFCC4000) R_PSI50 Structure    
     {
         __IOM uint32_t PSI5nTXDATA;     /*!< (@ 0x00000098) PSI5 Transmit Data RegisterThis register stores
                                          *                  transmit data.See this Registers section
-                                         *                  in R-Car/U5x Group CSIH IP User‘s Manual:
+                                         *                  in RH850/U2x Group CSIH IP User‘s Manual:
                                          *                  Hardware.                                                  */
 
         struct
@@ -99232,7 +99352,7 @@ typedef struct                         /*!< (@ 0xFFCC4000) R_PSI50 Structure    
                                          *   arrangement differs depending on the transmit frame format
                                          *   specified in the PSI5nTXDCTRL.FRMFORMAT bit. (See Table,
                                          *   "PSI5nTXDATA.TXDATA Data Arrangement in Transmit Frame
-                                         *   Format" in R-Car/U5x Group PSI5 IP User‘s Manual: Hardware)The
+                                         *   Format" in RH850/U2x Group PSI5 IP User‘s Manual: Hardware)The
                                          *   data is sent after these bits are written.Read value is
                                          *   always 0.                                                                 */
         } PSI5nTXDATA_b;
@@ -102627,6 +102747,277 @@ typedef struct                         /*!< (@ 0xFFC7C000) R_RLN30 Structure    
 } R_RLN30_Type;                        /*!< Size = 56 (0x38)                                                          */
 
 /* =========================================================================================================================== */
+/* ================                                          R_TAUJ0                                          ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief TAUJ Interface Module (R_TAUJ0)
+ */
+
+typedef struct                         /*!< (@ 0xFFBF7000) R_TAUJ0 Structure                                          */
+{
+    __IOM R_TAUJ0_CDR_Type  CDR[4];    /*!< (@ 0x00000000) TAUJ channel data register                                 */
+    __IOM R_TAUJ0_CNT_Type  CNT[4];    /*!< (@ 0x00000010) TAUJ channel counter register                              */
+    __IOM R_TAUJ0_CMUR_Type CMUR[4];   /*!< (@ 0x00000020) TAUJ channel mode user register                            */
+    __IOM R_TAUJ0_CSR_Type  CSR[4];    /*!< (@ 0x00000030) TAUJ channel status register                               */
+    __IOM R_TAUJ0_CSC_Type  CSC[4];    /*!< (@ 0x00000040) TAUJ channel status clear trigger register                 */
+
+    union
+    {
+        __IM uint8_t TE;               /*!< (@ 0x00000050) TAUJ Channel Enable Status Register                        */
+
+        struct
+        {
+            __IM uint8_t TE : 4;       /*!< [3..0] TE                                                                 */
+            uint8_t         : 4;
+        } TE_b;
+    };
+    __IM uint8_t  RESERVED;
+    __IM uint16_t RESERVED1;
+
+    union
+    {
+        __IOM uint8_t TS;              /*!< (@ 0x00000054) TAUJ Channel Start Trigger Register                        */
+
+        struct
+        {
+            __OM uint8_t TS : 4;       /*!< [3..0] TS                                                                 */
+            uint8_t         : 4;
+        } TS_b;
+    };
+    __IM uint8_t  RESERVED2;
+    __IM uint16_t RESERVED3;
+
+    union
+    {
+        __IOM uint8_t TT;              /*!< (@ 0x00000058) TAUJ Channel Stop Trigger Register                         */
+
+        struct
+        {
+            __OM uint8_t TT : 4;       /*!< [3..0] TT                                                                 */
+            uint8_t         : 4;
+        } TT_b;
+    };
+    __IM uint8_t  RESERVED4;
+    __IM uint16_t RESERVED5;
+
+    union
+    {
+        __IOM uint8_t TO;              /*!< (@ 0x0000005C) TAUJ Channel Output Register                               */
+
+        struct
+        {
+            __IM uint8_t TO : 4;       /*!< [3..0] Specifies and reads the level of TAUJTTOUTm                        */
+            uint8_t         : 4;
+        } TO_b;
+    };
+    __IM uint8_t  RESERVED6;
+    __IM uint16_t RESERVED7;
+
+    union
+    {
+        __IOM uint8_t TOE;             /*!< (@ 0x00000060) TAUJ Channel Output Enable Register                        */
+
+        struct
+        {
+            __IM uint8_t TOE : 4;      /*!< [3..0] Enables/disables independent channel output function:              */
+            uint8_t          : 4;
+        } TOE_b;
+    };
+    __IM uint8_t  RESERVED8;
+    __IM uint16_t RESERVED9;
+
+    union
+    {
+        __IOM uint8_t TOL;             /*!< (@ 0x00000064) TAUJ Channel Output Active Level Register                  */
+
+        struct
+        {
+            __IM uint8_t TOL : 4;      /*!< [3..0] Specifies the output logic of the channel m output bit
+                                        *   (TAUJnTO.TAUJnTOm)                                                        */
+            uint8_t : 4;
+        } TOL_b;
+    };
+    __IM uint8_t  RESERVED10;
+    __IM uint16_t RESERVED11;
+
+    union
+    {
+        __IOM uint8_t RDT;             /*!< (@ 0x00000068) TAUJ Channel Reload Data Trigger Register                  */
+
+        struct
+        {
+            __OM uint8_t RDT : 4;      /*!< [3..0] Triggers the simultaneous rewrite enabling state.                  */
+            uint8_t          : 4;
+        } RDT_b;
+    };
+    __IM uint8_t  RESERVED12;
+    __IM uint16_t RESERVED13;
+
+    union
+    {
+        __IM uint8_t RSF;              /*!< (@ 0x0000006C) TAUJ Channel Reload Status Register                        */
+
+        struct
+        {
+            __IM uint8_t RSF : 4;      /*!< [3..0] Indicates the simultaneous rewrite status.                         */
+            uint8_t          : 4;
+        } RSF_b;
+    };
+    __IM uint8_t            RESERVED14;
+    __IM uint16_t           RESERVED15;
+    __IM uint32_t           RESERVED16[4];
+    __IOM R_TAUJ0_CMOR_Type CMOR[4];   /*!< (@ 0x00000080) TAUJ channel mode OS register                              */
+
+    union
+    {
+        __IOM uint16_t TPS;            /*!< (@ 0x00000090) TAUJ Prescaler Clock Select Register                       */
+
+        struct
+        {
+            __IOM uint16_t PRS0 : 4;   /*!< [3..0] Specifies CK0_PRE clock.                                           */
+            __IOM uint16_t PRS1 : 4;   /*!< [7..4] Specifies CK1_PRE clock.                                           */
+            __IOM uint16_t PRS2 : 4;   /*!< [11..8] Specifies CK2_PRE clock.                                          */
+            __IOM uint16_t PRS3 : 4;   /*!< [15..12] Specifies CK3_PRE clock.                                         */
+        } TPS_b;
+    };
+    __IM uint16_t RESERVED17;
+
+    union
+    {
+        __IOM uint8_t BRS;             /*!< (@ 0x00000094) TAUJ Prescaler Baud Rate Setting Register                  */
+
+        struct
+        {
+            __IOM uint8_t BRS : 8;     /*!< [7..0] Specifies a CK3_PRE clock division factor for generating
+                                        *   CK3.00000000: CK3_PRE/100000001: CK3_PRE/200000010: CK3_PRE/300000011:
+                                        *   CK3_PRE/4......11111110: CK3_PRE/25511111111: CK3_PRE/256                 */
+        } BRS_b;
+    };
+    __IM uint8_t  RESERVED18;
+    __IM uint16_t RESERVED19;
+
+    union
+    {
+        __IOM uint8_t TOM;             /*!< (@ 0x00000098) TAUJ Channel Output Mode Register                          */
+
+        struct
+        {
+            __IM uint8_t TOM : 4;      /*!< [3..0] Specifies the channel output mode.                                 */
+            uint8_t          : 4;
+        } TOM_b;
+    };
+    __IM uint8_t  RESERVED20;
+    __IM uint16_t RESERVED21;
+
+    union
+    {
+        __IOM uint8_t TOC;             /*!< (@ 0x0000009C) TAUJ Channel Output Configuration Register                 */
+
+        struct
+        {
+            __IM uint8_t TOC : 4;      /*!< [3..0] Specifies the output mode                                          */
+            uint8_t          : 4;
+        } TOC_b;
+    };
+    __IM uint8_t  RESERVED22;
+    __IM uint16_t RESERVED23;
+
+    union
+    {
+        __IOM uint8_t RDE;             /*!< (@ 0x000000A0) TAUJ Channel Reload Data Enable Register                   */
+
+        struct
+        {
+            __IM uint8_t RDE : 4;      /*!< [3..0] Specifies the output logic of the channel m output bit
+                                        *   (TAUJnTO.TAUJnTOm)                                                        */
+            uint8_t : 4;
+        } RDE_b;
+    };
+    __IM uint8_t  RESERVED24;
+    __IM uint16_t RESERVED25;
+
+    union
+    {
+        __IOM uint8_t RDM;             /*!< (@ 0x000000A4) TAUJ Channel Reload Data Mode Register                     */
+
+        struct
+        {
+            __IM uint8_t RDM : 4;      /*!< [3..0] Specifies when the signal that triggers simultaneous
+                                        *   rewrite is generated.                                                     */
+            uint8_t : 4;
+        } RDM_b;
+    };
+    __IM uint8_t  RESERVED26;
+    __IM uint16_t RESERVED27;
+} R_TAUJ0_Type;                        /*!< Size = 168 (0xa8)                                                         */
+
+/* =========================================================================================================================== */
+/* ================                                       R_SELB_TAUJ2                                        ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief TAUJ Interface Module (R_SELB_TAUJ2)
+ */
+
+typedef struct                             /*!< (@ 0xFFE80800) R_SELB_TAUJ2 Structure                                     */
+{
+    union
+    {
+        __IOM uint8_t SELB_TAUJ2I;         /*!< (@ 0x00000000) TAUJ2TTINm Input Signal Selection Register                 */
+
+        struct
+        {
+            __IM uint8_t SELB_TAUJ2I0 : 1; /*!< [0..0] Select of TAUJ2TTIN2 input signal:                                 */
+            __IM uint8_t SELB_TAUJ2I1 : 1; /*!< [1..1] Select of TAUJ2TTIN3 input signal:                                 */
+            uint8_t                   : 6;
+        } SELB_TAUJ2I_b;
+    };
+    __IM uint8_t RESERVED[3];
+
+    union
+    {
+        __IOM uint8_t PIMONSEL;        /*!< (@ 0x00000004) Port Input Monitor Select Register                         */
+
+        struct
+        {
+            __IM uint8_t PIMONSEL : 2; /*!< [1..0] Selects the input pin to monitor.For the selectable input
+                                        *   pins:00: ch0 - Port (TAUJ2I0) ch1 - Port (TAUJ2I1) ch2
+                                        *   - Port (TAUJ2I2) ch3 - Port (TAUJ2I3)01: ch0 - TAUJ0 ch0
+                                        *   ch1 - TAUJ0 ch1 ch2 - TAUJ0 ch2 ch3 - TAUJ0 ch310: ch0
+                                        *   - TAUJ1 ch0 ch1 - TAUJ1 ch1 ch2 - TAUJ1 ch2 ch3 - TAUJ1
+                                        *   ch3                                                                       */
+            uint8_t : 6;
+        } PIMONSEL_b;
+    };
+} R_SELB_TAUJ2_Type;                   /*!< Size = 5 (0x5)                                                            */
+
+/* =========================================================================================================================== */
+/* ================                                       R_SELB_TAUJ3                                        ================ */
+/* =========================================================================================================================== */
+
+/**
+ * @brief TAUJ Interface Module (R_SELB_TAUJ3)
+ */
+
+typedef struct                             /*!< (@ 0xFFE81800) R_SELB_TAUJ3 Structure                                     */
+{
+    union
+    {
+        __IOM uint8_t SELB_TAUJ3I;         /*!< (@ 0x00000000) TAUJ3TTINm Input Signal Selection Register                 */
+
+        struct
+        {
+            __IM uint8_t SELB_TAUJ3I0 : 1; /*!< [0..0] Select of TAUJ3TTIN2 input signal:                                 */
+            __IM uint8_t SELB_TAUJ3I1 : 1; /*!< [1..1] Select of TAUJ3TTIN3 input signal:                                 */
+            __IM uint8_t SELB_TAUJ3I2 : 1; /*!< [2..2] Select of TAUJ3TTIN2 input signal:                                 */
+            __IM uint8_t SELB_TAUJ3I3 : 1; /*!< [3..3] Select of TAUJ3TTIN3 input signal:                                 */
+            uint8_t                   : 4;
+        } SELB_TAUJ3I_b;
+    };
+} R_SELB_TAUJ3_Type;                       /*!< Size = 1 (0x1)                                                            */
+
+/* =========================================================================================================================== */
 /* ================                                          R_TPTM                                           ================ */
 /* =========================================================================================================================== */
 
@@ -105725,7 +106116,6 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_KCRC5_BASE               0xFFD8E400UL
  #define R_KCRC6_BASE               0xFFD40600UL
  #define R_KCRC7_BASE               0xFFD8E600UL
- #define R_GTM0_CDTM_BASE           0xFF604400UL
  #define R_LPS_BASE                 0xFF9A3800UL
  #define R_OTS0_BASE                0xFFC00200UL
  #define R_RTCA0_BASE               0xFF997000UL
@@ -105839,12 +106229,19 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_GUARD_DTS_BASE           0xFFC68000UL
  #define R_ETNF0_BASE               0xFF1D0000UL
  #define R_ETNF0_T1S_BASE           0xFF97F000UL
+ #define R_FCMDAREA0_BASE           0xFFA20000UL
+ #define R_FCMDAREA2_BASE           0xFFA40000UL
+ #define R_FACI0_BASE               0xFFA10000UL
+ #define R_FACI2_BASE               0xFFA18000UL
+ #define R_FLMD_BASE                0xFFA00000UL
+ #define R_FHVE_BASE                0xFF984800UL
  #define R_FLXA0_BASE               0x10020000UL
  #define R_GTM0_ATOM_BASE           0xFF601800UL
  #define R_GTM0_ATOM1_BASE          0xFF621800UL
  #define R_GTM0_ATOM2_BASE          0xFF641800UL
  #define R_GTM0_AXIM_BASE           0xFF605000UL
  #define R_GTM0_CMP_BASE            0xFF6206C0UL
+ #define R_GTM0_CDTM_BASE           0xFF604400UL
  #define R_GTM0_MCS0_BASE           0xFF602000UL
  #define R_GTM0_MCS1_BASE           0xFF622000UL
  #define R_GTM0_MCS0_MEM_BASE       0xFF610000UL
@@ -106059,6 +106456,12 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_RLN317_BASE              0xFF89C100UL
  #define R_RLN318_BASE              0xFFC7D200UL
  #define R_RLN323_BASE              0xFF978000UL
+ #define R_TAUJ0_BASE               0xFFBF7000UL
+ #define R_TAUJ1_BASE               0xFFBF7200UL
+ #define R_TAUJ2_BASE               0xFFE80000UL
+ #define R_TAUJ3_BASE               0xFFE81000UL
+ #define R_SELB_TAUJ2_BASE          0xFFE80800UL
+ #define R_SELB_TAUJ3_BASE          0xFFE81800UL
  #define R_TPTM_BASE                0xFFFBB000UL
  #define R_XCAN0_BASE               0x18000000UL
  #define R_XCAN1_BASE               0x18040000UL
@@ -106133,7 +106536,6 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_KCRC5               ((R_KCRC0_Type *) R_KCRC5_BASE)
  #define R_KCRC6               ((R_KCRC0_Type *) R_KCRC6_BASE)
  #define R_KCRC7               ((R_KCRC0_Type *) R_KCRC7_BASE)
- #define R_GTM0_CDTM           ((R_GTM0_CDTM_Type *) R_GTM0_CDTM_BASE)
  #define R_LPS                 ((R_LPS_Type *) R_LPS_BASE)
  #define R_OTS0                ((R_OTS0_Type *) R_OTS0_BASE)
  #define R_RTCA0               ((R_RTCA0_Type *) R_RTCA0_BASE)
@@ -106247,12 +106649,19 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_GUARD_DTS           ((R_GUARD_DTS_Type *) R_GUARD_DTS_BASE)
  #define R_ETNF0               ((R_ETNF0_Type *) R_ETNF0_BASE)
  #define R_ETNF0_T1S           ((R_ETNF0_T1S_Type *) R_ETNF0_T1S_BASE)
+ #define R_FCMDAREA0           ((R_FCMDAREA0_Type *) R_FCMDAREA0_BASE)
+ #define R_FCMDAREA2           ((R_FCMDAREA2_Type *) R_FCMDAREA2_BASE)
+ #define R_FACI0               ((R_FACI0_Type *) R_FACI0_BASE)
+ #define R_FACI2               ((R_FACI2_Type *) R_FACI2_BASE)
+ #define R_FLMD                ((R_FLMD_Type *) R_FLMD_BASE)
+ #define R_FHVE                ((R_FHVE_Type *) R_FHVE_BASE)
  #define R_FLXA0               ((R_FLXA0_Type *) R_FLXA0_BASE)
  #define R_GTM0_ATOM           ((R_GTM0_ATOM_Type *) R_GTM0_ATOM_BASE)
  #define R_GTM0_ATOM1          ((R_GTM0_ATOM_Type *) R_GTM0_ATOM1_BASE)
  #define R_GTM0_ATOM2          ((R_GTM0_ATOM_Type *) R_GTM0_ATOM2_BASE)
  #define R_GTM0_AXIM           ((R_GTM0_AXIM_Type *) R_GTM0_AXIM_BASE)
  #define R_GTM0_CMP            ((R_GTM0_CMP_Type *) R_GTM0_CMP_BASE)
+ #define R_GTM0_CDTM           ((R_GTM0_CDTM_Type *) R_GTM0_CDTM_BASE)
  #define R_GTM0_MCS0           ((R_GTM0_MCS0_Type *) R_GTM0_MCS0_BASE)
  #define R_GTM0_MCS1           ((R_GTM0_MCS0_Type *) R_GTM0_MCS1_BASE)
  #define R_GTM0_MCS0_MEM       ((R_GTM0_MCS0_MEM_Type *) R_GTM0_MCS0_MEM_BASE)
@@ -106467,6 +106876,12 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_RLN317              ((R_RLN30_Type *) R_RLN317_BASE)
  #define R_RLN318              ((R_RLN30_Type *) R_RLN318_BASE)
  #define R_RLN323              ((R_RLN30_Type *) R_RLN323_BASE)
+ #define R_TAUJ0               ((R_TAUJ0_Type *) R_TAUJ0_BASE)
+ #define R_TAUJ1               ((R_TAUJ0_Type *) R_TAUJ1_BASE)
+ #define R_TAUJ2               ((R_TAUJ0_Type *) R_TAUJ2_BASE)
+ #define R_TAUJ3               ((R_TAUJ0_Type *) R_TAUJ3_BASE)
+ #define R_SELB_TAUJ2          ((R_SELB_TAUJ2_Type *) R_SELB_TAUJ2_BASE)
+ #define R_SELB_TAUJ3          ((R_SELB_TAUJ3_Type *) R_SELB_TAUJ3_BASE)
  #define R_TPTM                ((R_TPTM_Type *) R_TPTM_BASE)
  #define R_XCAN0               ((R_XCAN_Type *) R_XCAN0_BASE)
  #define R_XCAN1               ((R_XCAN_Type *) R_XCAN1_BASE)
@@ -107192,333 +107607,6 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
 /* =========================================================  INTFC  ========================================================= */
  #define R_MSPI0_INTF_MSPI0_INTF_CMM_INTFC_INTFC_Pos      (0UL)     /*!< INTFC (Bit 0)                                         */
  #define R_MSPI0_INTF_MSPI0_INTF_CMM_INTFC_INTFC_Msk      (0xfffUL) /*!< INTFC (Bitfield-Mask: 0xfff)                          */
-
-/* =========================================================================================================================== */
-/* ================                                          CH_DTV                                           ================ */
-/* =========================================================================================================================== */
-
-/* ====================================================  CDTM_DTM_CH_DTV  ==================================================== */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_RELRISE_Pos    (0UL)          /*!< RELRISE (Bit 0)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_RELRISE_Msk    (0x1fffUL)     /*!< RELRISE (Bitfield-Mask: 0x1fff)                 */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_RELFALL_Pos    (16UL)         /*!< RELFALL (Bit 16)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_RELFALL_Msk    (0x1fff0000UL) /*!< RELFALL (Bitfield-Mask: 0x1fff)             */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_HRES_Pos       (31UL)         /*!< HRES (Bit 31)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_HRES_Msk       (0x80000000UL) /*!< HRES (Bitfield-Mask: 0x01)                     */
-
-/* =========================================================================================================================== */
-/* ================                                         CH_DTV_SR                                         ================ */
-/* =========================================================================================================================== */
-
-/* ==================================================  CDTM_DTM_CH_DTV_SR  =================================================== */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_SR_Pos            (0UL)          /*!< RELRISE_SR (Bit 0)                          */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_SR_Msk            (0x1fffUL)     /*!< RELRISE_SR (Bitfield-Mask: 0x1fff)     */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_UPD_FE0RE1_Pos    (14UL)         /*!< RELRISE_UPD_FE0RE1 (Bit 14)        */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_UPD_FE0RE1_Msk    (0x4000UL)     /*!< RELRISE_UPD_FE0RE1 (Bitfield-Mask: 0x01) */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_UPD_EN_Pos        (15UL)         /*!< RELRISE_UPD_EN (Bit 15)                */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_UPD_EN_Msk        (0x8000UL)     /*!< RELRISE_UPD_EN (Bitfield-Mask: 0x01) */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_SR_Pos            (16UL)         /*!< RELFALL_SR (Bit 16)                        */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_SR_Msk            (0x1fff0000UL) /*!< RELFALL_SR (Bitfield-Mask: 0x1fff) */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_UPD_FE0RE1_Pos    (30UL)         /*!< RELFALL_UPD_FE0RE1 (Bit 30)        */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_UPD_FE0RE1_Msk    (0x40000000UL) /*!< RELFALL_UPD_FE0RE1 (Bitfield-Mask: 0x01) */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_UPD_EN_Pos        (31UL)         /*!< RELFALL_UPD_EN (Bit 31)                */
- #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_UPD_EN_Msk        (0x80000000UL) /*!< RELFALL_UPD_EN (Bitfield-Mask: 0x01) */
-
-/* =========================================================================================================================== */
-/* ================                                            DTM                                            ================ */
-/* =========================================================================================================================== */
-
-/* =====================================================  CDTM_DTM_CTRL  ===================================================== */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_CLK_SEL_Pos             (0UL)          /*!< CLK_SEL (Bit 0)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_CLK_SEL_Msk             (0x3UL)        /*!< CLK_SEL (Bitfield-Mask: 0x03)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_DTM_SEL_Pos             (2UL)          /*!< DTM_SEL (Bit 2)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_DTM_SEL_Msk             (0xcUL)        /*!< DTM_SEL (Bitfield-Mask: 0x03)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_UPD_MODE_Pos            (4UL)          /*!< UPD_MODE (Bit 4)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_UPD_MODE_Msk            (0x70UL)       /*!< UPD_MODE (Bitfield-Mask: 0x07)                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_CH_SHUTOFF_EN_Pos       (7UL)          /*!< CH_SHUTOFF_EN (Bit 7)                                 */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_CH_SHUTOFF_EN_Msk       (0x80UL)       /*!< CH_SHUTOFF_EN (Bitfield-Mask: 0x01)                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_SR_UPD_EN_Pos           (8UL)          /*!< SR_UPD_EN (Bit 8)                                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_SR_UPD_EN_Msk           (0x100UL)      /*!< SR_UPD_EN (Bitfield-Mask: 0x01)                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_SHUT_OFF_RST_Pos        (16UL)         /*!< SHUT_OFF_RST (Bit 16)                                 */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_SHUT_OFF_RST_Msk        (0x10000UL)    /*!< SHUT_OFF_RST (Bitfield-Mask: 0x01)                 */
-/* ===================================================  CDTM_DTM_CH_CTRL1  =================================================== */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_0_Pos         (0UL)          /*!< O1SEL_0 (Bit 0)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_0_Msk         (0x1UL)        /*!< O1SEL_0 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_0_Pos         (1UL)          /*!< I1SEL_0 (Bit 1)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_0_Msk         (0x2UL)        /*!< I1SEL_0 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_0_Pos          (3UL)          /*!< SWAP_0 (Bit 3)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_0_Msk          (0x8UL)        /*!< SWAP_0 (Bitfield-Mask: 0x01)                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_0_Pos           (4UL)          /*!< O1F_0 (Bit 4)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_0_Msk           (0x30UL)       /*!< O1F_0 (Bitfield-Mask: 0x03)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_XDT_EN_0_1_Pos      (6UL)          /*!< XDT_EN_0_1 (Bit 6)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_XDT_EN_0_1_Msk      (0x40UL)       /*!< XDT_EN_0_1 (Bitfield-Mask: 0x01)                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_1_Pos         (8UL)          /*!< O1SEL_1 (Bit 8)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_1_Msk         (0x100UL)      /*!< O1SEL_1 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_1_Pos         (9UL)          /*!< I1SEL_1 (Bit 9)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_1_Msk         (0x200UL)      /*!< I1SEL_1 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_1_Pos         (10UL)         /*!< SH_EN_1 (Bit 10)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_1_Msk         (0x400UL)      /*!< SH_EN_1 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_1_Pos          (11UL)         /*!< SWAP_1 (Bit 11)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_1_Msk          (0x800UL)      /*!< SWAP_1 (Bitfield-Mask: 0x01)                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_1_Pos           (12UL)         /*!< O1F_1 (Bit 12)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_1_Msk           (0x3000UL)     /*!< O1F_1 (Bitfield-Mask: 0x03)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_2_Pos         (16UL)         /*!< O1SEL_2 (Bit 16)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_2_Msk         (0x10000UL)    /*!< O1SEL_2 (Bitfield-Mask: 0x01)                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_2_Pos         (17UL)         /*!< I1SEL_2 (Bit 17)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_2_Msk         (0x20000UL)    /*!< I1SEL_2 (Bitfield-Mask: 0x01)                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_2_Pos         (18UL)         /*!< SH_EN_2 (Bit 18)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_2_Msk         (0x40000UL)    /*!< SH_EN_2 (Bitfield-Mask: 0x01)                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_2_Pos          (19UL)         /*!< SWAP_2 (Bit 19)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_2_Msk          (0x80000UL)    /*!< SWAP_2 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_2_Pos           (20UL)         /*!< O1F_2 (Bit 20)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_2_Msk           (0x300000UL)   /*!< O1F_2 (Bitfield-Mask: 0x03)                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_XDT_EN_2_3_Pos      (22UL)         /*!< XDT_EN_2_3 (Bit 22)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_XDT_EN_2_3_Msk      (0x400000UL)   /*!< XDT_EN_2_3 (Bitfield-Mask: 0x01)                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_3_Pos         (24UL)         /*!< O1SEL_3 (Bit 24)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_3_Msk         (0x1000000UL)  /*!< O1SEL_3 (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_3_Pos         (25UL)         /*!< I1SEL_3 (Bit 25)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_3_Msk         (0x2000000UL)  /*!< I1SEL_3 (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_3_Pos         (26UL)         /*!< SH_EN_3 (Bit 26)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_3_Msk         (0x4000000UL)  /*!< SH_EN_3 (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_3_Pos          (27UL)         /*!< SWAP_3 (Bit 27)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_3_Msk          (0x8000000UL)  /*!< SWAP_3 (Bitfield-Mask: 0x01)                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_3_Pos           (28UL)         /*!< O1F_3 (Bit 28)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_3_Msk           (0x30000000UL) /*!< O1F_3 (Bitfield-Mask: 0x03)                        */
-/* ===================================================  CDTM_DTM_CH_CTRL2  =================================================== */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_0_Pos          (0UL)          /*!< POL0_0 (Bit 0)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_0_Msk          (0x1UL)        /*!< POL0_0 (Bitfield-Mask: 0x01)                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_0_Pos           (1UL)          /*!< OC0_0 (Bit 1)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_0_Msk           (0x2UL)        /*!< OC0_0 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_0_Pos           (2UL)          /*!< SL0_0 (Bit 2)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_0_Msk           (0x4UL)        /*!< SL0_0 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_0_Pos           (3UL)          /*!< DT0_0 (Bit 3)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_0_Msk           (0x8UL)        /*!< DT0_0 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_0_Pos          (4UL)          /*!< POL1_0 (Bit 4)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_0_Msk          (0x10UL)       /*!< POL1_0 (Bitfield-Mask: 0x01)                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_0_Pos           (5UL)          /*!< OC1_0 (Bit 5)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_0_Msk           (0x20UL)       /*!< OC1_0 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_0_Pos           (6UL)          /*!< SL1_0 (Bit 6)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_0_Msk           (0x40UL)       /*!< SL1_0 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_0_Pos           (7UL)          /*!< DT1_0 (Bit 7)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_0_Msk           (0x80UL)       /*!< DT1_0 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_1_Pos          (8UL)          /*!< POL0_1 (Bit 8)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_1_Msk          (0x100UL)      /*!< POL0_1 (Bitfield-Mask: 0x01)                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_1_Pos           (9UL)          /*!< OC0_1 (Bit 9)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_1_Msk           (0x200UL)      /*!< OC0_1 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_1_Pos           (10UL)         /*!< SL0_1 (Bit 10)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_1_Msk           (0x400UL)      /*!< SL0_1 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_1_Pos           (11UL)         /*!< DT0_1 (Bit 11)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_1_Msk           (0x800UL)      /*!< DT0_1 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_1_Pos          (12UL)         /*!< POL1_1 (Bit 12)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_1_Msk          (0x1000UL)     /*!< POL1_1 (Bitfield-Mask: 0x01)                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_1_Pos           (13UL)         /*!< OC1_1 (Bit 13)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_1_Msk           (0x2000UL)     /*!< OC1_1 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_1_Pos           (14UL)         /*!< SL1_1 (Bit 14)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_1_Msk           (0x4000UL)     /*!< SL1_1 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_1_Pos           (15UL)         /*!< DT1_1 (Bit 15)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_1_Msk           (0x8000UL)     /*!< DT1_1 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_2_Pos          (16UL)         /*!< POL0_2 (Bit 16)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_2_Msk          (0x10000UL)    /*!< POL0_2 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_2_Pos           (17UL)         /*!< OC0_2 (Bit 17)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_2_Msk           (0x20000UL)    /*!< OC0_2 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_2_Pos           (18UL)         /*!< SL0_2 (Bit 18)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_2_Msk           (0x40000UL)    /*!< SL0_2 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_2_Pos           (19UL)         /*!< DT0_2 (Bit 19)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_2_Msk           (0x80000UL)    /*!< DT0_2 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_2_Pos          (20UL)         /*!< POL1_2 (Bit 20)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_2_Msk          (0x100000UL)   /*!< POL1_2 (Bitfield-Mask: 0x01)                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_2_Pos           (21UL)         /*!< OC1_2 (Bit 21)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_2_Msk           (0x200000UL)   /*!< OC1_2 (Bitfield-Mask: 0x01)                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_2_Pos           (22UL)         /*!< SL1_2 (Bit 22)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_2_Msk           (0x400000UL)   /*!< SL1_2 (Bitfield-Mask: 0x01)                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_2_Pos           (23UL)         /*!< DT1_2 (Bit 23)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_2_Msk           (0x800000UL)   /*!< DT1_2 (Bitfield-Mask: 0x01)                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_3_Pos          (24UL)         /*!< POL0_3 (Bit 24)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_3_Msk          (0x1000000UL)  /*!< POL0_3 (Bitfield-Mask: 0x01)                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_3_Pos           (25UL)         /*!< OC0_3 (Bit 25)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_3_Msk           (0x2000000UL)  /*!< OC0_3 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_3_Pos           (26UL)         /*!< SL0_3 (Bit 26)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_3_Msk           (0x4000000UL)  /*!< SL0_3 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_3_Pos           (27UL)         /*!< DT0_3 (Bit 27)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_3_Msk           (0x8000000UL)  /*!< DT0_3 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_3_Pos          (28UL)         /*!< POL1_3 (Bit 28)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_3_Msk          (0x10000000UL) /*!< POL1_3 (Bitfield-Mask: 0x01)                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_3_Pos           (29UL)         /*!< OC1_3 (Bit 29)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_3_Msk           (0x20000000UL) /*!< OC1_3 (Bitfield-Mask: 0x01)                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_3_Pos           (30UL)         /*!< SL1_3 (Bit 30)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_3_Msk           (0x40000000UL) /*!< SL1_3 (Bitfield-Mask: 0x01)                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_3_Pos           (31UL)         /*!< DT1_3 (Bit 31)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_3_Msk           (0x80000000UL) /*!< DT1_3 (Bitfield-Mask: 0x01)                        */
-/* =================================================  CDTM_DTM_CH_CTRL2_SR  ================================================== */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_0_SR_Pos    (0UL)          /*!< POL0_0_SR (Bit 0)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_0_SR_Msk    (0x1UL)        /*!< POL0_0_SR (Bitfield-Mask: 0x01)                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_0_SR_Pos     (1UL)          /*!< OC0_0_SR (Bit 1)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_0_SR_Msk     (0x2UL)        /*!< OC0_0_SR (Bitfield-Mask: 0x01)                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_0_SR_Pos     (2UL)          /*!< SL0_0_SR (Bit 2)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_0_SR_Msk     (0x4UL)        /*!< SL0_0_SR (Bitfield-Mask: 0x01)                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_0_SR_Pos     (3UL)          /*!< DT0_0_SR (Bit 3)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_0_SR_Msk     (0x8UL)        /*!< DT0_0_SR (Bitfield-Mask: 0x01)                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_0_SR_Pos    (4UL)          /*!< POL1_0_SR (Bit 4)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_0_SR_Msk    (0x10UL)       /*!< POL1_0_SR (Bitfield-Mask: 0x01)                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_0_SR_Pos     (5UL)          /*!< OC1_0_SR (Bit 5)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_0_SR_Msk     (0x20UL)       /*!< OC1_0_SR (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_0_SR_Pos     (6UL)          /*!< SL1_0_SR (Bit 6)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_0_SR_Msk     (0x40UL)       /*!< SL1_0_SR (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_0_SR_Pos     (7UL)          /*!< DT1_0_SR (Bit 7)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_0_SR_Msk     (0x80UL)       /*!< DT1_0_SR (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_1_SR_Pos    (8UL)          /*!< POL0_1_SR (Bit 8)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_1_SR_Msk    (0x100UL)      /*!< POL0_1_SR (Bitfield-Mask: 0x01)                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_1_SR_Pos     (9UL)          /*!< OC0_1_SR (Bit 9)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_1_SR_Msk     (0x200UL)      /*!< OC0_1_SR (Bitfield-Mask: 0x01)                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_1_SR_Pos     (10UL)         /*!< SL0_1_SR (Bit 10)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_1_SR_Msk     (0x400UL)      /*!< SL0_1_SR (Bitfield-Mask: 0x01)                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_1_SR_Pos     (11UL)         /*!< DT0_1_SR (Bit 11)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_1_SR_Msk     (0x800UL)      /*!< DT0_1_SR (Bitfield-Mask: 0x01)                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_1_SR_Pos    (12UL)         /*!< POL1_1_SR (Bit 12)                                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_1_SR_Msk    (0x1000UL)     /*!< POL1_1_SR (Bitfield-Mask: 0x01)                 */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_1_SR_Pos     (13UL)         /*!< OC1_1_SR (Bit 13)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_1_SR_Msk     (0x2000UL)     /*!< OC1_1_SR (Bitfield-Mask: 0x01)                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_1_SR_Pos     (14UL)         /*!< SL1_1_SR (Bit 14)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_1_SR_Msk     (0x4000UL)     /*!< SL1_1_SR (Bitfield-Mask: 0x01)                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_1_SR_Pos     (15UL)         /*!< DT1_1_SR (Bit 15)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_1_SR_Msk     (0x8000UL)     /*!< DT1_1_SR (Bitfield-Mask: 0x01)                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_2_SR_Pos    (16UL)         /*!< POL0_2_SR (Bit 16)                                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_2_SR_Msk    (0x10000UL)    /*!< POL0_2_SR (Bitfield-Mask: 0x01)                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_2_SR_Pos     (17UL)         /*!< OC0_2_SR (Bit 17)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_2_SR_Msk     (0x20000UL)    /*!< OC0_2_SR (Bitfield-Mask: 0x01)                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_2_SR_Pos     (18UL)         /*!< SL0_2_SR (Bit 18)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_2_SR_Msk     (0x40000UL)    /*!< SL0_2_SR (Bitfield-Mask: 0x01)                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_2_SR_Pos     (19UL)         /*!< DT0_2_SR (Bit 19)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_2_SR_Msk     (0x80000UL)    /*!< DT0_2_SR (Bitfield-Mask: 0x01)                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_2_SR_Pos    (20UL)         /*!< POL1_2_SR (Bit 20)                                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_2_SR_Msk    (0x100000UL)   /*!< POL1_2_SR (Bitfield-Mask: 0x01)               */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_2_SR_Pos     (21UL)         /*!< OC1_2_SR (Bit 21)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_2_SR_Msk     (0x200000UL)   /*!< OC1_2_SR (Bitfield-Mask: 0x01)                 */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_2_SR_Pos     (22UL)         /*!< SL1_2_SR (Bit 22)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_2_SR_Msk     (0x400000UL)   /*!< SL1_2_SR (Bitfield-Mask: 0x01)                 */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_2_SR_Pos     (23UL)         /*!< DT1_2_SR (Bit 23)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_2_SR_Msk     (0x800000UL)   /*!< DT1_2_SR (Bitfield-Mask: 0x01)                 */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_3_SR_Pos    (24UL)         /*!< POL0_3_SR (Bit 24)                                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_3_SR_Msk    (0x1000000UL)  /*!< POL0_3_SR (Bitfield-Mask: 0x01)              */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_3_SR_Pos     (25UL)         /*!< OC0_3_SR (Bit 25)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_3_SR_Msk     (0x2000000UL)  /*!< OC0_3_SR (Bitfield-Mask: 0x01)                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_3_SR_Pos     (26UL)         /*!< SL0_3_SR (Bit 26)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_3_SR_Msk     (0x4000000UL)  /*!< SL0_3_SR (Bitfield-Mask: 0x01)                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_3_SR_Pos     (27UL)         /*!< DT0_3_SR (Bit 27)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_3_SR_Msk     (0x8000000UL)  /*!< DT0_3_SR (Bitfield-Mask: 0x01)                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_3_SR_Pos    (28UL)         /*!< POL1_3_SR (Bit 28)                                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_3_SR_Msk    (0x10000000UL) /*!< POL1_3_SR (Bitfield-Mask: 0x01)             */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_3_SR_Pos     (29UL)         /*!< OC1_3_SR (Bit 29)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_3_SR_Msk     (0x20000000UL) /*!< OC1_3_SR (Bitfield-Mask: 0x01)               */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_3_SR_Pos     (30UL)         /*!< SL1_3_SR (Bit 30)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_3_SR_Msk     (0x40000000UL) /*!< SL1_3_SR (Bitfield-Mask: 0x01)               */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_3_SR_Pos     (31UL)         /*!< DT1_3_SR (Bit 31)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_3_SR_Msk     (0x80000000UL) /*!< DT1_3_SR (Bitfield-Mask: 0x01)               */
-/* ===================================================  CDTM_DTM_PS_CTRL  ==================================================== */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_RELBLK_Pos           (0UL)          /*!< RELBLK (Bit 0)                                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_RELBLK_Msk           (0x3ffUL)      /*!< RELBLK (Bitfield-Mask: 0x3ff)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_PSU_IN_SEL_Pos       (16UL)         /*!< PSU_IN_SEL (Bit 16)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_PSU_IN_SEL_Msk       (0x10000UL)    /*!< PSU_IN_SEL (Bitfield-Mask: 0x01)                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_IN_POL_Pos           (17UL)         /*!< IN_POL (Bit 17)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_IN_POL_Msk           (0x20000UL)    /*!< IN_POL (Bitfield-Mask: 0x01)                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_TIM_SEL_Pos          (18UL)         /*!< TIM_SEL (Bit 18)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_TIM_SEL_Msk          (0x40000UL)    /*!< TIM_SEL (Bitfield-Mask: 0x01)                        */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_SHIFT_SEL_Pos        (20UL)         /*!< SHIFT_SEL (Bit 20)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_SHIFT_SEL_Msk        (0x300000UL)   /*!< SHIFT_SEL (Bitfield-Mask: 0x03)                   */
-/* ====================================================  CDTM_DTM_CH_SR  ===================================================== */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_0_SR_SR_Pos        (0UL)          /*!< SL0_0_SR_SR (Bit 0)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_0_SR_SR_Msk        (0x1UL)        /*!< SL0_0_SR_SR (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_0_SR_SR_Pos        (1UL)          /*!< SL1_0_SR_SR (Bit 1)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_0_SR_SR_Msk        (0x2UL)        /*!< SL1_0_SR_SR (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_1_SR_SR_Pos        (2UL)          /*!< SL0_1_SR_SR (Bit 2)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_1_SR_SR_Msk        (0x4UL)        /*!< SL0_1_SR_SR (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_1_SR_SR_Pos        (3UL)          /*!< SL1_1_SR_SR (Bit 3)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_1_SR_SR_Msk        (0x8UL)        /*!< SL1_1_SR_SR (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_2_SR_SR_Pos        (4UL)          /*!< SL0_2_SR_SR (Bit 4)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_2_SR_SR_Msk        (0x10UL)       /*!< SL0_2_SR_SR (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_2_SR_SR_Pos        (5UL)          /*!< SL1_2_SR_SR (Bit 5)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_2_SR_SR_Msk        (0x20UL)       /*!< SL1_2_SR_SR (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_3_SR_SR_Pos        (6UL)          /*!< SL0_3_SR_SR (Bit 6)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_3_SR_SR_Msk        (0x40UL)       /*!< SL0_3_SR_SR (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_3_SR_SR_Pos        (7UL)          /*!< SL1_3_SR_SR (Bit 7)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_3_SR_SR_Msk        (0x80UL)       /*!< SL1_3_SR_SR (Bitfield-Mask: 0x01)                     */
-/* ===================================================  CDTM_DTM_CH_CTRL3  =================================================== */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII0_Pos            (0UL)          /*!< CII0 (Bit 0)                                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII0_Msk            (0x1UL)        /*!< CII0 (Bitfield-Mask: 0x01)                            */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS0_Pos            (1UL)          /*!< CIS0 (Bit 1)                                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS0_Msk            (0x2UL)        /*!< CIS0 (Bitfield-Mask: 0x01)                            */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_0_Pos         (2UL)          /*!< TSEL0_0 (Bit 2)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_0_Msk         (0x4UL)        /*!< TSEL0_0 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_0_Pos         (3UL)          /*!< TSEL1_0 (Bit 3)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_0_Msk         (0x8UL)        /*!< TSEL1_0 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII1_Pos            (8UL)          /*!< CII1 (Bit 8)                                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII1_Msk            (0x100UL)      /*!< CII1 (Bitfield-Mask: 0x01)                            */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS1_Pos            (9UL)          /*!< CIS1 (Bit 9)                                          */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS1_Msk            (0x200UL)      /*!< CIS1 (Bitfield-Mask: 0x01)                            */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_1_Pos         (10UL)         /*!< TSEL0_1 (Bit 10)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_1_Msk         (0x400UL)      /*!< TSEL0_1 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_1_Pos         (11UL)         /*!< TSEL1_1 (Bit 11)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_1_Msk         (0x800UL)      /*!< TSEL1_1 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII2_Pos            (16UL)         /*!< CII2 (Bit 16)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII2_Msk            (0x10000UL)    /*!< CII2 (Bitfield-Mask: 0x01)                            */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS2_Pos            (17UL)         /*!< CIS2 (Bit 17)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS2_Msk            (0x20000UL)    /*!< CIS2 (Bitfield-Mask: 0x01)                            */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_2_Pos         (18UL)         /*!< TSEL0_2 (Bit 18)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_2_Msk         (0x40000UL)    /*!< TSEL0_2 (Bitfield-Mask: 0x01)                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_2_Pos         (19UL)         /*!< TSEL1_2 (Bit 19)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_2_Msk         (0x80000UL)    /*!< TSEL1_2 (Bitfield-Mask: 0x01)                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII3_Pos            (24UL)         /*!< CII3 (Bit 24)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII3_Msk            (0x1000000UL)  /*!< CII3 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS3_Pos            (25UL)         /*!< CIS3 (Bit 25)                                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS3_Msk            (0x2000000UL)  /*!< CIS3 (Bitfield-Mask: 0x01)                           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_3_Pos         (26UL)         /*!< TSEL0_3 (Bit 26)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_3_Msk         (0x4000000UL)  /*!< TSEL0_3 (Bitfield-Mask: 0x01)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_3_Pos         (27UL)         /*!< TSEL1_3 (Bit 27)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_3_Msk         (0x8000000UL)  /*!< TSEL1_3 (Bitfield-Mask: 0x01)                     */
-/* ====================================================  CDTM_DTM_CTRL2  ===================================================== */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_0_Pos      (0UL)          /*!< SHUTOFF_SEL_0 (Bit 0)                                 */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_0_Msk      (0x7UL)        /*!< SHUTOFF_SEL_0 (Bitfield-Mask: 0x07)                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_0_Pos      (3UL)          /*!< SHUTOFF_POL_0 (Bit 3)                                 */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_0_Msk      (0x8UL)        /*!< SHUTOFF_POL_0 (Bitfield-Mask: 0x01)                  */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_0_Pos         (4UL)          /*!< UPD_MODE_0 (Bit 4)                                    */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_0_Msk         (0x30UL)       /*!< UPD_MODE_0 (Bitfield-Mask: 0x03)                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_0_Pos     (6UL)          /*!< SHUT_OFF_RST_0 (Bit 6)                                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_0_Msk     (0x40UL)       /*!< SHUT_OFF_RST_0 (Bitfield-Mask: 0x01)               */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_0_Pos            (7UL)          /*!< WR_EN_0 (Bit 7)                                       */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_0_Msk            (0x80UL)       /*!< WR_EN_0 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_1_Pos      (8UL)          /*!< SHUTOFF_SEL_1 (Bit 8)                                 */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_1_Msk      (0x700UL)      /*!< SHUTOFF_SEL_1 (Bitfield-Mask: 0x07)                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_1_Pos      (11UL)         /*!< SHUTOFF_POL_1 (Bit 11)                                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_1_Msk      (0x800UL)      /*!< SHUTOFF_POL_1 (Bitfield-Mask: 0x01)                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_1_Pos         (12UL)         /*!< UPD_MODE_1 (Bit 12)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_1_Msk         (0x3000UL)     /*!< UPD_MODE_1 (Bitfield-Mask: 0x03)                     */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_1_Pos     (14UL)         /*!< SHUT_OFF_RST_1 (Bit 14)                              */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_1_Msk     (0x4000UL)     /*!< SHUT_OFF_RST_1 (Bitfield-Mask: 0x01)             */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_1_Pos            (15UL)         /*!< WR_EN_1 (Bit 15)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_1_Msk            (0x8000UL)     /*!< WR_EN_1 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_2_Pos      (16UL)         /*!< SHUTOFF_SEL_2 (Bit 16)                                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_2_Msk      (0x70000UL)    /*!< SHUTOFF_SEL_2 (Bitfield-Mask: 0x07)              */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_2_Pos      (19UL)         /*!< SHUTOFF_POL_2 (Bit 19)                                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_2_Msk      (0x80000UL)    /*!< SHUTOFF_POL_2 (Bitfield-Mask: 0x01)              */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_2_Pos         (20UL)         /*!< UPD_MODE_2 (Bit 20)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_2_Msk         (0x300000UL)   /*!< UPD_MODE_2 (Bitfield-Mask: 0x03)                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_2_Pos     (22UL)         /*!< SHUT_OFF_RST_2 (Bit 22)                              */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_2_Msk     (0x400000UL)   /*!< SHUT_OFF_RST_2 (Bitfield-Mask: 0x01)           */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_2_Pos            (23UL)         /*!< WR_EN_2 (Bit 23)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_2_Msk            (0x800000UL)   /*!< WR_EN_2 (Bitfield-Mask: 0x01)                         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_3_Pos      (24UL)         /*!< SHUTOFF_SEL_3 (Bit 24)                                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_3_Msk      (0x7000000UL)  /*!< SHUTOFF_SEL_3 (Bitfield-Mask: 0x07)            */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_3_Pos      (27UL)         /*!< SHUTOFF_POL_3 (Bit 27)                                */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_3_Msk      (0x8000000UL)  /*!< SHUTOFF_POL_3 (Bitfield-Mask: 0x01)            */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_3_Pos         (28UL)         /*!< UPD_MODE_3 (Bit 28)                                   */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_3_Msk         (0x30000000UL) /*!< UPD_MODE_3 (Bitfield-Mask: 0x03)                 */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_3_Pos     (30UL)         /*!< SHUT_OFF_RST_3 (Bit 30)                              */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_3_Msk     (0x40000000UL) /*!< SHUT_OFF_RST_3 (Bitfield-Mask: 0x01)         */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_3_Pos            (31UL)         /*!< WR_EN_3 (Bit 31)                                      */
- #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_3_Msk            (0x80000000UL) /*!< WR_EN_3 (Bitfield-Mask: 0x01)                       */
-
-/* =========================================================================================================================== */
-/* ================                                            CLS                                            ================ */
-/* =========================================================================================================================== */
 
 /* =========================================================================================================================== */
 /* ================                                         sDMAC_CH                                          ================ */
@@ -110807,6 +110895,18 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_GTM0_ATOM_CLS_CH_ATOM_CH_CN0_CN0_Pos                   (0UL)          /*!< CN0 (Bit 0)                                           */
  #define R_GTM0_ATOM_CLS_CH_ATOM_CH_CN0_CN0_Msk                   (0xffffffUL)   /*!< CN0 (Bitfield-Mask: 0xffffff)                         */
 /* =====================================================  ATOM_CH_STAT  ====================================================== */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_OL_Pos                   (0UL)          /*!< OL (Bit 0)                                            */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_OL_Msk                   (0x1UL)        /*!< OL (Bitfield-Mask: 0x01)                              */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_ACBI_Pos                 (16UL)         /*!< ACBI (Bit 16)                                         */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_ACBI_Msk                 (0x1f0000UL)   /*!< ACBI (Bitfield-Mask: 0x1f)                            */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_DV_Pos                   (21UL)         /*!< DV (Bit 21)                                           */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_DV_Msk                   (0x200000UL)   /*!< DV (Bitfield-Mask: 0x01)                              */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_WRF_Pos                  (22UL)         /*!< WRF (Bit 22)                                          */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_WRF_Msk                  (0x400000UL)   /*!< WRF (Bitfield-Mask: 0x01)                             */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_DR_Pos                   (23UL)         /*!< DR (Bit 23)                                           */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_DR_Msk                   (0x800000UL)   /*!< DR (Bitfield-Mask: 0x01)                              */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_ACBO_Pos                 (24UL)         /*!< ACBO (Bit 24)                                         */
+ #define R_GTM0_ATOM_CLS_CH_ATOM_CH_STAT_ACBO_Msk                 (0x1f000000UL) /*!< ACBO (Bitfield-Mask: 0x1f)                            */
 /* ==================================================  ATOM_CH_IRQ_NOTIFY  =================================================== */
  #define R_GTM0_ATOM_CLS_CH_ATOM_CH_IRQ_NOTIFY_CCU0TC_Pos         (0UL)          /*!< CCU0TC (Bit 0)                                        */
  #define R_GTM0_ATOM_CLS_CH_ATOM_CH_IRQ_NOTIFY_CCU0TC_Msk         (0x1UL)        /*!< CCU0TC (Bitfield-Mask: 0x01)                          */
@@ -111004,8 +111104,8 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
 /* =========================================================================================================================== */
 
 /* ==================================================  AXIM_SLOT_ADDR_LOW  =================================================== */
- #define R_GTM0_AXIM_CLS_SLOT_AXIM_SLOT_ADDR_LOW_AXI_ADDR_Pos        (1UL)          /*!< AXI_ADDR (Bit 1)                                      */
- #define R_GTM0_AXIM_CLS_SLOT_AXIM_SLOT_ADDR_LOW_AXI_ADDR_Msk        (0xfffffffeUL) /*!< AXI_ADDR (Bitfield-Mask: 0x7fffffff)          */
+ #define R_GTM0_AXIM_CLS_SLOT_AXIM_SLOT_ADDR_LOW_AXI_ADDR_Pos        (0UL)          /*!< AXI_ADDR (Bit 0)                                      */
+ #define R_GTM0_AXIM_CLS_SLOT_AXIM_SLOT_ADDR_LOW_AXI_ADDR_Msk        (0xffffffffUL) /*!< AXI_ADDR (Bitfield-Mask: 0xffffffff)          */
 /* ==================================================  AXIM_SLOT_DATA_LOW  =================================================== */
  #define R_GTM0_AXIM_CLS_SLOT_AXIM_SLOT_DATA_LOW_AXI_DATA_LOW_Pos    (0UL)          /*!< AXI_DATA_LOW (Bit 0)                               */
  #define R_GTM0_AXIM_CLS_SLOT_AXIM_SLOT_DATA_LOW_AXI_DATA_LOW_Msk    (0xffffffffUL) /*!< AXI_DATA_LOW (Bitfield-Mask: 0xffffffff)  */
@@ -111146,6 +111246,333 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_GTM0_AXIM_CLS_AXIM_RELEASE_RELREQ14_Msk     (0x4000UL)     /*!< RELREQ14 (Bitfield-Mask: 0x01)                        */
  #define R_GTM0_AXIM_CLS_AXIM_RELEASE_RELREQ15_Pos     (15UL)         /*!< RELREQ15 (Bit 15)                                     */
  #define R_GTM0_AXIM_CLS_AXIM_RELEASE_RELREQ15_Msk     (0x8000UL)     /*!< RELREQ15 (Bitfield-Mask: 0x01)                        */
+
+/* =========================================================================================================================== */
+/* ================                                          CH_DTV                                           ================ */
+/* =========================================================================================================================== */
+
+/* ====================================================  CDTM_DTM_CH_DTV  ==================================================== */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_RELRISE_Pos    (0UL)          /*!< RELRISE (Bit 0)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_RELRISE_Msk    (0x1fffUL)     /*!< RELRISE (Bitfield-Mask: 0x1fff)                 */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_RELFALL_Pos    (16UL)         /*!< RELFALL (Bit 16)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_RELFALL_Msk    (0x1fff0000UL) /*!< RELFALL (Bitfield-Mask: 0x1fff)             */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_HRES_Pos       (31UL)         /*!< HRES (Bit 31)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_CDTM_DTM_CH_DTV_HRES_Msk       (0x80000000UL) /*!< HRES (Bitfield-Mask: 0x01)                     */
+
+/* =========================================================================================================================== */
+/* ================                                         CH_DTV_SR                                         ================ */
+/* =========================================================================================================================== */
+
+/* ==================================================  CDTM_DTM_CH_DTV_SR  =================================================== */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_SR_Pos            (0UL)          /*!< RELRISE_SR (Bit 0)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_SR_Msk            (0x1fffUL)     /*!< RELRISE_SR (Bitfield-Mask: 0x1fff)     */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_UPD_FE0RE1_Pos    (14UL)         /*!< RELRISE_UPD_FE0RE1 (Bit 14)        */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_UPD_FE0RE1_Msk    (0x4000UL)     /*!< RELRISE_UPD_FE0RE1 (Bitfield-Mask: 0x01) */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_UPD_EN_Pos        (15UL)         /*!< RELRISE_UPD_EN (Bit 15)                */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELRISE_UPD_EN_Msk        (0x8000UL)     /*!< RELRISE_UPD_EN (Bitfield-Mask: 0x01) */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_SR_Pos            (16UL)         /*!< RELFALL_SR (Bit 16)                        */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_SR_Msk            (0x1fff0000UL) /*!< RELFALL_SR (Bitfield-Mask: 0x1fff) */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_UPD_FE0RE1_Pos    (30UL)         /*!< RELFALL_UPD_FE0RE1 (Bit 30)        */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_UPD_FE0RE1_Msk    (0x40000000UL) /*!< RELFALL_UPD_FE0RE1 (Bitfield-Mask: 0x01) */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_UPD_EN_Pos        (31UL)         /*!< RELFALL_UPD_EN (Bit 31)                */
+ #define R_GTM0_CDTM_CLS_DTM_CH_DTV_SR_CDTM_DTM_CH_DTV_SR_RELFALL_UPD_EN_Msk        (0x80000000UL) /*!< RELFALL_UPD_EN (Bitfield-Mask: 0x01) */
+
+/* =========================================================================================================================== */
+/* ================                                            DTM                                            ================ */
+/* =========================================================================================================================== */
+
+/* =====================================================  CDTM_DTM_CTRL  ===================================================== */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_CLK_SEL_Pos             (0UL)          /*!< CLK_SEL (Bit 0)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_CLK_SEL_Msk             (0x3UL)        /*!< CLK_SEL (Bitfield-Mask: 0x03)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_DTM_SEL_Pos             (2UL)          /*!< DTM_SEL (Bit 2)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_DTM_SEL_Msk             (0xcUL)        /*!< DTM_SEL (Bitfield-Mask: 0x03)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_UPD_MODE_Pos            (4UL)          /*!< UPD_MODE (Bit 4)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_UPD_MODE_Msk            (0x70UL)       /*!< UPD_MODE (Bitfield-Mask: 0x07)                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_CH_SHUTOFF_EN_Pos       (7UL)          /*!< CH_SHUTOFF_EN (Bit 7)                                 */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_CH_SHUTOFF_EN_Msk       (0x80UL)       /*!< CH_SHUTOFF_EN (Bitfield-Mask: 0x01)                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_SR_UPD_EN_Pos           (8UL)          /*!< SR_UPD_EN (Bit 8)                                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_SR_UPD_EN_Msk           (0x100UL)      /*!< SR_UPD_EN (Bitfield-Mask: 0x01)                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_SHUT_OFF_RST_Pos        (16UL)         /*!< SHUT_OFF_RST (Bit 16)                                 */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL_SHUT_OFF_RST_Msk        (0x10000UL)    /*!< SHUT_OFF_RST (Bitfield-Mask: 0x01)                 */
+/* ===================================================  CDTM_DTM_CH_CTRL1  =================================================== */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_0_Pos         (0UL)          /*!< O1SEL_0 (Bit 0)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_0_Msk         (0x1UL)        /*!< O1SEL_0 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_0_Pos         (1UL)          /*!< I1SEL_0 (Bit 1)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_0_Msk         (0x2UL)        /*!< I1SEL_0 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_0_Pos          (3UL)          /*!< SWAP_0 (Bit 3)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_0_Msk          (0x8UL)        /*!< SWAP_0 (Bitfield-Mask: 0x01)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_0_Pos           (4UL)          /*!< O1F_0 (Bit 4)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_0_Msk           (0x30UL)       /*!< O1F_0 (Bitfield-Mask: 0x03)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_XDT_EN_0_1_Pos      (6UL)          /*!< XDT_EN_0_1 (Bit 6)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_XDT_EN_0_1_Msk      (0x40UL)       /*!< XDT_EN_0_1 (Bitfield-Mask: 0x01)                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_1_Pos         (8UL)          /*!< O1SEL_1 (Bit 8)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_1_Msk         (0x100UL)      /*!< O1SEL_1 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_1_Pos         (9UL)          /*!< I1SEL_1 (Bit 9)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_1_Msk         (0x200UL)      /*!< I1SEL_1 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_1_Pos         (10UL)         /*!< SH_EN_1 (Bit 10)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_1_Msk         (0x400UL)      /*!< SH_EN_1 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_1_Pos          (11UL)         /*!< SWAP_1 (Bit 11)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_1_Msk          (0x800UL)      /*!< SWAP_1 (Bitfield-Mask: 0x01)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_1_Pos           (12UL)         /*!< O1F_1 (Bit 12)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_1_Msk           (0x3000UL)     /*!< O1F_1 (Bitfield-Mask: 0x03)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_2_Pos         (16UL)         /*!< O1SEL_2 (Bit 16)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_2_Msk         (0x10000UL)    /*!< O1SEL_2 (Bitfield-Mask: 0x01)                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_2_Pos         (17UL)         /*!< I1SEL_2 (Bit 17)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_2_Msk         (0x20000UL)    /*!< I1SEL_2 (Bitfield-Mask: 0x01)                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_2_Pos         (18UL)         /*!< SH_EN_2 (Bit 18)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_2_Msk         (0x40000UL)    /*!< SH_EN_2 (Bitfield-Mask: 0x01)                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_2_Pos          (19UL)         /*!< SWAP_2 (Bit 19)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_2_Msk          (0x80000UL)    /*!< SWAP_2 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_2_Pos           (20UL)         /*!< O1F_2 (Bit 20)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_2_Msk           (0x300000UL)   /*!< O1F_2 (Bitfield-Mask: 0x03)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_XDT_EN_2_3_Pos      (22UL)         /*!< XDT_EN_2_3 (Bit 22)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_XDT_EN_2_3_Msk      (0x400000UL)   /*!< XDT_EN_2_3 (Bitfield-Mask: 0x01)                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_3_Pos         (24UL)         /*!< O1SEL_3 (Bit 24)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1SEL_3_Msk         (0x1000000UL)  /*!< O1SEL_3 (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_3_Pos         (25UL)         /*!< I1SEL_3 (Bit 25)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_I1SEL_3_Msk         (0x2000000UL)  /*!< I1SEL_3 (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_3_Pos         (26UL)         /*!< SH_EN_3 (Bit 26)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SH_EN_3_Msk         (0x4000000UL)  /*!< SH_EN_3 (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_3_Pos          (27UL)         /*!< SWAP_3 (Bit 27)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_SWAP_3_Msk          (0x8000000UL)  /*!< SWAP_3 (Bitfield-Mask: 0x01)                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_3_Pos           (28UL)         /*!< O1F_3 (Bit 28)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL1_O1F_3_Msk           (0x30000000UL) /*!< O1F_3 (Bitfield-Mask: 0x03)                        */
+/* ===================================================  CDTM_DTM_CH_CTRL2  =================================================== */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_0_Pos          (0UL)          /*!< POL0_0 (Bit 0)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_0_Msk          (0x1UL)        /*!< POL0_0 (Bitfield-Mask: 0x01)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_0_Pos           (1UL)          /*!< OC0_0 (Bit 1)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_0_Msk           (0x2UL)        /*!< OC0_0 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_0_Pos           (2UL)          /*!< SL0_0 (Bit 2)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_0_Msk           (0x4UL)        /*!< SL0_0 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_0_Pos           (3UL)          /*!< DT0_0 (Bit 3)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_0_Msk           (0x8UL)        /*!< DT0_0 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_0_Pos          (4UL)          /*!< POL1_0 (Bit 4)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_0_Msk          (0x10UL)       /*!< POL1_0 (Bitfield-Mask: 0x01)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_0_Pos           (5UL)          /*!< OC1_0 (Bit 5)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_0_Msk           (0x20UL)       /*!< OC1_0 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_0_Pos           (6UL)          /*!< SL1_0 (Bit 6)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_0_Msk           (0x40UL)       /*!< SL1_0 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_0_Pos           (7UL)          /*!< DT1_0 (Bit 7)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_0_Msk           (0x80UL)       /*!< DT1_0 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_1_Pos          (8UL)          /*!< POL0_1 (Bit 8)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_1_Msk          (0x100UL)      /*!< POL0_1 (Bitfield-Mask: 0x01)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_1_Pos           (9UL)          /*!< OC0_1 (Bit 9)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_1_Msk           (0x200UL)      /*!< OC0_1 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_1_Pos           (10UL)         /*!< SL0_1 (Bit 10)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_1_Msk           (0x400UL)      /*!< SL0_1 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_1_Pos           (11UL)         /*!< DT0_1 (Bit 11)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_1_Msk           (0x800UL)      /*!< DT0_1 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_1_Pos          (12UL)         /*!< POL1_1 (Bit 12)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_1_Msk          (0x1000UL)     /*!< POL1_1 (Bitfield-Mask: 0x01)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_1_Pos           (13UL)         /*!< OC1_1 (Bit 13)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_1_Msk           (0x2000UL)     /*!< OC1_1 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_1_Pos           (14UL)         /*!< SL1_1 (Bit 14)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_1_Msk           (0x4000UL)     /*!< SL1_1 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_1_Pos           (15UL)         /*!< DT1_1 (Bit 15)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_1_Msk           (0x8000UL)     /*!< DT1_1 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_2_Pos          (16UL)         /*!< POL0_2 (Bit 16)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_2_Msk          (0x10000UL)    /*!< POL0_2 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_2_Pos           (17UL)         /*!< OC0_2 (Bit 17)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_2_Msk           (0x20000UL)    /*!< OC0_2 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_2_Pos           (18UL)         /*!< SL0_2 (Bit 18)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_2_Msk           (0x40000UL)    /*!< SL0_2 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_2_Pos           (19UL)         /*!< DT0_2 (Bit 19)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_2_Msk           (0x80000UL)    /*!< DT0_2 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_2_Pos          (20UL)         /*!< POL1_2 (Bit 20)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_2_Msk          (0x100000UL)   /*!< POL1_2 (Bitfield-Mask: 0x01)                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_2_Pos           (21UL)         /*!< OC1_2 (Bit 21)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_2_Msk           (0x200000UL)   /*!< OC1_2 (Bitfield-Mask: 0x01)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_2_Pos           (22UL)         /*!< SL1_2 (Bit 22)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_2_Msk           (0x400000UL)   /*!< SL1_2 (Bitfield-Mask: 0x01)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_2_Pos           (23UL)         /*!< DT1_2 (Bit 23)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_2_Msk           (0x800000UL)   /*!< DT1_2 (Bitfield-Mask: 0x01)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_3_Pos          (24UL)         /*!< POL0_3 (Bit 24)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL0_3_Msk          (0x1000000UL)  /*!< POL0_3 (Bitfield-Mask: 0x01)                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_3_Pos           (25UL)         /*!< OC0_3 (Bit 25)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC0_3_Msk           (0x2000000UL)  /*!< OC0_3 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_3_Pos           (26UL)         /*!< SL0_3 (Bit 26)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL0_3_Msk           (0x4000000UL)  /*!< SL0_3 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_3_Pos           (27UL)         /*!< DT0_3 (Bit 27)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT0_3_Msk           (0x8000000UL)  /*!< DT0_3 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_3_Pos          (28UL)         /*!< POL1_3 (Bit 28)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_POL1_3_Msk          (0x10000000UL) /*!< POL1_3 (Bitfield-Mask: 0x01)                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_3_Pos           (29UL)         /*!< OC1_3 (Bit 29)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_OC1_3_Msk           (0x20000000UL) /*!< OC1_3 (Bitfield-Mask: 0x01)                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_3_Pos           (30UL)         /*!< SL1_3 (Bit 30)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SL1_3_Msk           (0x40000000UL) /*!< SL1_3 (Bitfield-Mask: 0x01)                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_3_Pos           (31UL)         /*!< DT1_3 (Bit 31)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_DT1_3_Msk           (0x80000000UL) /*!< DT1_3 (Bitfield-Mask: 0x01)                        */
+/* =================================================  CDTM_DTM_CH_CTRL2_SR  ================================================== */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_0_SR_Pos    (0UL)          /*!< POL0_0_SR (Bit 0)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_0_SR_Msk    (0x1UL)        /*!< POL0_0_SR (Bitfield-Mask: 0x01)                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_0_SR_Pos     (1UL)          /*!< OC0_0_SR (Bit 1)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_0_SR_Msk     (0x2UL)        /*!< OC0_0_SR (Bitfield-Mask: 0x01)                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_0_SR_Pos     (2UL)          /*!< SL0_0_SR (Bit 2)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_0_SR_Msk     (0x4UL)        /*!< SL0_0_SR (Bitfield-Mask: 0x01)                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_0_SR_Pos     (3UL)          /*!< DT0_0_SR (Bit 3)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_0_SR_Msk     (0x8UL)        /*!< DT0_0_SR (Bitfield-Mask: 0x01)                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_0_SR_Pos    (4UL)          /*!< POL1_0_SR (Bit 4)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_0_SR_Msk    (0x10UL)       /*!< POL1_0_SR (Bitfield-Mask: 0x01)                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_0_SR_Pos     (5UL)          /*!< OC1_0_SR (Bit 5)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_0_SR_Msk     (0x20UL)       /*!< OC1_0_SR (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_0_SR_Pos     (6UL)          /*!< SL1_0_SR (Bit 6)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_0_SR_Msk     (0x40UL)       /*!< SL1_0_SR (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_0_SR_Pos     (7UL)          /*!< DT1_0_SR (Bit 7)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_0_SR_Msk     (0x80UL)       /*!< DT1_0_SR (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_1_SR_Pos    (8UL)          /*!< POL0_1_SR (Bit 8)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_1_SR_Msk    (0x100UL)      /*!< POL0_1_SR (Bitfield-Mask: 0x01)                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_1_SR_Pos     (9UL)          /*!< OC0_1_SR (Bit 9)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_1_SR_Msk     (0x200UL)      /*!< OC0_1_SR (Bitfield-Mask: 0x01)                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_1_SR_Pos     (10UL)         /*!< SL0_1_SR (Bit 10)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_1_SR_Msk     (0x400UL)      /*!< SL0_1_SR (Bitfield-Mask: 0x01)                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_1_SR_Pos     (11UL)         /*!< DT0_1_SR (Bit 11)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_1_SR_Msk     (0x800UL)      /*!< DT0_1_SR (Bitfield-Mask: 0x01)                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_1_SR_Pos    (12UL)         /*!< POL1_1_SR (Bit 12)                                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_1_SR_Msk    (0x1000UL)     /*!< POL1_1_SR (Bitfield-Mask: 0x01)                 */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_1_SR_Pos     (13UL)         /*!< OC1_1_SR (Bit 13)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_1_SR_Msk     (0x2000UL)     /*!< OC1_1_SR (Bitfield-Mask: 0x01)                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_1_SR_Pos     (14UL)         /*!< SL1_1_SR (Bit 14)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_1_SR_Msk     (0x4000UL)     /*!< SL1_1_SR (Bitfield-Mask: 0x01)                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_1_SR_Pos     (15UL)         /*!< DT1_1_SR (Bit 15)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_1_SR_Msk     (0x8000UL)     /*!< DT1_1_SR (Bitfield-Mask: 0x01)                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_2_SR_Pos    (16UL)         /*!< POL0_2_SR (Bit 16)                                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_2_SR_Msk    (0x10000UL)    /*!< POL0_2_SR (Bitfield-Mask: 0x01)                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_2_SR_Pos     (17UL)         /*!< OC0_2_SR (Bit 17)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_2_SR_Msk     (0x20000UL)    /*!< OC0_2_SR (Bitfield-Mask: 0x01)                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_2_SR_Pos     (18UL)         /*!< SL0_2_SR (Bit 18)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_2_SR_Msk     (0x40000UL)    /*!< SL0_2_SR (Bitfield-Mask: 0x01)                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_2_SR_Pos     (19UL)         /*!< DT0_2_SR (Bit 19)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_2_SR_Msk     (0x80000UL)    /*!< DT0_2_SR (Bitfield-Mask: 0x01)                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_2_SR_Pos    (20UL)         /*!< POL1_2_SR (Bit 20)                                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_2_SR_Msk    (0x100000UL)   /*!< POL1_2_SR (Bitfield-Mask: 0x01)               */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_2_SR_Pos     (21UL)         /*!< OC1_2_SR (Bit 21)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_2_SR_Msk     (0x200000UL)   /*!< OC1_2_SR (Bitfield-Mask: 0x01)                 */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_2_SR_Pos     (22UL)         /*!< SL1_2_SR (Bit 22)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_2_SR_Msk     (0x400000UL)   /*!< SL1_2_SR (Bitfield-Mask: 0x01)                 */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_2_SR_Pos     (23UL)         /*!< DT1_2_SR (Bit 23)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_2_SR_Msk     (0x800000UL)   /*!< DT1_2_SR (Bitfield-Mask: 0x01)                 */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_3_SR_Pos    (24UL)         /*!< POL0_3_SR (Bit 24)                                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL0_3_SR_Msk    (0x1000000UL)  /*!< POL0_3_SR (Bitfield-Mask: 0x01)              */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_3_SR_Pos     (25UL)         /*!< OC0_3_SR (Bit 25)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC0_3_SR_Msk     (0x2000000UL)  /*!< OC0_3_SR (Bitfield-Mask: 0x01)                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_3_SR_Pos     (26UL)         /*!< SL0_3_SR (Bit 26)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL0_3_SR_Msk     (0x4000000UL)  /*!< SL0_3_SR (Bitfield-Mask: 0x01)                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_3_SR_Pos     (27UL)         /*!< DT0_3_SR (Bit 27)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT0_3_SR_Msk     (0x8000000UL)  /*!< DT0_3_SR (Bitfield-Mask: 0x01)                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_3_SR_Pos    (28UL)         /*!< POL1_3_SR (Bit 28)                                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_POL1_3_SR_Msk    (0x10000000UL) /*!< POL1_3_SR (Bitfield-Mask: 0x01)             */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_3_SR_Pos     (29UL)         /*!< OC1_3_SR (Bit 29)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_OC1_3_SR_Msk     (0x20000000UL) /*!< OC1_3_SR (Bitfield-Mask: 0x01)               */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_3_SR_Pos     (30UL)         /*!< SL1_3_SR (Bit 30)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_SL1_3_SR_Msk     (0x40000000UL) /*!< SL1_3_SR (Bitfield-Mask: 0x01)               */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_3_SR_Pos     (31UL)         /*!< DT1_3_SR (Bit 31)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL2_SR_DT1_3_SR_Msk     (0x80000000UL) /*!< DT1_3_SR (Bitfield-Mask: 0x01)               */
+/* ===================================================  CDTM_DTM_PS_CTRL  ==================================================== */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_RELBLK_Pos           (0UL)          /*!< RELBLK (Bit 0)                                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_RELBLK_Msk           (0x3ffUL)      /*!< RELBLK (Bitfield-Mask: 0x3ff)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_PSU_IN_SEL_Pos       (16UL)         /*!< PSU_IN_SEL (Bit 16)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_PSU_IN_SEL_Msk       (0x10000UL)    /*!< PSU_IN_SEL (Bitfield-Mask: 0x01)                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_IN_POL_Pos           (17UL)         /*!< IN_POL (Bit 17)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_IN_POL_Msk           (0x20000UL)    /*!< IN_POL (Bitfield-Mask: 0x01)                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_TIM_SEL_Pos          (18UL)         /*!< TIM_SEL (Bit 18)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_TIM_SEL_Msk          (0x40000UL)    /*!< TIM_SEL (Bitfield-Mask: 0x01)                        */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_SHIFT_SEL_Pos        (20UL)         /*!< SHIFT_SEL (Bit 20)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_PS_CTRL_SHIFT_SEL_Msk        (0x300000UL)   /*!< SHIFT_SEL (Bitfield-Mask: 0x03)                   */
+/* ====================================================  CDTM_DTM_CH_SR  ===================================================== */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_0_SR_SR_Pos        (0UL)          /*!< SL0_0_SR_SR (Bit 0)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_0_SR_SR_Msk        (0x1UL)        /*!< SL0_0_SR_SR (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_0_SR_SR_Pos        (1UL)          /*!< SL1_0_SR_SR (Bit 1)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_0_SR_SR_Msk        (0x2UL)        /*!< SL1_0_SR_SR (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_1_SR_SR_Pos        (2UL)          /*!< SL0_1_SR_SR (Bit 2)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_1_SR_SR_Msk        (0x4UL)        /*!< SL0_1_SR_SR (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_1_SR_SR_Pos        (3UL)          /*!< SL1_1_SR_SR (Bit 3)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_1_SR_SR_Msk        (0x8UL)        /*!< SL1_1_SR_SR (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_2_SR_SR_Pos        (4UL)          /*!< SL0_2_SR_SR (Bit 4)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_2_SR_SR_Msk        (0x10UL)       /*!< SL0_2_SR_SR (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_2_SR_SR_Pos        (5UL)          /*!< SL1_2_SR_SR (Bit 5)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_2_SR_SR_Msk        (0x20UL)       /*!< SL1_2_SR_SR (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_3_SR_SR_Pos        (6UL)          /*!< SL0_3_SR_SR (Bit 6)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL0_3_SR_SR_Msk        (0x40UL)       /*!< SL0_3_SR_SR (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_3_SR_SR_Pos        (7UL)          /*!< SL1_3_SR_SR (Bit 7)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_SR_SL1_3_SR_SR_Msk        (0x80UL)       /*!< SL1_3_SR_SR (Bitfield-Mask: 0x01)                     */
+/* ===================================================  CDTM_DTM_CH_CTRL3  =================================================== */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII0_Pos            (0UL)          /*!< CII0 (Bit 0)                                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII0_Msk            (0x1UL)        /*!< CII0 (Bitfield-Mask: 0x01)                            */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS0_Pos            (1UL)          /*!< CIS0 (Bit 1)                                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS0_Msk            (0x2UL)        /*!< CIS0 (Bitfield-Mask: 0x01)                            */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_0_Pos         (2UL)          /*!< TSEL0_0 (Bit 2)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_0_Msk         (0x4UL)        /*!< TSEL0_0 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_0_Pos         (3UL)          /*!< TSEL1_0 (Bit 3)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_0_Msk         (0x8UL)        /*!< TSEL1_0 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII1_Pos            (8UL)          /*!< CII1 (Bit 8)                                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII1_Msk            (0x100UL)      /*!< CII1 (Bitfield-Mask: 0x01)                            */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS1_Pos            (9UL)          /*!< CIS1 (Bit 9)                                          */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS1_Msk            (0x200UL)      /*!< CIS1 (Bitfield-Mask: 0x01)                            */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_1_Pos         (10UL)         /*!< TSEL0_1 (Bit 10)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_1_Msk         (0x400UL)      /*!< TSEL0_1 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_1_Pos         (11UL)         /*!< TSEL1_1 (Bit 11)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_1_Msk         (0x800UL)      /*!< TSEL1_1 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII2_Pos            (16UL)         /*!< CII2 (Bit 16)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII2_Msk            (0x10000UL)    /*!< CII2 (Bitfield-Mask: 0x01)                            */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS2_Pos            (17UL)         /*!< CIS2 (Bit 17)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS2_Msk            (0x20000UL)    /*!< CIS2 (Bitfield-Mask: 0x01)                            */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_2_Pos         (18UL)         /*!< TSEL0_2 (Bit 18)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_2_Msk         (0x40000UL)    /*!< TSEL0_2 (Bitfield-Mask: 0x01)                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_2_Pos         (19UL)         /*!< TSEL1_2 (Bit 19)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_2_Msk         (0x80000UL)    /*!< TSEL1_2 (Bitfield-Mask: 0x01)                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII3_Pos            (24UL)         /*!< CII3 (Bit 24)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CII3_Msk            (0x1000000UL)  /*!< CII3 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS3_Pos            (25UL)         /*!< CIS3 (Bit 25)                                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_CIS3_Msk            (0x2000000UL)  /*!< CIS3 (Bitfield-Mask: 0x01)                           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_3_Pos         (26UL)         /*!< TSEL0_3 (Bit 26)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL0_3_Msk         (0x4000000UL)  /*!< TSEL0_3 (Bitfield-Mask: 0x01)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_3_Pos         (27UL)         /*!< TSEL1_3 (Bit 27)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CH_CTRL3_TSEL1_3_Msk         (0x8000000UL)  /*!< TSEL1_3 (Bitfield-Mask: 0x01)                     */
+/* ====================================================  CDTM_DTM_CTRL2  ===================================================== */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_0_Pos      (0UL)          /*!< SHUTOFF_SEL_0 (Bit 0)                                 */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_0_Msk      (0x7UL)        /*!< SHUTOFF_SEL_0 (Bitfield-Mask: 0x07)                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_0_Pos      (3UL)          /*!< SHUTOFF_POL_0 (Bit 3)                                 */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_0_Msk      (0x8UL)        /*!< SHUTOFF_POL_0 (Bitfield-Mask: 0x01)                  */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_0_Pos         (4UL)          /*!< UPD_MODE_0 (Bit 4)                                    */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_0_Msk         (0x30UL)       /*!< UPD_MODE_0 (Bitfield-Mask: 0x03)                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_0_Pos     (6UL)          /*!< SHUT_OFF_RST_0 (Bit 6)                                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_0_Msk     (0x40UL)       /*!< SHUT_OFF_RST_0 (Bitfield-Mask: 0x01)               */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_0_Pos            (7UL)          /*!< WR_EN_0 (Bit 7)                                       */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_0_Msk            (0x80UL)       /*!< WR_EN_0 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_1_Pos      (8UL)          /*!< SHUTOFF_SEL_1 (Bit 8)                                 */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_1_Msk      (0x700UL)      /*!< SHUTOFF_SEL_1 (Bitfield-Mask: 0x07)                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_1_Pos      (11UL)         /*!< SHUTOFF_POL_1 (Bit 11)                                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_1_Msk      (0x800UL)      /*!< SHUTOFF_POL_1 (Bitfield-Mask: 0x01)                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_1_Pos         (12UL)         /*!< UPD_MODE_1 (Bit 12)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_1_Msk         (0x3000UL)     /*!< UPD_MODE_1 (Bitfield-Mask: 0x03)                     */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_1_Pos     (14UL)         /*!< SHUT_OFF_RST_1 (Bit 14)                              */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_1_Msk     (0x4000UL)     /*!< SHUT_OFF_RST_1 (Bitfield-Mask: 0x01)             */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_1_Pos            (15UL)         /*!< WR_EN_1 (Bit 15)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_1_Msk            (0x8000UL)     /*!< WR_EN_1 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_2_Pos      (16UL)         /*!< SHUTOFF_SEL_2 (Bit 16)                                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_2_Msk      (0x70000UL)    /*!< SHUTOFF_SEL_2 (Bitfield-Mask: 0x07)              */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_2_Pos      (19UL)         /*!< SHUTOFF_POL_2 (Bit 19)                                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_2_Msk      (0x80000UL)    /*!< SHUTOFF_POL_2 (Bitfield-Mask: 0x01)              */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_2_Pos         (20UL)         /*!< UPD_MODE_2 (Bit 20)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_2_Msk         (0x300000UL)   /*!< UPD_MODE_2 (Bitfield-Mask: 0x03)                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_2_Pos     (22UL)         /*!< SHUT_OFF_RST_2 (Bit 22)                              */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_2_Msk     (0x400000UL)   /*!< SHUT_OFF_RST_2 (Bitfield-Mask: 0x01)           */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_2_Pos            (23UL)         /*!< WR_EN_2 (Bit 23)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_2_Msk            (0x800000UL)   /*!< WR_EN_2 (Bitfield-Mask: 0x01)                         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_3_Pos      (24UL)         /*!< SHUTOFF_SEL_3 (Bit 24)                                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_SEL_3_Msk      (0x7000000UL)  /*!< SHUTOFF_SEL_3 (Bitfield-Mask: 0x07)            */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_3_Pos      (27UL)         /*!< SHUTOFF_POL_3 (Bit 27)                                */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUTOFF_POL_3_Msk      (0x8000000UL)  /*!< SHUTOFF_POL_3 (Bitfield-Mask: 0x01)            */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_3_Pos         (28UL)         /*!< UPD_MODE_3 (Bit 28)                                   */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_UPD_MODE_3_Msk         (0x30000000UL) /*!< UPD_MODE_3 (Bitfield-Mask: 0x03)                 */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_3_Pos     (30UL)         /*!< SHUT_OFF_RST_3 (Bit 30)                              */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_SHUT_OFF_RST_3_Msk     (0x40000000UL) /*!< SHUT_OFF_RST_3 (Bitfield-Mask: 0x01)         */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_3_Pos            (31UL)         /*!< WR_EN_3 (Bit 31)                                      */
+ #define R_GTM0_CDTM_CLS_DTM_CDTM_DTM_CTRL2_WR_EN_3_Msk            (0x80000000UL) /*!< WR_EN_3 (Bitfield-Mask: 0x01)                       */
+
+/* =========================================================================================================================== */
+/* ================                                            CLS                                            ================ */
+/* =========================================================================================================================== */
 
 /* =========================================================================================================================== */
 /* ================                                            CH                                             ================ */
@@ -112527,6 +112954,50 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_GUARD_IBG_TPTM_PROT_U_SPID_SPID_Msk    (0xffffffffUL) /*!< SPID (Bitfield-Mask: 0xffffffff)                      */
 
 /* =========================================================================================================================== */
+/* ================                                            CH                                             ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  EN  =========================================================== */
+ #define R_IPIR_PE_CH_EN_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_PE_CH_EN_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* ==========================================================  FLG  ========================================================== */
+ #define R_IPIR_PE_CH_FLG_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_PE_CH_FLG_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =========================================================  FCLR  ========================================================== */
+ #define R_IPIR_PE_CH_FCLR_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_PE_CH_FCLR_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* ==========================================================  REQ  ========================================================== */
+ #define R_IPIR_PE_CH_REQ_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_PE_CH_REQ_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =========================================================  RCLR  ========================================================== */
+ #define R_IPIR_PE_CH_RCLR_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_PE_CH_RCLR_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+
+/* =========================================================================================================================== */
+/* ================                                            PE                                             ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================================================================================== */
+/* ================                                            CH                                             ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  ENS  ========================================================== */
+ #define R_IPIR_CH_ENS_EN_Pos        (0UL)    /*!< EN (Bit 0)                                            */
+ #define R_IPIR_CH_ENS_EN_Msk        (0x3fUL) /*!< EN (Bitfield-Mask: 0x3f)                              */
+/* =========================================================  FLGS  ========================================================== */
+ #define R_IPIR_CH_FLGS_FLG_Pos      (0UL)    /*!< FLG (Bit 0)                                           */
+ #define R_IPIR_CH_FLGS_FLG_Msk      (0x3fUL) /*!< FLG (Bitfield-Mask: 0x3f)                             */
+/* =========================================================  FCLRS  ========================================================= */
+ #define R_IPIR_CH_FCLRS_FCLR_Pos    (0UL)    /*!< FCLR (Bit 0)                                          */
+ #define R_IPIR_CH_FCLRS_FCLR_Msk    (0x3fUL) /*!< FCLR (Bitfield-Mask: 0x3f)                            */
+/* =========================================================  REQS  ========================================================== */
+ #define R_IPIR_CH_REQS_REQ_Pos      (0UL)    /*!< REQ (Bit 0)                                           */
+ #define R_IPIR_CH_REQS_REQ_Msk      (0x3fUL) /*!< REQ (Bitfield-Mask: 0x3f)                             */
+/* =========================================================  RCLRS  ========================================================= */
+ #define R_IPIR_CH_RCLRS_RCLR_Pos    (0UL)    /*!< RCLR (Bit 0)                                          */
+ #define R_IPIR_CH_RCLRS_RCLR_Msk    (0x3fUL) /*!< RCLR (Bitfield-Mask: 0x3f)                            */
+
+/* =========================================================================================================================== */
 /* ================                                          PBG_CTR                                          ================ */
 /* =========================================================================================================================== */
 
@@ -113195,6 +113666,64 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
 /* =========================================================================================================================== */
 /* ================                                           MB_CH                                           ================ */
 /* =========================================================================================================================== */
+
+/* =========================================================================================================================== */
+/* ================                                            CDR                                            ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  CDR  ========================================================== */
+ #define R_TAUJ0_CDR_CDR_CDR_Pos    (0UL)          /*!< CDR (Bit 0)                                           */
+ #define R_TAUJ0_CDR_CDR_CDR_Msk    (0xffffffffUL) /*!< CDR (Bitfield-Mask: 0xffffffff)                       */
+
+/* =========================================================================================================================== */
+/* ================                                            CNT                                            ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  CNT  ========================================================== */
+ #define R_TAUJ0_CNT_CNT_CNT_Pos    (0UL)          /*!< CNT (Bit 0)                                           */
+ #define R_TAUJ0_CNT_CNT_CNT_Msk    (0xffffffffUL) /*!< CNT (Bitfield-Mask: 0xffffffff)                       */
+
+/* =========================================================================================================================== */
+/* ================                                           CMOR                                            ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  CMOR  ========================================================== */
+ #define R_TAUJ0_CMOR_CMOR_MD_Pos     (0UL)      /*!< MD (Bit 0)                                            */
+ #define R_TAUJ0_CMOR_CMOR_MD_Msk     (0x1fUL)   /*!< MD (Bitfield-Mask: 0x1f)                              */
+ #define R_TAUJ0_CMOR_CMOR_COS_Pos    (6UL)      /*!< COS (Bit 6)                                           */
+ #define R_TAUJ0_CMOR_CMOR_COS_Msk    (0xc0UL)   /*!< COS (Bitfield-Mask: 0x03)                             */
+ #define R_TAUJ0_CMOR_CMOR_STS_Pos    (8UL)      /*!< STS (Bit 8)                                           */
+ #define R_TAUJ0_CMOR_CMOR_STS_Msk    (0x700UL)  /*!< STS (Bitfield-Mask: 0x07)                             */
+ #define R_TAUJ0_CMOR_CMOR_MAS_Pos    (11UL)     /*!< MAS (Bit 11)                                          */
+ #define R_TAUJ0_CMOR_CMOR_MAS_Msk    (0x800UL)  /*!< MAS (Bitfield-Mask: 0x01)                             */
+ #define R_TAUJ0_CMOR_CMOR_CCS_Pos    (12UL)     /*!< CCS (Bit 12)                                          */
+ #define R_TAUJ0_CMOR_CMOR_CCS_Msk    (0x3000UL) /*!< CCS (Bitfield-Mask: 0x03)                             */
+ #define R_TAUJ0_CMOR_CMOR_CKS_Pos    (14UL)     /*!< CKS (Bit 14)                                          */
+ #define R_TAUJ0_CMOR_CMOR_CKS_Msk    (0xc000UL) /*!< CKS (Bitfield-Mask: 0x03)                             */
+
+/* =========================================================================================================================== */
+/* ================                                           CMUR                                            ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  CMUR  ========================================================== */
+ #define R_TAUJ0_CMUR_CMUR_TIS_Pos    (0UL)   /*!< TIS (Bit 0)                                           */
+ #define R_TAUJ0_CMUR_CMUR_TIS_Msk    (0x3UL) /*!< TIS (Bitfield-Mask: 0x03)                             */
+
+/* =========================================================================================================================== */
+/* ================                                            CSR                                            ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  CSR  ========================================================== */
+ #define R_TAUJ0_CSR_CSR_OVF_Pos    (0UL)   /*!< OVF (Bit 0)                                           */
+ #define R_TAUJ0_CSR_CSR_OVF_Msk    (0x1UL) /*!< OVF (Bitfield-Mask: 0x01)                             */
+
+/* =========================================================================================================================== */
+/* ================                                            CSC                                            ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  CSC  ========================================================== */
+ #define R_TAUJ0_CSC_CSC_CLOV_Pos    (0UL)   /*!< CLOV (Bit 0)                                          */
+ #define R_TAUJ0_CSC_CSC_CLOV_Msk    (0x1UL) /*!< CLOV (Bitfield-Mask: 0x01)                            */
 
 /* =========================================================================================================================== */
 /* ================                                          TPTM_PE                                          ================ */
@@ -128616,10 +129145,6 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_KCRC0_XOR1_XOR_Msk      (0xffffffffUL) /*!< XOR (Bitfield-Mask: 0xffffffff)                       */
 
 /* =========================================================================================================================== */
-/* ================                                        R_GTM0_CDTM                                        ================ */
-/* =========================================================================================================================== */
-
-/* =========================================================================================================================== */
 /* ================                                           R_LPS                                           ================ */
 /* =========================================================================================================================== */
 
@@ -129140,6 +129665,8 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
 /* ========================================================  CNTVAL  ========================================================= */
  #define R_LPS_CNTVAL_CNT1n_Pos       (8UL)          /*!< CNT1n (Bit 8)                                         */
  #define R_LPS_CNTVAL_CNT1n_Msk       (0xff00UL)     /*!< CNT1n (Bitfield-Mask: 0xff)                           */
+ #define R_LPS_CNTVAL_CNT0n_Pos       (0UL)          /*!< CNT0n (Bit 0)                                         */
+ #define R_LPS_CNTVAL_CNT0n_Msk       (0xffUL)       /*!< CNT0n (Bitfield-Mask: 0xff)                           */
 /* =========================================================  SOSTR  ========================================================= */
  #define R_LPS_SOSTR_SOF_Pos          (0UL)          /*!< SOF (Bit 0)                                           */
  #define R_LPS_SOSTR_SOF_Msk          (0x1UL)        /*!< SOF (Bitfield-Mask: 0x01)                             */
@@ -140164,6 +140691,371 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_ETNF0_T1S_T1SCTL0HH_PMA_CFG_Msk       (0x1UL)       /*!< PMA_CFG (Bitfield-Mask: 0x01)                         */
 
 /* =========================================================================================================================== */
+/* ================                                        R_FCMDAREA0                                        ================ */
+/* =========================================================================================================================== */
+
+/* ======================================================  FACI_CMD32  ======================================================= */
+ #define R_FCMDAREA0_FACI_CMD32_CMD_Pos    (0UL)          /*!< CMD (Bit 0)                                           */
+ #define R_FCMDAREA0_FACI_CMD32_CMD_Msk    (0xffffffffUL) /*!< CMD (Bitfield-Mask: 0xffffffff)                       */
+
+/* =========================================================================================================================== */
+/* ================                                        R_FCMDAREA2                                        ================ */
+/* =========================================================================================================================== */
+
+/* ======================================================  FACI_CMD32  ======================================================= */
+ #define R_FCMDAREA2_FACI_CMD32_CMD_Pos    (0UL)          /*!< CMD (Bit 0)                                           */
+ #define R_FCMDAREA2_FACI_CMD32_CMD_Msk    (0xffffffffUL) /*!< CMD (Bitfield-Mask: 0xffffffff)                       */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FACI0                                          ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  FPMON  ========================================================= */
+ #define R_FACI0_FPMON_SFWE_Pos           (7UL)          /*!< SFWE (Bit 7)                                          */
+ #define R_FACI0_FPMON_SFWE_Msk           (0x80UL)       /*!< SFWE (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FASTAT  ========================================================= */
+ #define R_FACI0_FASTAT_CFAE_Pos          (7UL)          /*!< CFAE (Bit 7)                                          */
+ #define R_FACI0_FASTAT_CFAE_Msk          (0x80UL)       /*!< CFAE (Bitfield-Mask: 0x01)                            */
+ #define R_FACI0_FASTAT_CMDLK_Pos         (4UL)          /*!< CMDLK (Bit 4)                                         */
+ #define R_FACI0_FASTAT_CMDLK_Msk         (0x10UL)       /*!< CMDLK (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FASTAT_DFAE_Pos          (3UL)          /*!< DFAE (Bit 3)                                          */
+ #define R_FACI0_FASTAT_DFAE_Msk          (0x8UL)        /*!< DFAE (Bitfield-Mask: 0x01)                            */
+ #define R_FACI0_FASTAT_ECRCT_Pos         (0UL)          /*!< ECRCT (Bit 0)                                         */
+ #define R_FACI0_FASTAT_ECRCT_Msk         (0x1UL)        /*!< ECRCT (Bitfield-Mask: 0x01)                           */
+/* ========================================================  FAEINT  ========================================================= */
+ #define R_FACI0_FAEINT_CFAEIE_Pos        (7UL)          /*!< CFAEIE (Bit 7)                                        */
+ #define R_FACI0_FAEINT_CFAEIE_Msk        (0x80UL)       /*!< CFAEIE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FAEINT_CMDLKIE_Pos       (4UL)          /*!< CMDLKIE (Bit 4)                                       */
+ #define R_FACI0_FAEINT_CMDLKIE_Msk       (0x10UL)       /*!< CMDLKIE (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FAEINT_DFAEIE_Pos        (3UL)          /*!< DFAEIE (Bit 3)                                        */
+ #define R_FACI0_FAEINT_DFAEIE_Msk        (0x8UL)        /*!< DFAEIE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FAEINT_ECRCTIE_Pos       (0UL)          /*!< ECRCTIE (Bit 0)                                       */
+ #define R_FACI0_FAEINT_ECRCTIE_Msk       (0x1UL)        /*!< ECRCTIE (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FSADDR  ========================================================= */
+ #define R_FACI0_FSADDR_FSADDR_Pos        (0UL)          /*!< FSADDR (Bit 0)                                        */
+ #define R_FACI0_FSADDR_FSADDR_Msk        (0xffffffffUL) /*!< FSADDR (Bitfield-Mask: 0xffffffff)                    */
+/* ========================================================  FEADDR  ========================================================= */
+ #define R_FACI0_FEADDR_FEADDR_Pos        (0UL)          /*!< FEADDR (Bit 0)                                        */
+ #define R_FACI0_FEADDR_FEADDR_Msk        (0xffffffffUL) /*!< FEADDR (Bitfield-Mask: 0xffffffff)                    */
+/* =======================================================  FCVAPROT  ======================================================== */
+ #define R_FACI0_FCVAPROT_KEY_Pos         (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI0_FCVAPROT_KEY_Msk         (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI0_FCVAPROT_CVAPROT_Pos     (0UL)          /*!< CVAPROT (Bit 0)                                       */
+ #define R_FACI0_FCVAPROT_CVAPROT_Msk     (0x1UL)        /*!< CVAPROT (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FSTATR  ========================================================= */
+ #define R_FACI0_FSTATR_ERCDTCT_Pos       (29UL)         /*!< ERCDTCT (Bit 29)                                      */
+ #define R_FACI0_FSTATR_ERCDTCT_Msk       (0x20000000UL) /*!< ERCDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_ERCCRCT_Pos       (28UL)         /*!< ERCCRCT (Bit 28)                                      */
+ #define R_FACI0_FSTATR_ERCCRCT_Msk       (0x10000000UL) /*!< ERCCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_SWTDTCT_Pos       (27UL)         /*!< SWTDTCT (Bit 27)                                      */
+ #define R_FACI0_FSTATR_SWTDTCT_Msk       (0x8000000UL)  /*!< SWTDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_SWTCRCT_Pos       (26UL)         /*!< SWTCRCT (Bit 26)                                      */
+ #define R_FACI0_FSTATR_SWTCRCT_Msk       (0x4000000UL)  /*!< SWTCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_SECDTCT_Pos       (25UL)         /*!< SECDTCT (Bit 25)                                      */
+ #define R_FACI0_FSTATR_SECDTCT_Msk       (0x2000000UL)  /*!< SECDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_SECCRCT_Pos       (24UL)         /*!< SECCRCT (Bit 24)                                      */
+ #define R_FACI0_FSTATR_SECCRCT_Msk       (0x1000000UL)  /*!< SECCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_ILGCOMERR_Pos     (23UL)         /*!< ILGCOMERR (Bit 23)                                    */
+ #define R_FACI0_FSTATR_ILGCOMERR_Msk     (0x800000UL)   /*!< ILGCOMERR (Bitfield-Mask: 0x01)                       */
+ #define R_FACI0_FSTATR_FESETERR_Pos      (22UL)         /*!< FESETERR (Bit 22)                                     */
+ #define R_FACI0_FSTATR_FESETERR_Msk      (0x400000UL)   /*!< FESETERR (Bitfield-Mask: 0x01)                        */
+ #define R_FACI0_FSTATR_SECERR_Pos        (21UL)         /*!< SECERR (Bit 21)                                       */
+ #define R_FACI0_FSTATR_SECERR_Msk        (0x200000UL)   /*!< SECERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_OTERR_Pos         (20UL)         /*!< OTERR (Bit 20)                                        */
+ #define R_FACI0_FSTATR_OTERR_Msk         (0x100000UL)   /*!< OTERR (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FSTATR_EBFULL_Pos        (18UL)         /*!< EBFULL (Bit 18)                                       */
+ #define R_FACI0_FSTATR_EBFULL_Msk        (0x40000UL)    /*!< EBFULL (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_BPLDTCT_Pos       (17UL)         /*!< BPLDTCT (Bit 17)                                      */
+ #define R_FACI0_FSTATR_BPLDTCT_Msk       (0x20000UL)    /*!< BPLDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_BPLCRCT_Pos       (16UL)         /*!< BPLCRCT (Bit 16)                                      */
+ #define R_FACI0_FSTATR_BPLCRCT_Msk       (0x10000UL)    /*!< BPLCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_FRDY_Pos          (15UL)         /*!< FRDY (Bit 15)                                         */
+ #define R_FACI0_FSTATR_FRDY_Msk          (0x8000UL)     /*!< FRDY (Bitfield-Mask: 0x01)                            */
+ #define R_FACI0_FSTATR_ILGLERR_Pos       (14UL)         /*!< ILGLERR (Bit 14)                                      */
+ #define R_FACI0_FSTATR_ILGLERR_Msk       (0x4000UL)     /*!< ILGLERR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_ERSERR_Pos        (13UL)         /*!< ERSERR (Bit 13)                                       */
+ #define R_FACI0_FSTATR_ERSERR_Msk        (0x2000UL)     /*!< ERSERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_PRGERR_Pos        (12UL)         /*!< PRGERR (Bit 12)                                       */
+ #define R_FACI0_FSTATR_PRGERR_Msk        (0x1000UL)     /*!< PRGERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_SUSRDY_Pos        (11UL)         /*!< SUSRDY (Bit 11)                                       */
+ #define R_FACI0_FSTATR_SUSRDY_Msk        (0x800UL)      /*!< SUSRDY (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_DBFULL_Pos        (10UL)         /*!< DBFULL (Bit 10)                                       */
+ #define R_FACI0_FSTATR_DBFULL_Msk        (0x400UL)      /*!< DBFULL (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_ERSSPD_Pos        (9UL)          /*!< ERSSPD (Bit 9)                                        */
+ #define R_FACI0_FSTATR_ERSSPD_Msk        (0x200UL)      /*!< ERSSPD (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_PRGSPD_Pos        (8UL)          /*!< PRGSPD (Bit 8)                                        */
+ #define R_FACI0_FSTATR_PRGSPD_Msk        (0x100UL)      /*!< PRGSPD (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FSTATR_FHVEERR_Pos       (6UL)          /*!< FHVEERR (Bit 6)                                       */
+ #define R_FACI0_FSTATR_FHVEERR_Msk       (0x40UL)       /*!< FHVEERR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_CFGDTCT_Pos       (5UL)          /*!< CFGDTCT (Bit 5)                                       */
+ #define R_FACI0_FSTATR_CFGDTCT_Msk       (0x20UL)       /*!< CFGDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_CFGCRCT_Pos       (4UL)          /*!< CFGCRCT (Bit 4)                                       */
+ #define R_FACI0_FSTATR_CFGCRCT_Msk       (0x10UL)       /*!< CFGCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_TBLDTCT_Pos       (3UL)          /*!< TBLDTCT (Bit 3)                                       */
+ #define R_FACI0_FSTATR_TBLDTCT_Msk       (0x8UL)        /*!< TBLDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FSTATR_TBLCRCT_Pos       (2UL)          /*!< TBLCRCT (Bit 2)                                       */
+ #define R_FACI0_FSTATR_TBLCRCT_Msk       (0x4UL)        /*!< TBLCRCT (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FENTRYR  ======================================================== */
+ #define R_FACI0_FENTRYR_KEY_Pos          (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI0_FENTRYR_KEY_Msk          (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI0_FENTRYR_FENTRYD_Pos      (7UL)          /*!< FENTRYD (Bit 7)                                       */
+ #define R_FACI0_FENTRYR_FENTRYD_Msk      (0x80UL)       /*!< FENTRYD (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FENTRYR_FENTRYC_Pos      (0UL)          /*!< FENTRYC (Bit 0)                                       */
+ #define R_FACI0_FENTRYR_FENTRYC_Msk      (0x1UL)        /*!< FENTRYC (Bitfield-Mask: 0x01)                         */
+/* =======================================================  FSUINITR  ======================================================== */
+ #define R_FACI0_FSUINITR_KEY_Pos         (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI0_FSUINITR_KEY_Msk         (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI0_FSUINITR_SUINIT_Pos      (0UL)          /*!< SUINIT (Bit 0)                                        */
+ #define R_FACI0_FSUINITR_SUINIT_Msk      (0x1UL)        /*!< SUINIT (Bitfield-Mask: 0x01)                          */
+/* =========================================================  FCMDR  ========================================================= */
+ #define R_FACI0_FCMDR_CMDR_Pos           (8UL)          /*!< CMDR (Bit 8)                                          */
+ #define R_FACI0_FCMDR_CMDR_Msk           (0xff00UL)     /*!< CMDR (Bitfield-Mask: 0xff)                            */
+ #define R_FACI0_FCMDR_PCMDR_Pos          (0UL)          /*!< PCMDR (Bit 0)                                         */
+ #define R_FACI0_FCMDR_PCMDR_Msk          (0xffUL)       /*!< PCMDR (Bitfield-Mask: 0xff)                           */
+/* ========================================================  FCMDMON  ======================================================== */
+ #define R_FACI0_FCMDMON_MSTCM_Pos        (31UL)         /*!< MSTCM (Bit 31)                                        */
+ #define R_FACI0_FCMDMON_MSTCM_Msk        (0x80000000UL) /*!< MSTCM (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FCMDMON_FENTRYDM_Pos     (25UL)         /*!< FENTRYDM (Bit 25)                                     */
+ #define R_FACI0_FCMDMON_FENTRYDM_Msk     (0x2000000UL)  /*!< FENTRYDM (Bitfield-Mask: 0x01)                        */
+ #define R_FACI0_FCMDMON_FENTRYCM_Pos     (24UL)         /*!< FENTRYCM (Bit 24)                                     */
+ #define R_FACI0_FCMDMON_FENTRYCM_Msk     (0x1000000UL)  /*!< FENTRYCM (Bitfield-Mask: 0x01)                        */
+ #define R_FACI0_FCMDMON_CMDM_Pos         (16UL)         /*!< CMDM (Bit 16)                                         */
+ #define R_FACI0_FCMDMON_CMDM_Msk         (0xff0000UL)   /*!< CMDM (Bitfield-Mask: 0xff)                            */
+ #define R_FACI0_FCMDMON_PMSTCM_Pos       (15UL)         /*!< PMSTCM (Bit 15)                                       */
+ #define R_FACI0_FCMDMON_PMSTCM_Msk       (0x8000UL)     /*!< PMSTCM (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FCMDMON_PFENTRYDM_Pos    (9UL)          /*!< PFENTRYDM (Bit 9)                                     */
+ #define R_FACI0_FCMDMON_PFENTRYDM_Msk    (0x200UL)      /*!< PFENTRYDM (Bitfield-Mask: 0x01)                       */
+ #define R_FACI0_FCMDMON_PFENTRYCM_Pos    (8UL)          /*!< PFENTRYCM (Bit 8)                                     */
+ #define R_FACI0_FCMDMON_PFENTRYCM_Msk    (0x100UL)      /*!< PFENTRYCM (Bitfield-Mask: 0x01)                       */
+ #define R_FACI0_FCMDMON_PCMDM_Pos        (0UL)          /*!< PCMDM (Bit 0)                                         */
+ #define R_FACI0_FCMDMON_PCMDM_Msk        (0xffUL)       /*!< PCMDM (Bitfield-Mask: 0xff)                           */
+/* =======================================================  FSWASTAT  ======================================================== */
+ #define R_FACI0_FSWASTAT_BPVA0_Pos       (4UL)          /*!< BPVA0 (Bit 4)                                         */
+ #define R_FACI0_FSWASTAT_BPVA0_Msk       (0x10UL)       /*!< BPVA0 (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FSWASTAT_SECVA_Pos       (3UL)          /*!< SECVA (Bit 3)                                         */
+ #define R_FACI0_FSWASTAT_SECVA_Msk       (0x8UL)        /*!< SECVA (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FSWASTAT_CFGVA_Pos       (2UL)          /*!< CFGVA (Bit 2)                                         */
+ #define R_FACI0_FSWASTAT_CFGVA_Msk       (0x4UL)        /*!< CFGVA (Bitfield-Mask: 0x01)                           */
+ #define R_FACI0_FSWASTAT_SWAS_Pos        (1UL)          /*!< SWAS (Bit 1)                                          */
+ #define R_FACI0_FSWASTAT_SWAS_Msk        (0x2UL)        /*!< SWAS (Bitfield-Mask: 0x01)                            */
+ #define R_FACI0_FSWASTAT_SWVA_Pos        (0UL)          /*!< SWVA (Bit 0)                                          */
+ #define R_FACI0_FSWASTAT_SWVA_Msk        (0x1UL)        /*!< SWVA (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FPESTAT  ======================================================== */
+ #define R_FACI0_FPESTAT_PEERRST_Pos      (0UL)          /*!< PEERRST (Bit 0)                                       */
+ #define R_FACI0_FPESTAT_PEERRST_Msk      (0xffUL)       /*!< PEERRST (Bitfield-Mask: 0xff)                         */
+/* ========================================================  FBCCNT  ========================================================= */
+ #define R_FACI0_FBCCNT_BCDIR_Pos         (0UL)          /*!< BCDIR (Bit 0)                                         */
+ #define R_FACI0_FBCCNT_BCDIR_Msk         (0x1UL)        /*!< BCDIR (Bitfield-Mask: 0x01)                           */
+/* ========================================================  FBCSTAT  ======================================================== */
+ #define R_FACI0_FBCSTAT_BCST_Pos         (0UL)          /*!< BCST (Bit 0)                                          */
+ #define R_FACI0_FBCSTAT_BCST_Msk         (0x1UL)        /*!< BCST (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FPSADDR  ======================================================== */
+ #define R_FACI0_FPSADDR_PSADR_Pos        (0UL)          /*!< PSADR (Bit 0)                                         */
+ #define R_FACI0_FPSADDR_PSADR_Msk        (0x1fffffUL)   /*!< PSADR (Bitfield-Mask: 0x1fffff)                       */
+/* =======================================================  FECCEMON  ======================================================== */
+ #define R_FACI0_FECCEMON_FAPARM_Pos      (10UL)         /*!< FAPARM (Bit 10)                                       */
+ #define R_FACI0_FECCEMON_FAPARM_Msk      (0x400UL)      /*!< FAPARM (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FECCEMON_FECCM_Pos       (0UL)          /*!< FECCM (Bit 0)                                         */
+ #define R_FACI0_FECCEMON_FECCM_Msk       (0x3ffUL)      /*!< FECCM (Bitfield-Mask: 0x3ff)                          */
+/* ========================================================  FECCTMD  ======================================================== */
+ #define R_FACI0_FECCTMD_KEY_Pos          (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI0_FECCTMD_KEY_Msk          (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI0_FECCTMD_CECCVE_Pos       (5UL)          /*!< CECCVE (Bit 5)                                        */
+ #define R_FACI0_FECCTMD_CECCVE_Msk       (0x20UL)       /*!< CECCVE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FECCTMD_DECCVE_Pos       (4UL)          /*!< DECCVE (Bit 4)                                        */
+ #define R_FACI0_FECCTMD_DECCVE_Msk       (0x10UL)       /*!< DECCVE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI0_FECCTMD_ECCDISE_Pos      (0UL)          /*!< ECCDISE (Bit 0)                                       */
+ #define R_FACI0_FECCTMD_ECCDISE_Msk      (0x1UL)        /*!< ECCDISE (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FDMYECC  ======================================================== */
+ #define R_FACI0_FDMYECC_DMYAPAR_Pos      (10UL)         /*!< DMYAPAR (Bit 10)                                      */
+ #define R_FACI0_FDMYECC_DMYAPAR_Msk      (0x400UL)      /*!< DMYAPAR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI0_FDMYECC_DMYECC_Pos       (0UL)          /*!< DMYECC (Bit 0)                                        */
+ #define R_FACI0_FDMYECC_DMYECC_Msk       (0x3ffUL)      /*!< DMYECC (Bitfield-Mask: 0x3ff)                         */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FACI2                                          ================ */
+/* =========================================================================================================================== */
+
+/* =========================================================  FPMON  ========================================================= */
+ #define R_FACI2_FPMON_SFWE_Pos           (7UL)          /*!< SFWE (Bit 7)                                          */
+ #define R_FACI2_FPMON_SFWE_Msk           (0x80UL)       /*!< SFWE (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FASTAT  ========================================================= */
+ #define R_FACI2_FASTAT_CFAE_Pos          (7UL)          /*!< CFAE (Bit 7)                                          */
+ #define R_FACI2_FASTAT_CFAE_Msk          (0x80UL)       /*!< CFAE (Bitfield-Mask: 0x01)                            */
+ #define R_FACI2_FASTAT_CMDLK_Pos         (4UL)          /*!< CMDLK (Bit 4)                                         */
+ #define R_FACI2_FASTAT_CMDLK_Msk         (0x10UL)       /*!< CMDLK (Bitfield-Mask: 0x01)                           */
+ #define R_FACI2_FASTAT_DFAE_Pos          (3UL)          /*!< DFAE (Bit 3)                                          */
+ #define R_FACI2_FASTAT_DFAE_Msk          (0x8UL)        /*!< DFAE (Bitfield-Mask: 0x01)                            */
+ #define R_FACI2_FASTAT_ECRCT_Pos         (0UL)          /*!< ECRCT (Bit 0)                                         */
+ #define R_FACI2_FASTAT_ECRCT_Msk         (0x1UL)        /*!< ECRCT (Bitfield-Mask: 0x01)                           */
+/* ========================================================  FAEINT  ========================================================= */
+ #define R_FACI2_FAEINT_CFAEIE_Pos        (7UL)          /*!< CFAEIE (Bit 7)                                        */
+ #define R_FACI2_FAEINT_CFAEIE_Msk        (0x80UL)       /*!< CFAEIE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FAEINT_CMDLKIE_Pos       (4UL)          /*!< CMDLKIE (Bit 4)                                       */
+ #define R_FACI2_FAEINT_CMDLKIE_Msk       (0x10UL)       /*!< CMDLKIE (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FAEINT_DFAEIE_Pos        (3UL)          /*!< DFAEIE (Bit 3)                                        */
+ #define R_FACI2_FAEINT_DFAEIE_Msk        (0x8UL)        /*!< DFAEIE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FAEINT_ECRCTIE_Pos       (0UL)          /*!< ECRCTIE (Bit 0)                                       */
+ #define R_FACI2_FAEINT_ECRCTIE_Msk       (0x1UL)        /*!< ECRCTIE (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FSADDR  ========================================================= */
+ #define R_FACI2_FSADDR_FSADDR_Pos        (0UL)          /*!< FSADDR (Bit 0)                                        */
+ #define R_FACI2_FSADDR_FSADDR_Msk        (0xffffffffUL) /*!< FSADDR (Bitfield-Mask: 0xffffffff)                    */
+/* ========================================================  FEADDR  ========================================================= */
+ #define R_FACI2_FEADDR_FEADDR_Pos        (0UL)          /*!< FEADDR (Bit 0)                                        */
+ #define R_FACI2_FEADDR_FEADDR_Msk        (0xffffffffUL) /*!< FEADDR (Bitfield-Mask: 0xffffffff)                    */
+/* =======================================================  FCVAPROT  ======================================================== */
+ #define R_FACI2_FCVAPROT_KEY_Pos         (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI2_FCVAPROT_KEY_Msk         (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI2_FCVAPROT_CVAPROT_Pos     (0UL)          /*!< CVAPROT (Bit 0)                                       */
+ #define R_FACI2_FCVAPROT_CVAPROT_Msk     (0x1UL)        /*!< CVAPROT (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FSTATR  ========================================================= */
+ #define R_FACI2_FSTATR_ERCDTCT_Pos       (29UL)         /*!< ERCDTCT (Bit 29)                                      */
+ #define R_FACI2_FSTATR_ERCDTCT_Msk       (0x20000000UL) /*!< ERCDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_ERCCRCT_Pos       (28UL)         /*!< ERCCRCT (Bit 28)                                      */
+ #define R_FACI2_FSTATR_ERCCRCT_Msk       (0x10000000UL) /*!< ERCCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_SWTDTCT_Pos       (27UL)         /*!< SWTDTCT (Bit 27)                                      */
+ #define R_FACI2_FSTATR_SWTDTCT_Msk       (0x8000000UL)  /*!< SWTDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_SWTCRCT_Pos       (26UL)         /*!< SWTCRCT (Bit 26)                                      */
+ #define R_FACI2_FSTATR_SWTCRCT_Msk       (0x4000000UL)  /*!< SWTCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_SECDTCT_Pos       (25UL)         /*!< SECDTCT (Bit 25)                                      */
+ #define R_FACI2_FSTATR_SECDTCT_Msk       (0x2000000UL)  /*!< SECDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_SECCRCT_Pos       (24UL)         /*!< SECCRCT (Bit 24)                                      */
+ #define R_FACI2_FSTATR_SECCRCT_Msk       (0x1000000UL)  /*!< SECCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_ILGCOMERR_Pos     (23UL)         /*!< ILGCOMERR (Bit 23)                                    */
+ #define R_FACI2_FSTATR_ILGCOMERR_Msk     (0x800000UL)   /*!< ILGCOMERR (Bitfield-Mask: 0x01)                       */
+ #define R_FACI2_FSTATR_FESETERR_Pos      (22UL)         /*!< FESETERR (Bit 22)                                     */
+ #define R_FACI2_FSTATR_FESETERR_Msk      (0x400000UL)   /*!< FESETERR (Bitfield-Mask: 0x01)                        */
+ #define R_FACI2_FSTATR_SECERR_Pos        (21UL)         /*!< SECERR (Bit 21)                                       */
+ #define R_FACI2_FSTATR_SECERR_Msk        (0x200000UL)   /*!< SECERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_OTERR_Pos         (20UL)         /*!< OTERR (Bit 20)                                        */
+ #define R_FACI2_FSTATR_OTERR_Msk         (0x100000UL)   /*!< OTERR (Bitfield-Mask: 0x01)                           */
+ #define R_FACI2_FSTATR_EBFULL_Pos        (18UL)         /*!< EBFULL (Bit 18)                                       */
+ #define R_FACI2_FSTATR_EBFULL_Msk        (0x40000UL)    /*!< EBFULL (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_BPLDTCT_Pos       (17UL)         /*!< BPLDTCT (Bit 17)                                      */
+ #define R_FACI2_FSTATR_BPLDTCT_Msk       (0x20000UL)    /*!< BPLDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_BPLCRCT_Pos       (16UL)         /*!< BPLCRCT (Bit 16)                                      */
+ #define R_FACI2_FSTATR_BPLCRCT_Msk       (0x10000UL)    /*!< BPLCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_FRDY_Pos          (15UL)         /*!< FRDY (Bit 15)                                         */
+ #define R_FACI2_FSTATR_FRDY_Msk          (0x8000UL)     /*!< FRDY (Bitfield-Mask: 0x01)                            */
+ #define R_FACI2_FSTATR_ILGLERR_Pos       (14UL)         /*!< ILGLERR (Bit 14)                                      */
+ #define R_FACI2_FSTATR_ILGLERR_Msk       (0x4000UL)     /*!< ILGLERR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_ERSERR_Pos        (13UL)         /*!< ERSERR (Bit 13)                                       */
+ #define R_FACI2_FSTATR_ERSERR_Msk        (0x2000UL)     /*!< ERSERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_PRGERR_Pos        (12UL)         /*!< PRGERR (Bit 12)                                       */
+ #define R_FACI2_FSTATR_PRGERR_Msk        (0x1000UL)     /*!< PRGERR (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_SUSRDY_Pos        (11UL)         /*!< SUSRDY (Bit 11)                                       */
+ #define R_FACI2_FSTATR_SUSRDY_Msk        (0x800UL)      /*!< SUSRDY (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_DBFULL_Pos        (10UL)         /*!< DBFULL (Bit 10)                                       */
+ #define R_FACI2_FSTATR_DBFULL_Msk        (0x400UL)      /*!< DBFULL (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_ERSSPD_Pos        (9UL)          /*!< ERSSPD (Bit 9)                                        */
+ #define R_FACI2_FSTATR_ERSSPD_Msk        (0x200UL)      /*!< ERSSPD (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_PRGSPD_Pos        (8UL)          /*!< PRGSPD (Bit 8)                                        */
+ #define R_FACI2_FSTATR_PRGSPD_Msk        (0x100UL)      /*!< PRGSPD (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FSTATR_FHVEERR_Pos       (6UL)          /*!< FHVEERR (Bit 6)                                       */
+ #define R_FACI2_FSTATR_FHVEERR_Msk       (0x40UL)       /*!< FHVEERR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_CFGDTCT_Pos       (5UL)          /*!< CFGDTCT (Bit 5)                                       */
+ #define R_FACI2_FSTATR_CFGDTCT_Msk       (0x20UL)       /*!< CFGDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_CFGCRCT_Pos       (4UL)          /*!< CFGCRCT (Bit 4)                                       */
+ #define R_FACI2_FSTATR_CFGCRCT_Msk       (0x10UL)       /*!< CFGCRCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_TBLDTCT_Pos       (3UL)          /*!< TBLDTCT (Bit 3)                                       */
+ #define R_FACI2_FSTATR_TBLDTCT_Msk       (0x8UL)        /*!< TBLDTCT (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FSTATR_TBLCRCT_Pos       (2UL)          /*!< TBLCRCT (Bit 2)                                       */
+ #define R_FACI2_FSTATR_TBLCRCT_Msk       (0x4UL)        /*!< TBLCRCT (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FENTRYR  ======================================================== */
+ #define R_FACI2_FENTRYR_KEY_Pos          (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI2_FENTRYR_KEY_Msk          (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI2_FENTRYR_FENTRYD_Pos      (7UL)          /*!< FENTRYD (Bit 7)                                       */
+ #define R_FACI2_FENTRYR_FENTRYD_Msk      (0x80UL)       /*!< FENTRYD (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FENTRYR_FENTRYC_Pos      (0UL)          /*!< FENTRYC (Bit 0)                                       */
+ #define R_FACI2_FENTRYR_FENTRYC_Msk      (0x1UL)        /*!< FENTRYC (Bitfield-Mask: 0x01)                         */
+/* =======================================================  FSUINITR  ======================================================== */
+ #define R_FACI2_FSUINITR_KEY_Pos         (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI2_FSUINITR_KEY_Msk         (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI2_FSUINITR_SUINIT_Pos      (0UL)          /*!< SUINIT (Bit 0)                                        */
+ #define R_FACI2_FSUINITR_SUINIT_Msk      (0x1UL)        /*!< SUINIT (Bitfield-Mask: 0x01)                          */
+/* =========================================================  FCMDR  ========================================================= */
+ #define R_FACI2_FCMDR_CMDR_Pos           (8UL)          /*!< CMDR (Bit 8)                                          */
+ #define R_FACI2_FCMDR_CMDR_Msk           (0xff00UL)     /*!< CMDR (Bitfield-Mask: 0xff)                            */
+ #define R_FACI2_FCMDR_PCMDR_Pos          (0UL)          /*!< PCMDR (Bit 0)                                         */
+ #define R_FACI2_FCMDR_PCMDR_Msk          (0xffUL)       /*!< PCMDR (Bitfield-Mask: 0xff)                           */
+/* ========================================================  FCMDMON  ======================================================== */
+ #define R_FACI2_FCMDMON_MSTCM_Pos        (31UL)         /*!< MSTCM (Bit 31)                                        */
+ #define R_FACI2_FCMDMON_MSTCM_Msk        (0x80000000UL) /*!< MSTCM (Bitfield-Mask: 0x01)                           */
+ #define R_FACI2_FCMDMON_FENTRYDM_Pos     (25UL)         /*!< FENTRYDM (Bit 25)                                     */
+ #define R_FACI2_FCMDMON_FENTRYDM_Msk     (0x2000000UL)  /*!< FENTRYDM (Bitfield-Mask: 0x01)                        */
+ #define R_FACI2_FCMDMON_FENTRYCM_Pos     (24UL)         /*!< FENTRYCM (Bit 24)                                     */
+ #define R_FACI2_FCMDMON_FENTRYCM_Msk     (0x1000000UL)  /*!< FENTRYCM (Bitfield-Mask: 0x01)                        */
+ #define R_FACI2_FCMDMON_CMDM_Pos         (16UL)         /*!< CMDM (Bit 16)                                         */
+ #define R_FACI2_FCMDMON_CMDM_Msk         (0xff0000UL)   /*!< CMDM (Bitfield-Mask: 0xff)                            */
+ #define R_FACI2_FCMDMON_PMSTCM_Pos       (15UL)         /*!< PMSTCM (Bit 15)                                       */
+ #define R_FACI2_FCMDMON_PMSTCM_Msk       (0x8000UL)     /*!< PMSTCM (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FCMDMON_PFENTRYDM_Pos    (9UL)          /*!< PFENTRYDM (Bit 9)                                     */
+ #define R_FACI2_FCMDMON_PFENTRYDM_Msk    (0x200UL)      /*!< PFENTRYDM (Bitfield-Mask: 0x01)                       */
+ #define R_FACI2_FCMDMON_PFENTRYCM_Pos    (8UL)          /*!< PFENTRYCM (Bit 8)                                     */
+ #define R_FACI2_FCMDMON_PFENTRYCM_Msk    (0x100UL)      /*!< PFENTRYCM (Bitfield-Mask: 0x01)                       */
+ #define R_FACI2_FCMDMON_PCMDM_Pos        (0UL)          /*!< PCMDM (Bit 0)                                         */
+ #define R_FACI2_FCMDMON_PCMDM_Msk        (0xffUL)       /*!< PCMDM (Bitfield-Mask: 0xff)                           */
+/* ========================================================  FPESTAT  ======================================================== */
+ #define R_FACI2_FPESTAT_PEERRST_Pos      (0UL)          /*!< PEERRST (Bit 0)                                       */
+ #define R_FACI2_FPESTAT_PEERRST_Msk      (0xffUL)       /*!< PEERRST (Bitfield-Mask: 0xff)                         */
+/* ========================================================  FBCCNT  ========================================================= */
+ #define R_FACI2_FBCCNT_BCDIR_Pos         (0UL)          /*!< BCDIR (Bit 0)                                         */
+ #define R_FACI2_FBCCNT_BCDIR_Msk         (0x1UL)        /*!< BCDIR (Bitfield-Mask: 0x01)                           */
+/* ========================================================  FBCSTAT  ======================================================== */
+ #define R_FACI2_FBCSTAT_BCST_Pos         (0UL)          /*!< BCST (Bit 0)                                          */
+ #define R_FACI2_FBCSTAT_BCST_Msk         (0x1UL)        /*!< BCST (Bitfield-Mask: 0x01)                            */
+/* ========================================================  FPSADDR  ======================================================== */
+ #define R_FACI2_FPSADDR_PSADR_Pos        (0UL)          /*!< PSADR (Bit 0)                                         */
+ #define R_FACI2_FPSADDR_PSADR_Msk        (0x1fffffUL)   /*!< PSADR (Bitfield-Mask: 0x1fffff)                       */
+/* =======================================================  FECCEMON  ======================================================== */
+ #define R_FACI2_FECCEMON_FAPARM_Pos      (10UL)         /*!< FAPARM (Bit 10)                                       */
+ #define R_FACI2_FECCEMON_FAPARM_Msk      (0x400UL)      /*!< FAPARM (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FECCEMON_FECCM_Pos       (0UL)          /*!< FECCM (Bit 0)                                         */
+ #define R_FACI2_FECCEMON_FECCM_Msk       (0x3ffUL)      /*!< FECCM (Bitfield-Mask: 0x3ff)                          */
+/* ========================================================  FECCTMD  ======================================================== */
+ #define R_FACI2_FECCTMD_KEY_Pos          (8UL)          /*!< KEY (Bit 8)                                           */
+ #define R_FACI2_FECCTMD_KEY_Msk          (0xff00UL)     /*!< KEY (Bitfield-Mask: 0xff)                             */
+ #define R_FACI2_FECCTMD_CECCVE_Pos       (5UL)          /*!< CECCVE (Bit 5)                                        */
+ #define R_FACI2_FECCTMD_CECCVE_Msk       (0x20UL)       /*!< CECCVE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FECCTMD_DECCVE_Pos       (4UL)          /*!< DECCVE (Bit 4)                                        */
+ #define R_FACI2_FECCTMD_DECCVE_Msk       (0x10UL)       /*!< DECCVE (Bitfield-Mask: 0x01)                          */
+ #define R_FACI2_FECCTMD_ECCDISE_Pos      (0UL)          /*!< ECCDISE (Bit 0)                                       */
+ #define R_FACI2_FECCTMD_ECCDISE_Msk      (0x1UL)        /*!< ECCDISE (Bitfield-Mask: 0x01)                         */
+/* ========================================================  FDMYECC  ======================================================== */
+ #define R_FACI2_FDMYECC_DMYAPAR_Pos      (10UL)         /*!< DMYAPAR (Bit 10)                                      */
+ #define R_FACI2_FDMYECC_DMYAPAR_Msk      (0x400UL)      /*!< DMYAPAR (Bitfield-Mask: 0x01)                         */
+ #define R_FACI2_FDMYECC_DMYECC_Pos       (0UL)          /*!< DMYECC (Bit 0)                                        */
+ #define R_FACI2_FDMYECC_DMYECC_Msk       (0x3ffUL)      /*!< DMYECC (Bitfield-Mask: 0x3ff)                         */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FLMD                                           ================ */
+/* =========================================================================================================================== */
+
+/* ========================================================  FLMDCNT  ======================================================== */
+ #define R_FLMD_FLMDCNT_SFWE_Pos          (0UL)   /*!< SFWE (Bit 0)                                          */
+ #define R_FLMD_FLMDCNT_SFWE_Msk          (0x1UL) /*!< SFWE (Bitfield-Mask: 0x01)                            */
+/* ======================================================  FLMDFPLOCK  ======================================================= */
+ #define R_FLMD_FLMDFPLOCK_FP0LOCK_Pos    (0UL)   /*!< FP0LOCK (Bit 0)                                       */
+ #define R_FLMD_FLMDFPLOCK_FP0LOCK_Msk    (0x1UL) /*!< FP0LOCK (Bitfield-Mask: 0x01)                         */
+
+/* =========================================================================================================================== */
+/* ================                                          R_FHVE                                           ================ */
+/* =========================================================================================================================== */
+
+/* =======================================================  FHVE3FP0  ======================================================== */
+ #define R_FHVE_FHVE3FP0_FHVE3CNT_Pos      (0UL)   /*!< FHVE3CNT (Bit 0)                                      */
+ #define R_FHVE_FHVE3FP0_FHVE3CNT_Msk      (0x1UL) /*!< FHVE3CNT (Bitfield-Mask: 0x01)                        */
+/* =======================================================  FHVE3FP2  ======================================================== */
+ #define R_FHVE_FHVE3FP2_FHVE3CNT_Pos      (0UL)   /*!< FHVE3CNT (Bit 0)                                      */
+ #define R_FHVE_FHVE3FP2_FHVE3CNT_Msk      (0x1UL) /*!< FHVE3CNT (Bitfield-Mask: 0x01)                        */
+/* =======================================================  FHVE15FP0  ======================================================= */
+ #define R_FHVE_FHVE15FP0_FHVE15CNT_Pos    (0UL)   /*!< FHVE15CNT (Bit 0)                                     */
+ #define R_FHVE_FHVE15FP0_FHVE15CNT_Msk    (0x1UL) /*!< FHVE15CNT (Bitfield-Mask: 0x01)                       */
+/* =======================================================  FHVE15FP2  ======================================================= */
+ #define R_FHVE_FHVE15FP2_FHVE15CNT_Pos    (0UL)   /*!< FHVE15CNT (Bit 0)                                     */
+ #define R_FHVE_FHVE15FP2_FHVE15CNT_Msk    (0x1UL) /*!< FHVE15CNT (Bitfield-Mask: 0x01)                       */
+
+/* =========================================================================================================================== */
 /* ================                                          R_FLXA0                                          ================ */
 /* =========================================================================================================================== */
 
@@ -141387,6 +142279,10 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
  #define R_GTM0_CMP_CMP_EIRQ_EN_ABWC1_EN_EIRQ_Msk     (0x2UL)      /*!< ABWC1_EN_EIRQ (Bitfield-Mask: 0x01)                   */
  #define R_GTM0_CMP_CMP_EIRQ_EN_ABWC0_EN_EIRQ_Pos     (0UL)        /*!< ABWC0_EN_EIRQ (Bit 0)                                 */
  #define R_GTM0_CMP_CMP_EIRQ_EN_ABWC0_EN_EIRQ_Msk     (0x1UL)      /*!< ABWC0_EN_EIRQ (Bitfield-Mask: 0x01)                   */
+
+/* =========================================================================================================================== */
+/* ================                                        R_GTM0_CDTM                                        ================ */
+/* =========================================================================================================================== */
 
 /* =========================================================================================================================== */
 /* ================                                        R_GTM0_MCS0                                        ================ */
@@ -144760,187 +145656,6 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
 /* =========================================================================================================================== */
 /* ================                                          R_IPIR                                           ================ */
 /* =========================================================================================================================== */
-
-/* ========================================================  IPI0ENS  ======================================================== */
- #define R_IPIR_IPI0ENS_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI0ENS_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* ========================================================  IPI1ENS  ======================================================== */
- #define R_IPIR_IPI1ENS_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI1ENS_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* ========================================================  IPI2ENS  ======================================================== */
- #define R_IPIR_IPI2ENS_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI2ENS_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* ========================================================  IPI3ENS  ======================================================== */
- #define R_IPIR_IPI3ENS_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI3ENS_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* =======================================================  IPI0FLGS  ======================================================== */
- #define R_IPIR_IPI0FLGS_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI0FLGS_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI1FLGS  ======================================================== */
- #define R_IPIR_IPI1FLGS_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI1FLGS_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI2FLGS  ======================================================== */
- #define R_IPIR_IPI2FLGS_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI2FLGS_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI3FLGS  ======================================================== */
- #define R_IPIR_IPI3FLGS_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI3FLGS_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI0FCLRS  ======================================================= */
- #define R_IPIR_IPI0FCLRS_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI0FCLRS_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI1FCLRS  ======================================================= */
- #define R_IPIR_IPI1FCLRS_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI1FCLRS_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI2FCLRS  ======================================================= */
- #define R_IPIR_IPI2FCLRS_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI2FCLRS_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI3FCLRS  ======================================================= */
- #define R_IPIR_IPI3FCLRS_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI3FCLRS_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI0REQS  ======================================================== */
- #define R_IPIR_IPI0REQS_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI0REQS_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI1REQS  ======================================================== */
- #define R_IPIR_IPI1REQS_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI1REQS_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI2REQS  ======================================================== */
- #define R_IPIR_IPI2REQS_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI2REQS_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI3REQS  ======================================================== */
- #define R_IPIR_IPI3REQS_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI3REQS_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI0RCLRS  ======================================================= */
- #define R_IPIR_IPI0RCLRS_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI0RCLRS_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI1RCLRS  ======================================================= */
- #define R_IPIR_IPI1RCLRS_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI1RCLRS_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI2RCLRS  ======================================================= */
- #define R_IPIR_IPI2RCLRS_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI2RCLRS_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI3RCLRS  ======================================================= */
- #define R_IPIR_IPI3RCLRS_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI3RCLRS_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
-/* ========================================================  IPI0EN0  ======================================================== */
- #define R_IPIR_IPI0EN0_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI0EN0_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* ========================================================  IPI1EN0  ======================================================== */
- #define R_IPIR_IPI1EN0_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI1EN0_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* ========================================================  IPI2EN0  ======================================================== */
- #define R_IPIR_IPI2EN0_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI2EN0_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* ========================================================  IPI3EN0  ======================================================== */
- #define R_IPIR_IPI3EN0_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI3EN0_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* ========================================================  IPI0EN1  ======================================================== */
- #define R_IPIR_IPI0EN1_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI0EN1_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* ========================================================  IPI1EN1  ======================================================== */
- #define R_IPIR_IPI1EN1_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI1EN1_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* ========================================================  IPI2EN1  ======================================================== */
- #define R_IPIR_IPI2EN1_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI2EN1_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* ========================================================  IPI3EN1  ======================================================== */
- #define R_IPIR_IPI3EN1_EN_Pos        (0UL)   /*!< EN (Bit 0)                                            */
- #define R_IPIR_IPI3EN1_EN_Msk        (0x3UL) /*!< EN (Bitfield-Mask: 0x03)                              */
-/* =======================================================  IPI0FLG0  ======================================================== */
- #define R_IPIR_IPI0FLG0_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI0FLG0_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI1FLG0  ======================================================== */
- #define R_IPIR_IPI1FLG0_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI1FLG0_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI2FLG0  ======================================================== */
- #define R_IPIR_IPI2FLG0_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI2FLG0_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI3FLG0  ======================================================== */
- #define R_IPIR_IPI3FLG0_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI3FLG0_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI0FLG1  ======================================================== */
- #define R_IPIR_IPI0FLG1_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI0FLG1_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI1FLG1  ======================================================== */
- #define R_IPIR_IPI1FLG1_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI1FLG1_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI2FLG1  ======================================================== */
- #define R_IPIR_IPI2FLG1_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI2FLG1_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI3FLG1  ======================================================== */
- #define R_IPIR_IPI3FLG1_FLG_Pos      (0UL)   /*!< FLG (Bit 0)                                           */
- #define R_IPIR_IPI3FLG1_FLG_Msk      (0x3UL) /*!< FLG (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI0FCLR0  ======================================================= */
- #define R_IPIR_IPI0FCLR0_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI0FCLR0_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI1FCLR0  ======================================================= */
- #define R_IPIR_IPI1FCLR0_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI1FCLR0_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI2FCLR0  ======================================================= */
- #define R_IPIR_IPI2FCLR0_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI2FCLR0_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI3FCLR0  ======================================================= */
- #define R_IPIR_IPI3FCLR0_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI3FCLR0_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI0FCLR1  ======================================================= */
- #define R_IPIR_IPI0FCLR1_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI0FCLR1_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI1FCLR1  ======================================================= */
- #define R_IPIR_IPI1FCLR1_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI1FCLR1_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI2FCLR1  ======================================================= */
- #define R_IPIR_IPI2FCLR1_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI2FCLR1_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI3FCLR1  ======================================================= */
- #define R_IPIR_IPI3FCLR1_FCLR_Pos    (0UL)   /*!< FCLR (Bit 0)                                          */
- #define R_IPIR_IPI3FCLR1_FCLR_Msk    (0x3UL) /*!< FCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI0REQ0  ======================================================== */
- #define R_IPIR_IPI0REQ0_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI0REQ0_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI1REQ0  ======================================================== */
- #define R_IPIR_IPI1REQ0_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI1REQ0_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI2REQ0  ======================================================== */
- #define R_IPIR_IPI2REQ0_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI2REQ0_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI3REQ0  ======================================================== */
- #define R_IPIR_IPI3REQ0_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI3REQ0_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI0REQ1  ======================================================== */
- #define R_IPIR_IPI0REQ1_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI0REQ1_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI1REQ1  ======================================================== */
- #define R_IPIR_IPI1REQ1_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI1REQ1_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI2REQ1  ======================================================== */
- #define R_IPIR_IPI2REQ1_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI2REQ1_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI3REQ1  ======================================================== */
- #define R_IPIR_IPI3REQ1_REQ_Pos      (0UL)   /*!< REQ (Bit 0)                                           */
- #define R_IPIR_IPI3REQ1_REQ_Msk      (0x3UL) /*!< REQ (Bitfield-Mask: 0x03)                             */
-/* =======================================================  IPI0RCLR0  ======================================================= */
- #define R_IPIR_IPI0RCLR0_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI0RCLR0_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI1RCLR0  ======================================================= */
- #define R_IPIR_IPI1RCLR0_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI1RCLR0_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI2RCLR0  ======================================================= */
- #define R_IPIR_IPI2RCLR0_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI2RCLR0_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI3RCLR0  ======================================================= */
- #define R_IPIR_IPI3RCLR0_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI3RCLR0_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI0RCLR1  ======================================================= */
- #define R_IPIR_IPI0RCLR1_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI0RCLR1_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI1RCLR1  ======================================================= */
- #define R_IPIR_IPI1RCLR1_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI1RCLR1_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI2RCLR1  ======================================================= */
- #define R_IPIR_IPI2RCLR1_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI2RCLR1_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
-/* =======================================================  IPI3RCLR1  ======================================================= */
- #define R_IPIR_IPI3RCLR1_RCLR_Pos    (0UL)   /*!< RCLR (Bit 0)                                          */
- #define R_IPIR_IPI3RCLR1_RCLR_Msk    (0x3UL) /*!< RCLR (Bitfield-Mask: 0x03)                            */
 
 /* =========================================================================================================================== */
 /* ================                                          R_LTSC                                           ================ */
@@ -148441,6 +149156,86 @@ typedef struct                         /*!< (@ 0x18000000) R_XCAN0 Structure    
 /* =========================================================  LRSS  ========================================================== */
  #define R_RLN30_LRSS_RSDD_Pos          (0UL)      /*!< RSDD (Bit 0)                                          */
  #define R_RLN30_LRSS_RSDD_Msk          (0x1UL)    /*!< RSDD (Bitfield-Mask: 0x01)                            */
+
+/* =========================================================================================================================== */
+/* ================                                          R_TAUJ0                                          ================ */
+/* =========================================================================================================================== */
+
+/* ==========================================================  TPS  ========================================================== */
+ #define R_TAUJ0_TPS_PRS3_Pos    (12UL)     /*!< PRS3 (Bit 12)                                         */
+ #define R_TAUJ0_TPS_PRS3_Msk    (0xf000UL) /*!< PRS3 (Bitfield-Mask: 0x0f)                            */
+ #define R_TAUJ0_TPS_PRS2_Pos    (8UL)      /*!< PRS2 (Bit 8)                                          */
+ #define R_TAUJ0_TPS_PRS2_Msk    (0xf00UL)  /*!< PRS2 (Bitfield-Mask: 0x0f)                            */
+ #define R_TAUJ0_TPS_PRS1_Pos    (4UL)      /*!< PRS1 (Bit 4)                                          */
+ #define R_TAUJ0_TPS_PRS1_Msk    (0xf0UL)   /*!< PRS1 (Bitfield-Mask: 0x0f)                            */
+ #define R_TAUJ0_TPS_PRS0_Pos    (0UL)      /*!< PRS0 (Bit 0)                                          */
+ #define R_TAUJ0_TPS_PRS0_Msk    (0xfUL)    /*!< PRS0 (Bitfield-Mask: 0x0f)                            */
+/* ==========================================================  BRS  ========================================================== */
+ #define R_TAUJ0_BRS_BRS_Pos     (0UL)      /*!< BRS (Bit 0)                                           */
+ #define R_TAUJ0_BRS_BRS_Msk     (0xffUL)   /*!< BRS (Bitfield-Mask: 0xff)                             */
+/* ==========================================================  TS  =========================================================== */
+ #define R_TAUJ0_TS_TS_Pos       (0UL)      /*!< TS (Bit 0)                                            */
+ #define R_TAUJ0_TS_TS_Msk       (0xfUL)    /*!< TS (Bitfield-Mask: 0x0f)                              */
+/* ==========================================================  TE  =========================================================== */
+ #define R_TAUJ0_TE_TE_Pos       (0UL)      /*!< TE (Bit 0)                                            */
+ #define R_TAUJ0_TE_TE_Msk       (0xfUL)    /*!< TE (Bitfield-Mask: 0x0f)                              */
+/* ==========================================================  TT  =========================================================== */
+ #define R_TAUJ0_TT_TT_Pos       (0UL)      /*!< TT (Bit 0)                                            */
+ #define R_TAUJ0_TT_TT_Msk       (0xfUL)    /*!< TT (Bitfield-Mask: 0x0f)                              */
+/* ==========================================================  TOE  ========================================================== */
+ #define R_TAUJ0_TOE_TOE_Pos     (0UL)      /*!< TOE (Bit 0)                                           */
+ #define R_TAUJ0_TOE_TOE_Msk     (0xfUL)    /*!< TOE (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  TO  =========================================================== */
+ #define R_TAUJ0_TO_TO_Pos       (0UL)      /*!< TO (Bit 0)                                            */
+ #define R_TAUJ0_TO_TO_Msk       (0xfUL)    /*!< TO (Bitfield-Mask: 0x0f)                              */
+/* ==========================================================  TOM  ========================================================== */
+ #define R_TAUJ0_TOM_TOM_Pos     (0UL)      /*!< TOM (Bit 0)                                           */
+ #define R_TAUJ0_TOM_TOM_Msk     (0xfUL)    /*!< TOM (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  TOC  ========================================================== */
+ #define R_TAUJ0_TOC_TOC_Pos     (0UL)      /*!< TOC (Bit 0)                                           */
+ #define R_TAUJ0_TOC_TOC_Msk     (0xfUL)    /*!< TOC (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  TOL  ========================================================== */
+ #define R_TAUJ0_TOL_TOL_Pos     (0UL)      /*!< TOL (Bit 0)                                           */
+ #define R_TAUJ0_TOL_TOL_Msk     (0xfUL)    /*!< TOL (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  RDE  ========================================================== */
+ #define R_TAUJ0_RDE_RDE_Pos     (0UL)      /*!< RDE (Bit 0)                                           */
+ #define R_TAUJ0_RDE_RDE_Msk     (0xfUL)    /*!< RDE (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  RDM  ========================================================== */
+ #define R_TAUJ0_RDM_RDM_Pos     (0UL)      /*!< RDM (Bit 0)                                           */
+ #define R_TAUJ0_RDM_RDM_Msk     (0xfUL)    /*!< RDM (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  RDT  ========================================================== */
+ #define R_TAUJ0_RDT_RDT_Pos     (0UL)      /*!< RDT (Bit 0)                                           */
+ #define R_TAUJ0_RDT_RDT_Msk     (0xfUL)    /*!< RDT (Bitfield-Mask: 0x0f)                             */
+/* ==========================================================  RSF  ========================================================== */
+ #define R_TAUJ0_RSF_RSF_Pos     (0UL)      /*!< RSF (Bit 0)                                           */
+ #define R_TAUJ0_RSF_RSF_Msk     (0xfUL)    /*!< RSF (Bitfield-Mask: 0x0f)                             */
+
+/* =========================================================================================================================== */
+/* ================                                       R_SELB_TAUJ2                                        ================ */
+/* =========================================================================================================================== */
+
+/* ======================================================  SELB_TAUJ2I  ====================================================== */
+ #define R_SELB_TAUJ2_SELB_TAUJ2I_SELB_TAUJ2I1_Pos    (1UL)   /*!< SELB_TAUJ2I1 (Bit 1)                                  */
+ #define R_SELB_TAUJ2_SELB_TAUJ2I_SELB_TAUJ2I1_Msk    (0x2UL) /*!< SELB_TAUJ2I1 (Bitfield-Mask: 0x01)                    */
+ #define R_SELB_TAUJ2_SELB_TAUJ2I_SELB_TAUJ2I0_Pos    (0UL)   /*!< SELB_TAUJ2I0 (Bit 0)                                  */
+ #define R_SELB_TAUJ2_SELB_TAUJ2I_SELB_TAUJ2I0_Msk    (0x1UL) /*!< SELB_TAUJ2I0 (Bitfield-Mask: 0x01)                    */
+/* =======================================================  PIMONSEL  ======================================================== */
+ #define R_SELB_TAUJ2_PIMONSEL_PIMONSEL_Pos           (0UL)   /*!< PIMONSEL (Bit 0)                                      */
+ #define R_SELB_TAUJ2_PIMONSEL_PIMONSEL_Msk           (0x3UL) /*!< PIMONSEL (Bitfield-Mask: 0x03)                        */
+
+/* =========================================================================================================================== */
+/* ================                                       R_SELB_TAUJ3                                        ================ */
+/* =========================================================================================================================== */
+
+/* ======================================================  SELB_TAUJ3I  ====================================================== */
+ #define R_SELB_TAUJ3_SELB_TAUJ3I_SELB_TAUJ3I3_Pos    (3UL)   /*!< SELB_TAUJ3I3 (Bit 3)                                  */
+ #define R_SELB_TAUJ3_SELB_TAUJ3I_SELB_TAUJ3I3_Msk    (0x8UL) /*!< SELB_TAUJ3I3 (Bitfield-Mask: 0x01)                    */
+ #define R_SELB_TAUJ3_SELB_TAUJ3I_SELB_TAUJ3I2_Pos    (2UL)   /*!< SELB_TAUJ3I2 (Bit 2)                                  */
+ #define R_SELB_TAUJ3_SELB_TAUJ3I_SELB_TAUJ3I2_Msk    (0x4UL) /*!< SELB_TAUJ3I2 (Bitfield-Mask: 0x01)                    */
+ #define R_SELB_TAUJ3_SELB_TAUJ3I_SELB_TAUJ3I1_Pos    (1UL)   /*!< SELB_TAUJ3I1 (Bit 1)                                  */
+ #define R_SELB_TAUJ3_SELB_TAUJ3I_SELB_TAUJ3I1_Msk    (0x2UL) /*!< SELB_TAUJ3I1 (Bitfield-Mask: 0x01)                    */
+ #define R_SELB_TAUJ3_SELB_TAUJ3I_SELB_TAUJ3I0_Pos    (0UL)   /*!< SELB_TAUJ3I0 (Bit 0)                                  */
+ #define R_SELB_TAUJ3_SELB_TAUJ3I_SELB_TAUJ3I0_Msk    (0x1UL) /*!< SELB_TAUJ3I0 (Bitfield-Mask: 0x01)                    */
 
 /* =========================================================================================================================== */
 /* ================                                          R_TPTM                                           ================ */

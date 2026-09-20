@@ -7,14 +7,14 @@
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
-#include "bsp_api.h"
+#include "bsp_api.h"                             /* PRQA S 0380 # DP_MSR_D-1.1-C99_UC1 & DP_MSR_D-1.1-C11_UC1 */
 #include "bsp_delay.h"
 
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-#define BSP_DELAY_NS_PER_US        (1000)       ///< Number of nanoseconds in one microsecond
-#define BSP_DELAY_NS_PER_SECOND    (1000000000) ///< Number of nanoseconds in one second
+#define BSP_DELAY_NS_PER_US        (1000U)       ///< Number of nanoseconds in one microsecond
+#define BSP_DELAY_NS_PER_SECOND    (1000000000U) ///< Number of nanoseconds in one second
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -23,7 +23,7 @@
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
-void        bsp_prv_software_delay_loop(uint32_t loop_cnt);
+static void bsp_prv_software_delay_loop(volatile uint32_t loop_cnt);
 static void bsp_software_delay_loop(uint64_t loop_cnt);
 
 /***********************************************************************************************************************
@@ -34,10 +34,14 @@ static void bsp_software_delay_loop(uint64_t loop_cnt);
  * Private global variables and functions
  **********************************************************************************************************************/
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @addtogroup BSP_COMMON
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /******************************************************************************************************************//**
  *              Delay for at least the specified duration in units and return.
@@ -76,24 +80,29 @@ void R_BSP_SoftwareDelay (uint32_t delay, bsp_delay_units_t units)
     /* Get the system clock frequency in Hz. */
     uint32_t cpu_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_CLK_CPU);
 
+    if (0U == cpu_hz)
+    {
+        return;
+    }
+
     /* Get the # of nanoseconds/cycle. */
     uint32_t ns_per_cycle = BSP_DELAY_NS_PER_SECOND / cpu_hz;
     uint64_t total_ns     = 0;
 
     /* Check if the result of multiplication will overflow*/
-    if (delay > (UINT64_MAX / (units * BSP_DELAY_NS_PER_US)))
+    if (delay > (UINT64_MAX / ((uint64_t) units * BSP_DELAY_NS_PER_US)))
     {
         total_ns = (uint64_t) UINT64_MAX;
     }
     else
     {
         /* Convert the requested time to nanoseconds. */
-        total_ns = (uint64_t) delay * units * BSP_DELAY_NS_PER_US;
+        total_ns = (uint64_t) delay * (uint64_t) units * BSP_DELAY_NS_PER_US;
     }
 
     /* Calculate the number of cycles and loops required.*/
     uint64_t cycles_requested = total_ns / ns_per_cycle;
-    uint64_t loops_required   = cycles_requested / BSP_DELAY_LOOP_CYCLES;
+    uint64_t loops_required   = cycles_requested / (uint64_t) BSP_DELAY_LOOP_CYCLES;
 
     /* Only delay if the supplied parameters constitute a delay. */
     if (loops_required > (uint64_t) 0)
@@ -117,18 +126,19 @@ static void bsp_software_delay_loop (uint64_t loop_cnt)
     uint32_t upper_part = (uint32_t) (loop_cnt >> 32);
 
     /* Outer loop: Iterate over the upper 32 bits */
-    while (upper_part > 0)
+    while (upper_part > 0U)
     {
         /* Call the assembly function with the 32-bit loop counter*/
-        bsp_prv_software_delay_loop(0xFFFFFFFF);
+        bsp_prv_software_delay_loop(0xFFFFFFFFU);
 
         /* Decrement the upper part of the loop counter */
         upper_part--;
     }
 
-    if (0 == upper_part)
+    uint32_t lower_part = (uint32_t) loop_cnt;
+    if (0U != lower_part)
     {
-        bsp_prv_software_delay_loop((uint32_t) loop_cnt);
+        bsp_prv_software_delay_loop(lower_part);
     }
 }
 
@@ -141,17 +151,22 @@ static void bsp_software_delay_loop (uint64_t loop_cnt)
  * @param[in]   loop_cnt  The number of 'units' to delay.
  * @retval: void
  * *****************************************************************************************************************/
-void bsp_prv_software_delay_loop (uint32_t loop_cnt)
-{
 #if defined(__CCRH__)
-    __asm__ volatile (
-        "   .local loop_label    \n"
-        "loop_label:             \n"
-        "    nop                 \n"
-        "    nop                 \n"
-        "    loop r6, loop_label   "
-    );
+
+ #pragma inline_asm bsp_prv_software_delay_loop
+static void bsp_prv_software_delay_loop (volatile uint32_t loop_cnt) /* PRQA S 1006 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 & DP_MSR_D-4.2_UC1 */
+{
+    .local loop_label
+loop_label:
+    nop
+    nop
+    loop r6, loop_label
+}
+
 #elif defined(__ghs__) || defined(__GNUC__) || defined(__ICCRH850__)
+
+static void bsp_prv_software_delay_loop (volatile uint32_t loop_cnt)
+{
     __asm__ volatile (
         "loop_label:             \n"
         "    nop                 \n"
@@ -161,5 +176,6 @@ void bsp_prv_software_delay_loop (uint32_t loop_cnt)
          :
          : "memory"
     );
-#endif
 }
+
+#endif

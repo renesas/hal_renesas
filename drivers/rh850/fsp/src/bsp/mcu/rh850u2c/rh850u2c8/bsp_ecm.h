@@ -4,6 +4,8 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU_RH850U2C8
  * @defgroup BSP_ECM_U2C8 BSP ECM
@@ -11,6 +13,8 @@
  *
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 #ifndef BSP_ECM_H
 #define BSP_ECM_H
@@ -20,7 +24,7 @@
  **********************************************************************************************************************/
 
 /** ECM Error Factor */
-typedef enum e_ecm_error_source_u2c8
+typedef enum e_ecm_error_source_u2c8                                              /* PRQA S 1536 # Advisory R-2.4 */
 {
     ECM_ERROR_SOURCE_ERROR_OUTPUT_MONITOR = (0),                                  ///< Error output monitor
     ECM_ERROR_SOURCE_ECMMESET_MONITOR     = (2),                                  ///< ECMmESET monitor
@@ -170,7 +174,7 @@ typedef enum e_ecm_error_source_u2c8
     ECM_ERROR_SOURCE_INS_CACHE_RAM_PE1_ADDR_FEEDBACK_CMP_ERR_DATA_EDC    = (268), ///< Instruction cache RAM (PE1) - Address feedback compare error - Data EDC error
     ECM_ERROR_SOURCE_PE_GUARD_ERROR_PE1                                  = (272), ///< PE guard error (PE1)
     ECM_ERROR_SOURCE_DATA_ACCESS_ERROR_PE1_5                             = (287), ///< Data Access Error (PE1) *5
-} ecm_error_source_t;
+} ecm_error_source_t;                                                             /* PRQA S 1535 # Advisory R-2.3 */
 
 /***********************************************************************************************************************
  * Exported global variables (to be accessed by other files)

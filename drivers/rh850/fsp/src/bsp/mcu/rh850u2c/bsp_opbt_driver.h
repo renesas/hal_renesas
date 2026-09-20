@@ -18,73 +18,89 @@ FSP_HEADER
  * Macro definitions
  **********************************************************************************************************************/
 
-#define BSP_OPBT_SWAF_BASE                                    (0xFF373800U)                                          ///< SWA valid side base address
-#define BSP_OPBT_SWAB_BASE                                    (0xFF374000U)                                          ///< SWA invalid side base address
+#define BSP_OPBT_SWAF_BASE                                    (0xFF373800U)                                                                          ///< SWA valid side base address
+#define BSP_OPBT_SWAB_BASE                                    (0xFF374000U)                                                                          ///< SWA invalid side base address
+
+/* PRQA S 1534 ++ # Advisory R-2.5 */
 #define BSP_OPBT_CVA_VALID_SIDE                               *((const volatile uint32_t *) (BSP_OPBT_SWAF_BASE + \
-                                                                                             0x200U))                ///< CVA register in valid side
-#define BSP_OPBT_CVA_INVALID_SIDE                             *((volatile uint32_t *) (BSP_OPBT_SWAB_BASE + 0x200U)) ///< CVA register in invalid side
-#define BSP_OPBT_A0PC_F                                       *((const volatile uint32_t *) (BSP_OPBT_SWAF_BASE))    ///< AnPC register in valid side
-#define BSP_OPBT_A0PC_B                                       *((const volatile uint32_t *) (BSP_OPBT_SWAB_BASE))    ///< AnPC register in invalid side
+                                                                                             0x200U))                                                ///< CVA register in valid side
+
+/* PRQA S 1534 -- */
+#define BSP_OPBT_CVA_INVALID_SIDE                             *((volatile uint32_t *) (BSP_OPBT_SWAB_BASE + 0x200U))                                 ///< CVA register in invalid side
+#define BSP_OPBT_A0PC_F                                       *((const volatile uint32_t *) (BSP_OPBT_SWAF_BASE)) /* PRQA S 1534 # Advisory R-2.5 */ ///< AnPC register in valid side
+#define BSP_OPBT_A0PC_B                                       *((const volatile uint32_t *) (BSP_OPBT_SWAB_BASE))                                    ///< AnPC register in invalid side
 #define BSP_OPBT_SVA_F                                        *((const volatile uint32_t *) (BSP_OPBT_SWAF_BASE + \
-                                                                                             0x204U))                ///< SVA register in valid side
+                                                                                             0x204U))                                                ///< SVA register in valid side
+
+/* PRQA S 1534 ++ # Advisory R-2.5 */
 #define BSP_OPBT_SVA_B                                        *((const volatile uint32_t *) (BSP_OPBT_SWAB_BASE + \
-                                                                                             0x204U))                ///< SVA register in invalid side
+                                                                                             0x204U))                                                ///< SVA register in invalid side
+
+/* PRQA S 1534 -- */
 #define BSP_OPBT_BVA0_F                                       *((const volatile uint32_t *) (BSP_OPBT_SWAF_BASE + \
-                                                                                             0x208U))                ///< BVA0 register in valid side
+                                                                                             0x208U))                                                ///< BVA0 register in valid side
+
+/* PRQA S 1534 ++ # Advisory R-2.5 */
 #define BSP_OPBT_BVA0_B                                       *((const volatile uint32_t *) (BSP_OPBT_SWAB_BASE + \
-                                                                                             0x208U))                ///< BVA0 register in invalid side
+                                                                                             0x208U))                                                ///< BVA0 register in invalid side
+
+/* PRQA S 1534 -- */
 #if (BSP_FEATURE_OPBT_BVA1_AREA_IS_AVAILABLE)
  #define BSP_OPBT_BVA1_F                                      *((const volatile uint32_t *) (BSP_OPBT_SWAF_BASE + \
-                                                                                             0x20CU))                ///< BVA1 register in valid side
+                                                                                             0x20CU))                                                   ///< BVA1 register in valid side
  #define BSP_OPBT_BVA1_B                                      *((const volatile uint32_t *) (BSP_OPBT_SWAB_BASE + \
-                                                                                             0x20CU))                ///< BVA1 register in invalid side
+                                                                                             0x20CU))                                                   ///< BVA1 register in invalid side
 #endif
 
-#define BSP_OPBT_CSAF_BASE                                    (0xFF320800U)                                          ///< CSAF valid side base address
-#define BSP_OPBT_CSAB_BASE                                    (0xFF321000U)                                          ///< CSAF invalid side base address
-#define BSP_OPBT_CSAVOFCn(n)    *((volatile uint32_t *) (BSP_OPBT_CSAF_BASE + 0x100U + (4U * n)))                    ///< CSAVOFCn (n = 0, 8 to 19) register in invalid side
+#define BSP_OPBT_CSAF_BASE                                    (0xFF320800U)                                                                             ///< CSAF valid side base address
+#define BSP_OPBT_CSAB_BASE                                    (0xFF321000U)                                                                             ///< CSAF invalid side base address
+#define BSP_OPBT_CSAVOFCn(n)    *((volatile uint32_t *) (BSP_OPBT_CSAF_BASE + \
+                                                         ((uint32_t) 0x100U + (uint32_t) (4U * n))))                                                    ///< CSAVOFCn (n = 0, 8 to 19) register in invalid side
 
-#define BSP_OPBT_FACI0_BASE                                   (0xFFA10000U)                                          ///< FACI0 base address
-#define BSP_OPBT_FSWASTAT_0                                   *((volatile uint32_t *) (BSP_OPBT_FACI0_BASE + 0xA8U)) ///< FSWASTAT_0 register
-#define BSP_OPBT_FSADDR_0                                     *((volatile uint32_t *) (BSP_OPBT_FACI0_BASE + 0x30U)) ///< FSADDR_0 register
-#define BSP_OPBT_FEADDR_0                                     *((volatile uint32_t *) (BSP_OPBT_FACI0_BASE + 0x34U)) ///< FEADDR_0 register
-#define BSP_OPBT_FSTATR_0                                     *((volatile uint32_t *) (BSP_OPBT_FACI0_BASE + 0x80U)) ///< FSTATR_0 register
-#define BSP_OPBT_FASTAT_0                                     *((volatile uint8_t *) (BSP_OPBT_FACI0_BASE + 0x10U))  ///< FASTAT_0 register
-#define BSP_OPBT_FENTRYR_0                                    *((volatile uint16_t *) (BSP_OPBT_FACI0_BASE + 0x84U)) ///< FENTRYR_0 register
-#define BSP_OPBT_FSUINITR_0                                   *((volatile uint16_t *) (BSP_OPBT_FACI0_BASE + 0x8CU)) ///< FSUINITR_0 register
+#define BSP_OPBT_FACI0_BASE                                   (0xFFA10000U)                                                                             ///< FACI0 base address
+#define BSP_OPBT_FSWASTAT_0                                   *((volatile uint32_t *) (BSP_OPBT_FACI0_BASE + 0xA8U))                                    ///< FSWASTAT_0 register
+#define BSP_OPBT_FSADDR_0                                     *((volatile uint32_t *) (BSP_OPBT_FACI0_BASE + 0x30U))                                    ///< FSADDR_0 register
+#define BSP_OPBT_FEADDR_0                                     *((volatile uint32_t *) (BSP_OPBT_FACI0_BASE + 0x34U)) /* PRQA S 1534 # Advisory R-2.5 */ ///< FEADDR_0 register
+#define BSP_OPBT_FSTATR_0                                     *((volatile uint32_t *) (BSP_OPBT_FACI0_BASE + 0x80U))                                    ///< FSTATR_0 register
+#define BSP_OPBT_FASTAT_0                                     *((volatile uint8_t *) (BSP_OPBT_FACI0_BASE + 0x10U))                                     ///< FASTAT_0 register
+#define BSP_OPBT_FENTRYR_0                                    *((volatile uint16_t *) (BSP_OPBT_FACI0_BASE + 0x84U))                                    ///< FENTRYR_0 register
+#define BSP_OPBT_FSUINITR_0                                   *((volatile uint16_t *) (BSP_OPBT_FACI0_BASE + 0x8CU)) /* PRQA S 1534 # Advisory R-2.5 */ ///< FSUINITR_0 register
 
-#define BSP_OPBT_TAG_BASE                                     (0xFF374800U)                                          ///< TAG base address
-#define BSP_OPBT_VAPC                                         *((const volatile uint32_t *) (BSP_OPBT_TAG_BASE))     ///< VAPC register
+#define BSP_OPBT_TAG_BASE                                     (0xFF374800U)                                                                             ///< TAG base address
+#define BSP_OPBT_VAPC                                         *((const volatile uint32_t *) (BSP_OPBT_TAG_BASE))                                        ///< VAPC register
 #define BSP_OPBT_VAF                                          *((const volatile uint32_t *) (BSP_OPBT_TAG_BASE + \
-                                                                                             0x200U))                ///< VAF register
+                                                                                             0x200U))                                                   ///< VAF register
 
-#define BSP_OPBT_FACI0_COMMAND_ISSUING_AREA_BASE              (0xFFA20000U)                                          ///< FACI0 command issue base address
+#define BSP_OPBT_FACI0_COMMAND_ISSUING_AREA_BASE              (0xFFA20000U)                                                                             ///< FACI0 command issue base address
 
-#define BSP_OPBT_SWITCH_AREA_IS_PROGRAMMED                    (0x5AA5A55AU)                                          ///< Value indicates that the Switch Area is programmed
+#define BSP_OPBT_SWITCH_AREA_IS_PROGRAMMED                    (0x5AA5A55AU)                                                                             ///< Value indicates that the Switch Area is programmed
 
-#define BSP_OPBT_BSP_CONFIGURATION_SETTING_AREA_0_VALID       (0xA55A5AA5U)                                          ///< Configuration Setting Area 0 will be chosen as valid area
-#define BSP_OPBT_BSP_CONFIGURATION_SETTING_AREA_1_VALID       (0x5AA5A55AU)                                          ///< Configuration Setting Area 1 will be chosen as valid area
+#define BSP_OPBT_BSP_CONFIGURATION_SETTING_AREA_0_VALID       (0xA55A5AA5U)                                                                             ///< Configuration Setting Area 0 will be chosen as valid area
+#define BSP_OPBT_BSP_CONFIGURATION_SETTING_AREA_1_VALID       (0x5AA5A55AU)                                                                             ///< Configuration Setting Area 1 will be chosen as valid area
 
-#define BSP_OPBT_FHVE_BASE                                    (0xFF984800U)                                          ///< FHVE base address
-#define BSP_OPBT_FHVE3FP_0                                    *((volatile uint32_t *) (BSP_OPBT_FHVE_BASE))          ///< FHVE3FP_0 register
-#define BSP_OPBT_FHVE15FP_0                                   *((volatile uint32_t *) (BSP_OPBT_FHVE_BASE + 0x04U))  ///< FHVE15FP_0 register
+#define BSP_OPBT_FHVE_BASE                                    (0xFF984800U)                                                                             ///< FHVE base address
+#define BSP_OPBT_FHVE3FP_0                                    *((volatile uint32_t *) (BSP_OPBT_FHVE_BASE))                                             ///< FHVE3FP_0 register
+#define BSP_OPBT_FHVE15FP_0                                   *((volatile uint32_t *) (BSP_OPBT_FHVE_BASE + 0x04U))                                     ///< FHVE15FP_0 register
 
-#define BSP_OPBT_NUMBER_OF_OPBT_REGS                          96U                                                    ///< Number of OPBT registers need to be flashed (must be divided by 8)
-#define BSP_OPBT_NUMBER_OF_OTP_REGS                           8U                                                     ///< Number of OTP registers need to be flashed (must be divided by 8)
-#define BSP_OPBT_REGISTER_OFFSET                              40U                                                    ///< Offset applied for OPBT register
+#define BSP_OPBT_NUMBER_OF_OPBT_REGS                          96U                                                                                       ///< Number of OPBT registers need to be flashed (must be divided by 8)
+#define BSP_OPBT_NUMBER_OF_OTP_REGS                           8U                                                                                        ///< Number of OTP registers need to be flashed (must be divided by 8)
+#define BSP_OPBT_REGISTER_OFFSET                              40U                                                                                       ///< Offset applied for OPBT register
 
-#define BSP_OPBT_FASTAT_0_CFAE_BIT_MSK                        (1U << 7)                                              ///< CFAE bit Mask of FASTAT_0 register
-#define BSP_OPBT_FASTAT_0_CMDLK_BIT_MSK                       (1U << 4)                                              ///< CMDLK bit Mask of FASTAT_0 register
-#define BSP_OPBT_FASTAT_0_DFAE_BIT_MSK                        (1U << 3)                                              ///< DFAE bit Mask of FASTAT_0 register
-#define BSP_OPBT_FSTATR_0_FRDY_BIT_MSK                        (1U << 15)                                             ///< FRDY bit Mask of FSTATR_0 register
-#define BSP_OPBT_FSTATR_0_ILGLERR_BIT_MSK                     (1U << 14)                                             ///< ILGLERR bit Mask of FSTATR_0 register
-#define BSP_OPBT_FSWASTAT_0_CFGVA_BIT_MSK                     (1U << 2)                                              ///< CFGVA bit Mask of FSWASTAT_0 register
-#define BSP_OPBT_FENTRYR_0_FENTRYD_BIT_MSK                    (1U << 7)                                              ///< FENTRYD bit Mask of FENTRYR_0 register
+#define BSP_OPBT_FASTAT_0_CFAE_BIT_MSK                        ((uint32_t) 1U << 7)                                                                      ///< CFAE bit Mask of FASTAT_0 register
+#define BSP_OPBT_FASTAT_0_CMDLK_BIT_MSK                       ((uint32_t) 1U << 4)                                                                      ///< CMDLK bit Mask of FASTAT_0 register
+#define BSP_OPBT_FASTAT_0_DFAE_BIT_MSK                        ((uint32_t) 1U << 3)                                                                      ///< DFAE bit Mask of FASTAT_0 register
+#define BSP_OPBT_FSTATR_0_FRDY_BIT_MSK                        ((uint32_t) 1U << 15)                                                                     ///< FRDY bit Mask of FSTATR_0 register
+#define BSP_OPBT_FSTATR_0_ILGLERR_BIT_MSK                     ((uint32_t) 1U << 14)                                                                     ///< ILGLERR bit Mask of FSTATR_0 register
+#define BSP_OPBT_FSWASTAT_0_CFGVA_BIT_MSK                     ((uint32_t) 1U << 2)                                                                      ///< CFGVA bit Mask of FSWASTAT_0 register
+#define BSP_OPBT_FENTRYR_0_FENTRYD_BIT_MSK                    ((uint32_t) 1U << 7)                                                                      ///< FENTRYD bit Mask of FENTRYR_0 register
 
-#define BSP_OPBT_SOFTWARE_CONFIGURATION_OPTION_BYTE_OFFSET    (0x300U)                                               ///< Offset applied for Software Configuration Option Byte base address
-#define BSP_OPBT_OTP_SETTING_OFFSET                           (0x200U)                                               ///< Offset applied for OPT Setting base address
-#define BSP_OPBT_CVA_OFFSET                                   (0x200U)                                               ///< Offset applied for CVA register base address
-#define BSP_OPBT_VAF_OFFSET                                   (0x200U)                                               ///< Offset applied for VAF register base address
+#define BSP_OPBT_OPTION_BYTE_OFFSET                           (0x3A0U)                                                                                  ///< Offset applied for Option Byte base address
+#define BSP_OPBT_SOFTWARE_CONFIGURATION_OPTION_BYTE_OFFSET    (0x300U)                                                                                  ///< Offset applied for Software Configuration Option Byte base address
+#define BSP_OPBT_OTP_SETTING_OFFSET                           (0x200U)                                                                                  ///< Offset applied for OPT Setting base address
+#define BSP_OPBT_CVA_OFFSET                                   (0x200U)                                                                                  ///< Offset applied for CVA register base address
+#define BSP_OPBT_VAF_OFFSET                                   (0x200U)                                                                                  ///< Offset applied for VAF register base address
+
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
 
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU_RH850U2CX
@@ -93,12 +109,14 @@ FSP_HEADER
  * @{
  **********************************************************************************************************************/
 
+/* PRQA S 0292 -- */
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /** OPBT Configuration Enum Definition */
-typedef enum e_bsp_configuration_area
+typedef enum e_bsp_configuration_area                /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_CONFIGURATION_AREA_SW_CFG_OPTION_0,          ///< SOFTWARE CONFIGURATION OPBT 0
     BSP_CONFIGURATION_AREA_SW_CFG_OPTION_1,          ///< SOFTWARE CONFIGURATION OPBT 1
@@ -188,7 +206,7 @@ typedef enum e_bsp_configuration_area
 } bsp_configuration_area_t;
 
 /** Option Byte (OPBT) configuration settings */
-typedef const struct bsp_opbt_setting_cfg
+typedef const struct st_bsp_opbt_setting             /* PRQA S 1536 # Advisory R-2.4 */
 {
     /* Software Configuration Option Byte (n = 0 to 31) */
     const uint32_t SW_CFG_OPBT_0_setting;            ///< Software Configuration Option Byte 0
@@ -287,7 +305,9 @@ typedef const struct bsp_opbt_setting_cfg
 /***********************************************************************************************************************
  * Exported global variables
  **********************************************************************************************************************/
-extern const bsp_opbt_setting_t g_bsp_OPBT_setting;
+BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_ROM_DATA, BSP_PRAGMA_SECTION_OPTION_BYTE)
+extern const bsp_opbt_setting_t g_bsp_OPBT_setting; /* PRQA S 1752 # DP_MSR_R-8.6_UC1 */
+BSP_PRAGMA_PLACE_IN_SECTION(BSP_PRAGMA_SECTION_ROM_DATA, BSP_PRAGMA_SECTION_DEFAULT)
 
 /***********************************************************************************************************************
  * Exported global functions (to be accessed by other files)

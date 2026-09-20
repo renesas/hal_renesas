@@ -4,6 +4,8 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @ingroup BSP_MCU_RH850
  * @defgroup BSP_MCU_RH850U2AX BSP U2AX MCU
@@ -11,6 +13,8 @@
  *
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 #ifndef BSP_MCU_INFO_H
 #define BSP_MCU_INFO_H
@@ -35,10 +39,6 @@
  * Typedef definitions
  **********************************************************************************************************************/
 
-/***********************************************************************************************************************
- * Typedef definitions
- **********************************************************************************************************************/
-
 #ifndef BSP_OVERRIDE_GROUP_IRQ_T
 
  #if (BSP_CONFIG_USE_SMP_MODE)
@@ -48,7 +48,8 @@
  #endif
 
 /** Which interrupts can have callbacks registered. */
-typedef enum e_bsp_grp_irq
+/* PRQA S 1508, 1750 ++ # DP_MSR_R-5.6_UC1, DP_MSR_R-5.7_UC1 */
+typedef enum e_bsp_grp_irq                   /* PRQA S 1536 # Advisory R-2.4 */
 {
     BSP_GRP_IRQ_SECURE_WDT_OVERFLOW_NMI = 0, ///< Secure WDT overflow
     BSP_GRP_IRQ_EXTERNAL_NMI            = 1, ///< NMI pin FEINT
@@ -57,10 +58,15 @@ typedef enum e_bsp_grp_irq
     BSP_GRP_IRQ_MAX_INDEX               = BSP_GRP_IRQ_MAX
 } bsp_grp_irq_t;
 
+/* PRQA S 1508, 1750 -- */
+
 #endif
 
 /* Callback type. */
+/* PRQA S 1508 ++ # DP_MSR_R-5.6_UC1 */
 typedef void (* bsp_grp_irq_cb_t)(bsp_grp_irq_t irq);
+
+/* PRQA S 1508 -- */
 
 /**********************************************************************************************************************
  * Exported global variables

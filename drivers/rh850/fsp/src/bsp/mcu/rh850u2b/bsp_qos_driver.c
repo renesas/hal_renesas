@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
-#include "bsp_api.h"
+#include "bsp_api.h"                   /* PRQA S 0380 # DP_MSR_D-1.1-C99_UC1 & DP_MSR_D-1.1-C11_UC1 */
 #include "bsp_qos_driver.h"
 
 #if (BSP_FEATURE_QOS_IS_AVAILABLE)
@@ -26,7 +26,7 @@
  **********************************************************************************************************************/
 
 /** Array contains the pointers to QoS configuration */
-bsp_latency_monitor_cfg_t * g_qos_context_table[BSP_QOS_IRQ_INDEX_MAX];
+volatile bsp_latency_monitor_cfg_t * volatile g_qos_context_table[BSP_QOS_IRQ_INDEX_MAX];
 
 /***********************************************************************************************************************
  * Private global variables and functions
@@ -35,18 +35,18 @@ bsp_latency_monitor_cfg_t * g_qos_context_table[BSP_QOS_IRQ_INDEX_MAX];
 /** Array contains all QoS informations */
 R_QOSCNT_FL_PE0CL0_Type * g_qos_info_table[BSP_QOS_UNIT_NUM] =
 {
-    [BSP_QOS_UNIT_FL_PE0CL0] = (R_QOSCNT_FL_PE0CL0),
-    [BSP_QOS_UNIT_VC_PE0CL0] = (R_QOSCNT_VC_PE0CL0),
-    [BSP_QOS_UNIT_MB_PE0CL0] = (R_QOSCNT_MB_PE0CL0),
-    [BSP_QOS_UNIT_FL_PE1CL0] = (R_QOSCNT_FL_PE1CL0),
-    [BSP_QOS_UNIT_VC_PE1CL0] = (R_QOSCNT_VC_PE1CL0),
-    [BSP_QOS_UNIT_MB_PE1CL0] = (R_QOSCNT_MB_PE1CL0),
-    [BSP_QOS_UNIT_FL_PE0CL1] = (R_QOSCNT_FL_PE0CL1),
-    [BSP_QOS_UNIT_VC_PE0CL1] = (R_QOSCNT_VC_PE0CL1),
-    [BSP_QOS_UNIT_MB_PE0CL1] = (R_QOSCNT_MB_PE0CL1),
-    [BSP_QOS_UNIT_FL_PE1CL1] = (R_QOSCNT_FL_PE1CL1),
-    [BSP_QOS_UNIT_VC_PE1CL1] = (R_QOSCNT_VC_PE1CL1),
-    [BSP_QOS_UNIT_MB_PE1CL1] = (R_QOSCNT_MB_PE1CL1),
+    [BSP_QOS_UNIT_FL_PE0CL0] = (R_QOSCNT_FL_PE0CL0), /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_VC_PE0CL0] = (R_QOSCNT_VC_PE0CL0), /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_MB_PE0CL0] = (R_QOSCNT_MB_PE0CL0), /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_FL_PE1CL0] = (R_QOSCNT_FL_PE1CL0), /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_VC_PE1CL0] = (R_QOSCNT_VC_PE1CL0), /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_MB_PE1CL0] = (R_QOSCNT_MB_PE1CL0), /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_FL_PE0CL1] = (R_QOSCNT_FL_PE0CL1), /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_VC_PE0CL1] = (R_QOSCNT_VC_PE0CL1), /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_MB_PE0CL1] = (R_QOSCNT_MB_PE0CL1), /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_FL_PE1CL1] = (R_QOSCNT_FL_PE1CL1), /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_VC_PE1CL1] = (R_QOSCNT_VC_PE1CL1), /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_MB_PE1CL1] = (R_QOSCNT_MB_PE1CL1), /* PRQA S 0306 # Advisory R-11.4 */
  #if (BSP_FEATURE_QOS_PE0CL2_UNIT_AVAILABLE)
     [BSP_QOS_UNIT_FL_PE0CL2] = (R_QOSCNT_FL_PE0CL2),
     [BSP_QOS_UNIT_VC_PE0CL2] = (R_QOSCNT_VC_PE0CL2),
@@ -56,37 +56,37 @@ R_QOSCNT_FL_PE0CL0_Type * g_qos_info_table[BSP_QOS_UNIT_NUM] =
     [BSP_QOS_UNIT_FL_PE1CL2] = (R_QOSCNT_FL_PE1CL2),
     [BSP_QOS_UNIT_VC_PE1CL2] = (R_QOSCNT_VC_PE1CL2),
     [BSP_QOS_UNIT_MB_PE1CL2] = (R_QOSCNT_MB_PE1CL2),
- #endif                                /* BSP_FEATURE_QOS_PE1CL2_UNIT_AVAILABLE */
-    [BSP_QOS_UNIT_DTS]      = (R_QOSCNT_DTS),
-    [BSP_QOS_UNIT_SDMAC0]   = (R_QOSCNT_SDMAC0),
-    [BSP_QOS_UNIT_SDMAC1]   = (R_QOSCNT_SDMAC1),
-    [BSP_QOS_UNIT_FL_ICUM]  = (R_QOSCNT_FL_ICUM),
-    [BSP_QOS_UNIT_SYS_ICUM] = (R_QOSCNT_SYS_ICUM),
+ #endif                                            /* BSP_FEATURE_QOS_PE1CL2_UNIT_AVAILABLE */
+    [BSP_QOS_UNIT_DTS]      = (R_QOSCNT_DTS),      /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_SDMAC0]   = (R_QOSCNT_SDMAC0),   /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_SDMAC1]   = (R_QOSCNT_SDMAC1),   /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_FL_ICUM]  = (R_QOSCNT_FL_ICUM),  /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_SYS_ICUM] = (R_QOSCNT_SYS_ICUM), /* PRQA S 0306 # Advisory R-11.4 */
  #if (BSP_FEATURE_QOS_ACEU0_UNIT_AVAILABLE)
     [BSP_QOS_UNIT_ACEU0] = (R_QOSCNT_ACEU0),
- #endif                                /* BSP_FEATURE_QOS_ACEU0_UNIT_AVAILABLE */
+ #endif                                            /* BSP_FEATURE_QOS_ACEU0_UNIT_AVAILABLE */
  #if (BSP_FEATURE_QOS_ACEU1_UNIT_AVAILABLE)
     [BSP_QOS_UNIT_ACEU1] = (R_QOSCNT_ACEU1),
- #endif                                /* BSP_FEATURE_QOS_ACEU1_UNIT_AVAILABLE */
-    [BSP_QOS_UNIT_FL_DFP]  = (R_QOSCNT_FL_DFP),
-    [BSP_QOS_UNIT_SYS_DFP] = (R_QOSCNT_SYS_DFP),
-    [BSP_QOS_UNIT_GTM]     = (R_QOSCNT_GTM),
+ #endif                                            /* BSP_FEATURE_QOS_ACEU1_UNIT_AVAILABLE */
+    [BSP_QOS_UNIT_FL_DFP]  = (R_QOSCNT_FL_DFP),    /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_SYS_DFP] = (R_QOSCNT_SYS_DFP),   /* PRQA S 0306 # Advisory R-11.4 */
+    [BSP_QOS_UNIT_GTM]     = (R_QOSCNT_GTM),       /* PRQA S 0306 # Advisory R-11.4 */
  #if (BSP_FEATURE_QOS_RHSIF0_UNIT_AVAILABLE)
-    [BSP_QOS_UNIT_RHSIF0] = (R_QOSCNT_RHSIF0),
- #endif                                /* BSP_FEATURE_QOS_RHSIF0_UNIT_AVAILABLE */
+    [BSP_QOS_UNIT_RHSIF0] = (R_QOSCNT_RHSIF0),     /* PRQA S 0306 # Advisory R-11.4 */
+ #endif                                            /* BSP_FEATURE_QOS_RHSIF0_UNIT_AVAILABLE */
  #if (BSP_FEATURE_QOS_RHSIF1_UNIT_AVAILABLE)
     [BSP_QOS_UNIT_RHSIF1] = (R_QOSCNT_RHSIF1),
- #endif                                /* BSP_FEATURE_QOS_RHSIF1_UNIT_AVAILABLE */
-    [BSP_QOS_UNIT_FLXA0] = (R_QOSCNT_FLXA0),
+ #endif                                            /* BSP_FEATURE_QOS_RHSIF1_UNIT_AVAILABLE */
+    [BSP_QOS_UNIT_FLXA0] = (R_QOSCNT_FLXA0),       /* PRQA S 0306 # Advisory R-11.4 */
  #if (BSP_FEATURE_QOS_ETHER0_UNIT_AVAILABLE)
-    [BSP_QOS_UNIT_ETHER0] = (R_QOSCNT_ETHER0),
- #endif                                /* BSP_FEATURE_QOS_ETHER0_UNIT_AVAILABLE */
+    [BSP_QOS_UNIT_ETHER0] = (R_QOSCNT_ETHER0),     /* PRQA S 0306 # Advisory R-11.4 */
+ #endif                                            /* BSP_FEATURE_QOS_ETHER0_UNIT_AVAILABLE */
  #if (BSP_FEATURE_QOS_ETHER1_UNIT_AVAILABLE)
     [BSP_QOS_UNIT_ETHER1] = (R_QOSCNT_ETHER1),
- #endif                                /* BSP_FEATURE_QOS_ETHER1_UNIT_AVAILABLE */
+ #endif                                            /* BSP_FEATURE_QOS_ETHER1_UNIT_AVAILABLE */
  #if (BSP_FEATURE_QOS_R_SWITCH_UNIT_AVAILABLE)
     [BSP_QOS_UNIT_R_SWITCH] = (R_QOSCNT_R_SWITCH)
- #endif                                /* BSP_FEATURE_QOS_R_SWITCH_UNIT_AVAILABLE */
+ #endif                                            /* BSP_FEATURE_QOS_R_SWITCH_UNIT_AVAILABLE */
 };
 
 /** Array contains all QoS configurations */
@@ -821,7 +821,7 @@ const bsp_qos_cfg_t g_qos_config_table[BSP_QOS_UNIT_NUM] =
         .read_latency_overflow_count_threshold  = BSP_QOS_FL_DFP_LANTENCY_MONITOR_READ_OVERFLOW_THRESHOLD,
         .write_latency_overflow_count_threshold = BSP_QOS_FL_DFP_LANTENCY_MONITOR_WRITE_OVERFLOW_THRESHOLD,
         .channel                 = BSP_QOS_FL_DFP_LANTENCY_MONITOR_CHANNEL,
-        .spid                    = BSP_QOS_FL_DFP_LANTENCY_MONITOR_SPID,
+        .spid                    = BSP_QOS_FL_DFP_LANTENCY_MONITOR_SPID, /* PRQA S 1281 # DP_MSR_R-7.2_UC1 */
         .interrupt_port_bind_bit = BSP_QOS_FL_DFP_LANTENCY_MONITOR_WRITE_INTERRUPT_BIND,
         .ipl        = BSP_QOS_FL_DFP_LANTENCY_MONITOR_IRQ_PRIORITY,
         .p_callback = BSP_QOS_FL_DFP_LANTENCY_MONITOR_CALLBACK,
@@ -849,7 +849,7 @@ const bsp_qos_cfg_t g_qos_config_table[BSP_QOS_UNIT_NUM] =
         .read_latency_overflow_count_threshold  = BSP_QOS_SYS_DFP_LANTENCY_MONITOR_READ_OVERFLOW_THRESHOLD,
         .write_latency_overflow_count_threshold = BSP_QOS_SYS_DFP_LANTENCY_MONITOR_WRITE_OVERFLOW_THRESHOLD,
         .channel                 = BSP_QOS_SYS_DFP_LANTENCY_MONITOR_CHANNEL,
-        .spid                    = BSP_QOS_SYS_DFP_LANTENCY_MONITOR_SPID,
+        .spid                    = BSP_QOS_SYS_DFP_LANTENCY_MONITOR_SPID, /* PRQA S 1281 # DP_MSR_R-7.2_UC1 */
         .interrupt_port_bind_bit = BSP_QOS_SYS_DFP_LANTENCY_MONITOR_WRITE_INTERRUPT_BIND,
         .ipl        = BSP_QOS_SYS_DFP_LANTENCY_MONITOR_IRQ_PRIORITY,
         .p_callback = BSP_QOS_SYS_DFP_LANTENCY_MONITOR_CALLBACK,
@@ -1065,7 +1065,7 @@ const bsp_qos_cfg_t g_qos_config_table[BSP_QOS_UNIT_NUM] =
 };
 
 /** Array contains the pointers to QoS configuration */
-const bsp_qos_irq_index_t g_qos_irq_index_table[BSP_QOS_IRQ_INDEX_MAX] =
+const bsp_qos_irq_index_t g_qos_irq_index_table[BSP_QOS_UNIT_NUM] =
 {
     [BSP_QOS_UNIT_FL_PE0CL0] = BSP_QOS_IRQ_INDEX_0,
     [BSP_QOS_UNIT_VC_PE0CL0] = BSP_QOS_IRQ_INDEX_1,
