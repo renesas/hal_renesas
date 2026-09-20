@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes
  **********************************************************************************************************************/
-#include "r_ostm.h"
+#include "r_ostm.h"                    /* PRQA S 0380 # DP_MSR_D-1.1-C99_UC1 & DP_MSR_D-1.1-C11_UC1 */
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -16,14 +16,14 @@
 /** "OSTM" in ASCII, used to determine if channel is open. */
 #define OSTM_OPEN              (0x4F53544DU)
 
-#ifdef BSP_MCU_GROUP_RH850U2Cx
-#elif BSP_MCU_GROUP_RH850U2Ax
+#if (BSP_FEATURE_OSTM_SIMPLE_CHANNEL_LAYOUT_AVAILABLE == 1U)
+#elif (BSP_FEATURE_OSTM_EXTENDED_CHANNEL_LAYOUT_AVAILABLE == 1U)
  #define OSTM_REG              (R_OSTM2_BASE - R_OSTM0_BASE)
 #else
  #define OSTM_REG              (R_OSTM3_BASE - R_OSTM1_BASE)
 #endif
 
-#ifdef BSP_MCU_GROUP_RH850U2Ax
+#if (BSP_FEATURE_OSTM_EXTENDED_CHANNEL_LAYOUT_AVAILABLE == 1U)
  #define OSTM_GROUP_GAP        (R_OSTM1_BASE - R_OSTM0_BASE)
  #define OSTM_GROUP_GAP_CLK    (R_IC0CKSEL9_BASE - R_IC0CKSEL8_BASE)
 #else
@@ -39,15 +39,17 @@
  **********************************************************************************************************************/
 static void r_ostm_period_register_set(ostm_instance_ctrl_t * p_instance_ctrl, uint32_t period_counts);
 
-static uint32_t r_ostm_clock_frequency_get(R_OSTMn_Type * p_ostm_regs);
+static uint32_t r_ostm_clock_frequency_get(void);
 
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
 static fsp_err_t r_ostm_open_param_checking(ostm_instance_ctrl_t * p_instance_ctrl, timer_cfg_t const * const p_cfg);
 
 #endif
 
-/* ISRs. */
-BSP_INTERRUPT_ATTRIBUTE void ostm_int_isr(void);
+/***********************************************************************************************************************
+ * ISR prototypes
+ **********************************************************************************************************************/
+BSP_INTERRUPT_ATTRIBUTE void ostm_int_isr(void); /* PRQA S 3449, 3451 # DP_MSR_R-8.5_UC1 */
 
 /***********************************************************************************************************************
  * Private global variables
@@ -58,9 +60,9 @@ BSP_INTERRUPT_ATTRIBUTE void ostm_int_isr(void);
  **********************************************************************************************************************/
 
 /** OSTM Implementation of General Timer Driver  */
-const timer_api_t g_timer_on_ostm =
+const timer_api_t g_timer_on_ostm =    /* PRQA S 1502 # Advisory R-2.8 */
 {
-    .open         = R_OSTM_Open,
+    .open         = R_OSTM_Open,       /* PRQA S 3635 EOF # Advisory R-17.12 */
     .start        = R_OSTM_Start,
     .stop         = R_OSTM_Stop,
     .reset        = R_OSTM_Reset,
@@ -74,81 +76,89 @@ const timer_api_t g_timer_on_ostm =
     .close        = R_OSTM_Close
 };
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @addtogroup OSTM
  * @{
  **********************************************************************************************************************/
 
+/* PRQA S 0292 -- */
+
 /***********************************************************************************************************************
  * Functions
  **********************************************************************************************************************/
 
-/*********************************************************************************************************************
- * Initializes the OSTM module instance. Implements @ref timer_api_t::open.
+/*******************************************************************************************************************//**
+ * @brief Initializes the OSTM module instance.
+ * Implements @ref timer_api_t::open.
  *
- * The OSTM hardware does not support one-shot functionality natively.  The one-shot feature is therefore implemented in
+ * The OSTM hardware does not support one-shot functionality natively. The one-shot feature is therefore implemented in
  * the OSTM HAL layer. For a timer configured as a one-shot timer, the timer is stopped upon the first timer expiration.
- *
- * The OSTM implementation of the general timer can accept an optional ostm_extended_cfg_t extension parameter.  For
- * OSTM, the extension specifies the clock to be used as timer source and the output pin configurations.  If the
- * extension parameter is not specified (NULL), the default clock P0CLK is used and the output pins are disabled.
+ * The OSTM implementation of the general timer can accept an optional ostm_extended_cfg_t extension parameter. For
+ * OSTM, the extension specifies the clock to be used as timer source and the output pin configurations. If the
+ * extension parameter is not specified NULL, the default clock PCLK0 is used and the output pins are disabled.
  *
  * @retval FSP_SUCCESS                 Initialization was successful and timer has started.
  * @retval FSP_ERR_ASSERTION           A required input pointer is NULL or the period is not in the valid range of
- *                                     1 to 0xFFFF.
+ *                                     1 to 0xFFFFFFFF.
  * @retval FSP_ERR_ALREADY_OPEN        R_OSTM_Open has already been called for this p_ctrl.
  * @retval FSP_ERR_IRQ_BSP_DISABLED    A required interrupt has not been enabled in the vector table.
  * @retval FSP_ERR_IP_CHANNEL_NOT_PRESENT  Requested channel number is not available on OSTM.
  **********************************************************************************************************************/
-fsp_err_t R_OSTM_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_cfg)
+fsp_err_t R_OSTM_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_cfg) /* PRQA S 1505 EOF # Advisory R-8.7 */
 {
-    ostm_instance_ctrl_t * p_instance_ctrl = (ostm_instance_ctrl_t *) p_ctrl;
+    ostm_instance_ctrl_t * p_instance_ctrl = (ostm_instance_ctrl_t *) p_ctrl;        /* PRQA S 0316 EOF # Advisory R-11.5 */
 
     /* Set counter mode (OSTMnMD) */
-    uint32_t              ostmnmd = 0;
-    ostm_extended_cfg_t * p_ext;
+    uint32_t ostmnmd = 0;
+    const ostm_extended_cfg_t * p_ext;
 
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
+    FSP_ASSERT(NULL != p_instance_ctrl); /* PRQA S 3432 EOF # DP_MSR_R-20.7_UC1 */
     fsp_err_t err = r_ostm_open_param_checking(p_instance_ctrl, p_cfg);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    FSP_ERROR_RETURN((FSP_SUCCESS == err), err);
 #endif
 
-    p_ext = (ostm_extended_cfg_t *) p_cfg->p_extend;
+    p_ext = (const ostm_extended_cfg_t *) p_cfg->p_extend;
 
-#ifdef BSP_MCU_GROUP_RH850U2Cx
+#if (BSP_FEATURE_OSTM_SIMPLE_CHANNEL_LAYOUT_AVAILABLE == 1U)
     p_instance_ctrl->p_reg = (R_OSTMn_Type *) (R_OSTM1_BASE +
-                                               OSTM_GROUP_GAP * ((p_cfg->channel + 1) % 2));
-#elif BSP_MCU_GROUP_RH850U2Ax
+                                               OSTM_GROUP_GAP * (((uint32_t) p_cfg->channel + 1U) % 2U));
+#elif (BSP_FEATURE_OSTM_EXTENDED_CHANNEL_LAYOUT_AVAILABLE == 1U)
 
     /* calculate base address for specified channel */
-    p_instance_ctrl->p_reg = (R_OSTMn_Type *) (R_OSTM0_BASE + OSTM_REG * (p_cfg->channel / 2) +
-                                               OSTM_GROUP_GAP * (p_cfg->channel % 2));
+    p_instance_ctrl->p_reg = (R_OSTMn_Type *) (R_OSTM0_BASE + /* PRQA S 0306, 3395 EOF # Advisory R-11.4, Advisory R-12.1 */
+                                               OSTM_REG * ((uint32_t) p_cfg->channel / 2U) +
+                                               OSTM_GROUP_GAP * ((uint32_t) p_cfg->channel % 2U));
 
-    if (((p_cfg->channel) == 8) || ((p_cfg->channel) == 9))
+    if (((p_cfg->channel) == 8U) || ((p_cfg->channel) == 9U))
     {
         /* calculate base address for specified channel */
         p_instance_ctrl->p_reg_cksel =
-            (R_IC0CKSELn_Type *) (R_IC0CKSEL8_BASE + OSTM_GROUP_GAP_CLK * (p_cfg->channel / 9));
+            (R_IC0CKSELn_Type *) (R_IC0CKSEL8_BASE +
+                                  OSTM_GROUP_GAP_CLK * ((uint32_t) p_cfg->channel / 9U));
     }
 
 #else
-    if ((p_cfg->channel) <= 1)
+    if ((p_cfg->channel) <= 1U)
     {
         p_instance_ctrl->p_reg = (R_OSTMn_Type *) (R_OSTM1_BASE +
-                                                   OSTM_GROUP_GAP * ((p_cfg->channel + 1) % 2));
+                                                   OSTM_GROUP_GAP * (((uint32_t) p_cfg->channel + 1U) % 2U));
     }
     else
     {
         /* calculate base address for specified channel */
-        p_instance_ctrl->p_reg = (R_OSTMn_Type *) (R_OSTM1_BASE + OSTM_REG * ((p_cfg->channel + 1) / 2) +
-                                                   OSTM_GROUP_GAP * ((p_cfg->channel + 1) % 2));
+        p_instance_ctrl->p_reg = (R_OSTMn_Type *) (R_OSTM1_BASE +
+                                                   OSTM_REG * ((uint32_t) p_cfg->channel / 2U) +
+                                                   OSTM_GROUP_GAP * (((uint32_t) p_cfg->channel + 1U) % 2U));
     }
 #endif
 
     p_instance_ctrl->p_cfg = p_cfg;
 
     /* Forcibly stop timer. */
-    p_instance_ctrl->p_reg->OSTMnTT = 1;
+    p_instance_ctrl->p_reg->OSTMnTT = 1; /* PRQA S 0662 EOF # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Set period register */
     r_ostm_period_register_set(p_instance_ctrl, p_cfg->period_counts);
@@ -177,33 +187,33 @@ fsp_err_t R_OSTM_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_
 
     R_BSP_IrqCfgEnable(p_cfg->cycle_end_irq, p_cfg->cycle_end_ipl, p_instance_ctrl);
 
-#ifdef BSP_MCU_GROUP_RH850U2Ax
-    if (((p_cfg->channel) == 8) || ((p_cfg->channel) == 9))
+#if (1U == BSP_FEATURE_OSTM_EXTENDED_CHANNEL_LAYOUT_AVAILABLE)
+    if (((p_cfg->channel) == 8U) || ((p_cfg->channel) == 9U))
     {
         /* Clock Select (OSTMncksel) */
         uint32_t OSTMncksel = 0;
 
         /* Selects the counter-clock-enable signal for OSTM8 or OSTM9. */
-        OSTMncksel |= (((uint8_t) p_ext->enable_signal) << R_IC0CKSELn_IC0CKSELn_IC0TMENn_Pos);
+        OSTMncksel |= (((uint32_t) p_ext->enable_signal) << ((uint32_t) R_IC0CKSELn_IC0CKSELn_IC0TMENn_Pos));
 
         /* Select the counter-clock-enable signal for the OSTM8 or OSTM9 counter (Enabled only when IC0TMEN8 = 1). */
-        OSTMncksel |= (((uint8_t) p_ext->select_clock) << R_IC0CKSELn_IC0CKSELn_IC0TMSELn_Pos);
+        OSTMncksel |= (((uint32_t) p_ext->select_clock) << ((uint32_t) R_IC0CKSELn_IC0CKSELn_IC0TMSELn_Pos));
 
         /* Select the counter-clock-enable signal for the OSTM8 or OSTM9 counter (Enabled only
          * when IC0TMEN8 = 1 and IC0TMSEL8[1:0] = 11B). */
-        OSTMncksel |= (((uint8_t) p_ext->clock_tauj1_channel) << R_IC0CKSELn_IC0CKSELn_IC0CKSELn3_Pos);
+        OSTMncksel |= (((uint32_t) p_ext->clock_tauj1_channel) << ((uint32_t) R_IC0CKSELn_IC0CKSELn_IC0CKSELn3_Pos));
 
         /* Select the counter-clock-enable signal for the OSTM8 or OSTM9 counter (Enabled only
          * when IC0TMEN8 = 1 and IC0TMSEL8[1:0] = 10B). */
-        OSTMncksel |= (((uint8_t) p_ext->clock_tauj0_channel) << R_IC0CKSELn_IC0CKSELn_IC0CKSELn2_Pos);
+        OSTMncksel |= (((uint32_t) p_ext->clock_tauj0_channel) << ((uint32_t) R_IC0CKSELn_IC0CKSELn_IC0CKSELn2_Pos));
 
         /* Select the counter-clock-enable signal for the OSTM8 or OSTM9 counter (Enabled only
          * when IC0TMEN8 = 1 and IC0TMSEL8[1:0] = 01B). */
-        OSTMncksel |= (((uint8_t) p_ext->clock_taud1_channel) << R_IC0CKSELn_IC0CKSELn_IC0CKSELn1_Pos);
+        OSTMncksel |= (((uint32_t) p_ext->clock_taud1_channel) << ((uint32_t) R_IC0CKSELn_IC0CKSELn_IC0CKSELn1_Pos));
 
         /* Select the counter-clock-enable signal for the OSTM8 or OSTM9 counter (Enabled only
          * when IC0TMEN8 = 1 and IC0TMSEL8[1:0] = 00B). */
-        OSTMncksel |= (((uint8_t) p_ext->clock_taud0_channel) << R_IC0CKSELn_IC0CKSELn_IC0CKSELn0_Pos);
+        OSTMncksel |= (((uint32_t) p_ext->clock_taud0_channel) << ((uint32_t) R_IC0CKSELn_IC0CKSELn_IC0CKSELn0_Pos));
 
         p_instance_ctrl->p_reg_cksel->IC0CKSELn = (uint16_t) OSTMncksel;
     }
@@ -221,18 +231,19 @@ fsp_err_t R_OSTM_Open (timer_ctrl_t * const p_ctrl, timer_cfg_t const * const p_
 }
 
 /*******************************************************************************************************************//**
- * Starts timer. Implements @ref timer_api_t::start.
+ * @brief Starts timer.
+ * Implements @ref timer_api_t::start.
  *
  * @retval FSP_SUCCESS                 Timer started.
  * @retval FSP_ERR_ASSERTION           p_ctrl is null.
  * @retval FSP_ERR_NOT_OPEN            The instance control structure is not opened.
  **********************************************************************************************************************/
-fsp_err_t R_OSTM_Start (timer_ctrl_t * const p_ctrl)
+fsp_err_t R_OSTM_Start (timer_ctrl_t * const p_ctrl)                          /* PRQA S 3673 EOF # Rule-8.13 */
 {
-    ostm_instance_ctrl_t * p_instance_ctrl = (ostm_instance_ctrl_t *) p_ctrl;
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
+    ostm_instance_ctrl_t * p_instance_ctrl = (ostm_instance_ctrl_t *) p_ctrl; /* PRQA S 3678 EOF # Rule-8.13 */
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
     FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ERROR_RETURN(OSTM_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN((OSTM_OPEN == (p_instance_ctrl->open)), FSP_ERR_NOT_OPEN);
 #endif
 
     /* Start timer */
@@ -242,7 +253,8 @@ fsp_err_t R_OSTM_Start (timer_ctrl_t * const p_ctrl)
 }
 
 /*******************************************************************************************************************//**
- * Stops the timer.  Implements @ref timer_api_t::stop.
+ * @brief Stops the timer.
+ * Implements @ref timer_api_t::stop.
  *
  * @retval FSP_SUCCESS                 Timer stopped.
  * @retval FSP_ERR_ASSERTION           p_ctrl was NULL.
@@ -251,9 +263,9 @@ fsp_err_t R_OSTM_Start (timer_ctrl_t * const p_ctrl)
 fsp_err_t R_OSTM_Stop (timer_ctrl_t * const p_ctrl)
 {
     ostm_instance_ctrl_t * p_instance_ctrl = (ostm_instance_ctrl_t *) p_ctrl;
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
     FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ERROR_RETURN(OSTM_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN((OSTM_OPEN == (p_instance_ctrl->open)), FSP_ERR_NOT_OPEN);
 #endif
 
     /* Stop timer */
@@ -263,8 +275,8 @@ fsp_err_t R_OSTM_Stop (timer_ctrl_t * const p_ctrl)
 }
 
 /*******************************************************************************************************************//**
- * Updates period. The new period is updated immediately and the counter is reset to the maximum value. Implements
- * @ref timer_api_t::periodSet.
+ * @brief Updates period. The new period is updated immediately and the counter is reset to the maximum value.
+ * Implements @ref timer_api_t::periodSet.
  *
  * @warning If periodic output is used, the duty cycle buffer registers are updated after the period buffer register.
  * If this function is called while the timer is running and an OSTM underflow occurs during processing, the duty cycle
@@ -274,20 +286,20 @@ fsp_err_t R_OSTM_Stop (timer_ctrl_t * const p_ctrl)
  *
  * @retval FSP_SUCCESS                 Period value updated.
  * @retval FSP_ERR_ASSERTION           A required pointer was NULL, or the period was not in the valid range of
- *                                     1 to 0xFFFF.
+ *                                     1 to 0xFFFFFFFF.
  * @retval FSP_ERR_NOT_OPEN            The instance control structure is not opened.
  **********************************************************************************************************************/
 fsp_err_t R_OSTM_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period_counts)
 {
     ostm_instance_ctrl_t * p_instance_ctrl = (ostm_instance_ctrl_t *) p_ctrl;
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
 
     /* Validate period parameter. */
     FSP_ASSERT(0U != period_counts);
     FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
-    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg->p_extend);
-    FSP_ERROR_RETURN(OSTM_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ASSERT(NULL != (p_instance_ctrl->p_cfg));
+    FSP_ASSERT(NULL != (p_instance_ctrl->p_cfg->p_extend));
+    FSP_ERROR_RETURN((OSTM_OPEN == (p_instance_ctrl->open)), FSP_ERR_NOT_OPEN);
 #endif
 
     /* Set period. */
@@ -297,7 +309,8 @@ fsp_err_t R_OSTM_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period_c
 }
 
 /*******************************************************************************************************************//**
- * Gets timer information and store it in provided pointer p_info. Implements @ref timer_api_t::infoGet.
+ * @brief Gets timer information and store it in provided pointer p_info.
+ * Implements @ref timer_api_t::infoGet.
  *
  * @retval FSP_SUCCESS                 Period, count direction, and frequency stored in p_info.
  * @retval FSP_ERR_ASSERTION           A required pointer is NULL.
@@ -306,28 +319,29 @@ fsp_err_t R_OSTM_PeriodSet (timer_ctrl_t * const p_ctrl, uint32_t const period_c
 fsp_err_t R_OSTM_InfoGet (timer_ctrl_t * const p_ctrl, timer_info_t * const p_info)
 {
     ostm_instance_ctrl_t * p_instance_ctrl = (ostm_instance_ctrl_t *) p_ctrl;
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
     FSP_ASSERT(NULL != p_info);
     FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ERROR_RETURN(OSTM_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN((OSTM_OPEN == (p_instance_ctrl->open)), FSP_ERR_NOT_OPEN);
 #endif
 
     /* Get and store period */
     p_info->period_counts = p_instance_ctrl->period;
 
     /* Get and store clock frequency */
-    p_info->clock_frequency = r_ostm_clock_frequency_get(p_instance_ctrl->p_reg);
+    p_info->clock_frequency = r_ostm_clock_frequency_get();
 
     /* OSTM counting direction */
     p_info->count_direction =
-        (p_instance_ctrl->p_reg->OSTMnCTL & R_OSTMn_OSTMnCTL_OSTMnMD1_Msk) ?
+        (0U != (p_instance_ctrl->p_reg->OSTMnCTL & R_OSTMn_OSTMnCTL_OSTMnMD1_Msk)) ?
         TIMER_DIRECTION_UP : TIMER_DIRECTION_DOWN;
 
     return FSP_SUCCESS;
 }
 
 /*******************************************************************************************************************//**
- * Retrieves the current state and counter value stores them in p_status. Implements @ref timer_api_t::statusGet.
+ * @brief Retrieves the current state and counter value stores them in p_status.
+ * Implements @ref timer_api_t::statusGet.
  *
  * @retval FSP_SUCCESS                 Current status and counter value provided in p_status.
  * @retval FSP_ERR_ASSERTION           A required pointer is NULL.
@@ -337,14 +351,14 @@ fsp_err_t R_OSTM_StatusGet (timer_ctrl_t * const p_ctrl, timer_status_t * const 
 {
     ostm_instance_ctrl_t * p_instance_ctrl = (ostm_instance_ctrl_t *) p_ctrl;
 
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
     FSP_ASSERT(NULL != p_status);
     FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ERROR_RETURN(OSTM_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN((OSTM_OPEN == (p_instance_ctrl->open)), FSP_ERR_NOT_OPEN);
 #endif
 
     /* Read the state. */
-    p_status->state = (p_instance_ctrl->p_reg->OSTMnTE_b.OSTMnTE) ?
+    p_status->state = (0U != p_instance_ctrl->p_reg->OSTMnTE_b.OSTMnTE) ?
                       TIMER_STATE_COUNTING : TIMER_STATE_STOPPED;
 
     /* Read counter value */
@@ -354,7 +368,7 @@ fsp_err_t R_OSTM_StatusGet (timer_ctrl_t * const p_ctrl, timer_status_t * const 
 }
 
 /*******************************************************************************************************************//**
- * Updates the user callback with the option to provide memory for the callback argument structure.
+ * @brief Updates the user callback with the option to provide memory for the callback argument structure.
  * Implements @ref timer_api_t::callbackSet.
  *
  * @retval  FSP_SUCCESS                  Callback updated successfully.
@@ -362,16 +376,16 @@ fsp_err_t R_OSTM_StatusGet (timer_ctrl_t * const p_ctrl, timer_status_t * const 
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
  **********************************************************************************************************************/
 fsp_err_t R_OSTM_CallbackSet (timer_ctrl_t * const          p_api_ctrl,
-                              void (                      * p_callback)(timer_callback_args_t *),
+                              void (                      * p_callback)(timer_callback_args_t * p_args),
                               void * const                  p_context,
                               timer_callback_args_t * const p_callback_memory)
 {
     ostm_instance_ctrl_t * p_ctrl = (ostm_instance_ctrl_t *) p_api_ctrl;
 
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(p_ctrl);
-    FSP_ASSERT(p_callback);
-    FSP_ERROR_RETURN(OSTM_OPEN == p_ctrl->open, FSP_ERR_NOT_OPEN);
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
+    FSP_ASSERT(NULL != p_ctrl);
+    FSP_ASSERT(NULL != p_callback);
+    FSP_ERROR_RETURN((OSTM_OPEN == (p_ctrl->open)), FSP_ERR_NOT_OPEN);
 #endif
 
     /* Store callback and context */
@@ -385,8 +399,8 @@ fsp_err_t R_OSTM_CallbackSet (timer_ctrl_t * const          p_api_ctrl,
 }
 
 /*******************************************************************************************************************//**
- * Stops counter, disables interrupts, disables output pins, and clears internal driver data.  Implements
- * @ref timer_api_t::close.
+ * @brief Stops counter, disables interrupts, disables output pins, and clears internal driver data.
+ * Implements @ref timer_api_t::close.
  *
  * @retval FSP_SUCCESS                 Timer closed.
  * @retval FSP_ERR_ASSERTION           p_ctrl is NULL.
@@ -395,9 +409,9 @@ fsp_err_t R_OSTM_CallbackSet (timer_ctrl_t * const          p_api_ctrl,
 fsp_err_t R_OSTM_Close (timer_ctrl_t * const p_ctrl)
 {
     ostm_instance_ctrl_t * p_instance_ctrl = (ostm_instance_ctrl_t *) p_ctrl;
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
     FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ERROR_RETURN(OSTM_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN((OSTM_OPEN == (p_instance_ctrl->open)), FSP_ERR_NOT_OPEN);
 #endif
 
     /* Cleanup the device: Stop counter, disable interrupts, and power down if no other channels are in use. */
@@ -413,6 +427,7 @@ fsp_err_t R_OSTM_Close (timer_ctrl_t * const p_ctrl)
 }
 
 /*******************************************************************************************************************//**
+ * @brief Duty Cycle Set.
  * @ref timer_api_t::R_OSTM_DutyCycleSet is not supported on the U2x.
  *
  * @retval FSP_ERR_UNSUPPORTED            Function not supported in this implemention.
@@ -428,7 +443,8 @@ fsp_err_t R_OSTM_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
 }
 
 /*******************************************************************************************************************//**
- * Reset OSTM Counter Register. Implements @ref timer_api_t::reset.
+ * @brief Reset OSTM Counter Register.
+ * Implements @ref timer_api_t::reset.
  *
  * @retval FSP_SUCCESS                 Timer reset.
  * @retval FSP_ERR_ASSERTION           p_ctrl is NULL.
@@ -437,9 +453,9 @@ fsp_err_t R_OSTM_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
 fsp_err_t R_OSTM_Reset (timer_ctrl_t * const p_ctrl)
 {
     ostm_instance_ctrl_t * p_instance_ctrl = (ostm_instance_ctrl_t *) p_ctrl;
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
     FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ERROR_RETURN(OSTM_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN((OSTM_OPEN == (p_instance_ctrl->open)), FSP_ERR_NOT_OPEN);
 #endif
 
     /* Reset timer counter with current period */
@@ -449,6 +465,7 @@ fsp_err_t R_OSTM_Reset (timer_ctrl_t * const p_ctrl)
 }
 
 /*******************************************************************************************************************//**
+ * @brief OSTM Enable.
  * @ref timer_api_t::R_OSTM_Enable is not supported on the U2x.
  *
  * @retval FSP_ERR_UNSUPPORTED            Function not supported in this implemention.
@@ -462,6 +479,7 @@ fsp_err_t R_OSTM_Enable (timer_ctrl_t * const p_ctrl)
 }
 
 /*******************************************************************************************************************//**
+ * @brief OSTM Disable.
  * @ref timer_api_t::R_OSTM_Disable is not supported on the U2x.
  *
  * @retval FSP_ERR_UNSUPPORTED            Function not supported in this implemention.
@@ -475,26 +493,25 @@ fsp_err_t R_OSTM_Disable (timer_ctrl_t * const p_ctrl)
 }
 
 /*******************************************************************************************************************//**
- * OSTM Output Control Low/High Level, Only available for OSTM0 in software control mode
+ * @brief OSTM Output Control Low/High Level, Only available for OSTM0 in software control mode
  *
- * @retval FSP_SUCCESS                 Timer closed.
- * @retval FSP_ERR_ASSERTION           p_ctrl is NULL.
+ * @retval FSP_SUCCESS                 Output level set success.
+ * @retval FSP_ERR_ASSERTION           A required input pointer is NULL.
  * @retval FSP_ERR_NOT_OPEN            The instance control structure is not opened.
  * @retval FSP_ERR_INVALID_CHANNEL     Only Available for OSTM0.
  * @retval FSP_ERR_INVALID_MODE        Current Mode is not Software Control.
  **********************************************************************************************************************/
-fsp_err_t R_OSTM_OutputControl (timer_ctrl_t * const p_ctrl, ostm_output_level_t output_level)
+fsp_err_t R_OSTM_OutputControl (timer_ctrl_t * const p_ctrl, ostm_output_level_t output_level) /* PRQA S 1503 # Rule-2.1 */
 {
     ostm_instance_ctrl_t * p_instance_ctrl = (ostm_instance_ctrl_t *) p_ctrl;
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
     FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
-    FSP_ERROR_RETURN(OSTM_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
-    FSP_ERROR_RETURN(p_instance_ctrl->p_cfg->channel == 0, FSP_ERR_INVALID_CHANNEL);
-    FSP_ERROR_RETURN((p_instance_ctrl->p_reg->OSTMnTOE_b.OSTMnTOE == 0), FSP_ERR_INVALID_MODE);
+    FSP_ERROR_RETURN((OSTM_OPEN == (p_instance_ctrl->open)), FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN(((p_instance_ctrl->p_cfg->channel) == 0U), FSP_ERR_INVALID_CHANNEL);
+    FSP_ERROR_RETURN((0U == (p_instance_ctrl->p_reg->OSTMnTOE_b.OSTMnTOE)), FSP_ERR_INVALID_MODE);
 #endif
 
-    p_instance_ctrl->p_reg->OSTMnTO = output_level;
+    p_instance_ctrl->p_reg->OSTMnTO = (uint8_t) output_level;
 
     return FSP_SUCCESS;
 }
@@ -505,7 +522,7 @@ fsp_err_t R_OSTM_OutputControl (timer_ctrl_t * const p_ctrl, ostm_output_level_t
  * Private Functions
  **********************************************************************************************************************/
 
-#if OSTM_CFG_PARAM_CHECKING_ENABLE
+#if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
 
 /*******************************************************************************************************************//**
  * Parameter checking for R_OSTM_Open.
@@ -515,18 +532,17 @@ fsp_err_t R_OSTM_OutputControl (timer_ctrl_t * const p_ctrl, ostm_output_level_t
  *
  * @retval FSP_SUCCESS                 Initialization was successful and timer has started.
  * @retval FSP_ERR_ASSERTION           A required input pointer is NULL or the period is not in the valid range of
- *                                     1 to 0xFFFF.
+ *                                     1 to 0xFFFFFFFF.
  * @retval FSP_ERR_ALREADY_OPEN        R_OSTM_Open has already been called for this p_ctrl.
  * @retval FSP_ERR_IRQ_BSP_DISABLED    A required interrupt has not been enabled in the vector table.
  * @retval FSP_ERR_IP_CHANNEL_NOT_PRESENT  Requested channel number is not available on OSTM.
  **********************************************************************************************************************/
 static fsp_err_t r_ostm_open_param_checking (ostm_instance_ctrl_t * p_instance_ctrl, timer_cfg_t const * const p_cfg)
 {
- #if OSTM_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(NULL != p_instance_ctrl);
+ #if (OSTM_CFG_PARAM_CHECKING_ENABLE == 1U)
     FSP_ASSERT(NULL != p_cfg);
-    FSP_ASSERT(NULL != p_cfg->p_extend);
-    FSP_ERROR_RETURN(OSTM_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
+    FSP_ASSERT(NULL != (p_cfg->p_extend));
+    FSP_ERROR_RETURN((OSTM_OPEN != (p_instance_ctrl->open)), FSP_ERR_ALREADY_OPEN);
  #endif
 
     /* Enable IRQ if user supplied a callback function,
@@ -535,13 +551,14 @@ static fsp_err_t r_ostm_open_param_checking (ostm_instance_ctrl_t * p_instance_c
     if ((NULL != p_cfg->p_callback) || (TIMER_MODE_ONE_SHOT == p_cfg->mode))
     {
         /* Return error if IRQ is required and not in the vector table. */
-        FSP_ERROR_RETURN(p_cfg->cycle_end_irq >= 0, FSP_ERR_IRQ_BSP_DISABLED);
+        FSP_ERROR_RETURN(((IRQn_Type) 0 <= (p_cfg->cycle_end_irq)), (FSP_ERR_IRQ_BSP_DISABLED)); /* PRQA S 4332 # Advisory R-10.5 */
     }
 
-    FSP_ASSERT(0U != p_cfg->period_counts);
+    FSP_ASSERT((((0U) != (p_cfg->period_counts))));
 
     /* Validate channel number. */
-    FSP_ERROR_RETURN(((1U << p_cfg->channel) & BSP_FEATURE_OSTM_VALID_CHANNEL_MASK), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
+    FSP_ERROR_RETURN((0U != (((uint32_t) 1U << (uint32_t) (p_cfg->channel)) & BSP_FEATURE_OSTM_VALID_CHANNEL_MASK)),
+                     (FSP_ERR_IP_CHANNEL_NOT_PRESENT));
 
     return FSP_SUCCESS;
 }
@@ -556,8 +573,8 @@ static fsp_err_t r_ostm_open_param_checking (ostm_instance_ctrl_t * p_instance_c
  **********************************************************************************************************************/
 static void r_ostm_period_register_set (ostm_instance_ctrl_t * p_instance_ctrl, uint32_t period_counts)
 {
-    ostm_extended_cfg_t * p_ext         = (ostm_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
-    uint32_t              timer_running = 0U;
+    const ostm_extended_cfg_t * p_ext = (const ostm_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    uint32_t timer_running            = 0U;
     if (1U == p_instance_ctrl->p_reg->OSTMnTE)
     {
         timer_running = 1U;
@@ -580,29 +597,27 @@ static void r_ostm_period_register_set (ostm_instance_ctrl_t * p_instance_ctrl, 
         p_instance_ctrl->p_reg->OSTMnCNT = period_counts;
     }
 
-    if (timer_running)
+    if (0U != timer_running)
     {
         p_instance_ctrl->p_reg->OSTMnTS = 1U;
     }
 }
 
 /*******************************************************************************************************************//**
- * Obtains the clock frequency of OSTM for all clock sources except OSTM0 underflow, with divisor applied.
+ * Obtains the clock frequency of OSTM for all clock sources except OSTM0 underflow.
  *
- * @param[in]  p_ostm_regs         Registers of OSTM channel used
- *
- * @return Source clock frequency of OSTM in Hz, divider applied.
+ * @return Source clock frequency of OSTM in Hz.
  **********************************************************************************************************************/
-static uint32_t r_ostm_clock_frequency_get (R_OSTMn_Type * p_ostm_regs)
+static uint32_t r_ostm_clock_frequency_get (void)
 {
-    uint32_t clock_freq_hz = 0U;
+    uint32_t clock_freq_hz = (0U);
 
-    FSP_PARAMETER_NOT_USED(p_ostm_regs);
-
-    /* Call CGC function to obtain current PCLKB clock frequency. */
-
-    // clock_freq_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_CPUCLK_L);
-    clock_freq_hz = OSTM_CFG_CLOCK;
+    /* Get the OSTM clock source. */
+#if (BSP_FEATURE_OSTM_EXTENDED_CHANNEL_LAYOUT_AVAILABLE == 1U)
+    clock_freq_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_CLK_HSB);
+#else
+    clock_freq_hz = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_CLKC_HSB);
+#endif
 
     return clock_freq_hz;
 }
@@ -610,7 +625,7 @@ static uint32_t r_ostm_clock_frequency_get (R_OSTMn_Type * p_ostm_regs)
 /***********************************************************************************************************************
  * Interrupt service routines
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void ostm_int_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void ostm_int_isr (void) /* PRQA S 1503 # Rule-2.1 */
 {
     /* Save context if RTOS is used */
 

@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes
  **********************************************************************************************************************/
-#include "r_cgc.h"
+#include "r_cgc.h"                     /* PRQA S 0380 # DP_MSR_D-1.1_UC1 & DP_MSR_D-1.1_UC2 */
 #include "r_cgc_cfg.h"
 
 /***********************************************************************************************************************
@@ -21,19 +21,19 @@
  #define CGC_CLOCK_NO_DIVISION                     (0x01U)
  #define CGC_CLOCK_DIVIDED_BY_2                    (0x02U)
 #else
- #define CGC_CLOCK_DIVIDED_BY_2_DIV_16             (0x02U)
- #define CGC_CLOCK_DIVIDED_BY_4_DIV_16             (0x04U)
- #define CGC_CLOCK_DIVIDED_BY_5_DIV_16             (0x05U)
+ #define CGC_CLOCK_DIVIDED_BY_2_DIV_16             (0x02U) /* PRQA S 1534 # Advisory R-2.5 */
+ #define CGC_CLOCK_DIVIDED_BY_4_DIV_16             (0x04U) /* PRQA S 1534 # Advisory R-2.5 */
+ #define CGC_CLOCK_DIVIDED_BY_5_DIV_16             (0x05U) /* PRQA S 1534 # Advisory R-2.5 */
  #define CGC_CLOCK_DIVIDED_BY_6_DIV_16             (0x06U)
- #define CGC_CLOCK_DIVIDED_BY_7_DIV_16             (0x07U)
+ #define CGC_CLOCK_DIVIDED_BY_7_DIV_16             (0x07U) /* PRQA S 1534 # Advisory R-2.5 */
  #define CGC_CLOCK_DIVIDED_BY_8_DIV_16             (0x08U)
- #define CGC_CLOCK_DIVIDED_BY_9_DIV_16             (0x09U)
+ #define CGC_CLOCK_DIVIDED_BY_9_DIV_16             (0x09U) /* PRQA S 1534 # Advisory R-2.5 */
  #define CGC_CLOCK_DIVIDED_BY_10_DIV_16            (0x0AU)
- #define CGC_CLOCK_DIVIDED_BY_11_DIV_16            (0x0BU)
+ #define CGC_CLOCK_DIVIDED_BY_11_DIV_16            (0x0BU) /* PRQA S 1534 # Advisory R-2.5 */
  #define CGC_CLOCK_DIVIDED_BY_12_DIV_16            (0x0CU)
- #define CGC_CLOCK_DIVIDED_BY_13_DIV_16            (0x0DU)
+ #define CGC_CLOCK_DIVIDED_BY_13_DIV_16            (0x0DU) /* PRQA S 1534 # Advisory R-2.5 */
  #define CGC_CLOCK_DIVIDED_BY_14_DIV_16            (0x0EU)
- #define CGC_CLOCK_DIVIDED_BY_15_DIV_16            (0x0FU)
+ #define CGC_CLOCK_DIVIDED_BY_15_DIV_16            (0x0FU) /* PRQA S 1534 # Advisory R-2.5 */
  #define CGC_CLOCK_NO_DIVISION                     (0x0000U)
 #endif
 
@@ -48,7 +48,7 @@
 #if (2U == BSP_FEATURE_CGC_NUM_OF_GEAR_SHIFT_REPETITION_CASE)
 
 /* Array of clock division value used for gear up configuration */
-static const uint32_t cgc_gear_up_repetitions_arr[] =
+static const uint32_t cgc_gear_up_repetitions_arr[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
     CGC_CLOCK_DIVIDED_BY_8_DIV_16,
     CGC_CLOCK_DIVIDED_BY_10_DIV_16,
@@ -58,7 +58,7 @@ static const uint32_t cgc_gear_up_repetitions_arr[] =
 };
 
 /* Array of clock division value used for gear down configuration */
-static const uint32_t cgc_gear_down_repetitions_arr[] =
+static const uint32_t cgc_gear_down_repetitions_arr[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
     CGC_CLOCK_DIVIDED_BY_14_DIV_16,
     CGC_CLOCK_DIVIDED_BY_12_DIV_16,
@@ -71,7 +71,7 @@ static const uint32_t cgc_gear_down_repetitions_arr[] =
 #if (5U == BSP_FEATURE_CGC_NUM_OF_GEAR_SHIFT_REPETITION_CASE)
 
 /* Array of clock division value used for gear up configuration */
-static const uint32_t cgc_800_gear_up_repetitions_arr[] =
+static const uint32_t cgc_800_gear_up_repetitions_arr[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
     CGC_CLOCK_DIVIDED_BY_6_DIV_16,
     CGC_CLOCK_DIVIDED_BY_8_DIV_16,
@@ -80,7 +80,7 @@ static const uint32_t cgc_800_gear_up_repetitions_arr[] =
     CGC_CLOCK_DIVIDED_BY_14_DIV_16,
     CGC_CLOCK_NO_DIVISION
 };
-static const uint32_t cgc_640_gear_up_repetitions_arr[] =
+static const uint32_t cgc_640_gear_up_repetitions_arr[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
     CGC_CLOCK_DIVIDED_BY_7_DIV_16,
     CGC_CLOCK_DIVIDED_BY_9_DIV_16,
@@ -89,7 +89,7 @@ static const uint32_t cgc_640_gear_up_repetitions_arr[] =
     CGC_CLOCK_DIVIDED_BY_15_DIV_16,
     CGC_CLOCK_NO_DIVISION
 };
-static const uint32_t cgc_480_gear_up_repetitions_arr[] =
+static const uint32_t cgc_480_gear_up_repetitions_arr[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
     CGC_CLOCK_DIVIDED_BY_9_DIV_16,
     CGC_CLOCK_DIVIDED_BY_11_DIV_16,
@@ -97,14 +97,14 @@ static const uint32_t cgc_480_gear_up_repetitions_arr[] =
     CGC_CLOCK_DIVIDED_BY_15_DIV_16,
     CGC_CLOCK_NO_DIVISION
 };
-static const uint32_t cgc_320_gear_up_repetitions_arr[] =
+static const uint32_t cgc_320_gear_up_repetitions_arr[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
     CGC_CLOCK_DIVIDED_BY_14_DIV_16,
     CGC_CLOCK_NO_DIVISION
 };
 
 /* Array of clock division value used for gear down configuration */
-static const uint32_t cgc_800_gear_down_repetitions_arr[] =
+static const uint32_t cgc_800_gear_down_repetitions_arr[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
     CGC_CLOCK_DIVIDED_BY_14_DIV_16,
     CGC_CLOCK_DIVIDED_BY_12_DIV_16,
@@ -113,7 +113,7 @@ static const uint32_t cgc_800_gear_down_repetitions_arr[] =
     CGC_CLOCK_DIVIDED_BY_6_DIV_16,
     CGC_CLOCK_DIVIDED_BY_4_DIV_16,
 };
-static const uint32_t cgc_640_gear_down_repetitions_arr[] =
+static const uint32_t cgc_640_gear_down_repetitions_arr[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
     CGC_CLOCK_DIVIDED_BY_14_DIV_16,
     CGC_CLOCK_DIVIDED_BY_12_DIV_16,
@@ -122,7 +122,7 @@ static const uint32_t cgc_640_gear_down_repetitions_arr[] =
     CGC_CLOCK_DIVIDED_BY_6_DIV_16,
     CGC_CLOCK_DIVIDED_BY_5_DIV_16,
 };
-static const uint32_t cgc_480_gear_down_repetitions_arr[] =
+static const uint32_t cgc_480_gear_down_repetitions_arr[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
     CGC_CLOCK_DIVIDED_BY_14_DIV_16,
     CGC_CLOCK_DIVIDED_BY_12_DIV_16,
@@ -130,7 +130,7 @@ static const uint32_t cgc_480_gear_down_repetitions_arr[] =
     CGC_CLOCK_DIVIDED_BY_8_DIV_16,
     CGC_CLOCK_DIVIDED_BY_7_DIV_16,
 };
-static const uint32_t cgc_320_gear_down_repetitions_arr[] =
+static const uint32_t cgc_320_gear_down_repetitions_arr[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
     CGC_CLOCK_DIVIDED_BY_14_DIV_16,
     CGC_CLOCK_DIVIDED_BY_10_DIV_16,
@@ -141,9 +141,9 @@ static const uint32_t cgc_320_gear_down_repetitions_arr[] =
  * Private function prototypes
  **********************************************************************************************************************/
 
-static fsp_err_t                       r_cgc_clock_check(cgc_clock_t const clock_source);
-static cgc_prv_clock_stability_state_t r_cgc_stabilization_check(cgc_clock_t clock);
-static cgc_prv_clock_state_t           r_cgc_clock_run_state_get(cgc_clock_t clock);
+static fsp_err_t                       r_cgc_clock_active_check(cgc_clock_t const clock_source);
+static cgc_prv_clock_stability_state_t r_cgc_stabilization_check(cgc_clock_t prv_clock);
+static cgc_prv_clock_state_t           r_cgc_clock_run_state_get(cgc_clock_t prv_clock);
 
 static void r_cgc_gear_down(cgc_sys_clock_info_t * p_system_clock, uint32_t clock_hz);
 static void r_cgc_gear_up(cgc_sys_clock_info_t * p_system_clock, uint32_t clock_hz);
@@ -196,7 +196,7 @@ static fsp_err_t r_cgc_clock_change(cgc_clock_t                     clock_source
 static void r_cgc_disable_protection(void);
 static void r_cgc_enable_protection(void);
 
-#if CGC_CFG_PARAM_CHECKING_ENABLE
+#if CGC_CFG_PARAM_CHECKING_ENABLE      /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
 static fsp_err_t r_cgc_common_parameter_checking(cgc_instance_ctrl_t * p_instance_ctrl);
 
 #endif
@@ -213,27 +213,31 @@ static fsp_err_t r_cgc_common_parameter_checking(cgc_instance_ctrl_t * p_instanc
  * Global Variables
  **********************************************************************************************************************/
 
-const cgc_api_t g_cgc_on_cgc =
+const cgc_api_t g_cgc_on_cgc =                          /* PRQA S 1502 # Advisory R-2.8 */
 {
-    .open                 = R_CGC_Open,
-    .clocksCfg            = R_CGC_ClocksCfg,
-    .clockStart           = R_CGC_ClockStart,
-    .clockStop            = R_CGC_ClockStop,
-    .clockCheck           = R_CGC_ClockCheck,
-    .systemClockSet       = R_CGC_SystemClockSet,
-    .systemClockGearSet   = R_CGC_SystemClockGearSet,
-    .systemClockGet       = R_CGC_SystemClockGet,
-    .oscStopDetectEnable  = R_CGC_OscStopDetectEnable,
-    .oscStopDetectDisable = R_CGC_OscStopDetectDisable,
-    .oscStopStatusClear   = R_CGC_OscStopStatusClear,
-    .callbackSet          = R_CGC_CallbackSet,
-    .close                = R_CGC_Close,
+    .open                 = R_CGC_Open,                 /* PRQA S 3635 # Advisory R-17.12 */
+    .clocksCfg            = R_CGC_ClocksCfg,            /* PRQA S 3635 # Advisory R-17.12 */
+    .clockStart           = R_CGC_ClockStart,           /* PRQA S 3635 # Advisory R-17.12 */
+    .clockStop            = R_CGC_ClockStop,            /* PRQA S 3635 # Advisory R-17.12 */
+    .clockCheck           = R_CGC_ClockCheck,           /* PRQA S 3635 # Advisory R-17.12 */
+    .systemClockSet       = R_CGC_SystemClockSet,       /* PRQA S 3635 # Advisory R-17.12 */
+    .systemClockGearSet   = R_CGC_SystemClockGearSet,   /* PRQA S 3635 # Advisory R-17.12 */
+    .systemClockGet       = R_CGC_SystemClockGet,       /* PRQA S 3635 # Advisory R-17.12 */
+    .oscStopDetectEnable  = R_CGC_OscStopDetectEnable,  /* PRQA S 3635 # Advisory R-17.12 */
+    .oscStopDetectDisable = R_CGC_OscStopDetectDisable, /* PRQA S 3635 # Advisory R-17.12 */
+    .oscStopStatusClear   = R_CGC_OscStopStatusClear,   /* PRQA S 3635 # Advisory R-17.12 */
+    .callbackSet          = R_CGC_CallbackSet,          /* PRQA S 3635 # Advisory R-17.12 */
+    .close                = R_CGC_Close,                /* PRQA S 3635 # Advisory R-17.12 */
 };
+
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
 
 /*******************************************************************************************************************//**
  * @addtogroup CGC
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /***********************************************************************************************************************
  * Functions
@@ -246,11 +250,11 @@ const cgc_api_t g_cgc_on_cgc =
  * @retval FSP_ERR_ASSERTION        Invalid input argument.
  * @retval FSP_ERR_ALREADY_OPEN     Module is already open.
  **********************************************************************************************************************/
-fsp_err_t R_CGC_Open (cgc_ctrl_t * const p_ctrl, cgc_cfg_t const * const p_cfg)
+fsp_err_t R_CGC_Open (cgc_ctrl_t * const p_ctrl, cgc_cfg_t const * const p_cfg) /* PRQA S 1505 # Advisory R-8.7 */
 {
-    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;
+    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;     /* PRQA S 0316 # Advisory R-11.5 */
 
-#if CGC_CFG_PARAM_CHECKING_ENABLE
+#if CGC_CFG_PARAM_CHECKING_ENABLE                                               /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ASSERT(NULL != p_cfg);
 
@@ -265,11 +269,12 @@ fsp_err_t R_CGC_Open (cgc_ctrl_t * const p_ctrl, cgc_cfg_t const * const p_cfg)
     /* System clock SYS information */
     p_instance_ctrl->cgc_sys_clocks[CGC_PRV_SYSTEM_CLOCK_SYS] = (cgc_sys_clock_info_t)
     {
-        .p_ckd_ctrl       = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_PLLC,
-        .p_ckd_stat       = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_PLLS,
-        .p_cks_ctrl       = (volatile uint32_t *) &R_SYS0_CLOCK->CKSC_CPUC,
-        .p_cks_stat       = (volatile uint32_t *) &R_SYS0_CLOCK->CKSC_CPUS,
-        .get_clock_source = r_cgc_sys_clocksource_get,
+        .p_ckd_ctrl = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_PLLC,  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        .p_ckd_stat = &R_SYS0_CLOCK->CKD_PLLS,                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        .p_cks_ctrl = (volatile uint32_t *) &R_SYS0_CLOCK->CKSC_CPUC, /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        .p_cks_stat = &R_SYS0_CLOCK->CKSC_CPUS,                       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+
+        .get_clock_source = r_cgc_sys_clocksource_get,                /* PRQA S 3635 # Advisory R-17.12 */
     };
 #endif
 
@@ -278,11 +283,12 @@ fsp_err_t R_CGC_Open (cgc_ctrl_t * const p_ctrl, cgc_cfg_t const * const p_cfg)
     /* System clock CLEAN information */
     p_instance_ctrl->cgc_sys_clocks[CGC_PRV_SYSTEM_CLOCK_SYS_CLEAN] = (cgc_sys_clock_info_t)
     {
-        .p_ckd_ctrl       = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_PLLC,
-        .p_ckd_stat       = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_PLLS,
-        .p_cks_ctrl       = (volatile uint32_t *) &R_SYS0_CLOCK->CKS_CLEANC,
-        .p_cks_stat       = (volatile uint32_t *) &R_SYS0_CLOCK->CKS_CLEANS,
-        .get_clock_source = r_cgc_sysclean_clocksource_get,
+        .p_ckd_ctrl = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_PLLC,   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        .p_ckd_stat = &R_SYS0_CLOCK->CKD_PLLS,                         /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        .p_cks_ctrl = (volatile uint32_t *) &R_SYS0_CLOCK->CKS_CLEANC, /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        .p_cks_stat = &R_SYS0_CLOCK->CKS_CLEANS,                       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+
+        .get_clock_source = r_cgc_sysclean_clocksource_get,            /* PRQA S 3635 # Advisory R-17.12 */
     };
 #endif
 
@@ -291,11 +297,12 @@ fsp_err_t R_CGC_Open (cgc_ctrl_t * const p_ctrl, cgc_cfg_t const * const p_cfg)
     /* System clock SSCG0 information */
     p_instance_ctrl->cgc_sys_clocks[CGC_PRV_SYSTEM_CLOCK_SYS_SSCG] = (cgc_sys_clock_info_t)
     {
-        .p_ckd_ctrl       = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_SSCGC,
-        .p_ckd_stat       = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_SSCGS,
-        .p_cks_ctrl       = (volatile uint32_t *) &R_SYS0_CLOCK->CKS_SSCGC,
-        .p_cks_stat       = (volatile uint32_t *) &R_SYS0_CLOCK->CKS_SSCGS,
-        .get_clock_source = r_cgc_syssscg_clocksource_get,
+        .p_ckd_ctrl = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_SSCGC, /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        .p_ckd_stat = &R_SYS0_CLOCK->CKD_SSCGS,                       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        .p_cks_ctrl = (volatile uint32_t *) &R_SYS0_CLOCK->CKS_SSCGC, /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        .p_cks_stat = &R_SYS0_CLOCK->CKS_SSCGS,                       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+
+        .get_clock_source = r_cgc_syssscg_clocksource_get,            /* PRQA S 3635 # Advisory R-17.12 */
     };
 #endif
 
@@ -304,11 +311,12 @@ fsp_err_t R_CGC_Open (cgc_ctrl_t * const p_ctrl, cgc_cfg_t const * const p_cfg)
     /* System clock SSCG1 information */
     p_instance_ctrl->cgc_sys_clocks[CGC_PRV_SYSTEM_CLOCK_SYS_SSCG1] = (cgc_sys_clock_info_t)
     {
-        .p_ckd_ctrl       = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_SSCG1C,
-        .p_ckd_stat       = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_SSCG1S,
-        .p_cks_ctrl       = (volatile uint32_t *) &R_SYS0_CLOCK->CKS_SSCG1C,
-        .p_cks_stat       = (volatile uint32_t *) &R_SYS0_CLOCK->CKS_SSCG1S,
-        .get_clock_source = r_cgc_syssscg1_clocksource_get,
+        .p_ckd_ctrl = (volatile uint32_t *) &R_SYS0_CLOCK->CKD_SSCG1C, /* PRQA S 0306 # Advisory R-11.4 */
+        .p_ckd_stat = &R_SYS0_CLOCK->CKD_SSCG1S,                       /* PRQA S 0306 # Advisory R-11.4 */
+        .p_cks_ctrl = (volatile uint32_t *) &R_SYS0_CLOCK->CKS_SSCG1C, /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        .p_cks_stat = &R_SYS0_CLOCK->CKS_SSCG1S,                       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+
+        .get_clock_source = r_cgc_syssscg1_clocksource_get,            /* PRQA S 3635 # Advisory R-17.12 */
     };
 #endif
 
@@ -343,29 +351,54 @@ fsp_err_t R_CGC_Open (cgc_ctrl_t * const p_ctrl, cgc_cfg_t const * const p_cfg)
  * @retval FSP_ERR_CGC_NOT_STABILIZED       Clock failed to stabilize
  * @retval FSP_ERR_CGC_INVALID_CLOCK_SOURCE Invalid clock source
  **********************************************************************************************************************/
-fsp_err_t R_CGC_ClocksCfg (cgc_ctrl_t * const p_ctrl, cgc_clocks_cfg_t const * const p_clock_cfg)
+fsp_err_t R_CGC_ClocksCfg (cgc_ctrl_t * const p_ctrl, cgc_clocks_cfg_t const * const p_clock_cfg) /* PRQA S 1505 # Advisory R-8.7 */
 {
-    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;
+    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;                       /* PRQA S 0316 # Advisory R-11.5 */
     fsp_err_t             err             = FSP_SUCCESS;
 
-#if CGC_CFG_PARAM_CHECKING_ENABLE
+#if CGC_CFG_PARAM_CHECKING_ENABLE                                                                 /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
     err = r_cgc_common_parameter_checking(p_instance_ctrl);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
     FSP_ASSERT(NULL != p_clock_cfg);
 #endif
 
-    /* Set the PLL clock oscillator as configuration */
+    /* Stop dependent clocks first (PLL must be stopped before Main OSC) */
 #if (BSP_FEATURE_CGC_HAS_CLK_SYS_SSCG)
-    err = r_cgc_clock_change(CGC_CLOCK_PLL, p_clock_cfg->pll_sscg_state, p_instance_ctrl->cgc_peripheral_clocks);
+    if (CGC_CLOCK_CHANGE_STOP == p_clock_cfg->pll_sscg_state)
 #else
-    err = r_cgc_clock_change(CGC_CLOCK_PLL, p_clock_cfg->pll_state, p_instance_ctrl->cgc_peripheral_clocks);
+    if (CGC_CLOCK_CHANGE_STOP == p_clock_cfg->pll_state)
 #endif
+    {
+        /* Set the PLL clock oscillator as configuration */
+        err = r_cgc_clock_change(CGC_CLOCK_PLL, CGC_CLOCK_CHANGE_STOP, p_instance_ctrl->cgc_peripheral_clocks);
+        FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    }
 
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    if (CGC_CLOCK_CHANGE_STOP == p_clock_cfg->mainosc_state)
+    {
+        /* Set the Main OSC clock oscillator as configuration */
+        err = r_cgc_clock_change(CGC_CLOCK_MAIN_OSC, CGC_CLOCK_CHANGE_STOP, p_instance_ctrl->cgc_peripheral_clocks);
+        FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    }
 
-    /* Set the Main OSC clock oscillator as configuration */
-    err = r_cgc_clock_change(CGC_CLOCK_MAIN_OSC, p_clock_cfg->mainosc_state, p_instance_ctrl->cgc_peripheral_clocks);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    /* Start dependent clocks in correct order (Main OSC must be started before PLL) */
+    if (CGC_CLOCK_CHANGE_START == p_clock_cfg->mainosc_state)
+    {
+        /* Set the Main OSC clock oscillator as configuration */
+        err = r_cgc_clock_change(CGC_CLOCK_MAIN_OSC, CGC_CLOCK_CHANGE_START, p_instance_ctrl->cgc_peripheral_clocks);
+        FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    }
+
+#if (BSP_FEATURE_CGC_HAS_CLK_SYS_SSCG)
+    if (CGC_CLOCK_CHANGE_START == p_clock_cfg->pll_sscg_state)
+#else
+    if (CGC_CLOCK_CHANGE_START == p_clock_cfg->pll_state)
+#endif
+    {
+        /* Set the PLL clock oscillator as configuration */
+        err = r_cgc_clock_change(CGC_CLOCK_PLL, CGC_CLOCK_CHANGE_START, p_instance_ctrl->cgc_peripheral_clocks);
+        FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    }
 
 #if (BSP_FEATURE_CGC_SUB_OSC_IS_AVAILABLE)
 
@@ -392,13 +425,12 @@ fsp_err_t R_CGC_ClocksCfg (cgc_ctrl_t * const p_ctrl, cgc_clocks_cfg_t const * c
  * @retval FSP_ERR_CGC_INVALID_CLOCK_SOURCE Invalid clock source.
  * @retval FSP_ERR_CGC_CLOCK_IN_USE         The clock source has been active.
  **********************************************************************************************************************/
-fsp_err_t R_CGC_ClockStart (cgc_ctrl_t * const p_ctrl, cgc_clock_t clock_source, cgc_pll_cfg_t const * const p_pll_cfg)
+fsp_err_t R_CGC_ClockStart (cgc_ctrl_t * const p_ctrl, cgc_clock_t clock_source, cgc_pll_cfg_t const * const p_pll_cfg) /* PRQA S 3206, 1505 # Advisory R-2.7, Advisory R-8.7 */
 {
-    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;
+    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;                                             /* PRQA S 0316 # Advisory R-11.5 */
     fsp_err_t             err             = FSP_SUCCESS;
 
-#if CGC_CFG_PARAM_CHECKING_ENABLE
-
+#if CGC_CFG_PARAM_CHECKING_ENABLE                                                                                       /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
     /* Verify p_instance_ctrl is not NULL and the module is open. */
     err = r_cgc_common_parameter_checking(p_instance_ctrl);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
@@ -436,12 +468,11 @@ fsp_err_t R_CGC_ClockStart (cgc_ctrl_t * const p_ctrl, cgc_clock_t clock_source,
  * @retval FSP_ERR_CGC_INVALID_CLOCK_SOURCE     Invalid clock source
  * @retval FSP_ERR_CGC_NOT_STABILIZED           Clock not stabilized after starting.
  **********************************************************************************************************************/
-fsp_err_t R_CGC_ClockStop (cgc_ctrl_t * const p_ctrl, cgc_clock_t clock_source)
+fsp_err_t R_CGC_ClockStop (cgc_ctrl_t * const p_ctrl, cgc_clock_t clock_source) /* PRQA S 1505 # Advisory R-8.7 */
 {
-    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;
+    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;     /* PRQA S 0316 # Advisory R-11.5 */
     fsp_err_t             err             = FSP_SUCCESS;
-#if CGC_CFG_PARAM_CHECKING_ENABLE
-
+#if CGC_CFG_PARAM_CHECKING_ENABLE                                               /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
     /* Verify p_instance_ctrl is not NULL and the module is open. */
     err = r_cgc_common_parameter_checking(p_instance_ctrl);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
@@ -469,7 +500,7 @@ fsp_err_t R_CGC_ClockStop (cgc_ctrl_t * const p_ctrl, cgc_clock_t clock_source)
  *
  * @retval FSP_ERR_UNSUPPORTED
  **********************************************************************************************************************/
-fsp_err_t R_CGC_SystemClockSet (cgc_ctrl_t * const              p_ctrl,
+fsp_err_t R_CGC_SystemClockSet (cgc_ctrl_t * const              p_ctrl, /* PRQA S 3673, 1505 # Advisory R-8.13, Advisory R-8.7 */
                                 cgc_clock_t                     clock_source,
                                 cgc_divider_cfg_t const * const p_divider_cfg)
 {
@@ -495,13 +526,12 @@ fsp_err_t R_CGC_SystemClockSet (cgc_ctrl_t * const              p_ctrl,
  * @retval FSP_ERR_CGC_INVALID_DIVIDER_GEAR_DOWN    Invalid division ratio of clock source
  * @retval FSP_ERR_CGC_INVALID_GEAR_OPERATION       The operation is invalid in the current clock state
  **********************************************************************************************************************/
-fsp_err_t R_CGC_SystemClockGearSet (cgc_ctrl_t * const p_ctrl, cgc_system_clock_cfg_t const * const p_system_clock_cfg)
+fsp_err_t R_CGC_SystemClockGearSet (cgc_ctrl_t * const p_ctrl, cgc_system_clock_cfg_t const * const p_system_clock_cfg) /* PRQA S 1505 # Advisory R-8.7 */
 {
-    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;
+    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;                                             /* PRQA S 0316 # Advisory R-11.5 */
     fsp_err_t             err             = FSP_SUCCESS;
 
-#if CGC_CFG_PARAM_CHECKING_ENABLE
-
+#if CGC_CFG_PARAM_CHECKING_ENABLE                                                                                       /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
     /* Verify p_instance_ctrl is not NULL and the module is open. */
     err = r_cgc_common_parameter_checking(p_instance_ctrl);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
@@ -519,7 +549,14 @@ fsp_err_t R_CGC_SystemClockGearSet (cgc_ctrl_t * const p_ctrl, cgc_system_clock_
     p_sysclock_info = &p_instance_ctrl->cgc_sys_clocks[CGC_PRV_SYSTEM_CLOCK_SYS];
     err             =
         r_cgc_sys_clk_shift(p_sysclock_info, CGC_PRV_SYSTEM_CLOCK_SYS, p_system_clock_cfg->sys_clock_gear);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+    if (FSP_SUCCESS != err)
+    {
+        /* Enable register protection */
+        r_cgc_enable_protection();
+
+        return err;
+    }
 #endif
 
 #if (BSP_FEATURE_CGC_HAS_CLK_SYS_CLEAN)
@@ -529,7 +566,14 @@ fsp_err_t R_CGC_SystemClockGearSet (cgc_ctrl_t * const p_ctrl, cgc_system_clock_
     err             = r_cgc_sys_clk_shift(p_sysclock_info,
                                           CGC_PRV_SYSTEM_CLOCK_SYS_CLEAN,
                                           p_system_clock_cfg->clean_clock_gear);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+    if (FSP_SUCCESS != err)
+    {
+        /* Enable register protection */
+        r_cgc_enable_protection();
+
+        return err;
+    }
 #endif
 
 #if (BSP_FEATURE_CGC_HAS_CLK_SYS_SSCG)
@@ -539,7 +583,14 @@ fsp_err_t R_CGC_SystemClockGearSet (cgc_ctrl_t * const p_ctrl, cgc_system_clock_
     err             = r_cgc_sys_clk_shift(p_sysclock_info,
                                           CGC_PRV_SYSTEM_CLOCK_SYS_SSCG,
                                           p_system_clock_cfg->sscg_clock_gear);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+    if (FSP_SUCCESS != err)
+    {
+        /* Enable register protection */
+        r_cgc_enable_protection();
+
+        return err;
+    }
 #endif
 
 #if (BSP_FEATURE_CGC_HAS_CLK_SYS_SSCG1)
@@ -549,7 +600,14 @@ fsp_err_t R_CGC_SystemClockGearSet (cgc_ctrl_t * const p_ctrl, cgc_system_clock_
     err             = r_cgc_sys_clk_shift(p_sysclock_info,
                                           CGC_PRV_SYSTEM_CLOCK_SYS_SSCG1,
                                           p_system_clock_cfg->sscg1_clock_gear);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+    if (FSP_SUCCESS != err)
+    {
+        /* Enable register protection */
+        r_cgc_enable_protection();
+
+        return err;
+    }
 #endif
 
     /* Enable register protection */
@@ -565,15 +623,14 @@ fsp_err_t R_CGC_SystemClockGearSet (cgc_ctrl_t * const p_ctrl, cgc_system_clock_
  * @retval FSP_ERR_ASSERTION           Invalid input argument.
  * @retval FSP_ERR_NOT_OPEN            Module is not open.
  **********************************************************************************************************************/
-fsp_err_t R_CGC_SystemClockGet (cgc_ctrl_t * const        p_ctrl,
+fsp_err_t R_CGC_SystemClockGet (cgc_ctrl_t * const        p_ctrl,           /* PRQA S 3673, 1505 # Advisory R-8.13, Advisory R-8.7 */
                                 cgc_clock_t * const       p_clock_source,
-                                cgc_divider_cfg_t * const p_divider_cfg)
+                                cgc_divider_cfg_t * const p_divider_cfg)    /* PRQA S 3673 # Advisory R-8.13 */
 {
-    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;
+    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl; /* PRQA S 0316, 3678 # Advisory R-11.5, Advisory R-8.13 */
     fsp_err_t             err             = FSP_SUCCESS;
 
-#if CGC_CFG_PARAM_CHECKING_ENABLE
-
+#if CGC_CFG_PARAM_CHECKING_ENABLE                                           /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
     /* Verify p_instance_ctrl is not NULL and the module is open. */
     err = r_cgc_common_parameter_checking(p_instance_ctrl);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
@@ -582,10 +639,10 @@ fsp_err_t R_CGC_SystemClockGet (cgc_ctrl_t * const        p_ctrl,
     FSP_PARAMETER_NOT_USED(p_divider_cfg);
 
     cgc_prv_sys_clk_src_t sys_clock_source;
-    for (size_t i = 0; i < BSP_FEATURE_CGC_NUM_OF_SYSTEM_CLOCK; i++)
+    for (size_t clk_index = 0; clk_index < BSP_FEATURE_CGC_NUM_OF_SYSTEM_CLOCK; clk_index++)
     {
         /* System clock information */
-        cgc_sys_clock_info_t * p_sys_clock_infor = &p_instance_ctrl->cgc_sys_clocks[i];
+        cgc_sys_clock_info_t const * p_sys_clock_infor = &p_instance_ctrl->cgc_sys_clocks[clk_index];
 
         /* Get the current system clock source */
         sys_clock_source = p_sys_clock_infor->get_clock_source();
@@ -593,12 +650,12 @@ fsp_err_t R_CGC_SystemClockGet (cgc_ctrl_t * const        p_ctrl,
         /* The clock source if the input is PLL/SSCG/SSCG1 */
         if (CGC_PRV_SYS_CLK_SRC_PLLO == sys_clock_source)
         {
-            p_clock_source[i] = CGC_CLOCK_MAIN_OSC;
+            p_clock_source[clk_index] = CGC_CLOCK_MAIN_OSC;
         }
         /* The clock source if the input is IOSC, its default source is HOCO. */
         else
         {
-            p_clock_source[i] = CGC_CLOCK_HOCO;
+            p_clock_source[clk_index] = CGC_CLOCK_HOCO;
         }
     }
 
@@ -614,12 +671,11 @@ fsp_err_t R_CGC_SystemClockGet (cgc_ctrl_t * const        p_ctrl,
  * @retval FSP_ERR_CGC_NOT_STABILIZED  Clock not stabilized.
  * @retval FSP_ERR_CGC_CLOCK_INACTIVE  Clock not turned on.
  **********************************************************************************************************************/
-fsp_err_t R_CGC_ClockCheck (cgc_ctrl_t * const p_ctrl, cgc_clock_t clock_source)
+fsp_err_t R_CGC_ClockCheck (cgc_ctrl_t * const p_ctrl, cgc_clock_t clock_source) /* PRQA S 3673, 1505 # Advisory R-8.13, Advisory R-8.7 */
 {
-    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;
+    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;      /* PRQA S 0316, 3678 # Advisory R-11.5, Advisory R-8.13 */
     fsp_err_t             err             = FSP_SUCCESS;
-#if CGC_CFG_PARAM_CHECKING_ENABLE
-
+#if CGC_CFG_PARAM_CHECKING_ENABLE                                                /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
     /* Verify p_instance_ctrl is not NULL and the module is open. */
     err = r_cgc_common_parameter_checking(p_instance_ctrl);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
@@ -628,7 +684,7 @@ fsp_err_t R_CGC_ClockCheck (cgc_ctrl_t * const p_ctrl, cgc_clock_t clock_source)
 #endif
 
     /* Ensure the clock is running and stable. */
-    err = r_cgc_clock_check(clock_source);
+    err = r_cgc_clock_active_check(clock_source);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
     return FSP_SUCCESS;
@@ -639,7 +695,7 @@ fsp_err_t R_CGC_ClockCheck (cgc_ctrl_t * const p_ctrl, cgc_clock_t clock_source)
  *
  * @retval FSP_ERR_UNSUPPORTED
  **********************************************************************************************************************/
-fsp_err_t R_CGC_OscStopDetectEnable (cgc_ctrl_t * const p_ctrl)
+fsp_err_t R_CGC_OscStopDetectEnable (cgc_ctrl_t * const p_ctrl) /* PRQA S 3673, 1505 # Advisory R-8.13, Advisory R-8.7 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
 
@@ -651,7 +707,7 @@ fsp_err_t R_CGC_OscStopDetectEnable (cgc_ctrl_t * const p_ctrl)
  *
  * @retval FSP_ERR_UNSUPPORTED
  **********************************************************************************************************************/
-fsp_err_t R_CGC_OscStopDetectDisable (cgc_ctrl_t * const p_ctrl)
+fsp_err_t R_CGC_OscStopDetectDisable (cgc_ctrl_t * const p_ctrl) /* PRQA S 3673, 1505 # Advisory R-8.13, Advisory R-8.7 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
 
@@ -663,7 +719,7 @@ fsp_err_t R_CGC_OscStopDetectDisable (cgc_ctrl_t * const p_ctrl)
  *
  * @retval FSP_ERR_UNSUPPORTED
  **********************************************************************************************************************/
-fsp_err_t R_CGC_OscStopStatusClear (cgc_ctrl_t * const p_ctrl)
+fsp_err_t R_CGC_OscStopStatusClear (cgc_ctrl_t * const p_ctrl) /* PRQA S 3673, 1505 # Advisory R-8.13, Advisory R-8.7 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
 
@@ -675,10 +731,12 @@ fsp_err_t R_CGC_OscStopStatusClear (cgc_ctrl_t * const p_ctrl)
  *
  * @retval FSP_ERR_UNSUPPORTED
  **********************************************************************************************************************/
-fsp_err_t R_CGC_CallbackSet (cgc_ctrl_t * const          p_api_ctrl,
+
+fsp_err_t R_CGC_CallbackSet (cgc_ctrl_t * const          p_api_ctrl,        /* PRQA S 1505, 3673 # Advisory R-8.7, Advisory R-8.13 */
                              void (                    * p_callback)(cgc_callback_args_t * p_args),
-                             void * const                p_context,
-                             cgc_callback_args_t * const p_callback_memory)
+                             void * const                p_context,         /* PRQA S 3673 # Advisory R-8.13 */
+                             cgc_callback_args_t * const p_callback_memory) /* PRQA S 3673 # Advisory R-8.13 */
+
 {
     FSP_PARAMETER_NOT_USED(p_api_ctrl);
     FSP_PARAMETER_NOT_USED(p_callback);
@@ -695,12 +753,11 @@ fsp_err_t R_CGC_CallbackSet (cgc_ctrl_t * const          p_api_ctrl,
  * @retval FSP_ERR_ASSERTION           Invalid input argument.
  * @retval FSP_ERR_NOT_OPEN            Module is not open.
  **********************************************************************************************************************/
-fsp_err_t R_CGC_Close (cgc_ctrl_t * const p_ctrl)
+fsp_err_t R_CGC_Close (cgc_ctrl_t * const p_ctrl)                           /* PRQA S 1505 # Advisory R-8.7 */
 {
-    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl;
+    cgc_instance_ctrl_t * p_instance_ctrl = (cgc_instance_ctrl_t *) p_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
 
-#if CGC_CFG_PARAM_CHECKING_ENABLE
-
+#if CGC_CFG_PARAM_CHECKING_ENABLE                                           /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
     /* Verify p_instance_ctrl is not NULL and the module is open. */
     fsp_err_t err = r_cgc_common_parameter_checking(p_instance_ctrl);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
@@ -716,7 +773,7 @@ fsp_err_t R_CGC_Close (cgc_ctrl_t * const p_ctrl)
  * @} (end addtogroup CGC)
  **********************************************************************************************************************/
 
-#if CGC_CFG_PARAM_CHECKING_ENABLE
+#if CGC_CFG_PARAM_CHECKING_ENABLE                                                        /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
 
 /*******************************************************************************************************************//**
  * Verifies the control structure is not NULL and the module is open. This reduces code size when the error
@@ -728,7 +785,7 @@ fsp_err_t R_CGC_Close (cgc_ctrl_t * const p_ctrl)
  * @retval FSP_ERR_ASSERTION            Invalid input argument.
  * @retval FSP_ERR_NOT_OPEN             Module is not open.
  **********************************************************************************************************************/
-static fsp_err_t r_cgc_common_parameter_checking (cgc_instance_ctrl_t * p_instance_ctrl)
+static fsp_err_t r_cgc_common_parameter_checking (cgc_instance_ctrl_t * p_instance_ctrl) /* PRQA S 3673 # Advisory R-8.13 */
 {
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ERROR_RETURN(CGC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
@@ -747,7 +804,7 @@ static fsp_err_t r_cgc_common_parameter_checking (cgc_instance_ctrl_t * p_instan
  * @retval FSP_ERR_CGC_NOT_STABILIZED      Clock not stabilized.
  * @retval FSP_ERR_CGC_CLOCK_INACTIVE      Clock not turned on.
  **********************************************************************************************************************/
-static fsp_err_t r_cgc_clock_check (cgc_clock_t const clock_source)
+static fsp_err_t r_cgc_clock_active_check (cgc_clock_t const clock_source)
 {
     /* Get the current run state of the specified clock source */
     cgc_prv_clock_state_t running_state = r_cgc_clock_run_state_get(clock_source);
@@ -768,23 +825,23 @@ static fsp_err_t r_cgc_clock_check (cgc_clock_t const clock_source)
  * This function returns the run state of the selected clock
  * After power supply the LS intOSC starts operation. It cannot be stop
  *
- * @param[in]  clock   Clock to check
+ * @param[in]  prv_clock   Clock to check
  *
  * @return  1 if running, 0 if stopped
  **********************************************************************************************************************/
-static cgc_prv_clock_state_t r_cgc_clock_run_state_get (cgc_clock_t clock)
+static cgc_prv_clock_state_t r_cgc_clock_run_state_get (cgc_clock_t prv_clock)
 {
     /* Get clock run state. */
-    uint32_t              reg   = 0U;
-    cgc_prv_clock_state_t state = CGC_PRV_CLOCK_STATE_STOPPED;
+    uint32_t              clock_reg = 0U;
+    cgc_prv_clock_state_t state     = CGC_PRV_CLOCK_STATE_STOPPED;
 
-    switch (clock)
+    switch (prv_clock)
     {
         /* Check if the selected clock is Main OSC */
         case CGC_CLOCK_MAIN_OSC:
         {
-            reg = R_SYS0_A_CLOCK->MOSCS;
-            if ((reg & R_SYS0_A_CLOCK_MOSCS_MOSCEN_Msk) != 0)
+            clock_reg = R_SYS0_A_CLOCK->MOSCS; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+            if ((clock_reg & R_SYS0_A_CLOCK_MOSCS_MOSCEN_Msk) != 0U)
             {
                 state = CGC_PRV_CLOCK_STATE_RUNNING;
             }
@@ -797,8 +854,8 @@ static cgc_prv_clock_state_t r_cgc_clock_run_state_get (cgc_clock_t clock)
         /* Check the running state of Sub OSC */
         case CGC_CLOCK_SUBCLOCK:
         {
-            reg = R_SYS0_A_CLOCK->SOSCS;
-            if ((reg & R_SYS0_A_CLOCK_SOSCS_SOSCEN_Msk) != 0)
+            clock_reg = R_SYS0_A_CLOCK->SOSCS; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+            if ((clock_reg & R_SYS0_A_CLOCK_SOSCS_SOSCEN_Msk) != 0U)
             {
                 state = CGC_PRV_CLOCK_STATE_RUNNING;
             }
@@ -833,8 +890,8 @@ static cgc_prv_clock_state_t r_cgc_clock_run_state_get (cgc_clock_t clock)
         case CGC_CLOCK_SSCG:
 #endif
             {
-                reg = R_SYS0_CLOCK->PLLS;
-                if ((reg & R_SYS0_CLOCK_PLLS_PLLCLKEN_Msk) != 0)
+                clock_reg = R_SYS0_CLOCK->PLLS; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                if ((clock_reg & R_SYS0_CLOCK_PLLS_PLLCLKEN_Msk) != 0U)
                 {
                     state = CGC_PRV_CLOCK_STATE_RUNNING;
                 }
@@ -855,22 +912,23 @@ static cgc_prv_clock_state_t r_cgc_clock_run_state_get (cgc_clock_t clock)
 /*******************************************************************************************************************//**
  * This function checks the selected clock for stability.
  *
- * @param[in]  clock   Clock to check
+ * @param[in]  prv_clock   Clock to check
  *
  * @return true if stable, false if not stable
  **********************************************************************************************************************/
-static cgc_prv_clock_stability_state_t r_cgc_stabilization_check (cgc_clock_t clock)
+static cgc_prv_clock_stability_state_t r_cgc_stabilization_check (cgc_clock_t prv_clock)
 {
-    uint32_t reg = 0U;
+    uint32_t clock_reg = 0U;
     cgc_prv_clock_stability_state_t state = CGC_PRV_CLOCK_STABILITY_STATE_NOT_STABLE;
 
-    switch (clock)
+    switch (prv_clock)
     {
         /* Check stable state for Main OSC */
         case CGC_CLOCK_MAIN_OSC:
         {
-            reg = R_SYS0_A_CLOCK->MOSCS;
-            if ((reg & R_SYS0_A_CLOCK_MOSCS_MOSCEN_Msk) && (reg & R_SYS0_A_CLOCK_MOSCS_MOSCSTAB_Msk))
+            clock_reg = R_SYS0_A_CLOCK->MOSCS; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+            if (((clock_reg & R_SYS0_A_CLOCK_MOSCS_MOSCEN_Msk) != 0UL) &&
+                ((clock_reg & R_SYS0_A_CLOCK_MOSCS_MOSCSTAB_Msk) != 0UL))
             {
                 state = CGC_PRV_CLOCK_STABILITY_STATE_STABLE;
             }
@@ -883,8 +941,9 @@ static cgc_prv_clock_stability_state_t r_cgc_stabilization_check (cgc_clock_t cl
         /* Check stable state for Sub OSC */
         case CGC_CLOCK_SUBCLOCK:
         {
-            reg = R_SYS0_A_CLOCK->SOSCS;
-            if ((reg & R_SYS0_A_CLOCK_SOSCS_SOSCEN_Msk) && (reg & R_SYS0_A_CLOCK_SOSCS_SOSCSTAB_Msk))
+            clock_reg = R_SYS0_A_CLOCK->SOSCS; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+            if (((clock_reg & R_SYS0_A_CLOCK_SOSCS_SOSCEN_Msk) != 0UL) &&
+                ((clock_reg & R_SYS0_A_CLOCK_SOSCS_SOSCSTAB_Msk) != 0UL))
             {
                 state = CGC_PRV_CLOCK_STABILITY_STATE_STABLE;
             }
@@ -899,8 +958,9 @@ static cgc_prv_clock_stability_state_t r_cgc_stabilization_check (cgc_clock_t cl
         case CGC_CLOCK_SSCG:
 #endif
             {
-                reg = R_SYS0_CLOCK->PLLS;
-                if ((reg & R_SYS0_CLOCK_PLLS_PLLCLKEN_Msk) && (reg & R_SYS0_CLOCK_PLLS_PLLCLKSTAB_Msk))
+                clock_reg = R_SYS0_CLOCK->PLLS; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                if (((clock_reg & R_SYS0_CLOCK_PLLS_PLLCLKEN_Msk) != 0UL) &&
+                    ((clock_reg & R_SYS0_CLOCK_PLLS_PLLCLKSTAB_Msk) != 0UL))
                 {
                     state = CGC_PRV_CLOCK_STABILITY_STATE_STABLE;
                 }
@@ -911,8 +971,8 @@ static cgc_prv_clock_stability_state_t r_cgc_stabilization_check (cgc_clock_t cl
         /* Check stable state for HOCO */
         case CGC_CLOCK_HOCO:
         {
-            reg = R_SYS0_A_CLOCK->HSOSCS;
-            if (reg & R_SYS0_A_CLOCK_HSOSCS_HSOSCSTAB_Msk)
+            clock_reg = R_SYS0_A_CLOCK->HSOSCS; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+            if ((clock_reg & R_SYS0_A_CLOCK_HSOSCS_HSOSCSTAB_Msk) != 0UL)
             {
                 state = CGC_PRV_CLOCK_STABILITY_STATE_STABLE;
             }
@@ -1028,7 +1088,7 @@ static fsp_err_t r_cgc_sys_clk_shift (cgc_sys_clock_info_t      * p_system_clock
  #endif
                 }
 #endif
-                default:
+                default:               /* PRQA S 2023 # DP_MSR_R-16.3_UC1 */
                 {
                     /* Should not run in to this case */
                     break;
@@ -1045,7 +1105,7 @@ static fsp_err_t r_cgc_sys_clk_shift (cgc_sys_clock_info_t      * p_system_clock
         if (CGC_PRV_SYS_CLK_SRC_IOSC == clk_src)
         {
             /* Ensure PLL/SSCG/SSCG1 is running and stable before switching to it. */
-            FSP_ERROR_RETURN(FSP_SUCCESS == r_cgc_clock_check(CGC_CLOCK_PLL), FSP_ERR_CGC_NOT_STABILIZED);
+            FSP_ERROR_RETURN(FSP_SUCCESS == r_cgc_clock_active_check(CGC_CLOCK_PLL), FSP_ERR_CGC_NOT_STABILIZED);
 
             switch (system_clock)
             {
@@ -1100,7 +1160,7 @@ static fsp_err_t r_cgc_sys_clk_shift (cgc_sys_clock_info_t      * p_system_clock
  #endif
                 }
 #endif
-                default:
+                default:               /* PRQA S 2023 # DP_MSR_R-16.3_UC1 */
                 {
                     /* Should not run in to this case */
                     break;
@@ -1153,10 +1213,10 @@ static fsp_err_t r_cgc_pll_clock_change (cgc_clock_change_t state)
         FSP_CRITICAL_SECTION_ENTER;
 
         /* Start PLL */
-        R_SYS0_CLOCK->PLLE = R_SYS0_CLOCK_PLLE_PLLENTRG_Msk;
+        R_SYS0_CLOCK->PLLE = (uint32_t) R_SYS0_CLOCK_PLLE_PLLENTRG_Msk;    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that the PLL has been stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->PLLS, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->PLLS, CGC_CLOCK_STABLED); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         FSP_CRITICAL_SECTION_EXIT;
     }
@@ -1167,31 +1227,31 @@ static fsp_err_t r_cgc_pll_clock_change (cgc_clock_change_t state)
 #if (BSP_FEATURE_CGC_HAS_CLK_SYS)
 
         /* get the current system CLEAN clock source */
-        sys_clock_source[0] = r_cgc_sys_clocksource_get();
+        sys_clock_source[CGC_PRV_SYSTEM_CLOCK_SYS] = r_cgc_sys_clocksource_get();
 #endif
 
 #if (BSP_FEATURE_CGC_HAS_CLK_SYS_CLEAN)
 
         /* get the current system CLEAN clock source */
-        sys_clock_source[0] = r_cgc_sysclean_clocksource_get();
+        sys_clock_source[CGC_PRV_SYSTEM_CLOCK_SYS_CLEAN] = r_cgc_sysclean_clocksource_get();
 #endif
 
 #if (BSP_FEATURE_CGC_HAS_CLK_SYS_SSCG)
 
         /* get the current system SSCG clock source */
-        sys_clock_source[1] = r_cgc_syssscg_clocksource_get();
+        sys_clock_source[CGC_PRV_SYSTEM_CLOCK_SYS_SSCG] = r_cgc_syssscg_clocksource_get();
 #endif
 
 #if (BSP_FEATURE_CGC_HAS_CLK_SYS_SSCG1)
 
         /* get the current system SSCG1 clock source */
-        sys_clock_source[2] = r_cgc_syssscg1_clocksource_get();
+        sys_clock_source[CGC_PRV_SYSTEM_CLOCK_SYS_SSCG1] = r_cgc_syssscg1_clocksource_get();
 #endif
 
-        for (uint8_t i = 0; i < BSP_FEATURE_CGC_NUM_OF_SYSTEM_CLOCK; i++)
+        for (uint8_t sys_index = 0; sys_index < BSP_FEATURE_CGC_NUM_OF_SYSTEM_CLOCK; sys_index++)
         {
             /* Don't disable PLL when it is input as system clock source */
-            if (CGC_PRV_SYS_CLK_SRC_PLLO == sys_clock_source[i])
+            if (CGC_PRV_SYS_CLK_SRC_PLLO == sys_clock_source[sys_index])
             {
                 return FSP_ERR_CGC_CLOCK_IN_USE;
             }
@@ -1205,10 +1265,10 @@ static fsp_err_t r_cgc_pll_clock_change (cgc_clock_change_t state)
         FSP_CRITICAL_SECTION_ENTER;
 
         /* Stop the PLL clock */
-        R_SYS0_CLOCK->PLLE = R_SYS0_CLOCK_PLLE_PLLDISTRG_Msk;
+        R_SYS0_CLOCK->PLLE = (uint32_t) R_SYS0_CLOCK_PLLE_PLLDISTRG_Msk;   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that PLL has been stopped */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->PLLS, CGC_CLOCK_STOPPED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->PLLS, CGC_CLOCK_STOPPED); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         FSP_CRITICAL_SECTION_EXIT;
     }
@@ -1332,7 +1392,7 @@ static fsp_err_t r_cgc_clock_change (cgc_clock_t                     clock_sourc
  * @param[in]  p_system_clock          Pointer to system clock information
  * @param[in]  clock_hz                Clock Frequency
  **********************************************************************************************************************/
-static void r_cgc_gear_down (cgc_sys_clock_info_t * p_system_clock, uint32_t clock_hz)
+static void r_cgc_gear_down (cgc_sys_clock_info_t * p_system_clock, uint32_t clock_hz) /* PRQA S 3673, 3206 # Advisory R-8.13, Advisory R-2.7 */
 {
     /* Ensure the clock switching sequence executes atomically*/
     FSP_CRITICAL_SECTION_DEFINE;
@@ -1354,16 +1414,12 @@ static void r_cgc_gear_down (cgc_sys_clock_info_t * p_system_clock, uint32_t clo
  #if (2U == BSP_FEATURE_CGC_NUM_OF_GEAR_SHIFT_REPETITION_CASE)
 
     /* Get the total of repetitions */
-    total_of_repetitions = (sizeof(cgc_gear_down_repetitions_arr) / sizeof(cgc_gear_down_repetitions_arr[0]));
+    total_of_repetitions = (uint8_t) (sizeof(cgc_gear_down_repetitions_arr) / sizeof(cgc_gear_down_repetitions_arr[0]));
 
     /* Start the repetitions 5 repetitions (800/640MHz) */
-    if (BSP_CLOCK_SYSTEM_480MHz != clock_hz)
+    if ((uint32_t) BSP_CLOCK_SYSTEM_480MHz == clock_hz)
     {
-        total_of_repetitions = total_of_repetitions;
-    }
-    else
-    {
-        total_of_repetitions = total_of_repetitions - 1;
+        total_of_repetitions--;
     }
 
     for (repetition_count = 0; repetition_count < total_of_repetitions; repetition_count++)
@@ -1385,7 +1441,7 @@ static void r_cgc_gear_down (cgc_sys_clock_info_t * p_system_clock, uint32_t clo
         {
             /* Get the total of repetitions */
             total_of_repetitions =
-                (sizeof(cgc_800_gear_down_repetitions_arr) / sizeof(cgc_800_gear_down_repetitions_arr[0]));
+                (uint8_t) (sizeof(cgc_800_gear_down_repetitions_arr) / sizeof(cgc_800_gear_down_repetitions_arr[0]));
 
             /* Start the repetitions 6 repetitions (800MHz) */
             for (repetition_count = 0; repetition_count < total_of_repetitions; repetition_count++)
@@ -1405,7 +1461,7 @@ static void r_cgc_gear_down (cgc_sys_clock_info_t * p_system_clock, uint32_t clo
         {
             /* Get the total of repetitions */
             total_of_repetitions =
-                (sizeof(cgc_640_gear_down_repetitions_arr) / sizeof(cgc_640_gear_down_repetitions_arr[0]));
+                (uint8_t) (sizeof(cgc_640_gear_down_repetitions_arr) / sizeof(cgc_640_gear_down_repetitions_arr[0]));
 
             /* Start the repetitions 6 repetitions (640MHz) */
             for (repetition_count = 0; repetition_count < total_of_repetitions; repetition_count++)
@@ -1425,7 +1481,7 @@ static void r_cgc_gear_down (cgc_sys_clock_info_t * p_system_clock, uint32_t clo
         {
             /* Get the total of repetitions */
             total_of_repetitions =
-                (sizeof(cgc_480_gear_down_repetitions_arr) / sizeof(cgc_480_gear_down_repetitions_arr[0]));
+                (uint8_t) (sizeof(cgc_480_gear_down_repetitions_arr) / sizeof(cgc_480_gear_down_repetitions_arr[0]));
 
             for (repetition_count = 0; repetition_count < total_of_repetitions; repetition_count++)
             {
@@ -1444,7 +1500,7 @@ static void r_cgc_gear_down (cgc_sys_clock_info_t * p_system_clock, uint32_t clo
         {
             /* Get the total of repetitions */
             total_of_repetitions =
-                (sizeof(cgc_320_gear_down_repetitions_arr) / sizeof(cgc_320_gear_down_repetitions_arr[0]));
+                (uint8_t) (sizeof(cgc_320_gear_down_repetitions_arr) / sizeof(cgc_320_gear_down_repetitions_arr[0]));
 
             for (repetition_count = 0; repetition_count < total_of_repetitions; repetition_count++)
             {
@@ -1482,21 +1538,21 @@ static void r_cgc_gear_down (cgc_sys_clock_info_t * p_system_clock, uint32_t clo
     R_BSP_SoftwareDelay(20, BSP_DELAY_UNITS_MICROSECONDS);
 
     /* Check if No division is not selected as the division ratio of clock source HSIOSC */
-    if (CGC_CLOCK_NO_DIVISION != R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID)
+    if (CGC_CLOCK_NO_DIVISION != R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID)                                /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
-        R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID = 0U;
+        R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID = 0U;                                                    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that CLK_HSIOSCO divider is stable */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKD_HSIOSCS, R_SYS0_CLOCK_CKD_HSIOSCS_HSIOSCCLKDSYNC_Msk);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKD_HSIOSCS, R_SYS0_CLOCK_CKD_HSIOSCS_HSIOSCCLKDSYNC_Msk); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
  #endif
 #endif
 
     /* Change the clock source for the system clock to CLK_IOSC */
-    *p_system_clock->p_cks_ctrl = CGC_PRV_SYS_CLK_SRC_IOSC;
+    *p_system_clock->p_cks_ctrl = (uint32_t) CGC_PRV_SYS_CLK_SRC_IOSC;
 
     /* Confirm that IOSC has been selected */
-    FSP_HARDWARE_REGISTER_WAIT(*p_system_clock->p_cks_stat, CGC_PRV_SYS_CLK_SRC_IOSC);
+    FSP_HARDWARE_REGISTER_WAIT(*p_system_clock->p_cks_stat, (uint32_t) CGC_PRV_SYS_CLK_SRC_IOSC);
 
 #if (5U == BSP_FEATURE_CGC_NUM_OF_GEAR_SHIFT_REPETITION_CASE)
 
@@ -1521,7 +1577,7 @@ static void r_cgc_gear_down (cgc_sys_clock_info_t * p_system_clock, uint32_t clo
  * @param[in]  p_system_clock          Pointer to system clock information
  * @param[in]  clock_hz                Clock Frequency
  **********************************************************************************************************************/
-static void r_cgc_gear_up (cgc_sys_clock_info_t * p_system_clock, uint32_t clock_hz)
+static void r_cgc_gear_up (cgc_sys_clock_info_t * p_system_clock, uint32_t clock_hz) /* PRQA S 3673, 3206 # Advisory R-8.13, Advisory R-2.7 */
 {
     /* Ensure the clock switching sequence executes atomically*/
     FSP_CRITICAL_SECTION_DEFINE;
@@ -1542,7 +1598,7 @@ static void r_cgc_gear_up (cgc_sys_clock_info_t * p_system_clock, uint32_t clock
  #if (2U == BSP_FEATURE_CGC_NUM_OF_GEAR_SHIFT_REPETITION_CASE)
 
     /* Start the repetitions 5 repetitions (800/640MHz) */
-    if (BSP_CLOCK_SYSTEM_480MHz != clock_hz)
+    if ((uint32_t) BSP_CLOCK_SYSTEM_480MHz != clock_hz)
     {
         /* Division ratio of clock source PLL/SSCG/SSCG1 are changed from 1/1 to 3/8 */
         *p_system_clock->p_ckd_ctrl = CGC_CLOCK_DIVIDED_BY_6_DIV_16;
@@ -1582,7 +1638,7 @@ static void r_cgc_gear_up (cgc_sys_clock_info_t * p_system_clock, uint32_t clock
 
         case BSP_CLOCK_SYSTEM_320MHz:
         {
-            /* Division ratio of clock source PLL/SSCG are changed from 1/1 to 8/16 */
+            /* Division ratio of clock source PLL/SSCG are changed from 1/1 to 10/16 */
             *p_system_clock->p_ckd_ctrl = CGC_CLOCK_DIVIDED_BY_10_DIV_16;
 
             break;
@@ -1602,36 +1658,37 @@ static void r_cgc_gear_up (cgc_sys_clock_info_t * p_system_clock, uint32_t clock
 
         default:
         {
+            /* Should not run in to this case */
             break;
         }
     }
 
     /* Check if No division is not selected as the division ratio of clock source HSIOSC */
-    if (CGC_CLOCK_NO_DIVISION != R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID)
+    if (CGC_CLOCK_NO_DIVISION != R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID)                                    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
-        if (2U == R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID)
+        if (2U == R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID)                                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
         {
             /* Division ratio of clock source HSIOSCO must go through 1/2 to switch between 1/10 and 1/1. */
-            R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID = 0x01UL;
+            R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID = 1U;                                                    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
             /* Confirm that HSIOSCO divider is synchronized */
-            FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKD_HSIOSCS, R_SYS0_CLOCK_CKD_HSIOSCS_HSIOSCCLKDSYNC_Msk);
+            FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKD_HSIOSCS, R_SYS0_CLOCK_CKD_HSIOSCS_HSIOSCCLKDSYNC_Msk); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
         }
 
         /* Division ratio of clock source HSIOSCO are changed to 1/1 */
-        R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID = 0x00UL;
+        R_SYS0_CLOCK->CKD_HSIOSCC_b.HSIOSCCLKDCSID = 0U;                                                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that CLK_HSIOSCO divider is synchronized */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKD_HSIOSCS, R_SYS0_CLOCK_CKD_HSIOSCS_HSIOSCCLKDSYNC_Msk);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKD_HSIOSCS, R_SYS0_CLOCK_CKD_HSIOSCS_HSIOSCCLKDSYNC_Msk);     /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
  #endif
 #endif
 
     /* Setting PLL/SSCG/SSCG1 for system clock */
-    *p_system_clock->p_cks_ctrl = CGC_PRV_SYS_CLK_SRC_PLLO;
+    *p_system_clock->p_cks_ctrl = (uint32_t) CGC_PRV_SYS_CLK_SRC_PLLO;
 
     /* Confirm that PLL/SSCG/SSCG1 have been selected */
-    FSP_HARDWARE_REGISTER_WAIT(*p_system_clock->p_cks_stat, CGC_PRV_SYS_CLK_SRC_PLLO);
+    FSP_HARDWARE_REGISTER_WAIT(*p_system_clock->p_cks_stat, (uint32_t) CGC_PRV_SYS_CLK_SRC_PLLO);
 
 #if (1U == BSP_FEATURE_CGC_NUM_OF_GEAR_SHIFT_REPETITION_CASE)
 
@@ -1647,10 +1704,10 @@ static void r_cgc_gear_up (cgc_sys_clock_info_t * p_system_clock, uint32_t clock
 #elif (2U == BSP_FEATURE_CGC_NUM_OF_GEAR_SHIFT_REPETITION_CASE)
 
     /* Get the total of repetitions */
-    total_of_repetitions = (sizeof(cgc_gear_up_repetitions_arr) / sizeof(cgc_gear_up_repetitions_arr[0]));
+    total_of_repetitions = (uint8_t) (sizeof(cgc_gear_up_repetitions_arr) / sizeof(cgc_gear_up_repetitions_arr[0]));
 
     /* Start the repetitions 5 repetitions (800/640MHz) */
-    if (BSP_CLOCK_SYSTEM_480MHz != clock_hz)
+    if ((uint32_t) BSP_CLOCK_SYSTEM_480MHz != clock_hz)
     {
         for (repetition_count = 0; repetition_count < total_of_repetitions; repetition_count++)
         {
@@ -1685,7 +1742,7 @@ static void r_cgc_gear_up (cgc_sys_clock_info_t * p_system_clock, uint32_t clock
         {
             /* Get the total of repetitions */
             total_of_repetitions =
-                (sizeof(cgc_800_gear_up_repetitions_arr) / sizeof(cgc_800_gear_up_repetitions_arr[0]));
+                (uint8_t) (sizeof(cgc_800_gear_up_repetitions_arr) / sizeof(cgc_800_gear_up_repetitions_arr[0]));
 
             /* Start the repetitions 6 repetitions (800MHz) */
             for (repetition_count = 0; repetition_count < total_of_repetitions; repetition_count++)
@@ -1705,7 +1762,7 @@ static void r_cgc_gear_up (cgc_sys_clock_info_t * p_system_clock, uint32_t clock
         {
             /* Get the total of repetitions */
             total_of_repetitions =
-                (sizeof(cgc_640_gear_up_repetitions_arr) / sizeof(cgc_640_gear_up_repetitions_arr[0]));
+                (uint8_t) (sizeof(cgc_640_gear_up_repetitions_arr) / sizeof(cgc_640_gear_up_repetitions_arr[0]));
 
             /* Start the repetitions 6 repetitions (640MHz) */
             for (repetition_count = 0; repetition_count < total_of_repetitions; repetition_count++)
@@ -1725,7 +1782,7 @@ static void r_cgc_gear_up (cgc_sys_clock_info_t * p_system_clock, uint32_t clock
         {
             /* Get the total of repetitions */
             total_of_repetitions =
-                (sizeof(cgc_480_gear_up_repetitions_arr) / sizeof(cgc_480_gear_up_repetitions_arr[0]));
+                (uint8_t) (sizeof(cgc_480_gear_up_repetitions_arr) / sizeof(cgc_480_gear_up_repetitions_arr[0]));
 
             /* Start the repetitions 5 repetitions (480MHz) */
             for (repetition_count = 0; repetition_count < total_of_repetitions; repetition_count++)
@@ -1745,7 +1802,7 @@ static void r_cgc_gear_up (cgc_sys_clock_info_t * p_system_clock, uint32_t clock
         {
             /* Get the total of repetitions */
             total_of_repetitions =
-                (sizeof(cgc_320_gear_up_repetitions_arr) / sizeof(cgc_320_gear_up_repetitions_arr[0]));
+                (uint8_t) (sizeof(cgc_320_gear_up_repetitions_arr) / sizeof(cgc_320_gear_up_repetitions_arr[0]));
 
             /* Start the repetitions 2 repetitions (320MHz) */
             for (repetition_count = 0; repetition_count < total_of_repetitions; repetition_count++)
@@ -1813,10 +1870,10 @@ static fsp_err_t r_cgc_main_osc_start (cgc_peripheral_clock_backup_t * p_cgc_per
         FSP_CRITICAL_SECTION_ENTER;
 
         /* Enable Main OSC */
-        R_SYS0_A_CLOCK->MOSCE = R_SYS0_A_CLOCK_MOSCE_MOSCENTRG_Msk;
+        R_SYS0_A_CLOCK->MOSCE = (uint32_t) R_SYS0_A_CLOCK_MOSCE_MOSCENTRG_Msk; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Wait until stable */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->MOSCS, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->MOSCS, CGC_CLOCK_STABLED);  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Restore the peripheral clocks */
         r_cgc_main_osc_restore(p_cgc_peripheral_clock);
@@ -1871,10 +1928,10 @@ static fsp_err_t r_cgc_main_osc_stop (cgc_peripheral_clock_backup_t * p_cgc_peri
     sys_clock_source[CGC_PRV_SYSTEM_CLOCK_SYS_SSCG1] = r_cgc_syssscg1_clocksource_get();
 #endif
 
-    for (uint8_t i = 0; i < BSP_FEATURE_CGC_NUM_OF_SYSTEM_CLOCK; i++)
+    for (uint8_t sys_index = 0; sys_index < BSP_FEATURE_CGC_NUM_OF_SYSTEM_CLOCK; sys_index++)
     {
         /* Do not disable Main OSC while PLLO/SSCGO/SSCG1O is selected is selected for system clock */
-        if (CGC_PRV_SYS_CLK_SRC_PLLO == sys_clock_source[i])
+        if (CGC_PRV_SYS_CLK_SRC_PLLO == sys_clock_source[sys_index])
         {
             return FSP_ERR_CGC_CLOCK_IN_USE;
         }
@@ -1901,10 +1958,10 @@ static fsp_err_t r_cgc_main_osc_stop (cgc_peripheral_clock_backup_t * p_cgc_peri
         r_cgc_main_osc_pre_stop();
 
         /* Disable Main OSC */
-        R_SYS0_A_CLOCK->MOSCE = R_SYS0_A_CLOCK_MOSCE_MOSCDISTRG_Msk;
+        R_SYS0_A_CLOCK->MOSCE = (uint32_t) R_SYS0_A_CLOCK_MOSCE_MOSCDISTRG_Msk; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Wait until stopped */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->MOSCS, CGC_CLOCK_STOPPED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->MOSCS, CGC_CLOCK_STOPPED);   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         FSP_CRITICAL_SECTION_EXIT;
     }
@@ -1927,145 +1984,166 @@ static void r_cgc_main_osc_pre_stop (void)
 #if (BSP_FEATURE_CGC_EXTENDED_PERIPHERAL_CLK_SELECTORS)
 
     /* Change the RLIN3 input clock source */
-    if ((CGC_RLIN_CLK_SEL_MOSC == R_SYS0_CLOCK->CKS_RLINS) ||
-        (CGC_RLIN_CLK_SEL_MOSC_DIV_4 == R_SYS0_CLOCK->CKS_RLINS) ||
-        (CGC_RLIN_CLK_SEL_MOSC_DIV_8 == R_SYS0_CLOCK->CKS_RLINS))
+    if (((uint32_t) CGC_RLIN_CLK_SEL_MOSC ==
+         ((R_SYS0_CLOCK->CKS_RLINS & R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk) >> R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Pos)) || /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        ((uint32_t) CGC_RLIN_CLK_SEL_MOSC_DIV_4 ==
+         ((R_SYS0_CLOCK->CKS_RLINS & R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk) >> R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Pos)) || /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        ((uint32_t) CGC_RLIN_CLK_SEL_MOSC_DIV_8 ==
+         ((R_SYS0_CLOCK->CKS_RLINS & R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk) >> R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Pos)))   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for RLIN3 */
-        R_SYS0_CLOCK->CKS_RLINC = CGC_RLIN_CLK_SEL_EMG;
+        R_SYS0_CLOCK->CKS_RLINC = (R_SYS0_CLOCK->CKS_RLINC & ~R_SYS0_CLOCK_CKS_RLINC_RLINSCSID_Msk) |                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                  ((uint32_t) CGC_RLIN_CLK_SEL_EMG << R_SYS0_CLOCK_CKS_RLINC_RLINSCSID_Pos);
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_RLINS, CGC_RLIN_CLK_SEL_EMG);
+        FSP_HARDWARE_REGISTER_WAIT(((R_SYS0_CLOCK->CKS_RLINS & R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk) >>                /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                    R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Pos),
+                                   (uint32_t) CGC_RLIN_CLK_SEL_EMG);
     }
 
     /* Change the RLIN3_CH23 input clock source */
-    if ((CGC_RLIN_CLK_SEL_MOSC == (R_SYS0_CLOCK->CKS_RLINS >> R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos)) ||
-        (CGC_RLIN_CLK_SEL_MOSC_DIV_4 == (R_SYS0_CLOCK->CKS_RLINS >> R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos)) ||
-        (CGC_RLIN_CLK_SEL_MOSC_DIV_8 == (R_SYS0_CLOCK->CKS_RLINS >> R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos)))
+    if (((uint32_t) CGC_RLIN_CLK_SEL_MOSC ==
+         ((R_SYS0_CLOCK->CKS_RLINS & R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk) >>                                          /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+          R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos)) ||
+        ((uint32_t) CGC_RLIN_CLK_SEL_MOSC_DIV_4 ==
+         ((R_SYS0_CLOCK->CKS_RLINS & R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk) >>                                          /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+          R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos)) ||
+        ((uint32_t) CGC_RLIN_CLK_SEL_MOSC_DIV_8 ==
+         ((R_SYS0_CLOCK->CKS_RLINS & R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk) >> R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos))) /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for RLIN3 */
-        R_SYS0_CLOCK->CKS_RLINC = (R_SYS0_CLOCK->CKS_RLINC & ~R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Msk) |
+        R_SYS0_CLOCK->CKS_RLINC = (R_SYS0_CLOCK->CKS_RLINC & ~R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Msk) |                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
                                   ((uint32_t) CGC_RLIN_CLK_SEL_EMG << R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Pos);
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT((R_SYS0_CLOCK->CKS_RLINS >> R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos),
-                                   CGC_RLIN_CLK_SEL_EMG);
+        FSP_HARDWARE_REGISTER_WAIT(((R_SYS0_CLOCK->CKS_RLINS & R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk) >>                /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                    R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos),
+                                   (uint32_t) CGC_RLIN_CLK_SEL_EMG);
     }
 
     /* Change the TAUJ input clock source */
-    if (CGC_TAUJ_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKS_ATAUJS)
+    if ((uint32_t) CGC_TAUJ_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKS_ATAUJS)                          /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for TAUJ3 */
-        R_SYS0_A_CLOCK->CKS_ATAUJC = CGC_TAUJ_CLK_SEL_EMG;
+        R_SYS0_A_CLOCK->CKS_ATAUJC = (uint32_t) CGC_TAUJ_CLK_SEL_EMG;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ATAUJS, CGC_TAUJ_CLK_SEL_EMG);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ATAUJS, (uint32_t) CGC_TAUJ_CLK_SEL_EMG); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the CANFD_XIN input clock source */
-    if ((CGC_CANFD_CLK_SEL_MOSC == R_SYS0_CLOCK->CKS_RCANS) ||
-        (CGC_CANFD_CLK_SEL_MOSC_DIV_2 == R_SYS0_CLOCK->CKS_RCANS) ||
-        (CGC_CANFD_CLK_SEL_MOSC_DIV_4 == R_SYS0_CLOCK->CKS_RCANS))
+    if (((uint32_t) CGC_CANFD_CLK_SEL_MOSC ==
+         ((R_SYS0_CLOCK->CKS_RCANS & R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk) >>                           /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+          R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Pos)) ||
+        ((uint32_t) CGC_CANFD_CLK_SEL_MOSC_DIV_2 ==
+         ((R_SYS0_CLOCK->CKS_RCANS & R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk) >>                           /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+          R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Pos)) ||
+        ((uint32_t) CGC_CANFD_CLK_SEL_MOSC_DIV_4 ==
+         ((R_SYS0_CLOCK->CKS_RCANS & R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk) >>                           /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+          R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Pos)))
     {
         /* Change to another input clock source for CANFD_XIN */
-        R_SYS0_CLOCK->CKS_RCANC = CGC_CANFD_CLK_SEL_EMG;
+        R_SYS0_CLOCK->CKS_RCANC = (R_SYS0_CLOCK->CKS_RCANC & ~R_SYS0_CLOCK_CKS_RCANC_RCANXINSCSID_Msk) |  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                  ((uint32_t) CGC_CANFD_CLK_SEL_EMG << R_SYS0_CLOCK_CKS_RCANC_RCANXINSCSID_Pos);
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_RCANS, CGC_CANFD_CLK_SEL_EMG);
+        FSP_HARDWARE_REGISTER_WAIT(((R_SYS0_CLOCK->CKS_RCANS & R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk) >> /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                    R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Pos),
+                                   (uint32_t) CGC_CANFD_CLK_SEL_EMG);
     }
 
     /* Change the RTCA input clock source */
-    if (CGC_RTCA_CLK_SEL_MOSC_DIV_16 == R_SYS0_A_CLOCK->CKS_ARTCAS)
+    if ((uint32_t) CGC_RTCA_CLK_SEL_MOSC_DIV_16 == R_SYS0_A_CLOCK->CKS_ARTCAS)                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for RTCA */
-        R_SYS0_A_CLOCK->CKS_ARTCAC = CGC_RTCA_CLK_SEL_EMG;
+        R_SYS0_A_CLOCK->CKS_ARTCAC = (uint32_t) CGC_RTCA_CLK_SEL_EMG;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ARTCAS, CGC_RTCA_CLK_SEL_EMG);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ARTCAS, (uint32_t) CGC_RTCA_CLK_SEL_EMG); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the ADC input clock source */
-    if (CGC_AADC_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKS_AADCS)
+    if ((uint32_t) CGC_AADC_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKS_AADCS)                           /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for RLIN3 */
-        R_SYS0_A_CLOCK->CKS_AADCC = CGC_AADC_CLK_SEL_EMG;
+        R_SYS0_A_CLOCK->CKS_AADCC = (uint32_t) CGC_AADC_CLK_SEL_EMG;                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_AADCS, CGC_AADC_CLK_SEL_EMG);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_AADCS, (uint32_t) CGC_AADC_CLK_SEL_EMG);  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the MSPI input clock source */
-    if (CGC_MSPI_CLK_SEL_MOSC == R_SYS0_CLOCK->CKS_MSPIS)
+    if ((uint32_t) CGC_MSPI_CLK_SEL_MOSC == R_SYS0_CLOCK->CKS_MSPIS)                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for MSPI3 */
-        R_SYS0_CLOCK->CKS_MSPIC = CGC_MSPI_CLK_SEL_EMG;
+        R_SYS0_CLOCK->CKS_MSPIC = (uint32_t) CGC_MSPI_CLK_SEL_EMG;                               /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_MSPIS, CGC_MSPI_CLK_SEL_EMG);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_MSPIS, (uint32_t) CGC_MSPI_CLK_SEL_EMG);    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
 #else
 
     /* Change the RLIN3 input clock source */
-    if ((CGC_RLIN_CLK_SEL_MOSC == R_SYS0_CLOCK->CKS_RLINS) ||
-        (CGC_RLIN_CLK_SEL_MOSC_DIV_4 == R_SYS0_CLOCK->CKS_RLINS) ||
-        (CGC_RLIN_CLK_SEL_MOSC_DIV_8 == R_SYS0_CLOCK->CKS_RLINS))
+    if (((uint32_t) CGC_RLIN_CLK_SEL_MOSC == R_SYS0_CLOCK->CKS_RLINS) ||                                    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        ((uint32_t) CGC_RLIN_CLK_SEL_MOSC_DIV_4 == R_SYS0_CLOCK->CKS_RLINS) ||                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        ((uint32_t) CGC_RLIN_CLK_SEL_MOSC_DIV_8 == R_SYS0_CLOCK->CKS_RLINS))                                /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for RLIN3 */
-        R_SYS0_CLOCK->CKS_RLINC = CGC_RLIN_CLK_SEL_HSB;
+        R_SYS0_CLOCK->CKS_RLINC = (uint32_t) CGC_RLIN_CLK_SEL_HSB;                                          /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_RLINS, CGC_RLIN_CLK_SEL_HSB);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_RLINS, (uint32_t) CGC_RLIN_CLK_SEL_HSB);               /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the TAUJ input clock source */
-    if (CGC_TAUJ_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKSC_ATAUJS)
+    if ((uint32_t) CGC_TAUJ_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKSC_ATAUJS)                                    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for TAUJ3 */
-        R_SYS0_A_CLOCK->CKSC_ATAUJC = CGC_TAUJ_CLK_SEL_HSIOSC_DIV_20;
+        R_SYS0_A_CLOCK->CKSC_ATAUJC = (uint32_t) CGC_TAUJ_CLK_SEL_HSIOSC_DIV_20;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_ATAUJS, CGC_TAUJ_CLK_SEL_HSIOSC_DIV_20);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_ATAUJS, (uint32_t) CGC_TAUJ_CLK_SEL_HSIOSC_DIV_20); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the MSPI input clock source */
-    if (CGC_MSPI_CLK_SEL_MOSC == R_SYS0_CLOCK->CKS_MSPIS)
+    if ((uint32_t) CGC_MSPI_CLK_SEL_MOSC == R_SYS0_CLOCK->CKS_MSPIS)                                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for MSPI3 */
-        R_SYS0_CLOCK->CKS_MSPIC = CGC_MSPI_CLK_SEL_HSB;
+        R_SYS0_CLOCK->CKS_MSPIC = (uint32_t) CGC_MSPI_CLK_SEL_HSB;                                          /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_MSPIS, CGC_MSPI_CLK_SEL_HSB);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_MSPIS, (uint32_t) CGC_MSPI_CLK_SEL_HSB);               /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the RCANOSC input clock source */
-    if (CGC_CANFD_CLK_SEL_MOSC != R_SYS0_CLOCK->CKSC_RCANS)
+    if ((uint32_t) CGC_CANFD_CLK_SEL_MOSC != R_SYS0_CLOCK->CKSC_RCANS)                                      /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for RCANOSC */
-        R_SYS0_CLOCK->CKSC_RCANC = CGC_CANFD_CLK_SEL_MOSC;
+        R_SYS0_CLOCK->CKSC_RCANC = (uint32_t) CGC_CANFD_CLK_SEL_MOSC;                                       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKSC_RCANS, CGC_CANFD_CLK_SEL_MOSC);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKSC_RCANS, (uint32_t) CGC_CANFD_CLK_SEL_MOSC);            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the RTCA input clock source */
-    if (CGC_RTCA_CLK_SEL_MOSC_DIV_16 == R_SYS0_A_CLOCK->CKSC_ARTCAS)
+    if ((uint32_t) CGC_RTCA_CLK_SEL_MOSC_DIV_16 == R_SYS0_A_CLOCK->CKSC_ARTCAS)                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for RTCA */
-        R_SYS0_A_CLOCK->CKSC_ARTCAC = CGC_RTCA_CLK_SEL_LSIOSC;
+        R_SYS0_A_CLOCK->CKSC_ARTCAC = (uint32_t) CGC_RTCA_CLK_SEL_LSIOSC;                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_ARTCAS, CGC_RTCA_CLK_SEL_LSIOSC);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_ARTCAS, (uint32_t) CGC_RTCA_CLK_SEL_LSIOSC);        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the ADC input clock source */
-    if (CGC_AADC_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKSC_AADCS)
+    if ((uint32_t) CGC_AADC_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKSC_AADCS)                                     /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
-        /* Change to another input clock source for RLIN3 */
-        R_SYS0_A_CLOCK->CKSC_AADCC = CGC_AADC_CLK_SEL_HSIOSC_DIV_20;
+        /* Change to another input clock source for ADC */
+        R_SYS0_A_CLOCK->CKSC_AADCC = (uint32_t) CGC_AADC_CLK_SEL_HSIOSC_DIV_20;                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_AADCS, CGC_AADC_CLK_SEL_HSIOSC_DIV_20);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_AADCS, (uint32_t) CGC_AADC_CLK_SEL_HSIOSC_DIV_20);  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 #endif
 
@@ -2073,47 +2151,47 @@ static void r_cgc_main_osc_pre_stop (void)
 
     /* Change the EXTCLK0 input clock source */
  #if (BSP_FEATURE_CGC_EXTENDED_PERIPHERAL_CLK_SELECTORS)
-    if (CGC_EXTCLK_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKS_EXTCLK0S)
+    if ((uint32_t) CGC_EXTCLK_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKS_EXTCLK0S)                          /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the EXTCLK0 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK0C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0C, 0x00U);
+        R_SYS0_A_CLOCK->CKD_EXTCLK0C = 0x00U;                                                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0C, 0x00U);                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for EXTCLK0 */
-        R_SYS0_A_CLOCK->CKS_EXTCLK0C = CGC_EXTCLK_CLK_SEL_HSB;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK0S, CGC_EXTCLK_CLK_SEL_HSB);
+        R_SYS0_A_CLOCK->CKS_EXTCLK0C = CGC_EXTCLK_CLK_SEL_HSB;                                       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK0S, (uint32_t) CGC_EXTCLK_CLK_SEL_HSB); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the EXTCLK0 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;
+        R_SYS0_A_CLOCK->CKD_EXTCLK0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
  #else
-    if ((CGC_FOUT_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKSC_FOUT0S) ||
-        (CGC_FOUT_CLK_SEL_MOSC_1 == R_SYS0_A_CLOCK->CKSC_FOUT0S) ||
-        (CGC_FOUT_CLK_SEL_MOSC_2 == R_SYS0_A_CLOCK->CKSC_FOUT0S))
+    if (((uint32_t) CGC_FOUT_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKSC_FOUT0S) ||                         /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        ((uint32_t) CGC_FOUT_CLK_SEL_MOSC_1 == R_SYS0_A_CLOCK->CKSC_FOUT0S) ||                       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        ((uint32_t) CGC_FOUT_CLK_SEL_MOSC_2 == R_SYS0_A_CLOCK->CKSC_FOUT0S))                         /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0S, CGC_CLOCK_STABLED);                  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the FOUT0 */
-        R_SYS0_A_CLOCK->CLKD_FOUT0C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0C, 0x00U);
+        R_SYS0_A_CLOCK->CLKD_FOUT0C = 0x00U;                                                         /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0C, 0x00U);                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for FOUT0 */
-        R_SYS0_A_CLOCK->CKSC_FOUT0C = CGC_FOUT_CLK_SEL_HSB;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_FOUT0S, CGC_FOUT_CLK_SEL_HSB);
+        R_SYS0_A_CLOCK->CKSC_FOUT0C = CGC_FOUT_CLK_SEL_HSB;                                          /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_FOUT0S, (uint32_t) CGC_FOUT_CLK_SEL_HSB);    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the FOUT0 */
-        R_SYS0_A_CLOCK->CLKD_FOUT0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;
+        R_SYS0_A_CLOCK->CLKD_FOUT0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;                                    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0S, CGC_CLOCK_STABLED);                  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
  #endif
 #endif
@@ -2122,47 +2200,47 @@ static void r_cgc_main_osc_pre_stop (void)
 
     /* Change the EXTCLK1 input clock source */
  #if (BSP_FEATURE_CGC_EXTENDED_PERIPHERAL_CLK_SELECTORS)
-    if (CGC_EXTCLK_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKS_EXTCLK1S)
+    if ((uint32_t) CGC_EXTCLK_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKS_EXTCLK1S)                          /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the EXTCLK1 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK1C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1C, 0x00U);
+        R_SYS0_A_CLOCK->CKD_EXTCLK1C = 0x00U;                                                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1C, 0x00U);                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for EXTCLK1 */
-        R_SYS0_A_CLOCK->CKS_EXTCLK1C = CGC_EXTCLK_CLK_SEL_HSB;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK1S, CGC_EXTCLK_CLK_SEL_HSB);
+        R_SYS0_A_CLOCK->CKS_EXTCLK1C = (uint32_t) CGC_EXTCLK_CLK_SEL_HSB;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK1S, (uint32_t) CGC_EXTCLK_CLK_SEL_HSB); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the EXTCLK1 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;
+        R_SYS0_A_CLOCK->CKD_EXTCLK1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
  #else
-    if ((CGC_FOUT_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKSC_FOUT1S) ||
-        (CGC_FOUT_CLK_SEL_MOSC_1 == R_SYS0_A_CLOCK->CKSC_FOUT1S) ||
-        (CGC_FOUT_CLK_SEL_MOSC_2 == R_SYS0_A_CLOCK->CKSC_FOUT1S))
+    if (((uint32_t) CGC_FOUT_CLK_SEL_MOSC == R_SYS0_A_CLOCK->CKSC_FOUT1S) ||                         /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        ((uint32_t) CGC_FOUT_CLK_SEL_MOSC_1 == R_SYS0_A_CLOCK->CKSC_FOUT1S) ||                       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        ((uint32_t) CGC_FOUT_CLK_SEL_MOSC_2 == R_SYS0_A_CLOCK->CKSC_FOUT1S))                         /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1S, CGC_CLOCK_STABLED);                  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the FOUT1 */
-        R_SYS0_A_CLOCK->CLKD_FOUT1C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1C, 0x00U);
+        R_SYS0_A_CLOCK->CLKD_FOUT1C = 0x00U;                                                         /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1C, 0x00U);                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for FOUT1 */
-        R_SYS0_A_CLOCK->CKSC_FOUT1C = CGC_FOUT_CLK_SEL_HSB;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_FOUT1S, CGC_FOUT_CLK_SEL_HSB);
+        R_SYS0_A_CLOCK->CKSC_FOUT1C = (uint32_t) CGC_FOUT_CLK_SEL_HSB;                               /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_FOUT1S, (uint32_t) CGC_FOUT_CLK_SEL_HSB);    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the FOUT1 */
-        R_SYS0_A_CLOCK->CLKD_FOUT1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;
+        R_SYS0_A_CLOCK->CLKD_FOUT1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;                                    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1S, CGC_CLOCK_STABLED);                  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
  #endif
 #endif
@@ -2177,11 +2255,28 @@ static void r_cgc_main_osc_pre_stop (void)
  *
  * @param[in]  p_cgc_peripheral_clock   Pointer to peripheral clocks backup
  **********************************************************************************************************************/
-static void r_cgc_main_osc_restore (cgc_peripheral_clock_backup_t * p_cgc_peripheral_clock)
+static void r_cgc_main_osc_restore (cgc_peripheral_clock_backup_t * p_cgc_peripheral_clock) /* PRQA S 3673 # Advisory R-8.13 */
 {
+    /* Change the MSPI input clock source */
+    cgc_mspi_clk_sel_t pre_mspi     = p_cgc_peripheral_clock->clk_mspi;
+    cgc_mspi_clk_sel_t current_mspi = (cgc_mspi_clk_sel_t) R_SYS0_CLOCK->CKS_MSPIS;         /* PRQA S 0306, 4342, 0662 # Advisory R-11.4, Advisory R-10.5, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+
+    if ((CGC_MSPI_CLK_SEL_MOSC == pre_mspi) && (pre_mspi != current_mspi))
+    {
+        /* Change to another input clock source for MSPI */
+        R_SYS0_CLOCK->CKS_MSPIC = (uint32_t) pre_mspi;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+
+        /* Confirm that input clock source has been changed */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_MSPIS, (uint32_t) pre_mspi); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    }
+
     /* Change the RLIN3 input clock source */
-    cgc_rlin_clk_sel_t pre_rlin     = p_cgc_peripheral_clock->clk_rlin;
-    cgc_rlin_clk_sel_t current_rlin = (cgc_rlin_clk_sel_t) R_SYS0_CLOCK->CKS_RLINS;
+    cgc_rlin_clk_sel_t pre_rlin = p_cgc_peripheral_clock->clk_rlin;
+
+    uint32_t current_rlin_raw =
+        ((uint32_t) R_SYS0_CLOCK->CKS_RLINS & (uint32_t) R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk) >> /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Pos;
+    cgc_rlin_clk_sel_t current_rlin = (cgc_rlin_clk_sel_t) current_rlin_raw;                     /* PRQA S 4342 # Advisory R-10.5 */
 
     if (((CGC_RLIN_CLK_SEL_MOSC == pre_rlin) ||
          (CGC_RLIN_CLK_SEL_MOSC_DIV_4 == pre_rlin) ||
@@ -2189,34 +2284,25 @@ static void r_cgc_main_osc_restore (cgc_peripheral_clock_backup_t * p_cgc_periph
         (pre_rlin != current_rlin))
     {
         /* Change to another input clock source for RLIN3 */
-        R_SYS0_CLOCK->CKS_RLINC = (uint32_t) pre_rlin;
+        R_SYS0_CLOCK->CKS_RLINC =                                                                      /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                  (R_SYS0_CLOCK->CKS_RLINC & ~R_SYS0_CLOCK_CKS_RLINC_RLINSCSID_Msk) |  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                  ((uint32_t) pre_rlin << R_SYS0_CLOCK_CKS_RLINC_RLINSCSID_Pos);
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_RLINS, (uint32_t) pre_rlin);
-    }
-
-    /* Change the MSPI input clock source */
-    cgc_mspi_clk_sel_t pre_mspi     = p_cgc_peripheral_clock->clk_mspi;
-    cgc_mspi_clk_sel_t current_mspi = (cgc_mspi_clk_sel_t) R_SYS0_CLOCK->CKS_MSPIS;
-
-    if ((CGC_MSPI_CLK_SEL_MOSC == pre_mspi) && (pre_mspi != current_mspi))
-    {
-        /* Change to another input clock source for MSPI */
-        R_SYS0_CLOCK->CKS_MSPIC = (uint32_t) pre_mspi;
-
-        /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_MSPIS, (uint32_t) pre_mspi);
+        FSP_HARDWARE_REGISTER_WAIT(((R_SYS0_CLOCK->CKS_RLINS & R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk) >> /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                    R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Pos),
+                                   (uint32_t) pre_rlin);
     }
 
 #if (BSP_FEATURE_CGC_EXTENDED_PERIPHERAL_CLK_SELECTORS)
 
     /* Change the RLIN3_CH23 input clock source */
-    cgc_rlin_clk_sel_t pre_rlin_ch23 =
-        (cgc_rlin_clk_sel_t) (((uint32_t) (p_cgc_peripheral_clock->clk_rlin_ch23)) >>
-                              R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos);
+    cgc_rlin_clk_sel_t pre_rlin_ch23 = p_cgc_peripheral_clock->clk_rlin_ch23;
 
-    cgc_rlin_clk_sel_t current_rlin_ch23 =
-        (cgc_rlin_clk_sel_t) (R_SYS0_CLOCK->CKS_RLINS >> R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos);
+    uint32_t current_rlin23_raw =
+        ((uint32_t) R_SYS0_CLOCK->CKS_RLINS & (uint32_t) R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk) >> /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos;
+    cgc_rlin_clk_sel_t current_rlin_ch23 = (cgc_rlin_clk_sel_t) current_rlin23_raw;                /* PRQA S 4342 # Advisory R-10.5 */
 
     if (((CGC_RLIN_CLK_SEL_MOSC == pre_rlin_ch23) ||
          (CGC_RLIN_CLK_SEL_MOSC_DIV_4 == pre_rlin_ch23) ||
@@ -2224,31 +2310,36 @@ static void r_cgc_main_osc_restore (cgc_peripheral_clock_backup_t * p_cgc_periph
         (pre_rlin_ch23 != current_rlin_ch23))
     {
         /* Change to another input clock source for RLIN3_CH23 */
-        R_SYS0_CLOCK->CKS_RLINC =
-            (R_SYS0_CLOCK->CKS_RLINC & ~R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Msk) |
-            ((uint32_t) pre_rlin_ch23 << R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Pos);
+        R_SYS0_CLOCK->CKS_RLINC =                                                                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                  (R_SYS0_CLOCK->CKS_RLINC & ~R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Msk) |  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                  ((uint32_t) pre_rlin_ch23 << R_SYS0_CLOCK_CKS_RLINC_RLIN23SCSID_Pos);
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT((R_SYS0_CLOCK->CKS_RLINS >> R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos),
+        FSP_HARDWARE_REGISTER_WAIT(((R_SYS0_CLOCK->CKS_RLINS & R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk) >> /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                    R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos),
                                    (uint32_t) pre_rlin_ch23);
     }
 
     /* Change the TAUJ input clock source */
     cgc_tauj_clk_sel_t pre_tauj     = p_cgc_peripheral_clock->clk_tauj;
-    cgc_tauj_clk_sel_t current_tauj = (cgc_tauj_clk_sel_t) R_SYS0_A_CLOCK->CKS_ATAUJS;
+    cgc_tauj_clk_sel_t current_tauj = (cgc_tauj_clk_sel_t) R_SYS0_A_CLOCK->CKS_ATAUJS; /* PRQA S 0306, 4342, 0662 # Advisory R-11.4, Advisory R-10.5, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     if ((CGC_TAUJ_CLK_SEL_MOSC == pre_tauj) && (pre_tauj != current_tauj))
     {
         /* Change to another input clock source for TAUJ */
-        R_SYS0_A_CLOCK->CKS_ATAUJC = (uint32_t) pre_tauj;
+        R_SYS0_A_CLOCK->CKS_ATAUJC = (uint32_t) pre_tauj;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ATAUJS, (uint32_t) pre_tauj);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ATAUJS, (uint32_t) pre_tauj); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the CANFD_XIN input clock source */
-    cgc_canfd_clk_sel_t pre_canfd     = p_cgc_peripheral_clock->clk_canfd;
-    cgc_canfd_clk_sel_t current_canfd = (cgc_canfd_clk_sel_t) R_SYS0_CLOCK->CKS_RCANS;
+    cgc_canfd_clk_sel_t pre_canfd = p_cgc_peripheral_clock->clk_canfd;
+
+    uint32_t current_canfd_raw =
+        ((uint32_t) R_SYS0_CLOCK->CKS_RCANS & (uint32_t) R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk) >> /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Pos;
+    cgc_canfd_clk_sel_t current_canfd = (cgc_canfd_clk_sel_t) current_canfd_raw;                    /* PRQA S 4342 # Advisory R-10.5 */
 
     if (((CGC_CANFD_CLK_SEL_MOSC == pre_canfd) ||
          (CGC_CANFD_CLK_SEL_MOSC_DIV_2 == pre_canfd) ||
@@ -2256,90 +2347,93 @@ static void r_cgc_main_osc_restore (cgc_peripheral_clock_backup_t * p_cgc_periph
         (pre_canfd != current_canfd))
     {
         /* Change to another input clock source for CANFD_XIN */
-        R_SYS0_CLOCK->CKS_RCANC = (uint32_t) pre_canfd;
+        R_SYS0_CLOCK->CKS_RCANC = (R_SYS0_CLOCK->CKS_RCANC & ~R_SYS0_CLOCK_CKS_RCANC_RCANXINSCSID_Msk) | /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                  ((uint32_t) pre_canfd << R_SYS0_CLOCK_CKS_RCANC_RCANXINSCSID_Pos);
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKS_RCANS, (uint32_t) pre_canfd);
+        FSP_HARDWARE_REGISTER_WAIT(                                                                      /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+            (R_SYS0_CLOCK->CKS_RCANS & R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk) >> R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Pos,
+            (uint32_t) pre_canfd);
     }
 
     /* Change the RTCA input clock source */
     cgc_rtca_clk_sel_t pre_rtca     = p_cgc_peripheral_clock->clk_rtca;
-    cgc_rtca_clk_sel_t current_rtca = (cgc_rtca_clk_sel_t) R_SYS0_A_CLOCK->CKS_ARTCAS;
+    cgc_rtca_clk_sel_t current_rtca = (cgc_rtca_clk_sel_t) R_SYS0_A_CLOCK->CKS_ARTCAS; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
 
     if ((CGC_RTCA_CLK_SEL_MOSC_DIV_16 == pre_rtca) && (pre_rtca != current_rtca))
     {
         /* Change to another input clock source for RTCA */
-        R_SYS0_A_CLOCK->CKS_ARTCAC = (uint32_t) pre_rtca;
+        R_SYS0_A_CLOCK->CKS_ARTCAC = (uint32_t) pre_rtca;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ARTCAS, (uint32_t) pre_rtca);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ARTCAS, (uint32_t) pre_rtca); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the ADC input clock source */
     cgc_aadc_clk_sel_t pre_aadc     = p_cgc_peripheral_clock->clk_aadc;
-    cgc_aadc_clk_sel_t current_aadc = (cgc_aadc_clk_sel_t) R_SYS0_A_CLOCK->CKS_AADCS;
+    cgc_aadc_clk_sel_t current_aadc = (cgc_aadc_clk_sel_t) R_SYS0_A_CLOCK->CKS_AADCS; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
 
     if ((CGC_AADC_CLK_SEL_MOSC == pre_aadc) && (pre_aadc != current_aadc))
     {
         /* Change to another input clock source for ADC */
-        R_SYS0_A_CLOCK->CKS_AADCC = (uint32_t) pre_aadc;
+        R_SYS0_A_CLOCK->CKS_AADCC = (uint32_t) pre_aadc;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_AADCS, (uint32_t) pre_aadc);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_AADCS, (uint32_t) pre_aadc); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
 #else
 
     /* Change the TAUJ input clock source */
     cgc_tauj_clk_sel_t pre_tauj     = p_cgc_peripheral_clock->clk_tauj;
-    cgc_tauj_clk_sel_t current_tauj = (cgc_tauj_clk_sel_t) R_SYS0_A_CLOCK->CKSC_ATAUJS;
+    cgc_tauj_clk_sel_t current_tauj = (cgc_tauj_clk_sel_t) R_SYS0_A_CLOCK->CKSC_ATAUJS; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
 
     if ((CGC_TAUJ_CLK_SEL_MOSC == pre_tauj) && (pre_tauj != current_tauj))
     {
         /* Change to another input clock source for TAUJ3 */
-        R_SYS0_A_CLOCK->CKSC_ATAUJC = (uint32_t) pre_tauj;
+        R_SYS0_A_CLOCK->CKSC_ATAUJC = (uint32_t) pre_tauj;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_ATAUJS, (uint32_t) pre_tauj);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_ATAUJS, (uint32_t) pre_tauj); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the RCANOSC input clock source */
     cgc_canfd_clk_sel_t pre_canfd     = p_cgc_peripheral_clock->clk_canfd;
-    cgc_canfd_clk_sel_t current_canfd = (cgc_canfd_clk_sel_t) R_SYS0_CLOCK->CKSC_RCANS;
+    cgc_canfd_clk_sel_t current_canfd = (cgc_canfd_clk_sel_t) R_SYS0_CLOCK->CKSC_RCANS; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
 
     if ((CGC_CANFD_CLK_SEL_MOSC != pre_canfd) && (pre_canfd != current_canfd))
     {
         /* Change to another input clock source for RCANOSC */
-        R_SYS0_CLOCK->CKSC_RCANC = (uint32_t) pre_canfd;
+        R_SYS0_CLOCK->CKSC_RCANC = (uint32_t) pre_canfd;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKSC_RCANS, (uint32_t) pre_canfd);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_CLOCK->CKSC_RCANS, (uint32_t) pre_canfd); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the RTCA input clock source */
     cgc_rtca_clk_sel_t pre_rtca     = p_cgc_peripheral_clock->clk_rtca;
-    cgc_rtca_clk_sel_t current_rtca = (cgc_rtca_clk_sel_t) R_SYS0_A_CLOCK->CKSC_ARTCAS;
+    cgc_rtca_clk_sel_t current_rtca = (cgc_rtca_clk_sel_t) R_SYS0_A_CLOCK->CKSC_ARTCAS; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
 
     if ((CGC_RTCA_CLK_SEL_MOSC_DIV_16 == pre_rtca) && (pre_rtca != current_rtca))
     {
         /* Change to another input clock source for RTCA */
-        R_SYS0_A_CLOCK->CKSC_ARTCAC = (uint32_t) pre_rtca;
+        R_SYS0_A_CLOCK->CKSC_ARTCAC = (uint32_t) pre_rtca;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_ARTCAS, (uint32_t) pre_rtca);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_ARTCAS, (uint32_t) pre_rtca); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Change the ADC input clock source */
     cgc_aadc_clk_sel_t pre_aadc     = p_cgc_peripheral_clock->clk_aadc;
-    cgc_aadc_clk_sel_t current_aadc = (cgc_aadc_clk_sel_t) R_SYS0_A_CLOCK->CKSC_AADCS;
+    cgc_aadc_clk_sel_t current_aadc = (cgc_aadc_clk_sel_t) R_SYS0_A_CLOCK->CKSC_AADCS; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
 
     if ((CGC_AADC_CLK_SEL_MOSC == pre_aadc) && (pre_aadc != current_aadc))
     {
-        /* Change to another input clock source for RLIN3 */
-        R_SYS0_A_CLOCK->CKSC_AADCC = pre_aadc;
+        /* Change to another input clock source for ADC */
+        R_SYS0_A_CLOCK->CKSC_AADCC = (uint32_t) pre_aadc;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_AADCS, pre_aadc);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_AADCS, (uint32_t) pre_aadc); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 #endif
 
@@ -2349,49 +2443,49 @@ static void r_cgc_main_osc_restore (cgc_peripheral_clock_backup_t * p_cgc_periph
     cgc_extclk_clk_sel_t pre_extclk0 = p_cgc_peripheral_clock->clk_extclk0;
 
  #if (BSP_FEATURE_CGC_EXTENDED_PERIPHERAL_CLK_SELECTORS)
-    cgc_extclk_clk_sel_t current_extclk0 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK0S;
+    cgc_extclk_clk_sel_t current_extclk0 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK0S; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
     if ((CGC_EXTCLK_CLK_SEL_MOSC == pre_extclk0) && (pre_extclk0 != current_extclk0))
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the EXTCLK0 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK0C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0C, 0x00U);
+        R_SYS0_A_CLOCK->CKD_EXTCLK0C = 0x00U;                                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0C, 0x00U);                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for EXTCLK0 */
-        R_SYS0_A_CLOCK->CKS_EXTCLK0C = pre_extclk0;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK0S, pre_extclk0);
+        R_SYS0_A_CLOCK->CKS_EXTCLK0C = pre_extclk0;                                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK0S, (uint32_t) pre_extclk0);       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the EXTCLK0 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;
+        R_SYS0_A_CLOCK->CKD_EXTCLK0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
  #else
-    cgc_extclk_clk_sel_t current_extclk0 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKSC_FOUT0S;
+    cgc_extclk_clk_sel_t current_extclk0 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKSC_FOUT0S;  /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
     if (((CGC_FOUT_CLK_SEL_MOSC == pre_extclk0) ||
          (CGC_FOUT_CLK_SEL_MOSC_1 == pre_extclk0) ||
          (CGC_FOUT_CLK_SEL_MOSC_2 == pre_extclk0)) && (pre_extclk0 != current_extclk0))
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0S, CGC_CLOCK_STABLED);      /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the FOUT0 */
-        R_SYS0_A_CLOCK->CLKD_FOUT0C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0C, 0x00U);
+        R_SYS0_A_CLOCK->CLKD_FOUT0C = 0x00U;                                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0C, 0x00U);                  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for FOUT0 */
-        R_SYS0_A_CLOCK->CKSC_FOUT0C = pre_extclk0;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_FOUT0S, pre_extclk0);
+        R_SYS0_A_CLOCK->CKSC_FOUT0C = pre_extclk0;                                       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_FOUT0S, (uint32_t) pre_extclk0); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the FOUT0 */
-        R_SYS0_A_CLOCK->CLKD_FOUT0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;
+        R_SYS0_A_CLOCK->CLKD_FOUT0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT0S, CGC_CLOCK_STABLED);      /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
  #endif
 #endif
@@ -2402,49 +2496,49 @@ static void r_cgc_main_osc_restore (cgc_peripheral_clock_backup_t * p_cgc_periph
     cgc_extclk_clk_sel_t pre_extclk1 = p_cgc_peripheral_clock->clk_extclk1;
 
  #if (BSP_FEATURE_CGC_EXTENDED_PERIPHERAL_CLK_SELECTORS)
-    cgc_extclk_clk_sel_t current_extclk1 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK1S;
+    cgc_extclk_clk_sel_t current_extclk1 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK1S; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
     if ((CGC_EXTCLK_CLK_SEL_MOSC == pre_extclk1) && (pre_extclk1 != current_extclk1))
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the EXTCLK1 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK1C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1C, 0x00U);
+        R_SYS0_A_CLOCK->CKD_EXTCLK1C = 0x00U;                                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1C, 0x00U);                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for EXTCLK1 */
-        R_SYS0_A_CLOCK->CKS_EXTCLK1C = pre_extclk1;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK1S, pre_extclk1);
+        R_SYS0_A_CLOCK->CKS_EXTCLK1C = pre_extclk1;                                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK1S, (uint32_t) pre_extclk1);       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the EXTCLK1 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;
+        R_SYS0_A_CLOCK->CKD_EXTCLK1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
  #else
-    cgc_extclk_clk_sel_t current_extclk1 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKSC_FOUT1S;
+    cgc_extclk_clk_sel_t current_extclk1 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKSC_FOUT1S;  /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
     if (((CGC_FOUT_CLK_SEL_MOSC == pre_extclk1) ||
          (CGC_FOUT_CLK_SEL_MOSC_1 == pre_extclk1) ||
          (CGC_FOUT_CLK_SEL_MOSC_2 == pre_extclk1)) && (pre_extclk1 != current_extclk1))
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1S, CGC_CLOCK_STABLED);      /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the FOUT1 */
-        R_SYS0_A_CLOCK->CLKD_FOUT1C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1C, 0x00U);
+        R_SYS0_A_CLOCK->CLKD_FOUT1C = 0x00U;                                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1C, 0x00U);                  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for FOUT1 */
-        R_SYS0_A_CLOCK->CKSC_FOUT1C = pre_extclk1;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_FOUT1S, pre_extclk1);
+        R_SYS0_A_CLOCK->CKSC_FOUT1C = pre_extclk1;                                       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKSC_FOUT1S, (uint32_t) pre_extclk1); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the FOUT1 */
-        R_SYS0_A_CLOCK->CLKD_FOUT1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;
+        R_SYS0_A_CLOCK->CLKD_FOUT1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CLKD_FOUT1S, CGC_CLOCK_STABLED);      /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
  #endif
 #endif
@@ -2479,10 +2573,10 @@ static fsp_err_t r_cgc_sub_osc_start (cgc_peripheral_clock_backup_t * p_cgc_peri
         FSP_CRITICAL_SECTION_ENTER;
 
         /* Enable Sub-Clock */
-        R_SYS0_A_CLOCK->SOSCE = R_SYS0_A_CLOCK_SOSCE_SOSCENTRG_Msk;
+        R_SYS0_A_CLOCK->SOSCE = (uint32_t) R_SYS0_A_CLOCK_SOSCE_SOSCENTRG_Msk; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Wait until stable */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->SOSCS, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->SOSCS, CGC_CLOCK_STABLED);  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Restore the peripheral clocks */
         r_cgc_sub_osc_restore(p_cgc_peripheral_clock);
@@ -2527,10 +2621,10 @@ static fsp_err_t r_cgc_sub_osc_stop (cgc_peripheral_clock_backup_t * p_cgc_perip
         r_cgc_sub_osc_pre_stop();
 
         /* Disable Sub-Clock */
-        R_SYS0_A_CLOCK->SOSCE = R_SYS0_A_CLOCK_SOSCE_SOSCDISTRG_Msk;
+        R_SYS0_A_CLOCK->SOSCE = (uint32_t) R_SYS0_A_CLOCK_SOSCE_SOSCDISTRG_Msk; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Wait until stopped */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->SOSCS, 0x00);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->SOSCS, CGC_CLOCK_STOPPED);   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         FSP_CRITICAL_SECTION_EXIT;
     }
@@ -2551,60 +2645,60 @@ static fsp_err_t r_cgc_sub_osc_stop (cgc_peripheral_clock_backup_t * p_cgc_perip
 static void r_cgc_sub_osc_pre_stop (void)
 {
     /* Change the RTCA input clock source */
-    if (CGC_RTCA_CLK_SEL_SOSC == R_SYS0_A_CLOCK->CKS_ARTCAS)
+    if ((uint32_t) CGC_RTCA_CLK_SEL_SOSC == R_SYS0_A_CLOCK->CKS_ARTCAS)                          /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Change to another input clock source for RTCA */
-        R_SYS0_A_CLOCK->CKS_ARTCAC = CGC_RTCA_CLK_SEL_EMG;
+        R_SYS0_A_CLOCK->CKS_ARTCAC = (uint32_t) CGC_RTCA_CLK_SEL_EMG;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ARTCAS, CGC_RTCA_CLK_SEL_EMG);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ARTCAS, (uint32_t) CGC_RTCA_CLK_SEL_EMG); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
  #if (BSP_CFG_CLOCK_EXTCLK0O_DIV > 0)
 
     /* Change the EXTCLK0 input clock source */
-    if (CGC_EXTCLK_CLK_SEL_SOSC == R_SYS0_A_CLOCK->CKS_EXTCLK0S)
+    if ((uint32_t) CGC_EXTCLK_CLK_SEL_SOSC == R_SYS0_A_CLOCK->CKS_EXTCLK0S)                          /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the EXTCLK0 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK0C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0C, 0x00U);
+        R_SYS0_A_CLOCK->CKD_EXTCLK0C = 0x00U;                                                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0C, 0x00U);                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for EXTCLK0 */
-        R_SYS0_A_CLOCK->CKS_EXTCLK0C = CGC_EXTCLK_CLK_SEL_HSB;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK0S, CGC_EXTCLK_CLK_SEL_HSB);
+        R_SYS0_A_CLOCK->CKS_EXTCLK0C = (uint32_t) CGC_EXTCLK_CLK_SEL_HSB;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK0S, (uint32_t) CGC_EXTCLK_CLK_SEL_HSB); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the EXTCLK0 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;
+        R_SYS0_A_CLOCK->CKD_EXTCLK0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
  #endif
 
  #if (BSP_CFG_CLOCK_EXTCLK1O_DIV > 0)
 
     /* Change the EXTCLK1 input clock source */
-    if (CGC_EXTCLK_CLK_SEL_SOSC == R_SYS0_A_CLOCK->CKS_EXTCLK1S)
+    if ((uint32_t) CGC_EXTCLK_CLK_SEL_SOSC == R_SYS0_A_CLOCK->CKS_EXTCLK1S)                          /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the EXTCLK1 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK1C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1C, 0x00U);
+        R_SYS0_A_CLOCK->CKD_EXTCLK1C = 0x00U;                                                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1C, 0x00U);                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for EXTCLK1 */
-        R_SYS0_A_CLOCK->CKS_EXTCLK1C = CGC_EXTCLK_CLK_SEL_HSB;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK1S, CGC_EXTCLK_CLK_SEL_HSB);
+        R_SYS0_A_CLOCK->CKS_EXTCLK1C = (uint32_t) CGC_EXTCLK_CLK_SEL_HSB;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK1S, (uint32_t) CGC_EXTCLK_CLK_SEL_HSB); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the EXTCLK1 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;
+        R_SYS0_A_CLOCK->CKD_EXTCLK1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
  #endif
 }
@@ -2618,43 +2712,43 @@ static void r_cgc_sub_osc_pre_stop (void)
  *
  * @param[in]  p_cgc_peripheral_clock   Pointer to peripheral clocks backup
  **********************************************************************************************************************/
-static void r_cgc_sub_osc_restore (cgc_peripheral_clock_backup_t * p_cgc_peripheral_clock)
+static void r_cgc_sub_osc_restore (cgc_peripheral_clock_backup_t * p_cgc_peripheral_clock) /* PRQA S 3673 # Advisory R-8.13 */
 {
     /* Change the RTCA input clock source */
     cgc_rtca_clk_sel_t pre_rtca     = p_cgc_peripheral_clock->clk_rtca;
-    cgc_rtca_clk_sel_t current_rtca = (cgc_rtca_clk_sel_t) R_SYS0_A_CLOCK->CKS_ARTCAS;
+    cgc_rtca_clk_sel_t current_rtca = (cgc_rtca_clk_sel_t) R_SYS0_A_CLOCK->CKS_ARTCAS;     /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
     if ((CGC_RTCA_CLK_SEL_SOSC == pre_rtca) && (pre_rtca != current_rtca))
     {
         /* Change to another input clock source for RTCA */
-        R_SYS0_A_CLOCK->CKS_ARTCAC = pre_rtca;
+        R_SYS0_A_CLOCK->CKS_ARTCAC = (uint32_t) pre_rtca;                                  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that input clock source has been changed */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ARTCAS, pre_rtca);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_ARTCAS, (uint32_t) pre_rtca);       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
  #if (BSP_CFG_CLOCK_EXTCLK0O_DIV > 0)
 
     /* Change the EXTCLK0 input clock source */
     cgc_extclk_clk_sel_t pre_extclk0     = p_cgc_peripheral_clock->clk_extclk0;
-    cgc_extclk_clk_sel_t current_extclk0 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK0S;
+    cgc_extclk_clk_sel_t current_extclk0 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK0S; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
     if ((CGC_EXTCLK_CLK_SEL_SOSC == pre_extclk0) && (pre_extclk0 != current_extclk0))
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the EXTCLK0 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK0C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0C, 0x00U);
+        R_SYS0_A_CLOCK->CKD_EXTCLK0C = 0x00U;                                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0C, 0x00U);                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for EXTCLK0 */
-        R_SYS0_A_CLOCK->CKS_EXTCLK0C = pre_extclk0;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK0S, pre_extclk0);
+        R_SYS0_A_CLOCK->CKS_EXTCLK0C = pre_extclk0;                                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK0S, pre_extclk0);                  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the EXTCLK0 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;
+        R_SYS0_A_CLOCK->CKD_EXTCLK0C = BSP_CFG_CLOCK_EXTCLK0O_DIV;                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK0S, CGC_CLOCK_STABLED);            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
  #endif
 
@@ -2662,25 +2756,25 @@ static void r_cgc_sub_osc_restore (cgc_peripheral_clock_backup_t * p_cgc_periphe
 
     /* Change the EXTCLK1 input clock source */
     cgc_extclk_clk_sel_t pre_extclk1     = p_cgc_peripheral_clock->clk_extclk1;
-    cgc_extclk_clk_sel_t current_extclk1 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK1S;
+    cgc_extclk_clk_sel_t current_extclk1 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK1S; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
     if ((CGC_EXTCLK_CLK_SEL_SOSC == pre_extclk1) && (pre_extclk1 != current_extclk1))
     {
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stop the EXTCLK1 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK1C = 0x00U;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1C, 0x00U);
+        R_SYS0_A_CLOCK->CKD_EXTCLK1C = 0x00U;                                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1C, 0x00U);                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Change to another input clock source for EXTCLK1 */
-        R_SYS0_A_CLOCK->CKS_EXTCLK1C = pre_extclk1;
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK1S, pre_extclk1);
+        R_SYS0_A_CLOCK->CKS_EXTCLK1C = pre_extclk1;                                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKS_EXTCLK1S, pre_extclk1);                  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Start the EXTCLK1 */
-        R_SYS0_A_CLOCK->CKD_EXTCLK1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;
+        R_SYS0_A_CLOCK->CKD_EXTCLK1C = BSP_CFG_CLOCK_EXTCLK1O_DIV;                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Confirm that clock output is stabled */
-        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);
+        FSP_HARDWARE_REGISTER_WAIT(R_SYS0_A_CLOCK->CKD_EXTCLK1S, CGC_CLOCK_STABLED);            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
  #endif
 }
@@ -2694,36 +2788,47 @@ static void r_cgc_sub_osc_restore (cgc_peripheral_clock_backup_t * p_cgc_periphe
  **********************************************************************************************************************/
 static void r_cgc_peripheral_clock_backup (cgc_peripheral_clock_backup_t * p_cgc_peripheral_clock)
 {
-    p_cgc_peripheral_clock->clk_rlin = (cgc_rlin_clk_sel_t) R_SYS0_CLOCK->CKS_RLINS;
-    p_cgc_peripheral_clock->clk_mspi = (cgc_mspi_clk_sel_t) R_SYS0_CLOCK->CKS_MSPIS;
+    p_cgc_peripheral_clock->clk_mspi = (cgc_mspi_clk_sel_t) R_SYS0_CLOCK->CKS_MSPIS;                 /* PRQA S 0306, 4342, 0662 # Advisory R-11.4, Advisory R-10.5, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    uint32_t clk_rlin_raw =
+        (((uint32_t) R_SYS0_CLOCK->CKS_RLINS & (uint32_t) R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Msk) >>    /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+         R_SYS0_CLOCK_CKS_RLINS_RLINSACT_Pos);
 
+    p_cgc_peripheral_clock->clk_rlin = (cgc_rlin_clk_sel_t) clk_rlin_raw;                            /* PRQA S 4342 # Advisory R-10.5 */
 #if (BSP_FEATURE_CGC_EXTENDED_PERIPHERAL_CLK_SELECTORS)
-    p_cgc_peripheral_clock->clk_rlin_ch23 =
-        (cgc_rlin_clk_sel_t) (R_SYS0_CLOCK->CKS_RLINS >> R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos);
-    p_cgc_peripheral_clock->clk_tauj  = (cgc_tauj_clk_sel_t) R_SYS0_A_CLOCK->CKS_ATAUJS;
-    p_cgc_peripheral_clock->clk_canfd = (cgc_canfd_clk_sel_t) R_SYS0_CLOCK->CKS_RCANS;
-    p_cgc_peripheral_clock->clk_rtca  = (cgc_rtca_clk_sel_t) R_SYS0_A_CLOCK->CKS_ARTCAS;
-    p_cgc_peripheral_clock->clk_aadc  = (cgc_aadc_clk_sel_t) R_SYS0_A_CLOCK->CKS_AADCS;
+    uint32_t clk_rlin_ch23_raw =
+        (((uint32_t) R_SYS0_CLOCK->CKS_RLINS & (uint32_t) R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Msk) >>  /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+         R_SYS0_CLOCK_CKS_RLINS_RLIN23SACT_Pos);
+    p_cgc_peripheral_clock->clk_rlin_ch23 = (cgc_rlin_clk_sel_t) clk_rlin_ch23_raw;                  /* PRQA S 4342 # Advisory R-10.5 */
+
+    p_cgc_peripheral_clock->clk_tauj = (cgc_tauj_clk_sel_t) R_SYS0_A_CLOCK->CKS_ATAUJS;              /* PRQA S 0306, 4342, 0662 # Advisory R-11.4, Advisory R-10.5, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+
+    uint32_t clk_canfd_raw =
+        (((uint32_t) R_SYS0_CLOCK->CKS_RCANS & (uint32_t) R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Msk) >> /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+         R_SYS0_CLOCK_CKS_RCANS_RCANXINSACT_Pos);
+    p_cgc_peripheral_clock->clk_canfd = (cgc_canfd_clk_sel_t) clk_canfd_raw;                         /* PRQA S 4342 # Advisory R-10.5 */
+
+    p_cgc_peripheral_clock->clk_rtca = (cgc_rtca_clk_sel_t) R_SYS0_A_CLOCK->CKS_ARTCAS;              /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
+    p_cgc_peripheral_clock->clk_aadc = (cgc_aadc_clk_sel_t) R_SYS0_A_CLOCK->CKS_AADCS;               /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
 #else
-    p_cgc_peripheral_clock->clk_tauj  = (cgc_tauj_clk_sel_t) R_SYS0_A_CLOCK->CKSC_ATAUJS;
-    p_cgc_peripheral_clock->clk_canfd = (cgc_canfd_clk_sel_t) R_SYS0_CLOCK->CKSC_RCANS;
-    p_cgc_peripheral_clock->clk_rtca  = (cgc_rtca_clk_sel_t) R_SYS0_A_CLOCK->CKSC_ARTCAS;
-    p_cgc_peripheral_clock->clk_aadc  = (cgc_aadc_clk_sel_t) R_SYS0_A_CLOCK->CKSC_AADCS;
+    p_cgc_peripheral_clock->clk_tauj  = (cgc_tauj_clk_sel_t) R_SYS0_A_CLOCK->CKSC_ATAUJS;            /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
+    p_cgc_peripheral_clock->clk_canfd = (cgc_canfd_clk_sel_t) R_SYS0_CLOCK->CKSC_RCANS;              /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
+    p_cgc_peripheral_clock->clk_rtca  = (cgc_rtca_clk_sel_t) R_SYS0_A_CLOCK->CKSC_ARTCAS;            /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
+    p_cgc_peripheral_clock->clk_aadc  = (cgc_aadc_clk_sel_t) R_SYS0_A_CLOCK->CKSC_AADCS;             /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
 #endif
 
 #if (BSP_CFG_CLOCK_EXTCLK0O_DIV > 0)
  #if (BSP_FEATURE_CGC_EXTENDED_PERIPHERAL_CLK_SELECTORS)
-    p_cgc_peripheral_clock->clk_extclk0 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK0S;
+    p_cgc_peripheral_clock->clk_extclk0 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK0S; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
  #else
-    p_cgc_peripheral_clock->clk_extclk0 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKSC_FOUT0S;
+    p_cgc_peripheral_clock->clk_extclk0 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKSC_FOUT0S;  /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
  #endif
 #endif
 
 #if (BSP_CFG_CLOCK_EXTCLK1O_DIV > 0)
  #if (BSP_FEATURE_CGC_EXTENDED_PERIPHERAL_CLK_SELECTORS)
-    p_cgc_peripheral_clock->clk_extclk1 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK1S;
+    p_cgc_peripheral_clock->clk_extclk1 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKS_EXTCLK1S; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
  #else
-    p_cgc_peripheral_clock->clk_extclk1 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKSC_FOUT1S;
+    p_cgc_peripheral_clock->clk_extclk1 = (cgc_extclk_clk_sel_t) R_SYS0_A_CLOCK->CKSC_FOUT1S;  /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
  #endif
 #endif
 }
@@ -2735,8 +2840,8 @@ static void r_cgc_peripheral_clock_backup (cgc_peripheral_clock_backup_t * p_cgc
  **********************************************************************************************************************/
 static cgc_prv_sys_clk_src_t r_cgc_sys_clocksource_get (void)
 {
-    return (cgc_prv_sys_clk_src_t) (R_SYS0_CLOCK->CKSC_CPUS ==
-                                    1U ? CGC_PRV_SYS_CLK_SRC_IOSC : CGC_PRV_SYS_CLK_SRC_PLLO);
+    return (cgc_prv_sys_clk_src_t) ((R_SYS0_CLOCK->CKSC_CPUS == /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                     1U) ? CGC_PRV_SYS_CLK_SRC_IOSC : CGC_PRV_SYS_CLK_SRC_PLLO);
 }
 
 #endif
@@ -2748,8 +2853,8 @@ static cgc_prv_sys_clk_src_t r_cgc_sys_clocksource_get (void)
  **********************************************************************************************************************/
 static cgc_prv_sys_clk_src_t r_cgc_sysclean_clocksource_get (void)
 {
-    return (cgc_prv_sys_clk_src_t) (R_SYS0_CLOCK->CKS_CLEANS ==
-                                    1U ? CGC_PRV_SYS_CLK_SRC_IOSC : CGC_PRV_SYS_CLK_SRC_PLLO);
+    return (cgc_prv_sys_clk_src_t) ((R_SYS0_CLOCK->CKS_CLEANS == /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                     1U) ? CGC_PRV_SYS_CLK_SRC_IOSC : CGC_PRV_SYS_CLK_SRC_PLLO);
 }
 
 #endif
@@ -2761,8 +2866,8 @@ static cgc_prv_sys_clk_src_t r_cgc_sysclean_clocksource_get (void)
  **********************************************************************************************************************/
 static cgc_prv_sys_clk_src_t r_cgc_syssscg_clocksource_get (void)
 {
-    return (cgc_prv_sys_clk_src_t) (R_SYS0_CLOCK->CKS_SSCGS ==
-                                    1U ? CGC_PRV_SYS_CLK_SRC_IOSC : CGC_PRV_SYS_CLK_SRC_PLLO);
+    return (cgc_prv_sys_clk_src_t) ((R_SYS0_CLOCK->CKS_SSCGS == /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                     1U) ? CGC_PRV_SYS_CLK_SRC_IOSC : CGC_PRV_SYS_CLK_SRC_PLLO);
 }
 
 #endif
@@ -2774,8 +2879,8 @@ static cgc_prv_sys_clk_src_t r_cgc_syssscg_clocksource_get (void)
  **********************************************************************************************************************/
 static cgc_prv_sys_clk_src_t r_cgc_syssscg1_clocksource_get (void)
 {
-    return (cgc_prv_sys_clk_src_t) (R_SYS0_CLOCK->CKS_SSCG1S ==
-                                    1U ? CGC_PRV_SYS_CLK_SRC_IOSC : CGC_PRV_SYS_CLK_SRC_PLLO);
+    return (cgc_prv_sys_clk_src_t) ((R_SYS0_CLOCK->CKS_SSCG1S == /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+                                     1U) ? CGC_PRV_SYS_CLK_SRC_IOSC : CGC_PRV_SYS_CLK_SRC_PLLO);
 }
 
 #endif
@@ -2785,7 +2890,7 @@ static cgc_prv_sys_clk_src_t r_cgc_syssscg1_clocksource_get (void)
  **********************************************************************************************************************/
 static void r_cgc_disable_protection (void)
 {
-    R_SYS0_CLOCK->CLKKCPROT1 = BSP_PRV_KEYCODE_ENABLE;
+    R_SYS0_CLOCK->CLKKCPROT1 = (uint32_t) BSP_PRV_KEYCODE_ENABLE; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 }
 
 /*******************************************************************************************************************//**
@@ -2793,5 +2898,5 @@ static void r_cgc_disable_protection (void)
  **********************************************************************************************************************/
 static void r_cgc_enable_protection (void)
 {
-    R_SYS0_CLOCK->CLKKCPROT1 = BSP_PRV_KEYCODE_DISABLE;
+    R_SYS0_CLOCK->CLKKCPROT1 = (uint32_t) BSP_PRV_KEYCODE_DISABLE; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 }

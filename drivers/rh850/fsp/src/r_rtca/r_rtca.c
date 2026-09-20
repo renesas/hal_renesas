@@ -7,12 +7,12 @@
 /***********************************************************************************************************************
  * Includes
  **********************************************************************************************************************/
-#include "r_rtca.h"
+#include "r_rtca.h"                    /* PRQA S 0380 # DP_MSR_D-1.1_UC1 */
 
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-#define RTC_OPEN                                     (0x52544341ULL)
+#define RTC_OPEN                                     (0x52544341U)
 
 #define RTC_MASK_MSB                                 (0x0F)
 #define RTC_MASK_LSB                                 (0xF0)
@@ -41,7 +41,7 @@ static uint8_t r_rtc_dec_to_bcd(uint8_t to_convert);
 static uint8_t r_rtc_bcd_to_dec(uint8_t to_convert);
 static void    r_rtc_config(rtc_cfg_t const * const p_config);
 
-static void r_rtc_error_adjustment_set(rtc_instance_ctrl_t * const              p_ctrl,
+static void r_rtc_error_adjustment_set(rtc_instance_ctrl_t const * const        p_ctrl, /* PRQA S 1710 # Advisory D-4.5 */
                                        rtc_error_adjustment_cfg_t const * const p_err_adj_cfg);
 
 #if RTC_CFG_PARAM_CHECKING_ENABLE
@@ -50,13 +50,13 @@ static fsp_err_t r_rtc_err_adjustment_paramter_check(rtc_error_adjustment_cfg_t 
 
 static fsp_err_t r_rtc_time_and_date_validate(rtc_time_t * const p_time);
 
-static fsp_err_t r_rtc_time_validate(rtc_time_t * const p_time);
+static fsp_err_t r_rtc_time_validate(rtc_time_t const * const p_time);
 
-static fsp_err_t r_rtc_date_validate(rtc_time_t * const p_time);
+static fsp_err_t r_rtc_date_validate(rtc_time_t const * const p_time);
 
 static fsp_err_t r_rtc_alarm_time_and_date_validate(rtc_alarm_time_t * const p_time);
 
-static fsp_err_t r_rtc_alarm_time_validate(rtc_alarm_time_t * const p_time);
+static fsp_err_t r_rtc_alarm_time_validate(rtc_alarm_time_t const * const p_time);
 
 static fsp_err_t r_rtc_periodic_irq_rate_validate(rtc_periodic_irq_select_t const rate);
 
@@ -65,36 +65,44 @@ static fsp_err_t r_rtc_periodic_irq_rate_validate(rtc_periodic_irq_select_t cons
 /***********************************************************************************************************************
  * ISR prototypes
  **********************************************************************************************************************/
-void rtc_alarm_isr(void);
-void rtc_periodic_isr(void);
-void rtc_one_second_isr(void);
+
+/* PRQA S 3449, 3451 ++ # DP_MSR_R-8.5_UC1, DP_MSR_R-8.5_UC1 */
+BSP_INTERRUPT_ATTRIBUTE void rtc_alarm_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void rtc_periodic_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void rtc_one_second_isr(void);
+
+/* PRQA S 3449, 3451 -- */
 
 /***********************************************************************************************************************
  * Global Variables
  **********************************************************************************************************************/
 
 /** RTC Implementation of Real Time Clock  */
-const rtc_api_t g_rtc_on_rtca =
+const rtc_api_t g_rtc_on_rtca =                     /* PRQA S 1502 # Advisory R-2.8 */
 {
-    .open               = R_RTC_Open,
-    .close              = R_RTC_Close,
-    .clockSourceSet     = R_RTC_ClockSourceSet,
-    .calendarTimeGet    = R_RTC_CalendarTimeGet,
-    .calendarTimeSet    = R_RTC_CalendarTimeSet,
-    .calendarAlarmGet   = R_RTC_CalendarAlarmGet,
-    .calendarAlarmSet   = R_RTC_CalendarAlarmSet,
-    .periodicIrqRateSet = R_RTC_PeriodicIrqRateSet,
-    .infoGet            = R_RTC_InfoGet,
-    .errorAdjustmentSet = R_RTC_ErrorAdjustmentSet,
-    .callbackSet        = R_RTC_CallbackSet,
-    .timeCaptureSet     = R_RTC_TimeCaptureSet,
-    .timeCaptureGet     = R_RTC_TimeCaptureGet,
+    .open               = R_RTC_Open,               /* PRQA S 3635 # Advisory R-17.12 */
+    .close              = R_RTC_Close,              /* PRQA S 3635 # Advisory R-17.12 */
+    .clockSourceSet     = R_RTC_ClockSourceSet,     /* PRQA S 3635 # Advisory R-17.12 */
+    .calendarTimeGet    = R_RTC_CalendarTimeGet,    /* PRQA S 3635 # Advisory R-17.12 */
+    .calendarTimeSet    = R_RTC_CalendarTimeSet,    /* PRQA S 3635 # Advisory R-17.12 */
+    .calendarAlarmGet   = R_RTC_CalendarAlarmGet,   /* PRQA S 3635 # Advisory R-17.12 */
+    .calendarAlarmSet   = R_RTC_CalendarAlarmSet,   /* PRQA S 3635 # Advisory R-17.12 */
+    .periodicIrqRateSet = R_RTC_PeriodicIrqRateSet, /* PRQA S 3635 # Advisory R-17.12 */
+    .infoGet            = R_RTC_InfoGet,            /* PRQA S 3635 # Advisory R-17.12 */
+    .errorAdjustmentSet = R_RTC_ErrorAdjustmentSet, /* PRQA S 3635 # Advisory R-17.12 */
+    .callbackSet        = R_RTC_CallbackSet,        /* PRQA S 3635 # Advisory R-17.12 */
+    .timeCaptureSet     = R_RTC_TimeCaptureSet,     /* PRQA S 3635 # Advisory R-17.12 */
+    .timeCaptureGet     = R_RTC_TimeCaptureGet,     /* PRQA S 3635 # Advisory R-17.12 */
 };
+
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
 
 /*******************************************************************************************************************//**
  * @addtogroup RTCA
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /***********************************************************************************************************************
  * Private global variables
@@ -102,7 +110,7 @@ const rtc_api_t g_rtc_on_rtca =
 #if RTC_CFG_PARAM_CHECKING_ENABLE
 
 /* Number of days in each months start from January to December */
-static const uint8_t g_days_in_months[12] = {31U, 28U, 31U, 30U, 31U, 30U, 31U, 31U, 30U, 31U, 30U, 31U};
+static const uint8_t g_days_in_months[12] = {31U, 28U, 31U, 30U, 31U, 30U, 31U, 31U, 30U, 31U, 30U, 31U}; /* PRQA S 3218 # Advisory R-8.9 */
 #endif
 
 /***********************************************************************************************************************
@@ -118,16 +126,16 @@ static const uint8_t g_days_in_months[12] = {31U, 28U, 31U, 30U, 31U, 30U, 31U, 
  * @retval FSP_ERR_ALREADY_OPEN     Module is already open.
  * @retval FSP_ERR_INVALID_ARGUMENT Invalid parameter.
  **********************************************************************************************************************/
-fsp_err_t R_RTC_Open (rtc_ctrl_t * const p_ctrl, rtc_cfg_t const * const p_cfg)
+fsp_err_t R_RTC_Open (rtc_ctrl_t * const p_ctrl, rtc_cfg_t const * const p_cfg)  /* PRQA S 1505 # Advisory R-8.7 */
 {
-    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;
+    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;      /* PRQA S 0316 # Advisory R-11.5 */
 
     /* Parameter checking */
 #if RTC_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_cfg);
-    FSP_ASSERT(NULL != p_cfg->p_extend);
-    FSP_ERROR_RETURN(RTC_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
+    FSP_ASSERT((NULL != p_instance_ctrl));                                       /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ASSERT((NULL != p_cfg));                                                 /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ASSERT((NULL != p_cfg->p_extend));                                       /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((RTC_OPEN != p_instance_ctrl->open), FSP_ERR_ALREADY_OPEN); /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 #endif
 
     /* Save the configuration  */
@@ -140,21 +148,21 @@ fsp_err_t R_RTC_Open (rtc_ctrl_t * const p_ctrl, rtc_cfg_t const * const p_cfg)
 #if RTC_CFG_PARAM_CHECKING_ENABLE
 
     /* Verify the frequency comparison value for RTCA0SCMP */
-    FSP_ERROR_RETURN(R_RTCA0_SCMP_SCMP_Msk >= p_cfg->freq_compare_value, FSP_ERR_INVALID_ARGUMENT);
+    FSP_ERROR_RETURN((R_RTCA0_SCMP_SCMP_Msk >= p_cfg->freq_compare_value), FSP_ERR_INVALID_ARGUMENT); /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 #endif
 
     /*Enable interrupt RTC*/
-    if (p_cfg->periodic_irq >= 0)
+    if (p_cfg->periodic_irq >= (IRQn_Type) 0)                                                         /* PRQA S 4332 # Advisory R-10.5 */
     {
         R_BSP_IrqCfgEnable(p_cfg->periodic_irq, p_cfg->periodic_ipl, p_ctrl);
     }
 
-    if (p_cfg->alarm_irq >= 0)
+    if (p_cfg->alarm_irq >= (IRQn_Type) 0) /* PRQA S 4332 # Advisory R-10.5 */
     {
         R_BSP_IrqCfgEnable(p_cfg->alarm_irq, p_cfg->alarm_ipl, p_ctrl);
     }
 
-    if (p_cfg->one_second_irq >= 0)
+    if (p_cfg->one_second_irq >= (IRQn_Type) 0) /* PRQA S 4332 # Advisory R-10.5 */
     {
         R_BSP_IrqCfgEnable(p_cfg->one_second_irq, p_cfg->one_second_ipl, p_ctrl);
     }
@@ -176,42 +184,42 @@ fsp_err_t R_RTC_Open (rtc_ctrl_t * const p_ctrl, rtc_cfg_t const * const p_cfg)
  * @retval FSP_ERR_ASSERTION    Invalid p_ctrl.
  * @retval FSP_ERR_NOT_OPEN     Driver not open already for close.
  **********************************************************************************************************************/
-fsp_err_t R_RTC_Close (rtc_ctrl_t * const p_ctrl)
+fsp_err_t R_RTC_Close (rtc_ctrl_t * const p_ctrl)                            /* PRQA S 1505 # Advisory R-8.7 */
 {
-    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;
+    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;  /* PRQA S 0316 # Advisory R-11.5 */
 
     /* Parameter checking */
 #if RTC_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ERROR_RETURN(RTC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ASSERT((NULL != p_instance_ctrl));                                   /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((RTC_OPEN == p_instance_ctrl->open), FSP_ERR_NOT_OPEN); /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 #endif
 
-    if (p_instance_ctrl->p_cfg->periodic_irq >= 0)
+    if (p_instance_ctrl->p_cfg->periodic_irq >= (IRQn_Type) 0)               /* PRQA S 4332 # Advisory R-10.5 */
     {
         R_BSP_IrqDisable(p_instance_ctrl->p_cfg->periodic_irq);
         R_FSP_IsrContextSet(p_instance_ctrl->p_cfg->periodic_irq, NULL);
     }
 
-    if (p_instance_ctrl->p_cfg->alarm_irq >= 0)
+    if (p_instance_ctrl->p_cfg->alarm_irq >= (IRQn_Type) 0) /* PRQA S 4332 # Advisory R-10.5 */
     {
         R_BSP_IrqDisable(p_instance_ctrl->p_cfg->alarm_irq);
         R_FSP_IsrContextSet(p_instance_ctrl->p_cfg->alarm_irq, NULL);
     }
 
-    if (p_instance_ctrl->p_cfg->one_second_irq >= 0)
+    if (p_instance_ctrl->p_cfg->one_second_irq >= (IRQn_Type) 0) /* PRQA S 4332 # Advisory R-10.5 */
     {
         R_BSP_IrqDisable(p_instance_ctrl->p_cfg->one_second_irq);
         R_FSP_IsrContextSet(p_instance_ctrl->p_cfg->one_second_irq, NULL);
     }
 
     /* Clear the interrupt enable bit and pulse output bit */
-    R_RTCA0->CTL1 = 0U;
+    R_RTCA0->CTL1 = 0U;                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Clock counter operation stopped */
-    R_RTCA0->CTL0_b.CE = 0U;
+    R_RTCA0->CTL0_b.CE = 0U;                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Check that the clock counter has stopped */
-    FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL0_b.CEST, 0U);
+    FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL0_b.CEST, 0U); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     p_instance_ctrl->open = 0U;
 
@@ -223,7 +231,7 @@ fsp_err_t R_RTC_Close (rtc_ctrl_t * const p_ctrl)
  *
  * @retval FSP_ERR_UNSUPPORTED         Function not supported in this implementation.
  **********************************************************************************************************************/
-fsp_err_t R_RTC_ClockSourceSet (rtc_ctrl_t * const p_ctrl)
+fsp_err_t R_RTC_ClockSourceSet (rtc_ctrl_t * const p_ctrl) /* PRQA S 1505, 3673 # Advisory R-8.7, Advisory R-8.13 */
 {
     /*
      * RTCA doesn't support change clock source internally */
@@ -243,71 +251,71 @@ fsp_err_t R_RTC_ClockSourceSet (rtc_ctrl_t * const p_ctrl)
  * @retval FSP_ERR_NOT_OPEN         Driver not open already for operation.
  * @retval FSP_ERR_INVALID_ARGUMENT Invalid time parameter field.
  **********************************************************************************************************************/
-fsp_err_t R_RTC_CalendarTimeSet (rtc_ctrl_t * const p_ctrl, rtc_time_t * const p_time)
+fsp_err_t R_RTC_CalendarTimeSet (rtc_ctrl_t * const p_ctrl, rtc_time_t * const p_time)                   /* PRQA S 1505, 3673 # Advisory R-8.7, Advisory R-8.13 */
 {
-    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;
+    const rtc_instance_ctrl_t * p_instance_ctrl = (const rtc_instance_ctrl_t *) p_ctrl;                  /* PRQA S 0316 # Advisory R-11.5 */
 
 #if RTC_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(p_time);
-    FSP_ERROR_RETURN(RTC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ASSERT((NULL != p_instance_ctrl));                                                               /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ASSERT((NULL != p_time));                                                                        /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((RTC_OPEN == p_instance_ctrl->open), FSP_ERR_NOT_OPEN);                             /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 
     /* Verify the seconds, minutes, hours, year ,day of the week, day of the month, month and year are valid values */
-    FSP_ERROR_RETURN(FSP_SUCCESS == r_rtc_time_and_date_validate(p_time), FSP_ERR_INVALID_ARGUMENT);
-    rtc_extended_cfg_t * p_extend = (rtc_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    FSP_ERROR_RETURN((FSP_SUCCESS == r_rtc_time_and_date_validate(p_time)), FSP_ERR_INVALID_ARGUMENT);   /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    const rtc_extended_cfg_t * p_extend = (const rtc_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend; /* PRQA S 0316 # Advisory R-11.5 */
 #else
     FSP_PARAMETER_NOT_USED(p_instance_ctrl);
-    rtc_extended_cfg_t * p_extend = (rtc_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    const rtc_extended_cfg_t * p_extend = (const rtc_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 #endif
 
     /* See " Section Updating Clock Counters" and "Section Initial Setting" of
      *  the RH850 U2x manual */
 
-    if (1U == R_RTCA0->CTL0_b.CE)
+    if (1U == R_RTCA0->CTL0_b.CE)                                                                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* Check that previous write operations to RTCA0SEC to RTCA0YEAR have been completed */
-        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WST, 0U);
+        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WST, 0U);                                                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Stops all clock counters temporarily. */
-        R_RTCA0->CTL2_b.WAIT = 1U;
+        R_RTCA0->CTL2_b.WAIT = 1U;                                                                           /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* Wait until the corresponding status flag is set and all clock counters have stopped */
-        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WST, 1U);
+        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WST, 1U);                                                 /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     /* Set the year, month, day of the week, ... */
-    R_RTCA0->SEC  = r_rtc_dec_to_bcd((uint8_t) p_time->tm_sec);
-    R_RTCA0->MIN  = r_rtc_dec_to_bcd((uint8_t) p_time->tm_min);
-    R_RTCA0->HOUR = r_rtc_dec_to_bcd((uint8_t) p_time->tm_hour);
-    R_RTCA0->WEEK = r_rtc_dec_to_bcd((uint8_t) p_time->tm_wday);
-    R_RTCA0->DAY  = r_rtc_dec_to_bcd((uint8_t) p_time->tm_mday);
+    R_RTCA0->SEC  = r_rtc_dec_to_bcd((uint8_t) p_time->tm_sec);                                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    R_RTCA0->MIN  = r_rtc_dec_to_bcd((uint8_t) p_time->tm_min);                                              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    R_RTCA0->HOUR = r_rtc_dec_to_bcd((uint8_t) p_time->tm_hour);                                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    R_RTCA0->WEEK = r_rtc_dec_to_bcd((uint8_t) p_time->tm_wday);                                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    R_RTCA0->DAY  = r_rtc_dec_to_bcd((uint8_t) p_time->tm_mday);                                             /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Add one to match with HW register */
-    R_RTCA0->MONTH = r_rtc_dec_to_bcd((uint8_t) (p_time->tm_mon + 1));
+    R_RTCA0->MONTH = r_rtc_dec_to_bcd((uint8_t) ((uint32_t) p_time->tm_mon + 1U));                           /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Subtract 100 to match with HW register */
-    R_RTCA0->YEAR = r_rtc_dec_to_bcd((uint8_t) (p_time->tm_year - RTC_C_TIME_OFFSET));
+    R_RTCA0->YEAR = r_rtc_dec_to_bcd((uint8_t) ((uint32_t) p_time->tm_year - (uint32_t) RTC_C_TIME_OFFSET)); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
-    if (1U == R_RTCA0->CTL0_b.CE)
+    if (1U == R_RTCA0->CTL0_b.CE)                                                                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     {
         /* SEC to YEAR counter operation enable */
-        R_RTCA0->CTL2_b.WAIT = 0U;
+        R_RTCA0->CTL2_b.WAIT = 0U;                                                                           /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
     else
     {
         /* Clock counter operation enable */
-        R_RTCA0->CTL0_b.CE = 1U;
+        R_RTCA0->CTL0_b.CE = 1U;       /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     if (RTC_OPERATION_MODE_FREQUENCY == p_extend->operation_mode)
     {
         /* Check that sub-counter is operating */
-        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL0_b.CEST, 1U);
+        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL0_b.CEST, 1U);                                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /*Wait until the previous write to RTCAnSCMP has been completed*/
-        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WSST, 0U);
+        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WSST, 0U);                                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
-        R_RTCA0->SCMP_b.SCMP = (p_instance_ctrl->p_cfg->freq_compare_value) & R_RTCA0_SCMP_SCMP_Msk;
+        R_RTCA0->SCMP_b.SCMP = (p_instance_ctrl->p_cfg->freq_compare_value) & R_RTCA0_SCMP_SCMP_Msk; /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 
     return FSP_SUCCESS;
@@ -322,13 +330,13 @@ fsp_err_t R_RTC_CalendarTimeSet (rtc_ctrl_t * const p_ctrl, rtc_time_t * const p
  * @retval FSP_ERR_ASSERTION    Invalid input argument.
  * @retval FSP_ERR_NOT_OPEN     Driver not open already for operation.
  **********************************************************************************************************************/
-fsp_err_t R_RTC_CalendarTimeGet (rtc_ctrl_t * const p_ctrl, rtc_time_t * const p_time)
+fsp_err_t R_RTC_CalendarTimeGet (rtc_ctrl_t * const p_ctrl, rtc_time_t * const p_time)  /* PRQA S 1505, 3673 # Advisory R-8.7, Advisory R-8.13 */
 {
-    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;
+    const rtc_instance_ctrl_t * p_instance_ctrl = (const rtc_instance_ctrl_t *) p_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
 #if RTC_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(p_time);
-    FSP_ERROR_RETURN(RTC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ASSERT((NULL != p_instance_ctrl));                                              /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ASSERT((NULL != p_time));                                                       /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((RTC_OPEN == p_instance_ctrl->open), FSP_ERR_NOT_OPEN);            /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 #else
     FSP_PARAMETER_NOT_USED(p_instance_ctrl);
 #endif
@@ -336,28 +344,28 @@ fsp_err_t R_RTC_CalendarTimeGet (rtc_ctrl_t * const p_ctrl, rtc_time_t * const p
     /* See section "Procedure for Reading Count Buffer Registers" of the RH850 U2x microcontroller manual */
 
     /* Check that previous write operations to RTCAnSEC to RTCAnYEAR have been completed */
-    FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WST, 0U);
+    FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WST, 0U);                                         /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Stop all clock counters RTCAnSECC to RTCAnYEARC counter operation */
-    R_RTCA0->CTL2_b.WAIT = 1U;
+    R_RTCA0->CTL2_b.WAIT = 1U;                                                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Wait until the corresponding status flag is set and all clock counters have stopped */
-    FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WST, 1U);
+    FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WST, 1U);                                         /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
-    p_time->tm_sec  = r_rtc_bcd_to_dec((uint8_t) R_RTCA0->SEC);
-    p_time->tm_min  = r_rtc_bcd_to_dec((uint8_t) R_RTCA0->MIN);
-    p_time->tm_hour = r_rtc_bcd_to_dec((uint8_t) R_RTCA0->HOUR);
-    p_time->tm_mday = r_rtc_bcd_to_dec((uint8_t) R_RTCA0->DAY);
-    p_time->tm_wday = r_rtc_bcd_to_dec((uint8_t) R_RTCA0->WEEK);
+    p_time->tm_sec  = (int) r_rtc_bcd_to_dec((uint8_t) R_RTCA0->SEC);                            /* PRQA S 0306, 0662, 5209 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory D-4.6 */
+    p_time->tm_min  = (int) r_rtc_bcd_to_dec((uint8_t) R_RTCA0->MIN);                            /* PRQA S 0306, 0662, 5209 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory D-4.6 */
+    p_time->tm_hour = (int) r_rtc_bcd_to_dec((uint8_t) R_RTCA0->HOUR);                           /* PRQA S 0306, 0662, 5209 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory D-4.6 */
+    p_time->tm_mday = (int) r_rtc_bcd_to_dec((uint8_t) R_RTCA0->DAY);                            /* PRQA S 0306, 0662, 5209 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory D-4.6 */
+    p_time->tm_wday = (int) r_rtc_bcd_to_dec((uint8_t) R_RTCA0->WEEK);                           /* PRQA S 0306, 0662, 5209 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory D-4.6 */
 
     /* Subtract one to match with C time.h standards */
-    p_time->tm_mon = r_rtc_bcd_to_dec((uint8_t) R_RTCA0->MONTH) - 1;
+    p_time->tm_mon = (int) r_rtc_bcd_to_dec((uint8_t) R_RTCA0->MONTH) - (int) 1;                 /* PRQA S 0306, 0662, 5209 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory D-4.6 */
 
     /* Add 100 to match with C time.h standards */
-    p_time->tm_year = r_rtc_bcd_to_dec((uint8_t) R_RTCA0->YEAR) + RTC_C_TIME_OFFSET;
+    p_time->tm_year = (int) r_rtc_bcd_to_dec((uint8_t) R_RTCA0->YEAR) + (int) RTC_C_TIME_OFFSET; /* PRQA S 0306, 0662, 5209 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory D-4.6 */
 
     /* Start all clock counters SECC to YEARC */
-    R_RTCA0->CTL2_b.WAIT = 0U;
+    R_RTCA0->CTL2_b.WAIT = 0U;                                                                   /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     return FSP_SUCCESS;
 }
@@ -375,22 +383,22 @@ fsp_err_t R_RTC_CalendarTimeGet (rtc_ctrl_t * const p_ctrl, rtc_time_t * const p
  * @retval FSP_ERR_NOT_OPEN         Driver not open already for operation.
  * @retval FSP_ERR_IRQ_BSP_DISABLED User IRQ parameter not valid
  **********************************************************************************************************************/
-fsp_err_t R_RTC_CalendarAlarmSet (rtc_ctrl_t * const p_ctrl, rtc_alarm_time_t * const p_alarm)
+fsp_err_t R_RTC_CalendarAlarmSet (rtc_ctrl_t * const p_ctrl, rtc_alarm_time_t * const p_alarm)                /* PRQA S 1505, 3673 # Advisory R-8.7, Advisory R-8.13 */
 {
-    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;
-    volatile uint8_t      field;
+    const rtc_instance_ctrl_t * p_instance_ctrl = (const rtc_instance_ctrl_t *) p_ctrl;                       /* PRQA S 0316 # Advisory R-11.5 */
+    volatile uint8_t            field;
 
 #if RTC_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(p_alarm);
-    FSP_ERROR_RETURN(RTC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
-    FSP_ERROR_RETURN(FSP_INVALID_VECTOR != p_instance_ctrl->p_cfg->alarm_irq, FSP_ERR_IRQ_BSP_DISABLED);
+    FSP_ASSERT((NULL != p_instance_ctrl));                                                                    /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ASSERT((NULL != p_alarm));                                                                            /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((RTC_OPEN == p_instance_ctrl->open), FSP_ERR_NOT_OPEN);                                  /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((FSP_INVALID_VECTOR != p_instance_ctrl->p_cfg->alarm_irq), FSP_ERR_IRQ_BSP_DISABLED);    /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 
     /* Verify the seconds, minutes, hours, year ,day of the week, day of the month and month are valid values */
-    FSP_ERROR_RETURN(FSP_SUCCESS == r_rtc_alarm_time_and_date_validate(p_alarm), FSP_ERR_INVALID_ARGUMENT);
+    FSP_ERROR_RETURN((FSP_SUCCESS == r_rtc_alarm_time_and_date_validate(p_alarm)), FSP_ERR_INVALID_ARGUMENT); /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 #endif
 
-    if (p_instance_ctrl->p_cfg->alarm_irq >= 0)
+    if (p_instance_ctrl->p_cfg->alarm_irq >= (IRQn_Type) 0)                                                   /* PRQA S 4332 # Advisory R-10.5 */
     {
         /* Disable the ICU alarm interrupt request */
         R_BSP_IrqDisable(p_instance_ctrl->p_cfg->alarm_irq);
@@ -407,7 +415,7 @@ fsp_err_t R_RTC_CalendarAlarmSet (rtc_ctrl_t * const p_ctrl, rtc_alarm_time_t * 
         field = RTC_RTCA0ALM_DISABLE_VALUE;
     }
 
-    R_RTCA0->ALM = field;
+    R_RTCA0->ALM = field;              /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     if (p_alarm->hour_match)
     {
@@ -418,18 +426,18 @@ fsp_err_t R_RTC_CalendarAlarmSet (rtc_ctrl_t * const p_ctrl, rtc_alarm_time_t * 
         field = RTC_RTCA0ALH_DISABLE_VALUE;
     }
 
-    R_RTCA0->ALH = field;
+    R_RTCA0->ALH = field;                                                                      /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
-    R_RTCA0->ALW = (uint8_t) ((p_alarm->sunday_match << R_RTCA0_ALW_SUNDAY) |
-                              (p_alarm->monday_match << R_RTCA0_ALW_MONDAY) |
-                              (p_alarm->tuesday_match << R_RTCA0_ALW_TUESDAY) |
-                              (p_alarm->wednesday_match << R_RTCA0_ALW_WEDNESDAY) |
-                              (p_alarm->thursday_match << R_RTCA0_ALW_THURSDAY) |
-                              (p_alarm->friday_match << R_RTCA0_ALW_FRIDAY) |
-                              (p_alarm->saturday_match << R_RTCA0_ALW_SATURDAY));
+    R_RTCA0->ALW = (uint8_t) (((uint32_t) p_alarm->sunday_match << R_RTCA0_ALW_SUNDAY) |       /* PRQA S 0306, 0662, 4304 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
+                              ((uint32_t) p_alarm->monday_match << R_RTCA0_ALW_MONDAY) |       /* PRQA S 4304 # Advisory R-10.5 */
+                              ((uint32_t) p_alarm->tuesday_match << R_RTCA0_ALW_TUESDAY) |     /* PRQA S 4304 # Advisory R-10.5 */
+                              ((uint32_t) p_alarm->wednesday_match << R_RTCA0_ALW_WEDNESDAY) | /* PRQA S 4304 # Advisory R-10.5 */
+                              ((uint32_t) p_alarm->thursday_match << R_RTCA0_ALW_THURSDAY) |   /* PRQA S 4304 # Advisory R-10.5 */
+                              ((uint32_t) p_alarm->friday_match << R_RTCA0_ALW_FRIDAY) |       /* PRQA S 4304 # Advisory R-10.5 */
+                              ((uint32_t) p_alarm->saturday_match << R_RTCA0_ALW_SATURDAY));   /* PRQA S 4304 # Advisory R-10.5 */
 
     /* Enable the alarm interrupt */
-    R_RTCA0->CTL1_b.ENALM = 1U;
+    R_RTCA0->CTL1_b.ENALM = 1U;                                                                /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     if (p_instance_ctrl->p_cfg->alarm_ipl != BSP_IRQ_DISABLED)
     {
@@ -448,32 +456,32 @@ fsp_err_t R_RTC_CalendarAlarmSet (rtc_ctrl_t * const p_ctrl, rtc_alarm_time_t * 
  * @retval FSP_ERR_ASSERTION     Invalid input argument.
  * @retval FSP_ERR_NOT_OPEN      Driver not open already for operation.
  **********************************************************************************************************************/
-fsp_err_t R_RTC_CalendarAlarmGet (rtc_ctrl_t * const p_ctrl, rtc_alarm_time_t * const p_alarm)
+fsp_err_t R_RTC_CalendarAlarmGet (rtc_ctrl_t * const p_ctrl, rtc_alarm_time_t * const p_alarm) /* PRQA S 1505, 3673 # Advisory R-8.7, Advisory R-8.13 */
 {
 #if RTC_CFG_PARAM_CHECKING_ENABLE
-    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_alarm);
-    FSP_ERROR_RETURN(RTC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    const rtc_instance_ctrl_t * p_instance_ctrl = (const rtc_instance_ctrl_t *) p_ctrl;        /* PRQA S 0316 # Advisory R-11.5 */
+    FSP_ASSERT((NULL != p_instance_ctrl));                                                     /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ASSERT((NULL != p_alarm));                                                             /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((RTC_OPEN == p_instance_ctrl->open), FSP_ERR_NOT_OPEN);                   /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 #else
     FSP_PARAMETER_NOT_USED(p_ctrl);
 #endif
 
     /* Get alarm time */
-    p_alarm->time.tm_min  = r_rtc_bcd_to_dec((uint8_t) R_RTCA0->ALM);
-    p_alarm->time.tm_hour = r_rtc_bcd_to_dec((uint8_t) R_RTCA0->ALH);
+    p_alarm->time.tm_min  = (int) r_rtc_bcd_to_dec((uint8_t) R_RTCA0->ALM);                            /* PRQA S 0306, 0662, 5209 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory D-4.6 */
+    p_alarm->time.tm_hour = (int) r_rtc_bcd_to_dec((uint8_t) R_RTCA0->ALH);                            /* PRQA S 0306, 0662, 5209 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory D-4.6 */
 
-    p_alarm->sunday_match    = (bool) ((R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_SUNDAY) & 1UL);
-    p_alarm->monday_match    = (bool) ((R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_MONDAY) & 1UL);
-    p_alarm->tuesday_match   = (bool) ((R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_TUESDAY) & 1UL);
-    p_alarm->wednesday_match = (bool) ((R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_WEDNESDAY) & 1UL);
-    p_alarm->thursday_match  = (bool) ((R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_THURSDAY) & 1UL);
-    p_alarm->friday_match    = (bool) ((R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_FRIDAY) & 1UL);
-    p_alarm->saturday_match  = (bool) ((R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_SATURDAY) & 1UL);
+    p_alarm->sunday_match    = (bool) (((uint32_t) R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_SUNDAY) & 1U);    /* PRQA S 0306, 0662, 4340, 4394 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5, DP_MSR_R-10.8_UC1 */
+    p_alarm->monday_match    = (bool) (((uint32_t) R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_MONDAY) & 1U);    /* PRQA S 0306, 0662, 4340, 4394 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5, DP_MSR_R-10.8_UC1 */
+    p_alarm->tuesday_match   = (bool) (((uint32_t) R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_TUESDAY) & 1U);   /* PRQA S 0306, 0662, 4340, 4394 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5, DP_MSR_R-10.8_UC1 */
+    p_alarm->wednesday_match = (bool) (((uint32_t) R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_WEDNESDAY) & 1U); /* PRQA S 0306, 0662, 4340, 4394 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5, DP_MSR_R-10.8_UC1 */
+    p_alarm->thursday_match  = (bool) (((uint32_t) R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_THURSDAY) & 1U);  /* PRQA S 0306, 0662, 4340, 4394 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5, DP_MSR_R-10.8_UC1 */
+    p_alarm->friday_match    = (bool) (((uint32_t) R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_FRIDAY) & 1U);    /* PRQA S 0306, 0662, 4340, 4394 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5, DP_MSR_R-10.8_UC1 */
+    p_alarm->saturday_match  = (bool) (((uint32_t) R_RTCA0->ALW_b.ALW >> R_RTCA0_ALW_SATURDAY) & 1U);  /* PRQA S 0306, 0662, 4340, 4394 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5, DP_MSR_R-10.8_UC1 */
 
-    p_alarm->min_match       = (RTC_RTCA0ALM_DISABLE_VALUE != R_RTCA0->ALM);
-    p_alarm->hour_match      = (RTC_RTCA0ALH_DISABLE_VALUE != R_RTCA0->ALH);
-    p_alarm->dayofweek_match = (RTC_RTCA0ALW_DISABLE_VALUE != R_RTCA0->ALW);
+    p_alarm->min_match       = (RTC_RTCA0ALM_DISABLE_VALUE != R_RTCA0->ALM);                           /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    p_alarm->hour_match      = (RTC_RTCA0ALH_DISABLE_VALUE != R_RTCA0->ALH);                           /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+    p_alarm->dayofweek_match = (RTC_RTCA0ALW_DISABLE_VALUE != R_RTCA0->ALW);                           /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* Set unsupported items to false */
     p_alarm->sec_match  = false;
@@ -497,36 +505,38 @@ fsp_err_t R_RTC_CalendarAlarmGet (rtc_ctrl_t * const p_ctrl, rtc_alarm_time_t * 
  * @retval FSP_ERR_IRQ_BSP_DISABLED  User IRQ parameter not valid
  * @retval FSP_ERR_INVALID_ARGUMENT  Invalid periodic IRQ rate value
  **********************************************************************************************************************/
-fsp_err_t R_RTC_PeriodicIrqRateSet (rtc_ctrl_t * const p_ctrl, rtc_periodic_irq_select_t const rate)
+fsp_err_t R_RTC_PeriodicIrqRateSet (rtc_ctrl_t * const p_ctrl, rtc_periodic_irq_select_t const rate)          /* PRQA S 1505, 3673 # Advisory R-8.7, Advisory R-8.13 */
 {
-    rtc_instance_ctrl_t * p_instance_ctrl     = (rtc_instance_ctrl_t *) p_ctrl;
-    uint8_t               rtca_fixed_interval = 0;
+    const rtc_instance_ctrl_t * p_instance_ctrl = (const rtc_instance_ctrl_t *) p_ctrl;                       /* PRQA S 0316 # Advisory R-11.5 */
+    uint8_t rtca_fixed_interval                 = 0;
 
 #if RTC_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ERROR_RETURN(RTC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
-    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
-    FSP_ERROR_RETURN(FSP_INVALID_VECTOR != p_instance_ctrl->p_cfg->periodic_irq, FSP_ERR_IRQ_BSP_DISABLED);
+    FSP_ASSERT((NULL != p_instance_ctrl));                                                                    /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ASSERT((NULL != p_instance_ctrl->p_cfg));                                                             /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((RTC_OPEN == p_instance_ctrl->open), FSP_ERR_NOT_OPEN);                                  /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((FSP_INVALID_VECTOR != p_instance_ctrl->p_cfg->periodic_irq), FSP_ERR_IRQ_BSP_DISABLED); /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 
     /* Verify the rate is valid value */
-    FSP_ERROR_RETURN(FSP_SUCCESS == r_rtc_periodic_irq_rate_validate(rate), FSP_ERR_INVALID_ARGUMENT);
+    FSP_ERROR_RETURN((FSP_SUCCESS == r_rtc_periodic_irq_rate_validate(rate)), FSP_ERR_INVALID_ARGUMENT);      /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 #endif
 
-    if (p_instance_ctrl->p_cfg->periodic_irq >= 0)
+    if (p_instance_ctrl->p_cfg->periodic_irq >= (IRQn_Type) 0)                                                /* PRQA S 4332 # Advisory R-10.5 */
     {
         R_BSP_IrqDisable(p_instance_ctrl->p_cfg->periodic_irq);
     }
 
     if (RTC_PERIODIC_IRQ_SELECT_2_SECOND > rate)
     {
-        rtca_fixed_interval = (uint8_t) (rate - RTC_RTCA0CTRL1_RTCA0CT_ADJUSTMENT_VALUE_0) & R_RTCA0_CTL1_CT_Msk;
+        rtca_fixed_interval = (uint8_t) (((uint32_t) rate - (uint32_t) RTC_RTCA0CTRL1_RTCA0CT_ADJUSTMENT_VALUE_0) &
+                                         (uint32_t) R_RTCA0_CTL1_CT_Msk);
     }
     else
     {
-        rtca_fixed_interval = (uint8_t) (rate - RTC_RTCA0CTRL1_RTCA0CT_ADJUSTMENT_VALUE_1) & R_RTCA0_CTL1_CT_Msk;
+        rtca_fixed_interval = (uint8_t) (((uint32_t) rate - (uint32_t) RTC_RTCA0CTRL1_RTCA0CT_ADJUSTMENT_VALUE_1) &
+                                         (uint32_t) R_RTCA0_CTL1_CT_Msk);
     }
 
-    R_RTCA0->CTL1_b.CT = (uint8_t) (rtca_fixed_interval & R_RTCA0_CTL1_CT_Msk);
+    R_RTCA0->CTL1_b.CT = (uint8_t) (rtca_fixed_interval & R_RTCA0_CTL1_CT_Msk); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /*Enable interrupt RTC*/
     if (p_instance_ctrl->p_cfg->periodic_ipl != BSP_IRQ_DISABLED)
@@ -548,18 +558,18 @@ fsp_err_t R_RTC_PeriodicIrqRateSet (rtc_ctrl_t * const p_ctrl, rtc_periodic_irq_
  * @retval FSP_ERR_ASSERTION    Invalid input argument.
  * @retval FSP_ERR_NOT_OPEN     Driver not open already for operation.
  **********************************************************************************************************************/
-fsp_err_t R_RTC_InfoGet (rtc_ctrl_t * const p_ctrl, rtc_info_t * const p_rtc_info)
+fsp_err_t R_RTC_InfoGet (rtc_ctrl_t * const p_ctrl, rtc_info_t * const p_rtc_info)      /* PRQA S 1505, 3673 # Advisory R-8.7, Advisory R-8.13 */
 {
-    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;
+    const rtc_instance_ctrl_t * p_instance_ctrl = (const rtc_instance_ctrl_t *) p_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
 #if RTC_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_rtc_info);
-    FSP_ERROR_RETURN(RTC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ASSERT((NULL != p_instance_ctrl));                                              /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ASSERT((NULL != p_rtc_info));                                                   /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((RTC_OPEN == p_instance_ctrl->open), FSP_ERR_NOT_OPEN);            /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 #else
     FSP_PARAMETER_NOT_USED(p_instance_ctrl);
 #endif
 
-    p_rtc_info->status = (rtc_status_t) R_RTCA0->CTL0_b.CEST;
+    p_rtc_info->status = (rtc_status_t) R_RTCA0->CTL0_b.CEST; /* PRQA S 0306, 0662, 4342 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1, Advisory R-10.5 */
 
     return FSP_SUCCESS;
 }
@@ -575,25 +585,25 @@ fsp_err_t R_RTC_InfoGet (rtc_ctrl_t * const p_ctrl, rtc_info_t * const p_rtc_inf
  * @retval FSP_ERR_INVALID_MODE        Incorrect mode
  * @retval FSP_ERR_INVALID_ARGUMENT    Invalid error adjustment value.
  **********************************************************************************************************************/
-fsp_err_t R_RTC_ErrorAdjustmentSet (rtc_ctrl_t * const p_ctrl, rtc_error_adjustment_cfg_t const * const p_err_adj_cfg)
+fsp_err_t R_RTC_ErrorAdjustmentSet (rtc_ctrl_t * const p_ctrl, rtc_error_adjustment_cfg_t const * const p_err_adj_cfg) /* PRQA S 1505, 1710, 3673 # Advisory R-8.7, Advisory D-4.5, Advisory R-8.13 */
 {
 #if RTC_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(p_ctrl);
-    FSP_ASSERT(NULL != p_err_adj_cfg);
-    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;
-    FSP_ERROR_RETURN(RTC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
-    FSP_ASSERT(NULL != p_instance_ctrl->p_cfg);
-    rtc_extended_cfg_t * p_extend_cfg = (rtc_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    FSP_ASSERT((NULL != p_ctrl));                                                                                      /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ASSERT((NULL != p_err_adj_cfg));                                                                               /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    const rtc_instance_ctrl_t * p_instance_ctrl = (const rtc_instance_ctrl_t *) p_ctrl;                                /* PRQA S 0316 # Advisory R-11.5 */
+    FSP_ASSERT((NULL != p_instance_ctrl->p_cfg));                                                                      /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((RTC_OPEN == p_instance_ctrl->open), FSP_ERR_NOT_OPEN);                                           /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    const rtc_extended_cfg_t * p_extend_cfg = (const rtc_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;           /* PRQA S 0316 # Advisory R-11.5 */
 
     /* Verify 32.768 kHz mode or not */
-    FSP_ERROR_RETURN(RTC_OPERATION_MODE_32768 == p_extend_cfg->operation_mode, FSP_ERR_INVALID_MODE);
+    FSP_ERROR_RETURN((RTC_OPERATION_MODE_32768 == p_extend_cfg->operation_mode), FSP_ERR_INVALID_MODE);                /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 
     /* Verify the frequecy comparison value for 32.768 kHz mode */
-    FSP_ERROR_RETURN(FSP_SUCCESS == r_rtc_err_adjustment_paramter_check(p_err_adj_cfg), FSP_ERR_INVALID_ARGUMENT);
+    FSP_ERROR_RETURN((FSP_SUCCESS == r_rtc_err_adjustment_paramter_check(p_err_adj_cfg)), FSP_ERR_INVALID_ARGUMENT);   /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 #endif
 
     /* Set Error Adjustment values */
-    r_rtc_error_adjustment_set(p_ctrl, p_err_adj_cfg);
+    r_rtc_error_adjustment_set(p_ctrl, p_err_adj_cfg);                                                                 /* PRQA S 0317 # Advisory R-11.5 */
 
     return FSP_SUCCESS;
 }
@@ -606,17 +616,17 @@ fsp_err_t R_RTC_ErrorAdjustmentSet (rtc_ctrl_t * const p_ctrl, rtc_error_adjustm
  * @retval  FSP_ERR_ASSERTION            A required pointer is NULL.
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened
  **********************************************************************************************************************/
-fsp_err_t R_RTC_CallbackSet (rtc_ctrl_t * const          p_ctrl,
-                             void (                    * p_callback)(rtc_callback_args_t *),
+fsp_err_t R_RTC_CallbackSet (rtc_ctrl_t * const          p_ctrl, /* PRQA S 1505 # Advisory R-8.7 */
+                             void (                    * p_callback)(rtc_callback_args_t * p_args),
                              void * const                p_context,
                              rtc_callback_args_t * const p_callback_memory)
 {
-    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;
+    rtc_instance_ctrl_t * p_instance_ctrl = (rtc_instance_ctrl_t *) p_ctrl;  /* PRQA S 0316 # Advisory R-11.5 */
 
 #if (RTC_CFG_PARAM_CHECKING_ENABLE)
-    FSP_ASSERT(p_instance_ctrl);
-    FSP_ASSERT(p_callback);
-    FSP_ERROR_RETURN(RTC_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
+    FSP_ASSERT((NULL != p_instance_ctrl));                                   /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ASSERT((NULL != p_callback));                                        /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+    FSP_ERROR_RETURN((RTC_OPEN == p_instance_ctrl->open), FSP_ERR_NOT_OPEN); /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 #endif
 
     /* Store callback and context */
@@ -633,7 +643,7 @@ fsp_err_t R_RTC_CallbackSet (rtc_ctrl_t * const          p_ctrl,
  *
  * @retval FSP_ERR_UNSUPPORTED         Function not supported in this implementation.
  **********************************************************************************************************************/
-fsp_err_t R_RTC_TimeCaptureSet (rtc_ctrl_t * const p_ctrl, rtc_time_capture_t * const p_time_capture)
+fsp_err_t R_RTC_TimeCaptureSet (rtc_ctrl_t * const p_ctrl, rtc_time_capture_t * const p_time_capture) /* PRQA S 1505, 3673 # Advisory R-8.7, Advisory R-8.13 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
     FSP_PARAMETER_NOT_USED(p_time_capture);
@@ -646,7 +656,7 @@ fsp_err_t R_RTC_TimeCaptureSet (rtc_ctrl_t * const p_ctrl, rtc_time_capture_t * 
  *
  * @retval FSP_ERR_UNSUPPORTED         Function not supported in this implementation.
  **********************************************************************************************************************/
-fsp_err_t R_RTC_TimeCaptureGet (rtc_ctrl_t * const p_ctrl, rtc_time_capture_t * const p_time_capture)
+fsp_err_t R_RTC_TimeCaptureGet (rtc_ctrl_t * const p_ctrl, rtc_time_capture_t * const p_time_capture) /* PRQA S 1505, 3673 # Advisory R-8.7, Advisory R-8.13 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
     FSP_PARAMETER_NOT_USED(p_time_capture);
@@ -666,19 +676,19 @@ fsp_err_t R_RTC_TimeCaptureGet (rtc_ctrl_t * const p_ctrl, rtc_time_capture_t * 
  **********************************************************************************************************************/
 static void r_rtc_config (rtc_cfg_t const * const p_config)
 {
-    rtc_extended_cfg_t * p_extend = (rtc_extended_cfg_t *) p_config->p_extend;
+    const rtc_extended_cfg_t * p_extend = (const rtc_extended_cfg_t *) p_config->p_extend;          /* PRQA S 0316 # Advisory R-11.5 */
 
     /* Setting format hours. Set AMPM bit in the CTL0 register */
-    R_RTCA0->CTL0_b.AMPM = p_extend->format_hours;
+    R_RTCA0->CTL0_b.AMPM = (uint8_t) p_extend->format_hours;                                        /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* The setting selects the operation mode */
-    R_RTCA0->CTL0_b.SLSB = p_extend->operation_mode;
+    R_RTCA0->CTL0_b.SLSB = (uint8_t) p_extend->operation_mode;                                      /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* The setting  1-second interrupt request generation*/
-    R_RTCA0->CTL1_b.EN1S = p_extend->one_second_interrupt;
+    R_RTCA0->CTL1_b.EN1S = (uint8_t) p_extend->one_second_interrupt;                                /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
     /* The setting Enables/stops 1-Hz pulse output (RTCAT1HZ) */
-    R_RTCA0->CTL1_b.EN1HZ = p_extend->one_hz_pulse_output;
+    R_RTCA0->CTL1_b.EN1HZ = (uint8_t) p_extend->one_hz_pulse_output;                                /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 }
 
 /*******************************************************************************************************************//**
@@ -687,35 +697,35 @@ static void r_rtc_config (rtc_cfg_t const * const p_config)
  *@param[in] p_ctrl           Pointer to RTCA instance control block
  *@param[in] p_err_adj_cfg    Pointer to the Error Adjustment Configuration
  **********************************************************************************************************************/
-static void r_rtc_error_adjustment_set (rtc_instance_ctrl_t * const              p_ctrl,
+static void r_rtc_error_adjustment_set (rtc_instance_ctrl_t const * const        p_ctrl,            /* PRQA S 1710 # Advisory D-4.5 */
                                         rtc_error_adjustment_cfg_t const * const p_err_adj_cfg)
 {
-    rtc_extended_cfg_t          * p_extend_cfg     = (rtc_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
-    rtc_operation_mode_t          mode             = p_extend_cfg->operation_mode;
-    uint8_t                       error_adjustment = 0;
-    rtc_error_adjustment_period_t period           = p_err_adj_cfg->adjustment_period;
-    rtc_error_adjustment_t        type             = p_err_adj_cfg->adjustment_type;
-    uint32_t                      value            = p_err_adj_cfg->adjustment_value;
+    const rtc_extended_cfg_t * p_extend_cfg = (const rtc_extended_cfg_t *) p_ctrl->p_cfg->p_extend; /* PRQA S 0316 # Advisory R-11.5 */
+    rtc_operation_mode_t       mode         = p_extend_cfg->operation_mode;
+    uint8_t error_adjustment                = 0;
+    rtc_error_adjustment_period_t period    = p_err_adj_cfg->adjustment_period;
+    rtc_error_adjustment_t        type      = p_err_adj_cfg->adjustment_type;
+    uint32_t value = p_err_adj_cfg->adjustment_value;
 
     /* Set the period if mode is 32.768 kHz mode */
     if (RTC_OPERATION_MODE_32768 == mode)
     {
         /* Check that sub-counter is operating */
-        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL0_b.CEST, 1U);
+        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL0_b.CEST, 1U); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /*Wait until the previous write to RTCAnSUBU has been completed*/
-        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WUST, 0U);
+        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->CTL2_b.WUST, 0U); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
-        /*Setting error adjustment value*/
         error_adjustment =
-            (uint8_t) ((uint8_t) (((uint8_t) type) << R_RTCA0_SUBU_F6_Pos) | (RTC_MAX_ERROR_ADJUSTMENT_VALUE & value) |
-                       ((uint8_t) period << R_RTCA0_SUBU_DEV_Pos));
+            (uint8_t) (((uint32_t) type << R_RTCA0_SUBU_F6_Pos) |
+                       (RTC_MAX_ERROR_ADJUSTMENT_VALUE & value) |
+                       ((uint32_t) period << R_RTCA0_SUBU_DEV_Pos));
 
         /* Write value to SUBU register */
-        R_RTCA0->SUBU = error_adjustment;
+        R_RTCA0->SUBU = error_adjustment;                            /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
         /* When SUBU is modified, check that all the bits are updated before continuing with more processing. */
-        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->SUBU, error_adjustment);
+        FSP_HARDWARE_REGISTER_WAIT(R_RTCA0->SUBU, error_adjustment); /* PRQA S 0306, 0662 # Advisory R-11.4, DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     }
 }
 
@@ -725,7 +735,7 @@ static void r_rtc_error_adjustment_set (rtc_instance_ctrl_t * const             
  * @param[in]     p_ctrl     Pointer to RTCA instance control block
  * @param[in]     event      Event code
  **********************************************************************************************************************/
-static void r_rtc_call_callback (rtc_instance_ctrl_t * p_ctrl, rtc_event_t event)
+static void r_rtc_call_callback (rtc_instance_ctrl_t const * p_ctrl, rtc_event_t event)
 {
     rtc_callback_args_t args;
 
@@ -770,12 +780,13 @@ static fsp_err_t r_rtc_err_adjustment_paramter_check (rtc_error_adjustment_cfg_t
     rtc_error_adjustment_t        mode   = p_err_adj_cfg->adjustment_type;
     uint32_t value = p_err_adj_cfg->adjustment_value;
 
-    FSP_ERROR_RETURN((RTC_ERROR_ADJUSTMENT_PERIOD_20_SECOND == period) ||
-                     (RTC_ERROR_ADJUSTMENT_PERIOD_1_MINUTE == period),
+    FSP_ERROR_RETURN(((RTC_ERROR_ADJUSTMENT_PERIOD_20_SECOND == period) ||                /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+                      (RTC_ERROR_ADJUSTMENT_PERIOD_1_MINUTE == period)),
                      FSP_ERR_INVALID_ARGUMENT);
-    FSP_ERROR_RETURN((RTC_ERROR_ADJUSTMENT_ADD_PRESCALER == mode) || (RTC_ERROR_ADJUSTMENT_SUBTRACT_PRESCALER == mode),
-                     FSP_ERR_INVALID_ARGUMENT);
-    FSP_ERROR_RETURN((RTC_MAX_ERROR_ADJUSTMENT_VALUE > value), FSP_ERR_INVALID_ARGUMENT);
+    FSP_ERROR_RETURN(                                                                     /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+        ((RTC_ERROR_ADJUSTMENT_ADD_PRESCALER == mode) || (RTC_ERROR_ADJUSTMENT_SUBTRACT_PRESCALER == mode)),
+        FSP_ERR_INVALID_ARGUMENT);
+    FSP_ERROR_RETURN((RTC_MAX_ERROR_ADJUSTMENT_VALUE > value), FSP_ERR_INVALID_ARGUMENT); /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 
     return FSP_SUCCESS;
 }
@@ -791,13 +802,13 @@ static fsp_err_t r_rtc_err_adjustment_paramter_check (rtc_error_adjustment_cfg_t
  * @retval FSP_SUCCESS                    Validation successful
  * @retval FSP_ERR_INVALID_ARGUMENT       Invalid field in rtc_time_t structure
  **********************************************************************************************************************/
-static fsp_err_t r_rtc_time_and_date_validate (rtc_time_t * const p_time)
+static fsp_err_t r_rtc_time_and_date_validate (rtc_time_t * const p_time) /* PRQA S 3673 # Advisory R-8.13 */
 {
     fsp_err_t err = FSP_SUCCESS;
     err = r_rtc_time_validate(p_time);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    FSP_ERROR_RETURN((FSP_SUCCESS == err), err);                          /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
     err = r_rtc_date_validate(p_time);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    FSP_ERROR_RETURN((FSP_SUCCESS == err), err);                          /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 
     return FSP_SUCCESS;
 }
@@ -814,13 +825,14 @@ static fsp_err_t r_rtc_time_and_date_validate (rtc_time_t * const p_time)
  * @retval FSP_SUCCESS                    Validation successful
  * @retval FSP_ERR_INVALID_ARGUMENT       Invalid field in rtc_time_t structure
  **********************************************************************************************************************/
-static fsp_err_t r_rtc_time_validate (rtc_time_t * p_time)
+static fsp_err_t r_rtc_time_validate (rtc_time_t const * const p_time)
 {
     fsp_err_t err;
     err = FSP_SUCCESS;
-    if ((p_time->tm_sec < 0) || (p_time->tm_sec > RTC_SECONDS_IN_A_MINUTE) ||
-        (p_time->tm_min < 0) || (p_time->tm_min > RTC_MINUTES_IN_A_HOUR) ||
-        (p_time->tm_hour < 0) || (p_time->tm_hour > RTC_HOURS_IN_A_DAY))
+
+    if ((p_time->tm_sec < 0) || (p_time->tm_sec > (int) RTC_SECONDS_IN_A_MINUTE) || /* PRQA S 5209 # Advisory D-4.6 */
+        (p_time->tm_min < 0) || (p_time->tm_min > (int) RTC_MINUTES_IN_A_HOUR) ||   /* PRQA S 5209 # Advisory D-4.6 */
+        (p_time->tm_hour < 0) || (p_time->tm_hour > (int) RTC_HOURS_IN_A_DAY))      /* PRQA S 5209 # Advisory D-4.6 */
     {
         err = FSP_ERR_INVALID_ARGUMENT;
     }
@@ -851,7 +863,7 @@ static fsp_err_t r_rtc_time_validate (rtc_time_t * p_time)
  * @retval FSP_SUCCESS                    Validation successful
  * @retval FSP_ERR_INVALID_ARGUMENT       Invalid field in rtc_time_t structure
  **********************************************************************************************************************/
-static fsp_err_t r_rtc_date_validate (rtc_time_t * const p_time)
+static fsp_err_t r_rtc_date_validate (rtc_time_t const * const p_time)
 {
     uint32_t num_days_month;
     uint32_t day_of_a_month;
@@ -861,16 +873,18 @@ static fsp_err_t r_rtc_date_validate (rtc_time_t * const p_time)
     fsp_err_t err = FSP_SUCCESS;
 
     day_of_a_month = (uint32_t) p_time->tm_mday;
-    temp_month     = (uint32_t) (p_time->tm_mon + RTC_TIME_H_MONTH_OFFSET);
+
+    temp_month = (uint32_t) p_time->tm_mon + (uint32_t) RTC_TIME_H_MONTH_OFFSET;
 
     /* The valid value of year is between 100 to 199, The RTC has a 100 year calendar from 2000 to 2099
      * to match the starting year 2000, a sample year offset(1900) is added like 117 + 1900 = 2017*/
-    temp_year = (uint32_t) (p_time->tm_year + RTC_TIME_H_YEAR_OFFSET);
+    temp_year = (uint32_t) p_time->tm_year + (uint32_t) RTC_TIME_H_YEAR_OFFSET;
 
     /* Checking the error condition for year and months values, here valid value of year is between 100 to 199
      * and for month 0 to 11*/
-    if ((p_time->tm_year < RTC_YEAR_VALUE_MIN) || (p_time->tm_year > RTC_YEAR_VALUE_MAX) ||
-        (p_time->tm_mon < 0) || (p_time->tm_mon > RTC_MONTHS_IN_A_YEAR))
+
+    if ((p_time->tm_year < (int) RTC_YEAR_VALUE_MIN) || (p_time->tm_year > (int) RTC_YEAR_VALUE_MAX) || /* PRQA S 5209 # Advisory D-4.6 */
+        (p_time->tm_mon < (int) 0) || (p_time->tm_mon > (int) RTC_MONTHS_IN_A_YEAR))                    /* PRQA S 5209 # Advisory D-4.6 */
     {
         return FSP_ERR_INVALID_ARGUMENT;
     }
@@ -880,13 +894,14 @@ static fsp_err_t r_rtc_date_validate (rtc_time_t * const p_time)
 
     /* Checking for February month and Conditions for Leap year : Every fourth year is a leap year,
      * The RTC has a 100 year calendar from 2000 to 2099  */
-    if ((RTC_FEBRUARY_MONTH == temp_month) && ((temp_year % 4U) == 0))
+
+    if (((uint32_t) RTC_FEBRUARY_MONTH == temp_month) && ((temp_year % 4U) == 0U))
     {
-        num_days_month = RTC_LAST_DAY_OF_LEAP_FEB_MONTH;
+        num_days_month = (uint32_t) RTC_LAST_DAY_OF_LEAP_FEB_MONTH;
     }
 
     /* Checking for day of a month values for valid range */
-    if ((p_time->tm_mday < RTC_FIRST_DAY_OF_A_MONTH) || (day_of_a_month > num_days_month))
+    if ((p_time->tm_mday < (int) RTC_FIRST_DAY_OF_A_MONTH) || (day_of_a_month > num_days_month)) /* PRQA S 5209 # Advisory D-4.6 */
     {
         err = FSP_ERR_INVALID_ARGUMENT;
     }
@@ -904,14 +919,14 @@ static fsp_err_t r_rtc_date_validate (rtc_time_t * const p_time)
  * @retval FSP_SUCCESS                    Validation successful
  * @retval FSP_ERR_INVALID_ARGUMENT       Invalid field in rtc_time_t structure
  **********************************************************************************************************************/
-static fsp_err_t r_rtc_alarm_time_and_date_validate (rtc_alarm_time_t * const p_time)
+static fsp_err_t r_rtc_alarm_time_and_date_validate (rtc_alarm_time_t * const p_time) /* PRQA S 3673 # Advisory R-8.13 */
 {
     fsp_err_t err = FSP_SUCCESS;
     err = r_rtc_alarm_time_validate(p_time);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    FSP_ERROR_RETURN((FSP_SUCCESS == err), err);                                      /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 
     err = r_rtc_date_validate(&p_time->time);
-    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    FSP_ERROR_RETURN((FSP_SUCCESS == err), err);                                      /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
 
     return FSP_SUCCESS;
 }
@@ -927,14 +942,15 @@ static fsp_err_t r_rtc_alarm_time_and_date_validate (rtc_alarm_time_t * const p_
  * @retval FSP_SUCCESS                    Validation successful
  * @retval FSP_ERR_INVALID_ARGUMENT       Invalid field in rtc_time_t structure
  **********************************************************************************************************************/
-static fsp_err_t r_rtc_alarm_time_validate (rtc_alarm_time_t * const p_time)
+static fsp_err_t r_rtc_alarm_time_validate (rtc_alarm_time_t const * const p_time)
 {
     fsp_err_t err;
     err = FSP_SUCCESS;
 
-    if (((p_time->min_match) && ((p_time->time.tm_min < 0) ||
-                                 (p_time->time.tm_min > RTC_MINUTES_IN_A_HOUR))) ||
-        ((p_time->hour_match) && ((p_time->time.tm_hour < 0) || (p_time->time.tm_hour > RTC_HOURS_IN_A_DAY))))
+    if (((p_time->min_match) && ((p_time->time.tm_min < (int) 0) ||                       /* PRQA S 5209 # Advisory D-4.6 */
+                                 (p_time->time.tm_min > (int) RTC_MINUTES_IN_A_HOUR))) || /* PRQA S 5209 # Advisory D-4.6 */
+        ((p_time->hour_match) && ((p_time->time.tm_hour < (int) 0) ||                     /* PRQA S 5209 # Advisory D-4.6 */
+                                  (p_time->time.tm_hour > (int) RTC_HOURS_IN_A_DAY))))    /* PRQA S 5209 # Advisory D-4.6 */
     {
         err = FSP_ERR_INVALID_ARGUMENT;
     }
@@ -1005,13 +1021,13 @@ static uint8_t r_rtc_bcd_to_dec (uint8_t to_convert)
  * Saves context if RTOS is used, calls callback if one was provided in the open function, and restores context
  * if RTOS is used.
  **********************************************************************************************************************/
-void rtc_alarm_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void rtc_alarm_isr (void) /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE;
 
     IRQn_Type             irq    = R_FSP_CurrentIrqGet();
-    rtc_instance_ctrl_t * p_ctrl = (rtc_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    rtc_instance_ctrl_t * p_ctrl = (rtc_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316, 3678 # Advisory R-11.5, Advisory R-8.13 */
 
     /* Call the callback routine if one is available */
     if (NULL != p_ctrl->p_callback)
@@ -1034,13 +1050,13 @@ void rtc_alarm_isr (void)
  * Saves context if RTOS is used, calls callback if one was provided in the open function, and restores context
  * if RTOS is used.
  **********************************************************************************************************************/
-void rtc_periodic_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void rtc_periodic_isr (void) /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE;
 
     IRQn_Type             irq    = R_FSP_CurrentIrqGet();
-    rtc_instance_ctrl_t * p_ctrl = (rtc_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    rtc_instance_ctrl_t * p_ctrl = (rtc_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316, 3678 # Advisory R-11.5, Advisory R-8.13 */
 
     /* Call the callback routine if one is available */
     if (NULL != p_ctrl->p_callback)
@@ -1063,13 +1079,13 @@ void rtc_periodic_isr (void)
  * Saves context if RTOS is used, calls callback if one was provided in the open function, and restores context
  * if RTOS is used.
  **********************************************************************************************************************/
-void rtc_one_second_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void rtc_one_second_isr (void) /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE;
 
     IRQn_Type             irq    = R_FSP_CurrentIrqGet();
-    rtc_instance_ctrl_t * p_ctrl = (rtc_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    rtc_instance_ctrl_t * p_ctrl = (rtc_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316, 3678 # Advisory R-11.5, Advisory R-8.13 */
 
     /* Call the callback routine if one is available */
     if (NULL != p_ctrl->p_callback)

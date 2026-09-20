@@ -7,16 +7,17 @@
 /**********************************************************************************************************************
  * Includes
  *********************************************************************************************************************/
-#include "r_iic_b_slave.h"
+#include "r_iic_b_slave.h"             /* PRQA S 0380 # Required R-1.1 */
 
 /**********************************************************************************************************************
  * Macro definitions
  *********************************************************************************************************************/
 
 /* "I2CS" in ASCII, used to determine if channel is open. */
-#define IIC_B_SLAVE_OPEN                       (0x49324353ULL)
+
+#define IIC_B_SLAVE_OPEN                       (0x49324353U)
 #define IIC_B_SLAVE_PRV_NTDTBP0_SIZE           (0xFFU)
-#define IIC_B_SLAVE_CODE_10BIT                 (0xF0U)
+#define IIC_B_SLAVE_CODE_10BIT                 (0xF0U) /* PRQA S 1534 # Advisory R-2.5 */
 
 #define IIC_B_SLAVE_PRV_BIE_INIT_MASK          (R_RI3C0_BIE_NACKDIE_Msk | R_RI3C0_BIE_ALIE_Msk | \
                                                 R_RI3C0_BIE_TODIE_Msk)
@@ -54,10 +55,10 @@ typedef BSP_CMSE_NONSECURE_CALL void (*volatile iic_b_slave_prv_ns_callback)(i2c
 /**********************************************************************************************************************
  * Private function prototypes
  *********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_rxi_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_txi_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_tei_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_eri_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_rxi_isr(void); /* PRQA S 3449, 3451 # Required R-8.5, Required R-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_txi_isr(void); /* PRQA S 3449, 3451 # Required R-8.5, Required R-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_tei_isr(void); /* PRQA S 3449, 3451 # Required R-8.5, Required R-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_eri_isr(void); /* PRQA S 3449, 3451 # Required R-8.5, Required R-8.5 */
 
 /* Internal helper functions */
 static void iic_b_slave_notify(iic_b_slave_instance_ctrl_t * const p_ctrl, i2c_slave_event_t const slave_event);
@@ -72,7 +73,7 @@ static void iic_b_slave_call_callback(iic_b_slave_instance_ctrl_t * p_ctrl,
                                       i2c_slave_event_t             event,
                                       uint32_t                      transaction_count);
 
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
 void             iic_b_slave_txi_transfer_callback(transfer_callback_args_t * p_args);
 void             iic_b_slave_rxi_transfer_callback(transfer_callback_args_t * p_args);
 static fsp_err_t iic_b_slave_transfer_open(iic_b_slave_instance_ctrl_t * const p_ctrl,
@@ -101,19 +102,23 @@ static void iic_b_err_slave(iic_b_slave_instance_ctrl_t * p_ctrl);
  *********************************************************************************************************************/
 
 /* IIC Implementation of I2C device slave interface */
-i2c_slave_api_t const g_i2c_slave_on_iic_b =
+i2c_slave_api_t const g_i2c_slave_on_iic_b = /* PRQA S 1502 # Advisory R-2.8 */
 {
-    .open        = R_IIC_B_SLAVE_Open,
-    .read        = R_IIC_B_SLAVE_Read,
-    .write       = R_IIC_B_SLAVE_Write,
-    .close       = R_IIC_B_SLAVE_Close,
-    .callbackSet = R_IIC_B_SLAVE_CallbackSet
+    .open        = R_IIC_B_SLAVE_Open,       /* PRQA S 3635 # Advisory R-17.12 */
+    .read        = R_IIC_B_SLAVE_Read,       /* PRQA S 3635 # Advisory R-17.12 */
+    .write       = R_IIC_B_SLAVE_Write,      /* PRQA S 3635 # Advisory R-17.12 */
+    .close       = R_IIC_B_SLAVE_Close,      /* PRQA S 3635 # Advisory R-17.12 */
+    .callbackSet = R_IIC_B_SLAVE_CallbackSet /* PRQA S 3635 # Advisory R-17.12 */
 };
+
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
 
 /*******************************************************************************************************************//**
  * @addtogroup IIC_B_SLAVE
  * @{
  *********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /**********************************************************************************************************************
  * Functions
@@ -134,20 +139,21 @@ i2c_slave_api_t const g_i2c_slave_on_iic_b =
  *                                            4. Set the rate to fast mode plus on a channel which does not support it.
  *                                            5. Invalid IRQ number assigned
  *********************************************************************************************************************/
-fsp_err_t R_IIC_B_SLAVE_Open (i2c_slave_ctrl_t * const p_api_ctrl, i2c_slave_cfg_t const * const p_cfg)
+fsp_err_t R_IIC_B_SLAVE_Open (i2c_slave_ctrl_t * const p_api_ctrl, i2c_slave_cfg_t const * const p_cfg) /* PRQA S 1505 # Advisory R-8.7 */
 {
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl;
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl;                  /* PRQA S 0316 # Advisory R-11.5 */
 
 #if IIC_B_SLAVE_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(p_ctrl != NULL);
     FSP_ASSERT(p_cfg != NULL);
     FSP_ASSERT(p_cfg->p_extend != NULL);
-    FSP_ASSERT(p_cfg->rxi_irq >= (IRQn_Type) 0);
-    FSP_ASSERT(p_cfg->txi_irq >= (IRQn_Type) 0);
-    FSP_ASSERT(p_cfg->tei_irq >= (IRQn_Type) 0);
-    FSP_ASSERT(p_cfg->eri_irq >= (IRQn_Type) 0);
+    FSP_ASSERT(p_cfg->rxi_irq >= (IRQn_Type) 0U); /* PRQA S 1505, 4342 # Advisory R-8.5, Advisory R-10.5 */
+    FSP_ASSERT(p_cfg->txi_irq >= (IRQn_Type) 0U); /* PRQA S 1505, 4342 # Advisory R-8.5, Advisory R-10.5 */
+    FSP_ASSERT(p_cfg->tei_irq >= (IRQn_Type) 0U); /* PRQA S 1505, 4342 # Advisory R-8.5, Advisory R-10.5 */
+    FSP_ASSERT(p_cfg->eri_irq >= (IRQn_Type) 0U); /* PRQA S 1505, 4342 # Advisory R-8.5, Advisory R-10.5 */
 
-    FSP_ERROR_RETURN(BSP_FEATURE_IIC_B_VALID_CHANNEL_MASK & (1 << p_cfg->channel), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
+    FSP_ERROR_RETURN((BSP_FEATURE_IIC_B_VALID_CHANNEL_MASK & ((uint32_t) 1U << p_cfg->channel)) != 0U,
+                     FSP_ERR_IP_CHANNEL_NOT_PRESENT);
 
     FSP_ERROR_RETURN(IIC_B_SLAVE_OPEN != p_ctrl->open, FSP_ERR_ALREADY_OPEN);
     FSP_ERROR_RETURN(p_cfg->eri_ipl <= p_cfg->ipl, FSP_ERR_INVALID_ARGUMENT);
@@ -155,13 +161,13 @@ fsp_err_t R_IIC_B_SLAVE_Open (i2c_slave_ctrl_t * const p_api_ctrl, i2c_slave_cfg
     /* If rate is configured as Fast mode plus, check whether the channel supports it */
     if (I2C_SLAVE_RATE_FASTPLUS == p_cfg->rate)
     {
-        FSP_ASSERT((BSP_FEATURE_IIC_B_FAST_MODE_PLUS & (1U << p_cfg->channel)));
+        FSP_ASSERT(((uint32_t) BSP_FEATURE_IIC_B_FAST_MODE_PLUS & ((uint32_t) 1U << p_cfg->channel)) != 0U);
     }
 #endif
 
 #if (BSP_FEATURE_IIC_B_VALID_CHANNEL_MASK > 1U)
     p_ctrl->p_reg =
-        (R_RI3C0_Type *) ((uint32_t) R_RI3C0 + (p_cfg->channel * ((uint32_t) R_RI3C1 - (uint32_t) R_RI3C0)));
+        (R_RI3C0_Type *) ((uint32_t) R_RI3C0 + (p_cfg->channel * ((uint32_t) R_RI3C1 - (uint32_t) R_RI3C0))); /* PRQA S 0306, 0329 # Advisory R-11.4, Advisory R-11.4 */
 #else
     p_ctrl->p_reg = R_RI3C0;
 #endif
@@ -181,8 +187,7 @@ fsp_err_t R_IIC_B_SLAVE_Open (i2c_slave_ctrl_t * const p_api_ctrl, i2c_slave_cfg
     R_BSP_IrqCfgEnable(p_ctrl->p_cfg->tei_irq, p_ctrl->p_cfg->ipl, p_ctrl);
     R_BSP_IrqCfgEnable(p_ctrl->p_cfg->rxi_irq, p_ctrl->p_cfg->ipl, p_ctrl);
 
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
-
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
     /* Open the IIC transfer interface if available */
     fsp_err_t err = iic_b_slave_transfer_open(p_ctrl, p_cfg);
     FSP_ERROR_RETURN((FSP_SUCCESS == err), err);
@@ -200,7 +205,7 @@ fsp_err_t R_IIC_B_SLAVE_Open (i2c_slave_ctrl_t * const p_api_ctrl, i2c_slave_cfg
     p_ctrl->notify_request    = false;
     p_ctrl->transaction_count = 0U;
 
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
     p_ctrl->activation_on_rxi = false;
     p_ctrl->activation_on_txi = false;
 #endif
@@ -222,15 +227,15 @@ fsp_err_t R_IIC_B_SLAVE_Open (i2c_slave_ctrl_t * const p_api_ctrl, i2c_slave_cfg
  * @retval  FSP_ERR_IN_USE          Another transfer was in progress.
  * @retval  FSP_ERR_NOT_OPEN        Device is not open.
  *********************************************************************************************************************/
-fsp_err_t R_IIC_B_SLAVE_Read (i2c_slave_ctrl_t * const p_api_ctrl, uint8_t * const p_dest, uint32_t const bytes)
+fsp_err_t R_IIC_B_SLAVE_Read (i2c_slave_ctrl_t * const p_api_ctrl, uint8_t * const p_dest, uint32_t const bytes) /* PRQA S 1505 # Advisory R-8.7 */
 {
     fsp_err_t err = FSP_SUCCESS;
 
     err = iic_b_slave_read_write(p_api_ctrl, p_dest, bytes, IIC_B_SLAVE_TRANSFER_DIR_MASTER_WRITE_SLAVE_READ);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl;
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE                                            /* PRQA S 3332 # Required R-20.9 */
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
     if (NULL != p_ctrl->p_cfg->p_transfer_rx)
     {
         p_ctrl->activation_on_rxi = true;
@@ -254,15 +259,15 @@ fsp_err_t R_IIC_B_SLAVE_Read (i2c_slave_ctrl_t * const p_api_ctrl, uint8_t * con
  * @retval  FSP_ERR_IN_USE          Another transfer was in progress.
  * @retval  FSP_ERR_NOT_OPEN        Device is not open.
  *********************************************************************************************************************/
-fsp_err_t R_IIC_B_SLAVE_Write (i2c_slave_ctrl_t * const p_api_ctrl, uint8_t * const p_src, uint32_t const bytes)
+fsp_err_t R_IIC_B_SLAVE_Write (i2c_slave_ctrl_t * const p_api_ctrl, uint8_t * const p_src, uint32_t const bytes) /* PRQA S 1505 # Advisory R-8.7 */
 {
     fsp_err_t err = FSP_SUCCESS;
 
     err = iic_b_slave_read_write(p_api_ctrl, p_src, bytes, IIC_B_SLAVE_TRANSFER_DIR_MASTER_READ_SLAVE_WRITE);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl;
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE                                            /* PRQA S 3332 # Required R-20.9 */
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
     if (NULL != p_ctrl->p_cfg->p_transfer_tx)
     {
         p_ctrl->activation_on_txi = true;
@@ -281,16 +286,16 @@ fsp_err_t R_IIC_B_SLAVE_Write (i2c_slave_ctrl_t * const p_api_ctrl, uint8_t * co
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
  * @retval  FSP_ERR_NO_CALLBACK_MEMORY   p_callback is non-secure and p_callback_memory is either secure or NULL.
  **********************************************************************************************************************/
-fsp_err_t R_IIC_B_SLAVE_CallbackSet (i2c_slave_ctrl_t * const          p_api_ctrl,
-                                     void (                          * p_callback)(i2c_slave_callback_args_t *),
+fsp_err_t R_IIC_B_SLAVE_CallbackSet (i2c_slave_ctrl_t * const          p_api_ctrl,                               /* PRQA S 1505 # Advisory R-8.7 */
+                                     void (                          * p_callback)(i2c_slave_callback_args_t *), /* PRQA S 1336 # Required R-8.2 */
                                      void * const                      p_context,
                                      i2c_slave_callback_args_t * const p_callback_memory)
 {
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl;
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl;                           /* PRQA S 0316 # Advisory R-11.5 */
 
 #if (IIC_B_SLAVE_CFG_PARAM_CHECKING_ENABLE)
-    FSP_ASSERT(p_ctrl);
-    FSP_ASSERT(p_callback);
+    FSP_ASSERT(p_ctrl != NULL);
+    FSP_ASSERT(p_callback != NULL);
     FSP_ERROR_RETURN(IIC_B_SLAVE_OPEN == p_ctrl->open, FSP_ERR_NOT_OPEN);
 #endif
 
@@ -310,9 +315,9 @@ fsp_err_t R_IIC_B_SLAVE_CallbackSet (i2c_slave_ctrl_t * const          p_api_ctr
  * @retval  FSP_ERR_NOT_OPEN    Device not opened.
  * @retval  FSP_ERR_ASSERTION   p_api_ctrl is NULL.
  *********************************************************************************************************************/
-fsp_err_t R_IIC_B_SLAVE_Close (i2c_slave_ctrl_t * const p_api_ctrl)
+fsp_err_t R_IIC_B_SLAVE_Close (i2c_slave_ctrl_t * const p_api_ctrl)                    /* PRQA S 1505 # Advisory R-8.7 */
 {
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl;
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
 
 #if IIC_B_SLAVE_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(p_ctrl != NULL);
@@ -320,18 +325,16 @@ fsp_err_t R_IIC_B_SLAVE_Close (i2c_slave_ctrl_t * const p_api_ctrl)
     /* Check if the device is even open, return an error if not */
     FSP_ERROR_RETURN(IIC_B_SLAVE_OPEN == p_ctrl->open, FSP_ERR_NOT_OPEN);
 #endif
-
     fsp_err_t err = FSP_SUCCESS;
 
     /* The device is considered closed */
     p_ctrl->open = 0U;
 
     /* Clear all interrupt bits */
-    p_ctrl->p_reg->BIE  = 0x00;
-    p_ctrl->p_reg->NTIE = 0x00;
+    p_ctrl->p_reg->BIE  = 0x00;             /* PRQA S 0662 # Required R-1.1/1.2 */
+    p_ctrl->p_reg->NTIE = 0x00;             /* PRQA S 0662 # Required R-1.1/1.2 */
 
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
-
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
     /* Close the handles for the transfer interfaces */
     if (NULL != p_ctrl->p_cfg->p_transfer_rx)
     {
@@ -353,10 +356,10 @@ fsp_err_t R_IIC_B_SLAVE_Close (i2c_slave_ctrl_t * const p_api_ctrl)
     R_BSP_IrqDisable(p_ctrl->p_cfg->tei_irq);
 
     /* Set RSTCTL.RI2CRST to 1: Reset all registers and internal state; RSTCTL.INTLRST is already 0. */
-    p_ctrl->p_reg->RSTCTL = (uint32_t) (R_RI3C0_RSTCTL_RI3CRST_Msk);
+    p_ctrl->p_reg->RSTCTL = (uint32_t) R_RI3C0_RSTCTL_RI3CRST_Msk; /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Waiting for reset completion RSTCTL.RI2CRST = 0;  RSTCTL.INTLRST is already 0. */
-    FSP_HARDWARE_REGISTER_WAIT(0U, p_ctrl->p_reg->RSTCTL);
+    FSP_HARDWARE_REGISTER_WAIT(0U, p_ctrl->p_reg->RSTCTL);         /* PRQA S 0662 # Required R-1.1/1.2 */
 
     return err;
 }
@@ -387,7 +390,7 @@ static fsp_err_t iic_b_slave_read_write (i2c_slave_ctrl_t * const   p_api_ctrl,
                                          uint32_t const             bytes,
                                          iic_b_slave_transfer_dir_t direction)
 {
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl;
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) p_api_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
 
 #if IIC_B_SLAVE_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(p_ctrl != NULL);
@@ -399,7 +402,7 @@ static fsp_err_t iic_b_slave_read_write (i2c_slave_ctrl_t * const   p_api_ctrl,
     /* Fail if there is already a transfer in progress */
     FSP_ERROR_RETURN(IIC_B_SLAVE_TRANSFER_DIR_NOT_ESTABLISHED == p_ctrl->direction, FSP_ERR_IN_USE);
 
-    FSP_ASSERT(((iic_b_slave_instance_ctrl_t *) p_api_ctrl)->p_callback != NULL);
+    FSP_ASSERT(((iic_b_slave_instance_ctrl_t *) p_api_ctrl)->p_callback != NULL); /* PRQA S 0316 # Advisory R-11.5 */
 #endif
 
     /* Record the new information about this transfer */
@@ -412,7 +415,7 @@ static fsp_err_t iic_b_slave_read_write (i2c_slave_ctrl_t * const   p_api_ctrl,
     p_ctrl->loaded = 0U;
 
     /* Set the response as ACK */
-    p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk;
+    p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk; /* PRQA S 0662, 1257 # Required R-1.1/1.2, Required R-10.3 */
 
     /* Timeouts are enabled by the driver code at the end of an IIC Slave callback.
      * Do not enable them here to prevent time restricting the application code.
@@ -435,23 +438,23 @@ static void iic_b_slave_notify (iic_b_slave_instance_ctrl_t * const p_ctrl, i2c_
      * Disable start and stop detection.
      * Disable timeout function.
      */
-    p_ctrl->p_reg->BSTE = IIC_B_SLAVE_PRV_BSTE_INIT_MASK & ~R_RI3C0_BSTE_TODE_Msk;
-    p_ctrl->p_reg->NTIE = IIC_B_SLAVE_PRV_NTIE_INIT_MASK;
+    p_ctrl->p_reg->BSTE = IIC_B_SLAVE_PRV_BSTE_INIT_MASK & ~R_RI3C0_BSTE_TODE_Msk; /* PRQA S 0662 # Required R-1.1/1.2 */
+    p_ctrl->p_reg->NTIE = IIC_B_SLAVE_PRV_NTIE_INIT_MASK;                          /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Reset the status flags */
     p_ctrl->notify_request = false;
     p_ctrl->do_dummy_read  = false;
 
     /* Disable timeout interrupt */
-    p_ctrl->p_reg->BIE_b.TODIE = 0U;
+    p_ctrl->p_reg->BIE_b.TODIE = 0U;   /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Check if the transaction ended with a stop (or restart) */
     if (p_ctrl->transaction_completed)
     {
         /* Clear all status flags */
-        uint32_t bst_status = p_ctrl->p_reg->BST;
+        uint32_t bst_status = p_ctrl->p_reg->BST; /* PRQA S 0662 # Required R-1.1/1.2 */
         bst_status        &= ~bst_status;
-        p_ctrl->p_reg->BST = bst_status;
+        p_ctrl->p_reg->BST = bst_status;          /* PRQA S 0662 # Required R-1.1/1.2 */
     }
     /*
      * Since the transaction resulted in an error or is not completed at the master (this is a bus hang situation)
@@ -486,19 +489,19 @@ static void iic_b_slave_callback_request (iic_b_slave_instance_ctrl_t * const p_
     p_ctrl->direction = IIC_B_SLAVE_TRANSFER_DIR_NOT_ESTABLISHED;
 
     /* Disable timeout function */
-    p_ctrl->p_reg->BSTE_b.TODE = 0U;
-    p_ctrl->p_reg->BIE_b.TODIE = 0U;
+    p_ctrl->p_reg->BSTE_b.TODE = 0U;   /* PRQA S 0662 # Required R-1.1/1.2 */
+    p_ctrl->p_reg->BIE_b.TODIE = 0U;   /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Invoke the callback to notify the read request.
      * The application must call MasterWriteSlaveRead API in the callback.*/
     iic_b_slave_call_callback(p_ctrl, slave_event, p_ctrl->transaction_count);
 
     /* Allow timeouts to be generated on the low value of SCL using long count mode */
-    p_ctrl->p_reg->TMOCTL = R_RI3C0_TMOCTL_TOLCTL_Msk;
+    p_ctrl->p_reg->TMOCTL = R_RI3C0_TMOCTL_TOLCTL_Msk;                                               /* PRQA S 0662, 1257 # Required R-1.1/1.2, Required R-10.3 */
 
     /* Enable timeout function */
-    p_ctrl->p_reg->BSTE_b.TODE = 1U;
-    p_ctrl->p_reg->BIE_b.TODIE = 1U;
+    p_ctrl->p_reg->BSTE_b.TODE = 1U;                                                                 /* PRQA S 0662 # Required R-1.1/1.2 */
+    p_ctrl->p_reg->BIE_b.TODIE = 1U;                                                                 /* PRQA S 0662 # Required R-1.1/1.2 */
 }
 
 /*******************************************************************************************************************//**
@@ -506,13 +509,13 @@ static void iic_b_slave_callback_request (iic_b_slave_instance_ctrl_t * const p_
  *
  * @param[in]     p_args     Pointer to callback.
  **********************************************************************************************************************/
-void iic_b_slave_txi_transfer_callback (transfer_callback_args_t * p_args)
+void iic_b_slave_txi_transfer_callback (transfer_callback_args_t * p_args)                           /* PRQA S 1505, 3673, 3206, 3408, 1503 # Advisory R-8.7, Advisory R-8.13, Advisory R-2.7, Required R-8.4, Required R-2.1 */
 {
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
-    IRQn_Type irq = *(IRQn_Type *) (p_args->p_context);
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE                                                          /* PRQA S 3332 # Required R-20.9 */
+    IRQn_Type irq = *(IRQn_Type *) (p_args->p_context);                                              /* PRQA S 0311, 0316 # Required R-11.8, Advisory R-11.5 */
 
     /* Recover ISR context saved in open. */
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
 
     if (NULL != p_args)
     {
@@ -527,11 +530,11 @@ void iic_b_slave_txi_transfer_callback (transfer_callback_args_t * p_args)
  *
  * @param[in]     p_args     Pointer to callback.
  **********************************************************************************************************************/
-void iic_b_slave_rxi_transfer_callback (transfer_callback_args_t * p_args)
+void iic_b_slave_rxi_transfer_callback (transfer_callback_args_t * p_args)                           /* PRQA S 1505, 3673, 3206, 3408, 1503 # Advisory R-8.7, Advisory R-8.13, Advisory R-2.7, Required R-8.4, Required R-2.1 */
 {
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
-    IRQn_Type irq = *(IRQn_Type *) (p_args->p_context);
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE                                                          /* PRQA S 3332 # Required R-20.9 */
+    IRQn_Type irq = *(IRQn_Type *) (p_args->p_context);                                              /* PRQA S 0311, 0316 # Required R-11.8, Advisory R-11.5 */
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
 
     if (NULL != p_args)
     {
@@ -549,36 +552,38 @@ void iic_b_slave_rxi_transfer_callback (transfer_callback_args_t * p_args)
  *
  * @param[in]       p_ctrl     Pointer to the control structure.
  *********************************************************************************************************************/
-static void iic_b_open_hw_slave (iic_b_slave_instance_ctrl_t * const p_ctrl)
+static void iic_b_open_hw_slave (iic_b_slave_instance_ctrl_t * const p_ctrl) /* PRQA S 3673 # Advisory R-8.13 */
 {
     /* Clear BCTL.BUSE to 0: SCL, SDA pins not driven */
-    p_ctrl->p_reg->BCTL_b.BUSE = 0;
+    p_ctrl->p_reg->BCTL_b.BUSE = 0;                                          /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Set RSTCTL.RI2CRST to 1: Reset all registers and internal state; RSTCTL.INTLRST is already 0.*/
-    p_ctrl->p_reg->RSTCTL = R_RI3C0_RSTCTL_RI3CRST_Msk;
+    p_ctrl->p_reg->RSTCTL = R_RI3C0_RSTCTL_RI3CRST_Msk;                      /* PRQA S 0662, 1257 # Required R-1.1/1.2, Required R-10.3 */
 
     /* Waiting for reset completion RSTCTL.RI2CRST = 0;  RSTCTL.INTLRST is already 0. */
-    FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->RSTCTL_b.RI3CRST, 0U);
+    FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->RSTCTL_b.RI3CRST, 0U);         /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Set Slave address in SDATBAS0 and set SVCTL */
-    p_ctrl->p_reg->SDATBAS0 = (uint32_t) (p_ctrl->p_cfg->slave) |
-                              (((uint32_t) ((p_ctrl->p_cfg->addr_mode) ==
-                                            I2C_SLAVE_ADDR_MODE_10BIT)) << R_RI3C0_SDATBAS0_SDADLS_Pos);
+    p_ctrl->p_reg->SDATBAS0 = (uint32_t) (p_ctrl->p_cfg->slave) |            /* PRQA S 0662 # Required R-1.1/1.2 */
+                              (((p_ctrl->p_cfg->addr_mode) == I2C_SLAVE_ADDR_MODE_10BIT) ?
+                               ((uint32_t) 1U << R_RI3C0_SDATBAS0_SDADLS_Pos) : 0U);
 
     /* Enable the slave address and general call based on user config */
-    p_ctrl->p_reg->SVCTL = (uint32_t) (R_RI3C0_SVCTL_SVAE0_Msk |
-                                       ((uint32_t) p_ctrl->p_cfg->general_call_enable << R_RI3C0_SVCTL_GCAE_Pos));
+    p_ctrl->p_reg->SVCTL = (uint32_t) (R_RI3C0_SVCTL_SVAE0_Msk | /* PRQA S 0662 # Required R-1.1/1.2 */
+                                       ((p_ctrl->p_cfg->general_call_enable) ?
+                                        ((uint32_t) 1U << R_RI3C0_SVCTL_GCAE_Pos) : 0U));
 
     /* Allow timeouts to be generated on the low value of SCL using long count mode */
-    p_ctrl->p_reg->TMOCTL = R_RI3C0_TMOCTL_TOLCTL_Msk;
+    p_ctrl->p_reg->TMOCTL = R_RI3C0_TMOCTL_TOLCTL_Msk;                                                        /* PRQA S 0662, 1257 # Required R-1.1/1.2, Required R-10.3 */
 
     /* Setup digital noise filter circuit. */
     uint8_t digital_filter_stages =
-        (((iic_b_slave_extended_cfg_t *) p_ctrl->p_cfg->p_extend)->clock_settings.digital_filter_stages);
-    p_ctrl->p_reg->INCTL =
-        ((uint32_t) (digital_filter_stages >
-                     0U ? ((digital_filter_stages - 1U) & R_RI3C0_INCTL_DNFS_Msk) : 0U) << R_RI3C0_INCTL_DNFS_Pos) |
-        R_RI3C0_INCTL_DNFE_Msk;
+        (((iic_b_slave_extended_cfg_t *) p_ctrl->p_cfg->p_extend)->clock_settings.digital_filter_stages);     /* PRQA S 0311, 0316 # Required R-11.8, Advisory R-11.5 */
+    p_ctrl->p_reg->INCTL =                                                                                    /* PRQA S 0662 # Required R-1.1/1.2 */
+                           ((uint32_t) (digital_filter_stages >
+                                        0U ? ((digital_filter_stages - 1U) & R_RI3C0_INCTL_DNFS_Msk) : 0U) << /* PRQA S 1891, 3396 # Required R-10.7, Advisory R-12.1 */
+                            R_RI3C0_INCTL_DNFS_Pos) |
+                           R_RI3C0_INCTL_DNFE_Msk;
 
     /* 1. Enable FM+ slope circuit if fast mode plus is enabled.
      * 2. Set Master Arbitration-Lost Detection Enable
@@ -586,9 +591,10 @@ static void iic_b_open_hw_slave (iic_b_slave_instance_ctrl_t * const p_ctrl)
      * 4. Set Slave Arbitration-Lost Detection Enable
      * 5. Use the SCL synchronous circuit.
      */
-    p_ctrl->p_reg->BFCTL = (R_RI3C0_BFCTL_MALE_Msk | R_RI3C0_BFCTL_NALE_Msk | R_RI3C0_BFCTL_SALE_Msk |
-#if BSP_FEATURE_IIC_B_HAS_FMPLUS
-                            ((uint32_t) ((I2C_SLAVE_RATE_FASTPLUS == p_ctrl->p_cfg->rate) << R_RI3C0_BFCTL_FMPE_Pos)) |
+    p_ctrl->p_reg->BFCTL = (R_RI3C0_BFCTL_MALE_Msk | R_RI3C0_BFCTL_NALE_Msk | R_RI3C0_BFCTL_SALE_Msk | /* PRQA S 0662 # Required R-1.1/1.2 */
+#if BSP_FEATURE_IIC_B_HAS_FMPLUS                                                                       /* PRQA S 3332 # Required R-20.9 */
+                            ((uint32_t) (((uint32_t) (I2C_SLAVE_RATE_FASTPLUS ==
+                                                      p_ctrl->p_cfg->rate)) << R_RI3C0_BFCTL_FMPE_Pos)) |
 #endif
                             R_RI3C0_BFCTL_SCSYNE_Msk);
 
@@ -598,14 +604,16 @@ static void iic_b_open_hw_slave (iic_b_slave_instance_ctrl_t * const p_ctrl)
     /* Clock settings - Set REFCKCTL, STDBR and EXTBR registers: Set transfer bit rate.
      * The values for these are set in the configuration structure by the tooling.
      */
-    p_ctrl->p_reg->REFCKCTL =
-        (uint32_t) (((iic_b_slave_extended_cfg_t *) p_ctrl->p_cfg->p_extend)->clock_settings.cks_value &
-                    R_RI3C0_REFCKCTL_IREFCKS_Msk);
+    p_ctrl->p_reg->REFCKCTL =                                                                                       /* PRQA S 0662 # Required R-1.1/1.2 */
+                              (uint32_t) (((iic_b_slave_extended_cfg_t *) p_ctrl->p_cfg->p_extend)->clock_settings. /* PRQA S 0311, 0316 # Required R-11.8, Advisory R-11.5 */
+                                          cks_value &
+                                          R_RI3C0_REFCKCTL_IREFCKS_Msk);
 
     /* SBRHO need not be updated. */
-    p_ctrl->p_reg->STDBR =
-        (uint32_t) (((iic_b_slave_extended_cfg_t *) p_ctrl->p_cfg->p_extend)->clock_settings.brl_value <<
-                    R_RI3C0_STDBR_SBRLO_Pos);
+    p_ctrl->p_reg->STDBR =                                                                                       /* PRQA S 0662 # Required R-1.1/1.2 */
+                           (uint32_t) (((iic_b_slave_extended_cfg_t *) p_ctrl->p_cfg->p_extend)->clock_settings. /* PRQA S 0311, 0316, 4391 # Required R-11.8, Advisory R-11.5, Required R-10.8 */
+                                       brl_value <<
+                                       R_RI3C0_STDBR_SBRLO_Pos);
 
     /* 1. ACKCTL: ACKBT should be set to 0 after reset to send out an ACK upon slave address match. */
 
@@ -630,22 +638,23 @@ static void iic_b_open_hw_slave (iic_b_slave_instance_ctrl_t * const p_ctrl)
      *
      * Note 3: RWE bit is dont-care during transmission.
      */
-    p_ctrl->p_reg->SCSTRCTL = (uint32_t) (p_ctrl->p_cfg->clock_stretching_enable << R_RI3C0_SCSTRCTL_RWE_Pos);
+    p_ctrl->p_reg->SCSTRCTL = (uint32_t) ((p_ctrl->p_cfg->clock_stretching_enable) ? /* PRQA S 0662 # Required R-1.1/1.2 */
+                                          ((uint32_t) 1U << R_RI3C0_SCSTRCTL_RWE_Pos) : 0U);
 
     /* Enable status for Timeout Detection, Arbitration Loss, NACK Detection, Transmit End detection.
      * Disable status for Wake-up Condition Detection (Feature not supported by driver),
      * STOP and START condition Detection.
      */
-    p_ctrl->p_reg->BSTE = IIC_B_SLAVE_PRV_BSTE_INIT_MASK;
+    p_ctrl->p_reg->BSTE = IIC_B_SLAVE_PRV_BSTE_INIT_MASK;                            /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Enable status for Transmit Data Buffer Empty and Receive Data Buffer Full */
-    p_ctrl->p_reg->NTSTE = IIC_B_SLAVE_PRV_NTSTE_INIT_MASK;
+    p_ctrl->p_reg->NTSTE = IIC_B_SLAVE_PRV_NTSTE_INIT_MASK;                          /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Enable Interrupts: Transmit Data Buffer Empty and Receive Data Buffer Full */
-    p_ctrl->p_reg->NTIE = IIC_B_SLAVE_PRV_NTIE_INIT_MASK;
+    p_ctrl->p_reg->NTIE = IIC_B_SLAVE_PRV_NTIE_INIT_MASK;                            /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Set BCTL.BUSE to 1: SCL, SDA pins in active state */
-    p_ctrl->p_reg->BCTL = (uint32_t) R_RI3C0_BCTL_BUSE_Msk;
+    p_ctrl->p_reg->BCTL = (uint32_t) R_RI3C0_BCTL_BUSE_Msk;                          /* PRQA S 0662 # Required R-1.1/1.2 */
 }
 
 /*******************************************************************************************************************//**
@@ -662,10 +671,10 @@ static void iic_b_slave_initiate_transaction (iic_b_slave_instance_ctrl_t * p_ct
     /* Enable Interrupts: Timeout Detection, Arbitration Loss, NACK Detection.
      * Disable Interrupt: Transmit End, Start, Stop
      */
-    p_ctrl->p_reg->BIE = IIC_B_SLAVE_PRV_BIE_INIT_MASK;
+    p_ctrl->p_reg->BIE = IIC_B_SLAVE_PRV_BIE_INIT_MASK;   /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Enable Interrupts: Transmit Data Buffer Empty and Receive Data Buffer Full */
-    p_ctrl->p_reg->NTIE = IIC_B_SLAVE_PRV_NTIE_INIT_MASK;
+    p_ctrl->p_reg->NTIE = IIC_B_SLAVE_PRV_NTIE_INIT_MASK; /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Invoke callback for the user to call a valid API. */
     iic_b_slave_callback_request(p_ctrl, slave_event);
@@ -707,7 +716,7 @@ static void iic_b_slave_initiate_transaction (iic_b_slave_instance_ctrl_t * p_ct
              (p_ctrl->p_cfg->addr_mode == I2C_SLAVE_ADDR_MODE_10BIT)))
         {
             /* Clear the Start and Stop condition flag for Slave Read/Write operation */
-            p_ctrl->p_reg->BST &= ((uint32_t) ~(R_RI3C0_BST_STCNDDF_Msk | R_RI3C0_BST_SPCNDDF_Msk));
+            p_ctrl->p_reg->BST &= ((uint32_t) ~(R_RI3C0_BST_STCNDDF_Msk | R_RI3C0_BST_SPCNDDF_Msk)); /* PRQA S 0662 # Required R-1.1/1.2 */
         }
 
         /* Enable the Start and Stop condition detection interrupt */
@@ -715,11 +724,11 @@ static void iic_b_slave_initiate_transaction (iic_b_slave_instance_ctrl_t * p_ct
         /* Enable Interrupts: Timeout Detection, Arbitration Loss, NACK, Start, Stop Detection.
          * Disable Interrupt: Transmit End
          */
-        p_ctrl->p_reg->BSTE = IIC_B_SLAVE_PRV_BSTE_INIT_MASK | R_RI3C0_BIE_STCNDDIE_Msk | R_RI3C0_BIE_SPCNDDIE_Msk;
-        p_ctrl->p_reg->BIE  = IIC_B_SLAVE_PRV_BIE_INIT_MASK | R_RI3C0_BIE_STCNDDIE_Msk | R_RI3C0_BIE_SPCNDDIE_Msk;
+        p_ctrl->p_reg->BSTE = IIC_B_SLAVE_PRV_BSTE_INIT_MASK | R_RI3C0_BIE_STCNDDIE_Msk | R_RI3C0_BIE_SPCNDDIE_Msk; /* PRQA S 0662 # Required R-1.1/1.2 */
+        p_ctrl->p_reg->BIE  = IIC_B_SLAVE_PRV_BIE_INIT_MASK | R_RI3C0_BIE_STCNDDIE_Msk | R_RI3C0_BIE_SPCNDDIE_Msk;  /* PRQA S 0662 # Required R-1.1/1.2 */
 
         /* Enable Interrupts: Transmit Data Buffer Empty and Receive Data Buffer Full */
-        p_ctrl->p_reg->NTIE = IIC_B_SLAVE_PRV_NTIE_INIT_MASK;
+        p_ctrl->p_reg->NTIE = IIC_B_SLAVE_PRV_NTIE_INIT_MASK;                                                       /* PRQA S 0662 # Required R-1.1/1.2 */
     }
 }
 
@@ -730,7 +739,7 @@ static void iic_b_slave_initiate_transaction (iic_b_slave_instance_ctrl_t * p_ct
  * @param[in]     event      Event code
  * @param[in]     transaction_count      Transaction count for iic slave
  **********************************************************************************************************************/
-static void iic_b_slave_call_callback (iic_b_slave_instance_ctrl_t * p_ctrl,
+static void iic_b_slave_call_callback (iic_b_slave_instance_ctrl_t * p_ctrl, /* PRQA S 3673 # Advisory R-8.13 */
                                        i2c_slave_event_t             event,
                                        uint32_t                      transaction_count)
 {
@@ -775,14 +784,14 @@ static void iic_b_slave_call_callback (iic_b_slave_instance_ctrl_t * p_ctrl,
 static void iic_b_rxi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
 {
     /* Perform dummy read after an address match detection. */
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE                                        /* PRQA S 3332 # Required R-20.9 */
     transfer_instance_t const * p_transfer            = p_ctrl->p_cfg->p_transfer_rx;
-    uint32_t volatile const   * p_iic_slave_rx_buffer = &(p_ctrl->p_reg->NTDTBP0);
+    uint32_t volatile const   * p_iic_slave_rx_buffer = &(p_ctrl->p_reg->NTDTBP0); /* PRQA S 0662 # Required R-1.1/1.2 */
 #endif
-    if (!p_ctrl->do_dummy_read)
+    if (false == p_ctrl->do_dummy_read)
     {
         p_ctrl->do_dummy_read = true;
-        volatile uint8_t dummy_read = (uint8_t) (p_ctrl->p_reg->NTDTBP0 & IIC_B_SLAVE_PRV_NTDTBP0_SIZE);
+        volatile uint8_t dummy_read = (uint8_t) (p_ctrl->p_reg->NTDTBP0 & IIC_B_SLAVE_PRV_NTDTBP0_SIZE); /* PRQA S 0662 # Required R-1.1/1.2 */
         FSP_PARAMETER_NOT_USED(dummy_read);
 
         /* The below code enables/services 0 byte writes from Master by enabling stop detection.*/
@@ -796,13 +805,13 @@ static void iic_b_rxi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
          */
         if (p_ctrl->p_cfg->addr_mode == I2C_SLAVE_ADDR_MODE_7BIT)
         {
-            p_ctrl->p_reg->BSTE = IIC_B_SLAVE_PRV_BSTE_INIT_MASK | R_RI3C0_BIE_STCNDDIE_Msk | R_RI3C0_BIE_SPCNDDIE_Msk;
-            p_ctrl->p_reg->BST &= ((uint32_t) ~(R_RI3C0_BST_STCNDDF_Msk | R_RI3C0_BST_SPCNDDF_Msk));
+            p_ctrl->p_reg->BSTE = IIC_B_SLAVE_PRV_BSTE_INIT_MASK | R_RI3C0_BIE_STCNDDIE_Msk | R_RI3C0_BIE_SPCNDDIE_Msk; /* PRQA S 0662 # Required R-1.1/1.2 */
+            p_ctrl->p_reg->BST &= ((uint32_t) ~(R_RI3C0_BST_STCNDDF_Msk | R_RI3C0_BST_SPCNDDF_Msk));                    /* PRQA S 0662 # Required R-1.1/1.2 */
         }
         else
         {
-            p_ctrl->p_reg->BSTE = IIC_B_SLAVE_PRV_BSTE_INIT_MASK | R_RI3C0_BIE_SPCNDDIE_Msk;
-            p_ctrl->p_reg->BST &= ((uint32_t) ~(R_RI3C0_BST_SPCNDDF_Msk));
+            p_ctrl->p_reg->BSTE = IIC_B_SLAVE_PRV_BSTE_INIT_MASK | R_RI3C0_BIE_SPCNDDIE_Msk;                            /* PRQA S 0662 # Required R-1.1/1.2 */
+            p_ctrl->p_reg->BST &= ((uint32_t) ~(R_RI3C0_BST_SPCNDDF_Msk));                                              /* PRQA S 0662 # Required R-1.1/1.2 */
         }
 
         /* Enable the Stop condition detection interrupt.
@@ -815,20 +824,20 @@ static void iic_b_rxi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
          * Enable Interrupts: Start, Stop Detection.
          * Disable Interrupt: Transmit End, Timeout Detection, Arbitration Loss, NACK
          */
-        p_ctrl->p_reg->BIE = R_RI3C0_BIE_STCNDDIE_Msk | R_RI3C0_BIE_SPCNDDIE_Msk;
+        p_ctrl->p_reg->BIE = R_RI3C0_BIE_STCNDDIE_Msk | R_RI3C0_BIE_SPCNDDIE_Msk;                                       /* PRQA S 0662 # Required R-1.1/1.2 */
 
         /* Enable Interrupts: Transmit Data Buffer Empty and Receive Data Buffer Full */
-        p_ctrl->p_reg->NTIE = IIC_B_SLAVE_PRV_NTIE_INIT_MASK;
+        p_ctrl->p_reg->NTIE = IIC_B_SLAVE_PRV_NTIE_INIT_MASK;                                                           /* PRQA S 0662 # Required R-1.1/1.2 */
     }
     else
     {
         /* Check if the read request event has been notified through callback, if not provide the callback */
-        if (!p_ctrl->notify_request)
+        if (false == p_ctrl->notify_request)
         {
             /* Check if this is a General Call by Master */
             i2c_slave_event_t receive_callback_event =
                 (R_RI3C0_SVST_GCAF_Msk ==
-                 (p_ctrl->p_reg->SVST &
+                 (p_ctrl->p_reg->SVST & /* PRQA S 0662 # Required R-1.1/1.2 */
                   R_RI3C0_SVST_GCAF_Msk)) ? I2C_SLAVE_EVENT_GENERAL_CALL : I2C_SLAVE_EVENT_RX_REQUEST;
             iic_b_slave_initiate_transaction(p_ctrl, receive_callback_event);
         }
@@ -843,15 +852,15 @@ static void iic_b_rxi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
              * See Note 1 in Section 27.2.15 'ACKCTL : Acknowledge Control Register'
              * of the RA6T2 manual R01UH0951EJ0050
              */
-            p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk | R_RI3C0_ACKCTL_ACKT_Msk;
+            p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk | R_RI3C0_ACKCTL_ACKT_Msk;     /* PRQA S 0662 # Required R-1.1/1.2 */
         }
         else
         {
-            if (0U == p_ctrl->total)   /* Send NACK */
+            if (0U == p_ctrl->total)                                                         /* Send NACK */
             {
                 /* Slave is sending a NACK. */
                 /* Do dummy read to release SCL */
-                volatile uint32_t dummy_read = p_ctrl->p_reg->NTDTBP0;
+                volatile uint32_t dummy_read = p_ctrl->p_reg->NTDTBP0;                       /* PRQA S 0662 # Required R-1.1/1.2 */
                 FSP_PARAMETER_NOT_USED(dummy_read);
 
                 /* Set the response as NACK, since slave is not setup for reading any data from master at this time.
@@ -862,7 +871,7 @@ static void iic_b_rxi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
                  * See Note 1 in Section 27.2.15 'ACKCTL : Acknowledge Control Register'
                  * of the RA6T2 manual R01UH0951EJ0050
                  */
-                p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk | R_RI3C0_ACKCTL_ACKT_Msk;
+                p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk | R_RI3C0_ACKCTL_ACKT_Msk; /* PRQA S 0662 # Required R-1.1/1.2 */
             }
             /* If master is requesting still more data than configured to be read, notify
              * with a read more event in callback */
@@ -870,7 +879,7 @@ static void iic_b_rxi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
             {
                 iic_b_slave_callback_request(p_ctrl, I2C_SLAVE_EVENT_RX_MORE_REQUEST);
 
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
                 if (NULL != p_ctrl->p_cfg->p_transfer_rx)
                 {
                     p_ctrl->activation_on_rxi = false;
@@ -889,14 +898,14 @@ static void iic_b_rxi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
                 {
                     /* If the user application incorrectly handles Master Write, send a NACK to exit the transaction. */
                     /* Do not dummy read here to allow slave to timeout */
-                    p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk | R_RI3C0_ACKCTL_ACKT_Msk;
+                    p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk | R_RI3C0_ACKCTL_ACKT_Msk;     /* PRQA S 0662 # Required R-1.1/1.2 */
                 }
                 else
                 {
-                    if (0 == p_ctrl->total) /* Send NACK */
+                    if (0U == p_ctrl->total)                                                         /* Send NACK */
                     {
                         /* Do dummy read to release SCL */
-                        volatile uint32_t dummy_read = p_ctrl->p_reg->NTDTBP0;
+                        volatile uint32_t dummy_read = p_ctrl->p_reg->NTDTBP0;                       /* PRQA S 0662 # Required R-1.1/1.2 */
                         FSP_PARAMETER_NOT_USED(dummy_read);
 
                         /* Set the response as NACK, since slave is not setup for
@@ -904,13 +913,14 @@ static void iic_b_rxi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
                          * This is an intentional way to let master know that the slave receiver cannot
                          * accept any more data and hence should eventually result in I2C_SLAVE_EVENT_RX_COMPLETE.
                          */
-                        p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk | R_RI3C0_ACKCTL_ACKT_Msk;
+                        p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk | R_RI3C0_ACKCTL_ACKT_Msk; /* PRQA S 0662 # Required R-1.1/1.2 */
                     }
                     else
                     {
                         /* Read data */
-                        p_ctrl->p_buff[p_ctrl->loaded++] =
-                            (uint8_t) (p_ctrl->p_reg->NTDTBP0 & IIC_B_SLAVE_PRV_NTDTBP0_SIZE);
+                        p_ctrl->p_buff[p_ctrl->loaded++] =                                     /* PRQA S 0488, 3387, 3440 # Array bounds guaranteed by loaded index management; Advisory R-13.3, Advisory R-13.3 */
+                                                           (uint8_t) (p_ctrl->p_reg->NTDTBP0 & /* PRQA S 0662 # Required R-1.1/1.2 */
+                                                                      IIC_B_SLAVE_PRV_NTDTBP0_SIZE);
 
                         /* Keep track of the the actual number of transactions */
                         p_ctrl->transaction_count++;
@@ -919,30 +929,30 @@ static void iic_b_rxi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
             }
             else
             {
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
                 if ((p_ctrl->activation_on_rxi == true) && (NULL != p_transfer))
                 {
                     /* Read data */
-                    if (p_ctrl->loaded == 0)
+                    if (0U == p_ctrl->loaded)
                     {
                         if ((p_ctrl->direction == IIC_B_SLAVE_TRANSFER_DIR_MASTER_WRITE_SLAVE_READ))
                         {
                             R_BSP_IrqDisable(p_ctrl->p_cfg->rxi_irq);
                             p_ctrl->p_cfg->p_transfer_rx->p_api->reset(p_ctrl->p_cfg->p_transfer_rx->p_ctrl,
-                                                                       (uint8_t *) (p_iic_slave_rx_buffer),
-                                                                       (void *) (&p_ctrl->p_buff[p_ctrl->loaded + 1]),
+                                                                       (uint8_t *) (p_iic_slave_rx_buffer),            /* PRQA S 0311, 0312 # Required R-11.8, Required R-11.8 */
+                                                                       (void *) (&p_ctrl->p_buff[p_ctrl->loaded + 1]), /* PRQA S 1840 # Required R-10.4 */
                                                                        (uint16_t) (p_ctrl->total - 1U));
                         }
 
-                        p_ctrl->p_buff[p_ctrl->loaded++] = (uint8_t) p_ctrl->p_reg->NTDTBP0;
+                        p_ctrl->p_buff[p_ctrl->loaded++] = (uint8_t) p_ctrl->p_reg->NTDTBP0;                           /* PRQA S 0488, 0662, 3387, 3440 # Array bounds guaranteed by loaded index management; Required R-1.1/1.2, Advisory R-13.3, Advisory R-13.3 */
                         p_ctrl->transaction_count++;
                         p_ctrl->remain--;
                     }
                     else
                     {
-                        p_ctrl->loaded            += p_ctrl->total - 1;
-                        p_ctrl->transaction_count += p_ctrl->total - 1;
-                        p_ctrl->remain            -= p_ctrl->total - 1;
+                        p_ctrl->loaded            += p_ctrl->total - 1U;
+                        p_ctrl->transaction_count += p_ctrl->total - 1U;
+                        p_ctrl->remain            -= p_ctrl->total - 1U;
                     }
 
                     if (p_ctrl->total == p_ctrl->loaded)
@@ -967,8 +977,9 @@ static void iic_b_rxi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
 #endif
                 {
                     /* Read data */
-                    p_ctrl->p_buff[p_ctrl->loaded++] =
-                        (uint8_t) (p_ctrl->p_reg->NTDTBP0 & IIC_B_SLAVE_PRV_NTDTBP0_SIZE);
+                    p_ctrl->p_buff[p_ctrl->loaded++] =                                     /* PRQA S 0488, 3387, 3440 # Array bounds guaranteed by loaded index management; Advisory R-13.3, Advisory R-13.3 */
+                                                       (uint8_t) (p_ctrl->p_reg->NTDTBP0 & /* PRQA S 0662 # Required R-1.1/1.2 */
+                                                                  IIC_B_SLAVE_PRV_NTDTBP0_SIZE);
 
                     /* Keep track of the the actual number of transactions */
                     p_ctrl->transaction_count++;
@@ -978,7 +989,7 @@ static void iic_b_rxi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
     }
 }
 
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
 
 /*******************************************************************************************************************//**
  * Configures IIC related transfer drivers (if enabled).
@@ -1022,7 +1033,7 @@ static fsp_err_t iic_b_slave_transfer_open (iic_b_slave_instance_ctrl_t * const 
 }
 
 #endif
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE                                                  /* PRQA S 3332 # Required R-20.9 */
 
 /*******************************************************************************************************************//**
  * Configures  IIC TX/RX related transfer.
@@ -1032,11 +1043,11 @@ static fsp_err_t iic_b_slave_transfer_open (iic_b_slave_instance_ctrl_t * const 
  * @retval        FSP_SUCCESS                Transfer interface is configured with valid parameters.
  * @retval        FSP_ERR_ASSERTION          Pointer to transfer instance for I2C receive in p_cfg is NULL.
  **********************************************************************************************************************/
-static fsp_err_t iic_b_slave_transfer_configure (iic_b_slave_instance_ctrl_t * const p_ctrl,
+static fsp_err_t iic_b_slave_transfer_configure (iic_b_slave_instance_ctrl_t * const p_ctrl, /* PRQA S 3673 # Advisory R-8.13 */
                                                  transfer_instance_t const         * p_transfer,
                                                  iic_b_slave_transfer_dir_t          direction)
 {
-    fsp_err_t err;
+    fsp_err_t err = FSP_SUCCESS;
 
     if (IIC_B_SLAVE_TRANSFER_DIR_MASTER_WRITE_SLAVE_READ == direction)
     {
@@ -1044,8 +1055,8 @@ static fsp_err_t iic_b_slave_transfer_configure (iic_b_slave_instance_ctrl_t * c
         FSP_ERROR_RETURN((FSP_SUCCESS == err), err);
 
         err = p_transfer->p_api->callbackSet(p_transfer->p_ctrl,
-                                             iic_b_slave_rxi_transfer_callback,
-                                             (void *) &p_ctrl->p_cfg->rxi_irq,
+                                             iic_b_slave_rxi_transfer_callback, /* PRQA S 3635 # Advisory R-17.12 */
+                                             (void *) &p_ctrl->p_cfg->rxi_irq,  /* PRQA S 0306, 0311 # FSP framework requires void pointers for callback context; Required R-11.8 */
                                              NULL);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
     }
@@ -1055,8 +1066,8 @@ static fsp_err_t iic_b_slave_transfer_configure (iic_b_slave_instance_ctrl_t * c
         FSP_ERROR_RETURN((FSP_SUCCESS == err), err);
 
         err = p_transfer->p_api->callbackSet(p_transfer->p_ctrl,
-                                             iic_b_slave_txi_transfer_callback,
-                                             (void *) &p_ctrl->p_cfg->txi_irq,
+                                             iic_b_slave_txi_transfer_callback, /* PRQA S 3635 # Advisory R-17.12 */
+                                             (void *) &p_ctrl->p_cfg->txi_irq,  /* PRQA S 0306, 0311 # FSP framework requires void pointers for callback context; Required R-11.8 */
                                              NULL);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
     }
@@ -1101,20 +1112,20 @@ static void iic_b_txi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
             R_BSP_IrqStatusClear(p_ctrl->p_cfg->tei_irq);
 
             /* Enable the TEI interrupt source */
-            p_ctrl->p_reg->BIE_b.TENDIE = 1U;
+            p_ctrl->p_reg->BIE_b.TENDIE = 1U; /* PRQA S 0662 # Required R-1.1/1.2 */
         }
         else
         {
             /* Write the data byte, this will also release SCL */
 
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE                                                    /* PRQA S 3332 # Required R-20.9 */
             if ((NULL != p_ctrl->p_cfg->p_transfer_tx) && (p_ctrl->activation_on_txi == true))
             {
                 /* transfer API Transmit */
-                uint32_t volatile const * p_iic_b_slave_tx_buffer = &(p_ctrl->p_reg->NTDTBP0);
+                uint32_t volatile const * p_iic_b_slave_tx_buffer = &(p_ctrl->p_reg->NTDTBP0); /* PRQA S 0662 # Required R-1.1/1.2 */
 
                 /* Write data */
-                if (p_ctrl->loaded == 0)
+                if (0U == p_ctrl->loaded)
                 {
                     if ((p_ctrl->loaded < p_ctrl->total) &&
                         (p_ctrl->direction == IIC_B_SLAVE_TRANSFER_DIR_MASTER_READ_SLAVE_WRITE))
@@ -1123,20 +1134,20 @@ static void iic_b_txi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
                         R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
 
                         p_ctrl->p_cfg->p_transfer_tx->p_api->reset(p_ctrl->p_cfg->p_transfer_tx->p_ctrl,
-                                                                   (void *) (p_ctrl->p_buff + 1),
-                                                                   (uint8_t *) (p_iic_b_slave_tx_buffer),
-                                                                   (uint16_t) (p_ctrl->total - 1));
+                                                                   (void *) (p_ctrl->p_buff + 1),         /* PRQA S 0489 # Advisory R-18.4 */
+                                                                   (uint8_t *) (p_iic_b_slave_tx_buffer), /* PRQA S 0311, 0312 # Required R-11.8, Required R-11.8 */
+                                                                   (uint16_t) (p_ctrl->total - 1));       /* PRQA S 1840 # Required R-10.4 */
                     }
 
-                    p_ctrl->p_reg->NTDTBP0 = p_ctrl->p_buff[p_ctrl->loaded++];
+                    p_ctrl->p_reg->NTDTBP0 = p_ctrl->p_buff[p_ctrl->loaded++];                            /* PRQA S 0488, 0662, 3387, 3440 # Array bounds guaranteed by loaded index management; Required R-1.1/1.2, Advisory R-13.3, Advisory R-13.3 */
                     p_ctrl->transaction_count++;
                     p_ctrl->remain--;
                 }
                 else
                 {
-                    p_ctrl->loaded            += p_ctrl->total - 1;
-                    p_ctrl->transaction_count += p_ctrl->total - 1;
-                    p_ctrl->remain             = 0;
+                    p_ctrl->loaded            += p_ctrl->total - 1U;
+                    p_ctrl->transaction_count += p_ctrl->total - 1U;
+                    p_ctrl->remain             = 0U;
                 }
 
                 if (p_ctrl->total == p_ctrl->loaded)
@@ -1155,9 +1166,9 @@ static void iic_b_txi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
                     }
                 }
 
-                if (p_ctrl->loaded == 0)
+                if (0U == p_ctrl->loaded)
                 {
-                    p_ctrl->p_reg->NTDTBP0 = p_ctrl->p_buff[p_ctrl->loaded];
+                    p_ctrl->p_reg->NTDTBP0 = p_ctrl->p_buff[p_ctrl->loaded]; /* PRQA S 0488, 0662 # Array bounds guaranteed by loaded index management; Required R-1.1/1.2 */
                     p_ctrl->loaded++;
                     p_ctrl->remain--;
 
@@ -1168,7 +1179,7 @@ static void iic_b_txi_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
             else
 #endif
             {
-                p_ctrl->p_reg->NTDTBP0 = (uint32_t) p_ctrl->p_buff[p_ctrl->loaded];
+                p_ctrl->p_reg->NTDTBP0 = (uint32_t) p_ctrl->p_buff[p_ctrl->loaded]; /* PRQA S 0488, 0662 # Array bounds guaranteed by loaded index management; Required R-1.1/1.2 */
                 p_ctrl->loaded++;
 
                 /* Keep track of the the actual number of transactions */
@@ -1187,7 +1198,7 @@ static void iic_b_tei_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
 {
     uint32_t timeout_count = IIC_B_SLAVE_PERIPHERAL_REG_MAX_WAIT;
 
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
     if (NULL != p_ctrl->p_cfg->p_transfer_rx)
     {
         p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->number_transfer = 1U;
@@ -1216,7 +1227,7 @@ static void iic_b_tei_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
 #endif
 
     /* Check if ACK has been detected from master expecting further data */
-    if (0 == p_ctrl->p_reg->ACKCTL_b.ACKR)
+    if (0U == (uint32_t) p_ctrl->p_reg->ACKCTL_b.ACKR) /* PRQA S 0662 # Required R-1.1/1.2 */
     {
         iic_b_slave_callback_request(p_ctrl, I2C_SLAVE_EVENT_TX_MORE_REQUEST);
 
@@ -1228,25 +1239,25 @@ static void iic_b_tei_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
         }
         else
         {
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
             if (NULL != p_ctrl->p_cfg->p_transfer_tx)
             {
                 p_ctrl->activation_on_txi = false;
             }
 #endif
 
-            p_ctrl->p_reg->NTDTBP0 = (uint32_t) p_ctrl->p_buff[p_ctrl->loaded];
+            p_ctrl->p_reg->NTDTBP0 = (uint32_t) p_ctrl->p_buff[p_ctrl->loaded]; /* PRQA S 0488, 0662 # Array bounds guaranteed by loaded index management; Required R-1.1/1.2 */
             p_ctrl->loaded++;
             p_ctrl->transaction_count++;
         }
     }
 
     /* Disable the interrupt as finish the transfer */
-    p_ctrl->p_reg->BIE_b.TENDIE = 0U;
+    p_ctrl->p_reg->BIE_b.TENDIE = 0U;                                                   /* PRQA S 0662 # Required R-1.1/1.2 */
 
     /* Wait for the value to reflect at the peripheral.
      * See 'Note' under Table 1.138 "Interrupt sources" of the RA2E2 manual: I2C I3C unified IP (R-I3C v2) */
-    IIC_B_SLAVE_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->BIE_b.TENDIE, 0U, timeout_count);
+    IIC_B_SLAVE_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->BIE_b.TENDIE, 0U, timeout_count); /* PRQA S 0662, 3344 # Required R-1.1/1.2, Required R-14.4 */
 }
 
 /******************************************************************************************************************//**
@@ -1256,15 +1267,15 @@ static void iic_b_tei_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
  *********************************************************************************************************************/
 static void iic_b_err_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
 {
-    uint32_t error_events = IIC_B_SLAVE_PRV_BST_ERR_STATUS_MASK & p_ctrl->p_reg->BST;
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+    uint32_t error_events = IIC_B_SLAVE_PRV_BST_ERR_STATUS_MASK & p_ctrl->p_reg->BST; /* PRQA S 0662 # Required R-1.1/1.2 */
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE                                           /* PRQA S 3332 # Required R-20.9 */
     transfer_properties_t get_info;
 #endif
 
     /* Timeout or Arbitration loss detected */
-    if ((error_events & R_RI3C0_BST_TODF_Msk) || (error_events & R_RI3C0_BST_ALF_Msk))
+    if (((error_events & R_RI3C0_BST_TODF_Msk) != 0U) || ((error_events & R_RI3C0_BST_ALF_Msk) != 0U))
     {
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
         if (NULL != p_ctrl->p_cfg->p_transfer_rx)
         {
             p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->number_transfer = 1U;
@@ -1298,7 +1309,7 @@ static void iic_b_err_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
     /* Stop or restart condition detected, a valid end of transaction.
      * Ensure callback is not fired for 10-bit Master-Read Slave-Write
      * transactions at the time of restart during address transmission. */
-    else if ((error_events & R_RI3C0_BST_STCNDDF_Msk) || (error_events & R_RI3C0_BST_SPCNDDF_Msk))
+    else if (((error_events & R_RI3C0_BST_STCNDDF_Msk) != 0U) || ((error_events & R_RI3C0_BST_SPCNDDF_Msk) != 0U))
     {
         i2c_slave_event_t i2c_event = I2C_SLAVE_EVENT_ABORTED;
 
@@ -1309,11 +1320,11 @@ static void iic_b_err_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
         if (IIC_B_SLAVE_TRANSFER_DIR_MASTER_WRITE_SLAVE_READ == p_ctrl->direction)
         {
             i2c_event = I2C_SLAVE_EVENT_RX_COMPLETE;
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
             if ((NULL != p_ctrl->p_cfg->p_transfer_rx) && (true == p_ctrl->activation_on_rxi))
             {
                 p_ctrl->p_cfg->p_transfer_rx->p_api->infoGet(p_ctrl->p_cfg->p_transfer_rx->p_ctrl, &get_info);
-                p_ctrl->transaction_count += p_ctrl->total - 1 - get_info.transfer_length_remaining;
+                p_ctrl->transaction_count += p_ctrl->total - 1U - get_info.transfer_length_remaining;
             }
 #endif
 
@@ -1321,7 +1332,7 @@ static void iic_b_err_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
              * This is to fix the issue that after sending NACK, slave application won't be able to get any events until call read API again.
              * It is preferred to clear NACK bit in the driver to allow more granular ACK control from the slave side.
              */
-            p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk;
+            p_ctrl->p_reg->ACKCTL = R_RI3C0_ACKCTL_ACKTWP_Msk; /* PRQA S 0662, 1257 # Required R-1.1/1.2, Required R-10.3 */
         }
         else
         {
@@ -1331,18 +1342,18 @@ static void iic_b_err_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
              * Addresses the exception raised from double buffer hardware implementation */
             if (p_ctrl->total > p_ctrl->loaded)
             {
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
                 if ((NULL != p_ctrl->p_cfg->p_transfer_tx) && (p_ctrl->activation_on_txi == true))
                 {
                     p_ctrl->p_cfg->p_transfer_tx->p_api->infoGet(p_ctrl->p_cfg->p_transfer_tx->p_ctrl, &get_info);
-                    p_ctrl->transaction_count += get_info.transfer_length_remaining + 1;
+                    p_ctrl->transaction_count += get_info.transfer_length_remaining + 1U;
                 }
 #endif
                 p_ctrl->transaction_count -= 1U;
             }
         }
 
-#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE
+#if IIC_B_SLAVE_CFG_TRANSFER_SUPPORT_ENABLE /* PRQA S 3332 # Required R-20.9 */
         if (NULL != p_ctrl->p_cfg->p_transfer_rx)
         {
             p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->number_transfer = 1U;
@@ -1372,19 +1383,19 @@ static void iic_b_err_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
         iic_b_slave_notify(p_ctrl, i2c_event);
     }
     /* NACK detected */
-    else if (error_events & R_RI3C0_BST_NACKDF_Msk)
+    else if ((error_events & R_RI3C0_BST_NACKDF_Msk) != 0U)
     {
         /* NACK interrupt will be triggered on MasterReadSlaveWrite operation.
          * Do dummy read to release SCL
          * Refer Section "3.4.4 Slave Mode Communication Flow" of the U2Cx manual
          */
-        volatile uint32_t dummy_read = p_ctrl->p_reg->NTDTBP0;
+        volatile uint32_t dummy_read = p_ctrl->p_reg->NTDTBP0;     /* PRQA S 0662 # Required R-1.1/1.2 */
         FSP_PARAMETER_NOT_USED(dummy_read);
 
         /* Disable NACK interrupt, this is required since clearing NACK flag only on detection of STOP bit or
          * when a timeout occurs. Not clearing the flag will cause error interrupt to get triggered again.
          */
-        p_ctrl->p_reg->BIE &= (uint32_t) ~R_RI3C0_BIE_NACKDIE_Msk;
+        p_ctrl->p_reg->BIE &= (uint32_t) ~R_RI3C0_BIE_NACKDIE_Msk; /* PRQA S 0662 # Required R-1.1/1.2 */
     }
     else
     {
@@ -1402,7 +1413,7 @@ static void iic_b_err_slave (iic_b_slave_instance_ctrl_t * p_ctrl)
  * This function implements the IIC Receive buffer full ISR routine.
  *
  *********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_rxi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_rxi_isr (void) /* PRQA S 1503 # Required R-2.1 */
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
@@ -1410,7 +1421,7 @@ BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_rxi_isr (void)
     R_BSP_IrqStatusClear(R_FSP_CurrentIrqGet());
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
 
     iic_b_rxi_slave(p_ctrl);
 
@@ -1424,7 +1435,7 @@ BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_rxi_isr (void)
  * This function implements the Transmit buffer empty ISR routine.
  *
  *********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_txi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_txi_isr (void) /* PRQA S 1503 # Required R-2.1 */
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
@@ -1432,7 +1443,7 @@ BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_txi_isr (void)
     R_BSP_IrqStatusClear(R_FSP_CurrentIrqGet());
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
 
     iic_b_txi_slave(p_ctrl);
 
@@ -1446,13 +1457,13 @@ BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_txi_isr (void)
  * This function implements the IIC Transmission End ISR routine.
  *
  ***********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_tei_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_tei_isr (void) /* PRQA S 1503 # Required R-2.1 */
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
 
     iic_b_tei_slave(p_ctrl);
 
@@ -1469,13 +1480,13 @@ BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_tei_isr (void)
  * This function implements the IIC Event/Error.
  *
  *********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_eri_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_b_slave_eri_isr (void) /* PRQA S 1503 # Required R-2.1 */
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
-    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    iic_b_slave_instance_ctrl_t * p_ctrl = (iic_b_slave_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
 
     iic_b_err_slave(p_ctrl);
 

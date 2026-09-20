@@ -9,21 +9,15 @@
  ***********************************************************************************************************************/
 
 /* Access to peripherals and board defines. */
-#include "bsp_api.h"
+#include "bsp_api.h"                      /* PRQA S 0380 # DP_MSR_D-1.1-C99_UC1 & DP_MSR_D-1.1-C11_UC1 */
 #include "r_ether_phy.h"
 
-#if (ETHER_PHY_CFG_TARGET_88E1112_ENABLE)
+#if (ETHER_PHY_CFG_TARGET_88E1112_ENABLE) /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
 
 /***********************************************************************************************************************
  * Macro definitions
  ***********************************************************************************************************************/
  #define ETH_PHY_88E1112_TIMEOUT                                                         (5000U)
-
- #if ((BSP_MCU_R7F702301x) || (BSP_MCU_R7F702302x))
-  #define ETH_PHY_88E1112_HARD_RESET_PIN                                                 BSP_IO_PORT_AP00_PIN_8
- #else
-  #define ETH_PHY_88E1112_HARD_RESET_PIN                                                 BSP_IO_PORT_P09_PIN_0
- #endif
 
  #define ETH_REG0_CONTROL_REGISTER                                                       (0U)
  #define ETH_REG0_CONTROL_REGISTER_AUTONEGO_EN                                           (1 << 12)
@@ -80,40 +74,20 @@ bool ether_phy_target_88e1112_is_support_link_partner_ability(ether_phy_instance
  * Functions
  **********************************************************************************************************************/
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /***********************************************************************************************************************
  * Function Name             ether_phy_target_88e1112_initialize
  * Description               Initialize physical init
  * @param[in] p_ctrl         Pointer to the control block for the channel
  ***********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 void ether_phy_target_88e1112_initialize (ether_phy_instance_ctrl_t * p_instance_ctrl)
 {
     uint32_t phy_sts = 0;
     uint32_t count   = 0;
     uint32_t reg_val = 0;
-
-    /*======================================================*/
-    /* RESET of Ether PHY asserted and de-asserted to reset */
-    /*======================================================*/
-
-    R_BSP_PinAccessEnable();
-    R_BSP_PortWriteEnable((bsp_io_port_t) ETH_PHY_88E1112_HARD_RESET_PIN);
-
- #if ((BSP_MCU_R7F702301x) || (BSP_MCU_R7F702302x))
-
-    /* RESET de-asserted (Normal mode) via ETH1RESET */
-    R_BSP_PinWrite(ETH_PHY_88E1112_HARD_RESET_PIN, BSP_IO_LEVEL_LOW);
-    R_BSP_PinWrite(ETH_PHY_88E1112_HARD_RESET_PIN, BSP_IO_LEVEL_HIGH);
- #else
-
-    /* RESET de-asserted (Normal mode) via ETH1RESET(P9_0=LO) */
-    R_BSP_PinWrite(ETH_PHY_88E1112_HARD_RESET_PIN, BSP_IO_LEVEL_LOW);
- #endif
-
-    /* Wait for TRESET(Minimum reset pulse width during normal operation: 10ms) */
-    R_BSP_SoftwareDelay(10, BSP_DELAY_UNITS_MICROSECONDS);
-
-    R_BSP_PortWriteDisable((bsp_io_port_t) ETH_PHY_88E1112_HARD_RESET_PIN);
-    R_BSP_PinAccessDisable();
 
     /* Release power down mode of PHY */
     R_ETHER_PHY_Write(p_instance_ctrl, ETH_REG22_PAGE_ADDRESS, ETH_REG22_PAGE_ADDRESS_COPPER);

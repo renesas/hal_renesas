@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes
  **********************************************************************************************************************/
-#include "r_iic_master.h"
+#include "r_iic_master.h"              /* PRQA S 0380 # Required R-1.1-C99 */
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -21,19 +21,19 @@
 #define I2C_CODE_READ                               (0x01U)
 #define IIC_MASTER_BUS_MODE_REGISTER_2_MASK         (0x04U)
 #define IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK       (0xB3U)
-#define IIC_MASTER_ICCR2_ST_BIT_MASK                (0x02)
+#define IIC_MASTER_ICCR2_ST_BIT_MASK                (0x02U)
 #define IIC_MASTER_BUS_MODE_REGISTER_1_MASK         (0x08U)
 #define IIC_MASTER_INTERNAL_REF_CLOCK_SELECT_MAX    (0x07U)
-#define IIC_MASTER_ICCR2_RS_BIT_MASK                (0x04)
-#define IIC_MASTER_ICCR2_SP_BIT_MASK                (0x08)
-#define IIC_MASTER_ICCFER_FMPE_BIT_MASK             (0x80)
-#define IIC_MASTER_TRANSFER_RESET_SRC_DEST_NUM      (1U)
+#define IIC_MASTER_ICCR2_RS_BIT_MASK                (0x04U)
+#define IIC_MASTER_ICCR2_SP_BIT_MASK                (0x08U)
+#define IIC_MASTER_ICCFER_FMPE_BIT_MASK             (0x80U) /* PRQA S 1534 # Advisory R-2.5 */
+#define IIC_MASTER_TRANSFER_RESET_SRC_DEST_NUM      (1U)    /* PRQA S 1534 # Advisory R-2.5 */
 
 /* Bit position for STOP condition flag in ICSR2 */
 #define IIC_MASTER_ICSR2_STOP_BIT                   (0x08U)
 
 #define IIC_MASTER_HARDWARE_REGISTER_WAIT(reg, required_value, timeout) \
-    while ((timeout))                                                   \
+    while ((timeout > 0U))                                              \
     {                                                                   \
         if ((required_value) == (reg))                                  \
         {                                                               \
@@ -47,7 +47,7 @@
 /**********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
-typedef enum e_iic_master_transfer_dir_option
+typedef enum e_iic_master_transfer_dir_option /* PRQA S 3213, 1536 # Advisory R-2.4, Advisory R-2.4 */
 {
     IIC_MASTER_TRANSFER_DIR_WRITE = 0x0,
     IIC_MASTER_TRANSFER_DIR_READ  = 0x1
@@ -56,17 +56,17 @@ typedef enum e_iic_master_transfer_dir_option
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
+#if IIC_MASTER_CFG_TRANSFER_ENABLE     /* PRQA S 3332 # Required R-20.9 */
 void             iic_master_txi_transfer_callback(transfer_callback_args_t * p_args);
 void             iic_master_rxi_transfer_callback(transfer_callback_args_t * p_args);
 static fsp_err_t iic_master_transfer_open(iic_master_instance_ctrl_t * const p_ctrl,
                                           i2c_master_cfg_t const * const     p_cfg);
 
 #endif
-BSP_INTERRUPT_ATTRIBUTE void iic_master_rxi_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void iic_master_txi_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void iic_master_tei_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void iic_master_eri_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void iic_master_rxi_isr(void); /* PRQA S 3449, 3451 # Required R-8.5, Required R-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void iic_master_txi_isr(void); /* PRQA S 3449, 3451 # Required R-8.5, Required R-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void iic_master_tei_isr(void); /* PRQA S 3449, 3451 # Required R-8.5, Required R-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void iic_master_eri_isr(void); /* PRQA S 3449, 3451 # Required R-8.5, Required R-8.5 */
 void                         iic_interrupt_handling_master(IRQn_Type const irq);
 
 /* Interrupt handlers */
@@ -104,22 +104,26 @@ static void      iic_master_txi_send_address(iic_master_instance_ctrl_t * const 
  **********************************************************************************************************************/
 
 /* IIC Implementation of I2C device master interface */
-i2c_master_api_t const g_i2c_master_on_iic =
+i2c_master_api_t const g_i2c_master_on_iic =         /* PRQA S 1502 # Advisory R-2.8 */
 {
-    .open            = R_IIC_MASTER_Open,
-    .read            = R_IIC_MASTER_Read,
-    .close           = R_IIC_MASTER_Close,
-    .abort           = R_IIC_MASTER_Abort,
-    .slaveAddressSet = R_IIC_MASTER_SlaveAddressSet,
-    .write           = R_IIC_MASTER_Write,
-    .statusGet       = R_IIC_MASTER_StatusGet,
-    .callbackSet     = R_IIC_MASTER_CallbackSet
+    .open            = R_IIC_MASTER_Open,            /* PRQA S 3635 # Advisory R-17.12 */
+    .read            = R_IIC_MASTER_Read,            /* PRQA S 3635 # Advisory R-17.12 */
+    .close           = R_IIC_MASTER_Close,           /* PRQA S 3635 # Advisory R-17.12 */
+    .abort           = R_IIC_MASTER_Abort,           /* PRQA S 3635 # Advisory R-17.12 */
+    .slaveAddressSet = R_IIC_MASTER_SlaveAddressSet, /* PRQA S 3635 # Advisory R-17.12 */
+    .write           = R_IIC_MASTER_Write,           /* PRQA S 3635 # Advisory R-17.12 */
+    .statusGet       = R_IIC_MASTER_StatusGet,       /* PRQA S 3635 # Advisory R-17.12 */
+    .callbackSet     = R_IIC_MASTER_CallbackSet      /* PRQA S 3635 # Advisory R-17.12 */
 };
+
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
 
 /*******************************************************************************************************************//**
  * @addtogroup IIC_MASTER
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /***********************************************************************************************************************
  * Functions
@@ -138,26 +142,27 @@ i2c_master_api_t const g_i2c_master_on_iic =
  *                                            4. Set the rate to fast mode plus on a channel which does not support it.
  *                                            5. Invalid IRQ number assigned
  **********************************************************************************************************************/
-fsp_err_t R_IIC_MASTER_Open (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_cfg_t const * const p_cfg)
+fsp_err_t R_IIC_MASTER_Open (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_cfg_t const * const p_cfg) /* PRQA S 1505 # Advisory R-8.7 */
 {
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl;
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl;                     /* PRQA S 0316 # Advisory R-11.5 */
 
 #if IIC_MASTER_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(p_api_ctrl != NULL);
     FSP_ASSERT(p_cfg != NULL);
     FSP_ASSERT(p_cfg->p_extend != NULL);
-    FSP_ASSERT((p_cfg->rxi_irq >= (IRQn_Type) 0) && (FSP_INVALID_VECTOR != p_cfg->rxi_irq));
-    FSP_ASSERT((p_cfg->txi_irq >= (IRQn_Type) 0) && (FSP_INVALID_VECTOR != p_cfg->txi_irq));
-    FSP_ASSERT((p_cfg->tei_irq >= (IRQn_Type) 0) && (FSP_INVALID_VECTOR != p_cfg->tei_irq));
-    FSP_ASSERT((p_cfg->eri_irq >= (IRQn_Type) 0) && (FSP_INVALID_VECTOR != p_cfg->eri_irq));
+    FSP_ASSERT((p_cfg->rxi_irq >= (IRQn_Type) 0) && (FSP_INVALID_VECTOR != p_cfg->rxi_irq)); /* PRQA S 4332 # Advisory R-10.5 */
+    FSP_ASSERT((p_cfg->txi_irq >= (IRQn_Type) 0) && (FSP_INVALID_VECTOR != p_cfg->txi_irq)); /* PRQA S 4332 # Advisory R-10.5 */
+    FSP_ASSERT((p_cfg->tei_irq >= (IRQn_Type) 0) && (FSP_INVALID_VECTOR != p_cfg->tei_irq)); /* PRQA S 4332 # Advisory R-10.5 */
+    FSP_ASSERT((p_cfg->eri_irq >= (IRQn_Type) 0) && (FSP_INVALID_VECTOR != p_cfg->eri_irq)); /* PRQA S 4332 # Advisory R-10.5 */
     FSP_ERROR_RETURN(IIC_MASTER_OPEN != p_ctrl->open, FSP_ERR_ALREADY_OPEN);
 
-    FSP_ERROR_RETURN(BSP_FEATURE_IIC_VALID_CHANNEL_MASK & (1 << p_cfg->channel), FSP_ERR_IP_CHANNEL_NOT_PRESENT);
+    FSP_ERROR_RETURN(((BSP_FEATURE_IIC_VALID_CHANNEL_MASK & (1UL << (uint32_t) p_cfg->channel)) != 0UL),
+                     FSP_ERR_IP_CHANNEL_NOT_PRESENT);
 #endif
 
     /* Save register base address. */
     p_ctrl->p_reg =
-        (R_RIIC0_Type *) ((uintptr_t) R_RIIC0 + (p_cfg->channel * ((uintptr_t) R_RIIC1 - (uintptr_t) R_RIIC0)));
+        (R_RIIC0_Type *) ((uintptr_t) R_RIIC0 + (p_cfg->channel * ((uintptr_t) R_RIIC1 - (uintptr_t) R_RIIC0))); /* PRQA S 0306 # Advisory R-11.4 */
 
     /* Record the pointer to the configuration structure for later use */
     p_ctrl->p_cfg             = p_cfg;
@@ -167,12 +172,9 @@ fsp_err_t R_IIC_MASTER_Open (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_cf
     p_ctrl->p_context         = p_cfg->p_context;
     p_ctrl->p_callback_memory = NULL;
 
-    // R_BSP_MODULE_START(FSP_IP_IIC, p_cfg->channel);
-
     /* Open the hardware in master mode. */
     iic_master_open_hw_master(p_ctrl, p_cfg);
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
-
+#if IIC_MASTER_CFG_TRANSFER_ENABLE     /* PRQA S 3332 # Required R-20.9 */
     /* Open the IIC transfer interface if available */
     fsp_err_t err = iic_master_transfer_open(p_ctrl, p_cfg);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
@@ -200,7 +202,7 @@ fsp_err_t R_IIC_MASTER_Open (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_cf
  * @retval  FSP_ERR_IN_USE        Bus busy condition. Another transfer was in progress.
  * @retval  FSP_ERR_NOT_OPEN      Handle is not initialized.  Call R_IIC_MASTER_Open to initialize the control block.
  **********************************************************************************************************************/
-fsp_err_t R_IIC_MASTER_Write (i2c_master_ctrl_t * const p_api_ctrl,
+fsp_err_t R_IIC_MASTER_Write (i2c_master_ctrl_t * const p_api_ctrl, /* PRQA S 1505 # Advisory R-8.7 */
                               uint8_t * const           p_src,
                               uint32_t const            bytes,
                               bool const                restart)
@@ -212,7 +214,7 @@ fsp_err_t R_IIC_MASTER_Write (i2c_master_ctrl_t * const p_api_ctrl,
 
     /* Record the restart information about this transfer.
      * This is done here to keep the parameter (argument) list of iic_master_read_write to 4. */
-    ((iic_master_instance_ctrl_t *) p_api_ctrl)->restart = restart;
+    ((iic_master_instance_ctrl_t *) p_api_ctrl)->restart = restart; /* PRQA S 0316 # Advisory R-11.5 */
 
     /* Call the common helper function to perform I2C Write operation.*/
     err = iic_master_read_write(p_api_ctrl, p_src, bytes, IIC_MASTER_TRANSFER_DIR_WRITE);
@@ -230,7 +232,7 @@ fsp_err_t R_IIC_MASTER_Write (i2c_master_ctrl_t * const p_api_ctrl,
  * @retval  FSP_ERR_IN_USE          Bus busy condition. Another transfer was in progress.
  * @retval  FSP_ERR_NOT_OPEN        Handle is not initialized.  Call R_IIC_MASTER_Open to initialize the control block.
  **********************************************************************************************************************/
-fsp_err_t R_IIC_MASTER_Read (i2c_master_ctrl_t * const p_api_ctrl,
+fsp_err_t R_IIC_MASTER_Read (i2c_master_ctrl_t * const p_api_ctrl, /* PRQA S 1505 # Advisory R-8.7 */
                              uint8_t * const           p_dest,
                              uint32_t const            bytes,
                              bool const                restart)
@@ -243,7 +245,7 @@ fsp_err_t R_IIC_MASTER_Read (i2c_master_ctrl_t * const p_api_ctrl,
 
     /* Record the restart information about this transfer.
      * This is done here to keep the parameter (argument) list of iic_master_read_write to 4. */
-    ((iic_master_instance_ctrl_t *) p_api_ctrl)->restart = restart;
+    ((iic_master_instance_ctrl_t *) p_api_ctrl)->restart = restart; /* PRQA S 0316 # Advisory R-11.5 */
 
     /* Call the common helper function to perform I2C Read operation.*/
     err = iic_master_read_write(p_api_ctrl, p_dest, bytes, IIC_MASTER_TRANSFER_DIR_READ);
@@ -261,9 +263,9 @@ fsp_err_t R_IIC_MASTER_Read (i2c_master_ctrl_t * const p_api_ctrl,
  *
  * @note A callback will not be invoked in case an in-progress transfer gets aborted by calling this API.
  **********************************************************************************************************************/
-fsp_err_t R_IIC_MASTER_Abort (i2c_master_ctrl_t * const p_api_ctrl)
+fsp_err_t R_IIC_MASTER_Abort (i2c_master_ctrl_t * const p_api_ctrl)                  /* PRQA S 1505 # Advisory R-8.7 */
 {
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl;
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
 
 #if IIC_MASTER_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(p_ctrl != NULL);
@@ -286,11 +288,11 @@ fsp_err_t R_IIC_MASTER_Abort (i2c_master_ctrl_t * const p_api_ctrl)
  * @retval  FSP_ERR_IN_USE          Another transfer was in-progress.
  * @retval  FSP_ERR_NOT_OPEN        Handle is not initialized.  Call R_IIC_MASTER_Open to initialize the control block.
  **********************************************************************************************************************/
-fsp_err_t R_IIC_MASTER_SlaveAddressSet (i2c_master_ctrl_t * const    p_api_ctrl,
+fsp_err_t R_IIC_MASTER_SlaveAddressSet (i2c_master_ctrl_t * const    p_api_ctrl,     /* PRQA S 1505 # Advisory R-8.7 */
                                         uint32_t const               slave,
                                         i2c_master_addr_mode_t const addr_mode)
 {
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl;
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
 
     fsp_err_t err = FSP_SUCCESS;
 
@@ -299,7 +301,7 @@ fsp_err_t R_IIC_MASTER_SlaveAddressSet (i2c_master_ctrl_t * const    p_api_ctrl,
     FSP_ERROR_RETURN(IIC_MASTER_OPEN == p_ctrl->open, FSP_ERR_NOT_OPEN);
 
     /* Fail if there is already a transfer in progress */
-    FSP_ERROR_RETURN(((0 == p_ctrl->remain) && (false == p_ctrl->restart)), FSP_ERR_IN_USE);
+    FSP_ERROR_RETURN(((0U == p_ctrl->remain) && (!p_ctrl->restart)), FSP_ERR_IN_USE);
 #endif
 
     /* Sets the address of the slave device */
@@ -317,9 +319,9 @@ fsp_err_t R_IIC_MASTER_SlaveAddressSet (i2c_master_ctrl_t * const    p_api_ctrl,
  * @retval     FSP_SUCCESS                   Status stored in p_status.
  * @retval     FSP_ERR_ASSERTION             NULL pointer.
  **********************************************************************************************************************/
-fsp_err_t R_IIC_MASTER_StatusGet (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_status_t * p_status)
+fsp_err_t R_IIC_MASTER_StatusGet (i2c_master_ctrl_t * const p_api_ctrl, i2c_master_status_t * p_status) /* PRQA S 3673, 1505 # Advisory R-8.13, Advisory R-8.7 */
 {
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl;
+    const iic_master_instance_ctrl_t * p_ctrl = (const iic_master_instance_ctrl_t *) p_api_ctrl;        /* PRQA S 0316 # Advisory R-11.5 */
 
 #if IIC_MASTER_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(p_ctrl != NULL);
@@ -339,12 +341,12 @@ fsp_err_t R_IIC_MASTER_StatusGet (i2c_master_ctrl_t * const p_api_ctrl, i2c_mast
  * @retval  FSP_ERR_ASSERTION            A required pointer is NULL.
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
  **********************************************************************************************************************/
-fsp_err_t R_IIC_MASTER_CallbackSet (i2c_master_ctrl_t * const          p_api_ctrl,
-                                    void (                           * p_callback)(i2c_master_callback_args_t *),
+fsp_err_t R_IIC_MASTER_CallbackSet (i2c_master_ctrl_t * const          p_api_ctrl,                                /* PRQA S 1505 # Advisory R-8.7 */
+                                    void (                           * p_callback)(i2c_master_callback_args_t *), /* PRQA S 1336 # Required R-8.2 */
                                     void * const                       p_context,
                                     i2c_master_callback_args_t * const p_callback_memory)
 {
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl;
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl;                              /* PRQA S 0316 # Advisory R-11.5 */
 
 #if (IIC_MASTER_CFG_PARAM_CHECKING_ENABLE)
     FSP_ASSERT(p_ctrl);
@@ -369,9 +371,9 @@ fsp_err_t R_IIC_MASTER_CallbackSet (i2c_master_ctrl_t * const          p_api_ctr
  *
  * @note A callback will not be invoked in case an in-progress transfer gets aborted by calling this API.
  **********************************************************************************************************************/
-fsp_err_t R_IIC_MASTER_Close (i2c_master_ctrl_t * const p_api_ctrl)
+fsp_err_t R_IIC_MASTER_Close (i2c_master_ctrl_t * const p_api_ctrl)                  /* PRQA S 1505 # Advisory R-8.7 */
 {
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl;
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
     fsp_err_t err = FSP_SUCCESS;
 #if IIC_MASTER_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(p_ctrl != NULL);
@@ -384,12 +386,11 @@ fsp_err_t R_IIC_MASTER_Close (i2c_master_ctrl_t * const p_api_ctrl)
 
     /* Disable I2C interrupts. Described in hardware manual (see section
      * 'I2C Bus Interrupt Enable Register (ICIER)' of the user's manual). */
-    p_ctrl->p_reg->IER = (uint32_t) 0x00000000UL;
+    p_ctrl->p_reg->IER = (uint32_t) 0x00000000UL; /* PRQA S 0662 # Required R-1.1 */
 
     /* The device is considered closed */
     p_ctrl->open = 0U;
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
-
+#if IIC_MASTER_CFG_TRANSFER_ENABLE                /* PRQA S 3332 # Required R-20.9 */
     /* Close the handles for the transfer interfaces */
     if (NULL != p_ctrl->p_cfg->p_transfer_rx)
     {
@@ -434,35 +435,35 @@ fsp_err_t R_IIC_MASTER_Close (i2c_master_ctrl_t * const p_api_ctrl)
  **********************************************************************************************************************/
 static void iic_master_open_hw_master (iic_master_instance_ctrl_t * const p_ctrl, i2c_master_cfg_t const * const p_cfg)
 {
-    iic_master_extended_cfg_t * p_extend = (iic_master_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    const iic_master_extended_cfg_t * p_extend = (const iic_master_extended_cfg_t *) p_ctrl->p_cfg->p_extend; /* PRQA S 0316 # Advisory R-11.5 */
 
     /* Perform IIC reset */
-    p_ctrl->p_reg->CR1 = (uint32_t) IIC_MASTER_PRV_SCL_SDA_NOT_DRIVEN;
+    p_ctrl->p_reg->CR1 = (uint32_t) IIC_MASTER_PRV_SCL_SDA_NOT_DRIVEN;                                        /* PRQA S 0662 # Required R-1.1 */
 
     /* Reset */
-    p_ctrl->p_reg->CR1 =
-        (uint32_t) (IIC_MASTER_ICCR1_IICRST_BIT_MASK | IIC_MASTER_PRV_SCL_SDA_NOT_DRIVEN);
+    p_ctrl->p_reg->CR1 =                                                                                      /* PRQA S 0662 # Required R-1.1 */
+                         (uint32_t) (IIC_MASTER_ICCR1_IICRST_BIT_MASK | IIC_MASTER_PRV_SCL_SDA_NOT_DRIVEN);
 
     /* Come out of IIC reset to internal reset */
-    p_ctrl->p_reg->CR1 =
-        (uint32_t) (IIC_MASTER_ICCR1_ICE_BIT_MASK | IIC_MASTER_ICCR1_IICRST_BIT_MASK |
-                    IIC_MASTER_PRV_SCL_SDA_NOT_DRIVEN);
+    p_ctrl->p_reg->CR1 =                                                                                      /* PRQA S 0662 # Required R-1.1 */
+                         (uint32_t) (IIC_MASTER_ICCR1_ICE_BIT_MASK | IIC_MASTER_ICCR1_IICRST_BIT_MASK |
+                                     IIC_MASTER_PRV_SCL_SDA_NOT_DRIVEN);
 
     /* Configure the clock settings. This is set in the configuration structure by the tooling. */
     /* Set the number of counts that the clock remains low, bit 7 to 5 should be written as 1 */
-    p_ctrl->p_reg->BRL =
-        (uint32_t) (IIC_MASTER_BUS_RATE_REG_RESERVED_BITS |
-                    p_extend->clock_settings.brl_value);
+    p_ctrl->p_reg->BRL =                                                     /* PRQA S 0662 # Required R-1.1 */
+                         (uint32_t) (IIC_MASTER_BUS_RATE_REG_RESERVED_BITS | /* PRQA S 4391 # Required R-10.8 */
+                                     p_extend->clock_settings.brl_value);
 
     /* Set the number of counts that the clock remains high, bit 7 to 5 should be written as 1 */
-    p_ctrl->p_reg->BRH = (uint32_t) (IIC_MASTER_BUS_RATE_REG_RESERVED_BITS |
+    p_ctrl->p_reg->BRH = (uint32_t) (IIC_MASTER_BUS_RATE_REG_RESERVED_BITS | /* PRQA S 0662, 4391 # Required R-1.1, Required R-10.8 */
                                      p_extend->clock_settings.brh_value);
 
     /* Set the internal reference clock source for generating IIC clock */
-    p_ctrl->p_reg->MR1 = (uint32_t) (IIC_MASTER_BUS_MODE_REGISTER_1_MASK |
-                                     (uint8_t) ((p_extend->
-                                                 clock_settings.cks_value &
-                                                 IIC_MASTER_INTERNAL_REF_CLOCK_SELECT_MAX) << 4U));
+    p_ctrl->p_reg->MR1 = (uint32_t) (IIC_MASTER_BUS_MODE_REGISTER_1_MASK |   /* PRQA S 0662, 4391 # Required R-1.1, Required R-10.8 */
+                                     (uint8_t) (((uint32_t) (p_extend->      /* PRQA S 4391 # Required R-10.8 */
+                                                             clock_settings.cks_value &
+                                                             IIC_MASTER_INTERNAL_REF_CLOCK_SELECT_MAX)) << 4UL));
 
     /* Allow timeouts to be generated on the low value of SCL using either long or short mode */
 
@@ -471,14 +472,12 @@ static void iic_master_open_hw_master (iic_master_instance_ctrl_t * const p_ctrl
      * Only Set/Clear TMOS here to select long or short mode.
      * (see section 'I2C Bus Mode Register 2 (ICMR2)' of the user's manual).
      */
-    p_ctrl->p_reg->MR2 = (uint32_t) (IIC_MASTER_BUS_MODE_REGISTER_2_MASK |
-                                     (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT == p_extend->timeout_mode)
+    p_ctrl->p_reg->MR2 = (uint32_t) (IIC_MASTER_BUS_MODE_REGISTER_2_MASK |                               /* PRQA S 0662, 4391 # Required R-1.1, Required R-10.8 */
+                                     (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT == p_extend->timeout_mode) /* PRQA S 4304 # Advisory R-10.5 */
                                      |
-                                     (uint8_t) (((iic_master_extended_cfg_t *) p_ctrl->p_cfg->p_extend)->
-                                                timeout_scl_low << 1)
+                                     (uint8_t) (((uint32_t) p_extend->timeout_scl_low) << 1UL)
                                      |
-                                     (uint8_t) (((iic_master_extended_cfg_t *) p_ctrl->p_cfg->p_extend)->
-                                                timeout_scl_high << 2));
+                                     (uint8_t) (((uint32_t) p_extend->timeout_scl_high) << 2UL));
 
     /* Set the digital filter.*/
 
@@ -492,19 +491,19 @@ static void iic_master_open_hw_master (iic_master_instance_ctrl_t * const p_ctrl
      * 7. Use the SCL synchronous circuit.
      * (see section 'I2C Bus Function Enable Register' of the user's manual).
      */
-    if (p_extend->noise_filter_stage > 0)
+    if (p_extend->noise_filter_stage > 0U)
     {
-        p_ctrl->p_reg->MR3 |= p_extend->noise_filter_stage - 1;
-        p_ctrl->p_reg->FER  = (uint32_t) (IIC_MASTER_FUNCTION_ENABLE_INIT_SETTINGS);
+        p_ctrl->p_reg->MR3 |= ((uint32_t) p_extend->noise_filter_stage - 1UL);            /* PRQA S 0662 # Required R-1.1 */
+        p_ctrl->p_reg->FER  = (uint32_t) (IIC_MASTER_FUNCTION_ENABLE_INIT_SETTINGS);      /* PRQA S 0662 # Required R-1.1 */
     }
     else
     {
-        p_ctrl->p_reg->MR3_b.NF = 0;
-        p_ctrl->p_reg->FER      = (uint32_t) (IIC_MASTER_FUNCTION_ENABLE_INIT_SETTINGS) &
+        p_ctrl->p_reg->MR3_b.NF = 0;                                                      /* PRQA S 0662 # Required R-1.1 */
+        p_ctrl->p_reg->FER      = (uint32_t) (IIC_MASTER_FUNCTION_ENABLE_INIT_SETTINGS) & /* PRQA S 0662 # Required R-1.1 */
                                   (~R_RIIC0_FER_NFE_Msk);
     }
 
-#if BSP_FEATURE_IIC_HAS_FMPE
+#if BSP_FEATURE_IIC_HAS_FMPE                                                              /* PRQA S 3332 # Required R-20.9 */
 
     /* ICFER Register Settings:
      * 8. Enable FM+ slope circuit if fast mode plus is enabled.
@@ -516,13 +515,13 @@ static void iic_master_open_hw_master (iic_master_instance_ctrl_t * const p_ctrl
 #endif
 
     /* Ensure the HW is in master mode and does not behave as a slave to another master on the same channel. */
-    p_ctrl->p_reg->SER = (uint32_t) 0x00000000UL;
+    p_ctrl->p_reg->SER = (uint32_t) 0x00000000UL;                          /* PRQA S 0662 # Required R-1.1 */
 
     /* Enable Interrupts: TMOIE, ALIE, NAKIE, RIE, TIE.
      * Disable Interrupt: TEIE, STIE, SPIE
      * (see section 'I2C Bus Interrupt Enable Register (ICIER)' of the user's manual).
      */
-    p_ctrl->p_reg->IER = (uint32_t) IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK;
+    p_ctrl->p_reg->IER = (uint32_t) IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK; /* PRQA S 0662 # Required R-1.1 */
 
     /* Set valid interrupt contexts and user provided priority. Enable the interrupts at the GIC  */
     R_BSP_IrqCfgEnable(p_cfg->eri_irq, p_cfg->ipl, p_ctrl);
@@ -533,7 +532,7 @@ static void iic_master_open_hw_master (iic_master_instance_ctrl_t * const p_ctrl
     /* Release IIC from internal reset */
 
     /* Reset */
-    p_ctrl->p_reg->CR1 = (uint32_t) (IIC_MASTER_ICCR1_ICE_BIT_MASK | IIC_MASTER_PRV_SCL_SDA_NOT_DRIVEN);
+    p_ctrl->p_reg->CR1 = (uint32_t) (IIC_MASTER_ICCR1_ICE_BIT_MASK | IIC_MASTER_PRV_SCL_SDA_NOT_DRIVEN); /* PRQA S 0662 # Required R-1.1 */
 }
 
 /*******************************************************************************************************************//**
@@ -549,7 +548,7 @@ static void iic_master_abort_seq_master (iic_master_instance_ctrl_t * const p_ct
     if (true == iic_reset)
     {
         /* Disable channel interrupts */
-        p_ctrl->p_reg->IER = (uint32_t) 0x00000000UL;
+        p_ctrl->p_reg->IER = (uint32_t) 0x00000000UL; /* PRQA S 0662 # Required R-1.1 */
 
         /* This helper function would do a full IIC reset
          * followed by re-initializing the required peripheral registers. */
@@ -569,7 +568,7 @@ static void iic_master_abort_seq_master (iic_master_instance_ctrl_t * const p_ct
      * Disable Interrupt: TEIE, STIE, SPIE
      * (see section 'I2C Bus Interrupt Enable Register (ICIER)' of the user's manual).
      */
-    p_ctrl->p_reg->IER = (uint32_t) IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK;
+    p_ctrl->p_reg->IER = (uint32_t) IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK; /* PRQA S 0662 # Required R-1.1 */
 }
 
 /*******************************************************************************************************************//**
@@ -590,7 +589,7 @@ static fsp_err_t iic_master_read_write (i2c_master_ctrl_t * const p_api_ctrl,
                                         uint32_t const            bytes,
                                         iic_master_transfer_dir_t direction)
 {
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl;
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) p_api_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
 
 #if IIC_MASTER_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(p_buffer != NULL);
@@ -608,7 +607,7 @@ static fsp_err_t iic_master_read_write (i2c_master_ctrl_t * const p_api_ctrl,
     {
         /* Set the address bytes according to a 7-bit slave read command */
         p_ctrl->addr_high  = 0U;
-        p_ctrl->addr_low   = (uint8_t) ((p_ctrl->slave << 1U) | (uint8_t) direction);
+        p_ctrl->addr_low   = (uint8_t) (((uint8_t) p_ctrl->slave << 1U) | (uint8_t) direction);
         p_ctrl->addr_total = 1U;
     }
 
@@ -616,8 +615,9 @@ static fsp_err_t iic_master_read_write (i2c_master_ctrl_t * const p_api_ctrl,
     else
     {
         /* Set the address bytes according to a 10-bit slave read command */
-        p_ctrl->addr_high = (uint8_t) (((p_ctrl->slave >> 7U) | I2C_CODE_10BIT) & (uint8_t) ~(I2C_CODE_READ));
-        p_ctrl->addr_low  = (uint8_t) p_ctrl->slave;
+        p_ctrl->addr_high =
+            (uint8_t) ((((uint8_t) (p_ctrl->slave >> 7U)) | I2C_CODE_10BIT) & (uint8_t) ~(I2C_CODE_READ));
+        p_ctrl->addr_low = (uint8_t) p_ctrl->slave;
 
         /* Addr total = 3 for Read and 2 for Write.
          * See section "Communication Data Format" of the user's manual.
@@ -626,7 +626,7 @@ static fsp_err_t iic_master_read_write (i2c_master_ctrl_t * const p_api_ctrl,
     }
 #endif
 
-    p_ctrl->read = (bool) direction;
+    p_ctrl->read = (bool) direction;   /* PRQA S 4320 # Advisory R-10.5 */
 
     /* Kickoff the read operation as a master */
     err = iic_master_run_hw_master(p_ctrl);
@@ -647,6 +647,8 @@ static fsp_err_t iic_master_read_write (i2c_master_ctrl_t * const p_api_ctrl,
  **********************************************************************************************************************/
 static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_ctrl)
 {
+    const iic_master_extended_cfg_t * p_extend = (const iic_master_extended_cfg_t *) p_ctrl->p_cfg->p_extend; /* PRQA S 0316 # Advisory R-11.5 */
+
     /* IICn operates using PPLLCLK2. The ratio I2CLK (System Clock)/(PPLLCLK2/IIC) gives the CPU cycles for 1
      * ICBRL count.
      * IIC is division ratio of internal reference clock of IICn.
@@ -666,7 +668,7 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
 #else
 
     /* For U2Bx, IICn operates using CKS_CLEANC domain */
-    if (1U == BSP_CFG_CLOCK_CKS_CLEANC_SRC)
+    if (1U == BSP_CFG_CLOCK_CKS_CLEANC_SRC) /* PRQA S 1843, 2742 # Required R-10.4, Required R-14.3 */
     {
         i2_clk = BSP_CFG_CLOCK_CLK_IOSC_HZ;
     }
@@ -675,17 +677,17 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
         i2_clk = BSP_CFG_CLOCK_CLK_PLL_HZ;
     }
 #endif
-    uint32_t iic_clk       = ppll_clk2 / (1U << p_ctrl->p_reg->MR1_b.CKS);
-    uint32_t timeout_count = ((i2_clk / iic_clk) * p_ctrl->p_reg->BRL_b.BRL) >> 2U;
+    uint32_t iic_clk       = ppll_clk2 / (uint32_t) (1UL << (uint32_t) p_ctrl->p_reg->MR1_b.CKS); /* PRQA S 0662 # Required R-1.1 */
+    uint32_t timeout_count = ((i2_clk / iic_clk) * p_ctrl->p_reg->BRL_b.BRL) >> 2U;               /* PRQA S 0662 # Required R-1.1 */
 
     /* Check if this is a new transaction or a continuation */
-    if (!p_ctrl->restarted)
+    if (false == p_ctrl->restarted)
     {
         /* BBSY clearing conditions in section 'I2C Bus Control Register 2 (ICCR2)' of the user's manual,
          * the BBSY bit is 0 after the bus free time (ICBRL setting)
          * if a start condition is not detected after a stop condition detection.
          */
-        IIC_MASTER_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->CR2_b.BBSY, 0UL, timeout_count);
+        IIC_MASTER_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->CR2_b.BBSY, 0UL, timeout_count); /* PRQA S 0662, 3432 # Required R-1.1, Required R-20.7 */
 
         /* If bus is busy, return error */
         FSP_ERROR_RETURN((0U != timeout_count), FSP_ERR_IN_USE);
@@ -695,7 +697,7 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
          * The intention is to only enable IIC_MASTER_TXI_EN_BIT.
          * Writing the whole mask - IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK saves cycles.
          */
-        p_ctrl->p_reg->IER = (uint32_t) IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK;
+        p_ctrl->p_reg->IER = (uint32_t) IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK; /* PRQA S 0662 # Required R-1.1 */
     }
 
     /* Initialize fields used during transfer */
@@ -718,19 +720,17 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
      * Only Set/Clear TMOS here to select long or short mode.
      * (see section 'I2C Bus Mode Register 2 (ICMR2)' of the user's manual).
      */
-    p_ctrl->p_reg->MR2 = (uint32_t) (IIC_MASTER_BUS_MODE_REGISTER_2_MASK |
-                                     (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT == p_ctrl->timeout_mode)
+    p_ctrl->p_reg->MR2 = (uint32_t) (IIC_MASTER_BUS_MODE_REGISTER_2_MASK |                             /* PRQA S 0662, 4391 # Required R-1.1, Required R-10.8 */
+                                     (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT == p_ctrl->timeout_mode) /* PRQA S 4304 # Advisory R-10.5 */
                                      |
-                                     (uint8_t) (((iic_master_extended_cfg_t *) p_ctrl->p_cfg->p_extend)->
-                                                timeout_scl_low << 1)
+                                     (uint8_t) (((uint32_t) p_extend->timeout_scl_low) << 1UL)
                                      |
-                                     (uint8_t) (((iic_master_extended_cfg_t *) p_ctrl->p_cfg->p_extend)->
-                                                timeout_scl_high << 2));
+                                     (uint8_t) (((uint32_t) p_extend->timeout_scl_high) << 2UL));
 
     /* Enable timeout function */
-    p_ctrl->p_reg->FER_b.TMOE = 1UL;
+    p_ctrl->p_reg->FER_b.TMOE = 1UL;   /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
+#if IIC_MASTER_CFG_TRANSFER_ENABLE     /* PRQA S 3332 # Required R-20.9 */
     if (p_ctrl->p_cfg->p_transfer_tx != NULL)
     {
         p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info->number_transfer = IIC_MASTER_TRANSFER_RESET_SRC_DEST_NUM;
@@ -765,14 +765,14 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
 
     /* Enable SPIE to detect unexpected STOP condition. This is disabled between communication events as it can lead
      * to undesired interrupts in multi-master setups. */
-    p_ctrl->p_reg->IER = (uint32_t) (IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK |
+    p_ctrl->p_reg->IER = (uint32_t) (IIC_MASTER_INTERRUPT_ENABLE_INIT_MASK | /* PRQA S 0662 # Required R-1.1 */
                                      R_RIIC0_IER_STIE_Msk | R_RIIC0_IER_SPIE_Msk);
 
     /* If previous transaction did not end with restart, send a start condition */
-    if (!p_ctrl->restarted)
+    if (false == p_ctrl->restarted)
     {
         /* Request IIC to issue the start condition */
-        p_ctrl->p_reg->CR2 = (uint32_t) IIC_MASTER_ICCR2_ST_BIT_MASK;
+        p_ctrl->p_reg->CR2 = (uint32_t) IIC_MASTER_ICCR2_ST_BIT_MASK; /* PRQA S 0662 # Required R-1.1 */
     }
     else
     {
@@ -807,7 +807,7 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
         p_ctrl->addr_remain--;
 
         /* Write the address byte */
-        p_ctrl->p_reg->DRT = address_byte;
+        p_ctrl->p_reg->DRT = address_byte; /* PRQA S 0662 # Required R-1.1 */
     }
 
     /*
@@ -838,7 +838,7 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
     {
         iic_master_txi_send_address(p_ctrl);
     }
-    else if (!p_ctrl->read)
+    else if (false == p_ctrl->read)
     {
         if (0U < p_ctrl->remain)
         {
@@ -846,7 +846,7 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
             p_ctrl->remain--;
 
             /* Write the data to ICDRT register */
-            p_ctrl->p_reg->DRT_b.DRT = p_ctrl->p_buff[p_ctrl->loaded];
+            p_ctrl->p_reg->DRT_b.DRT = p_ctrl->p_buff[p_ctrl->loaded]; /* PRQA S 0488, 0662 # Array indexing, Required R-1.1 */
 
             p_ctrl->loaded++;
         }
@@ -854,7 +854,7 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
         /* Complete loading ICDRT, wait for TEND to send a stop/restart */
         if (0U == p_ctrl->remain)
         {
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
+#if IIC_MASTER_CFG_TRANSFER_ENABLE     /* PRQA S 3332 # Required R-20.9 */
             if (p_ctrl->p_cfg->p_transfer_tx != NULL)
             {
                 p_ctrl->activation_on_txi = false;
@@ -867,11 +867,11 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
                 iic_interrupt_handling_master(p_ctrl->p_cfg->txi_irq);
             }
 #endif
-            p_ctrl->p_reg->IER_b.TIE = 0UL;
+            p_ctrl->p_reg->IER_b.TIE = 0UL;         /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
             /* Wait for the value to reflect at the peripheral.
              * See 'Caution:1' under Table "Interrupt sources" of the user's manual. */
-            while (0UL != p_ctrl->p_reg->IER_b.TIE)
+            while (0UL != p_ctrl->p_reg->IER_b.TIE) /* PRQA S 0662 # Required R-1.1 */
             {
                 /* Do nothing */
             }
@@ -881,7 +881,7 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
             R_BSP_IrqStatusClear(p_ctrl->p_cfg->tei_irq);
 
             /* Enable the TXEND interrupt */
-            p_ctrl->p_reg->IER_b.TEIE = 1UL;
+            p_ctrl->p_reg->IER_b.TEIE = 1UL; /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
             /* No need to wait to check TEIE has actually become 1U; because if that's not the case,
              * no other operation can occur at this point */
@@ -889,7 +889,7 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
     }
     else
     {
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
+#if IIC_MASTER_CFG_TRANSFER_ENABLE     /* PRQA S 3332 # Required R-20.9 */
         if (p_ctrl->p_cfg->p_transfer_tx != NULL)
         {
             p_ctrl->activation_on_txi = false;
@@ -912,8 +912,8 @@ static void iic_master_txi_master (iic_master_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ctrl)
 {
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
-    uint32_t volatile const * p_iic_master_tx_buffer = &(p_ctrl->p_reg->DRT);
+#if IIC_MASTER_CFG_TRANSFER_ENABLE                                            /* PRQA S 3332 # Required R-20.9 */
+    uint32_t volatile const * p_iic_master_tx_buffer = &(p_ctrl->p_reg->DRT); /* PRQA S 0662 # Required R-1.1 */
 #endif
 
     /* This is a 10 bit read and transmit the low byte, next is restart */
@@ -925,11 +925,11 @@ static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ct
          * At this point sent the first 2 address bytes. Disable TXI.
          */
 
-        p_ctrl->p_reg->IER_b.TIE = 0UL;
+        p_ctrl->p_reg->IER_b.TIE = 0UL;         /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
         /* Wait for the value to reflect at the peripheral.
          * See 'Note' under table "Interrupt sources" of the user's manual. */
-        while (0UL != p_ctrl->p_reg->IER_b.TIE)
+        while (0UL != p_ctrl->p_reg->IER_b.TIE) /* PRQA S 0662 # Required R-1.1 */
         {
             /* Do nothing */
         }
@@ -939,7 +939,7 @@ static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ct
         R_BSP_IrqStatusClear(p_ctrl->p_cfg->tei_irq);
 
         /* Enable the TXEND interrupt */
-        p_ctrl->p_reg->IER_b.TEIE = 1UL;
+        p_ctrl->p_reg->IER_b.TEIE = 1UL; /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
         /* No need to wait to check TEIE has actually become 1U; because if that's not the case,
          * no other operation can occur at this point */
@@ -971,8 +971,7 @@ static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ct
             }
         }
 #endif
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
-
+#if IIC_MASTER_CFG_TRANSFER_ENABLE     /* PRQA S 3332 # Required R-20.9 */
         /* If this is the last address byte, enable transfer */
         if (1U == p_ctrl->addr_remain)
         {
@@ -981,8 +980,8 @@ static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ct
                 /* Disable interrupt */
                 R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
                 p_ctrl->p_cfg->p_transfer_tx->p_api->reset(p_ctrl->p_cfg->p_transfer_tx->p_ctrl,
-                                                           (void *) (p_ctrl->p_buff),
-                                                           (uint8_t *) (p_iic_master_tx_buffer),
+                                                           (const void *) (p_ctrl->p_buff),
+                                                           (uint8_t *) (p_iic_master_tx_buffer), /* PRQA S 0311, 0312 # Required R-11.8, Required R-11.8 */
                                                            (uint16_t) (p_ctrl->remain));
                 p_ctrl->remain            = 0U;
                 p_ctrl->loaded            = p_ctrl->total;
@@ -996,7 +995,7 @@ static void iic_master_txi_send_address (iic_master_instance_ctrl_t * const p_ct
         p_ctrl->addr_remain--;
 
         /* Write the address byte */
-        p_ctrl->p_reg->DRT_b.DRT = address_byte;
+        p_ctrl->p_reg->DRT_b.DRT = address_byte; /* PRQA S 0662 # Required R-1.1 */
     }
 }
 
@@ -1015,7 +1014,7 @@ static void iic_master_rxi_master (iic_master_instance_ctrl_t * p_ctrl)
         /* Enable WAIT for 1 or 2 byte read */
         if (2U <= p_ctrl->total)
         {
-            p_ctrl->p_reg->MR3_b.WAIT = 1UL;
+            p_ctrl->p_reg->MR3_b.WAIT = 1UL; /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
         }
 
         /* Enable NACK for 1 byte read */
@@ -1024,13 +1023,13 @@ static void iic_master_rxi_master (iic_master_instance_ctrl_t * p_ctrl)
             /* Writes to be done separately.
              * See section 'I2C Bus Mode Register 3 (ICMR3)' of the user's manual.
              */
-            p_ctrl->p_reg->MR3_b.ACKWP = 1UL; /* Write enable ACKBT */
-            p_ctrl->p_reg->MR3_b.ACKBT = 1UL;
+            p_ctrl->p_reg->MR3_b.ACKWP = 1UL;                                     /* Write enable ACKBT */    /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
+            p_ctrl->p_reg->MR3_b.ACKBT = 1UL;                                     /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
         }
 
         /* Do a dummy read to clock the data into the ICDRR. */
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
-        uint32_t volatile const * p_iic_master_rx_buffer = &(p_ctrl->p_reg->DRR);
+#if IIC_MASTER_CFG_TRANSFER_ENABLE                                                /* PRQA S 3332 # Required R-20.9 */
+        uint32_t volatile const * p_iic_master_rx_buffer = &(p_ctrl->p_reg->DRR); /* PRQA S 0662 # Required R-1.1 */
 
         /* Enable transfer support if possible */
         if ((NULL != p_ctrl->p_cfg->p_transfer_rx) && (p_ctrl->read) && (p_ctrl->total > 3U))
@@ -1039,16 +1038,17 @@ static void iic_master_rxi_master (iic_master_instance_ctrl_t * p_ctrl)
             R_BSP_IrqDisable(p_ctrl->p_cfg->rxi_irq);
 
             p_ctrl->p_cfg->p_transfer_rx->p_api->reset(p_ctrl->p_cfg->p_transfer_rx->p_ctrl,
-                                                       (uint8_t *) (p_iic_master_rx_buffer),
+                                                       (const uint8_t *) (p_iic_master_rx_buffer), /* PRQA S 0312 # Required R-11.8 */
                                                        (void *) (p_ctrl->p_buff),
-                                                       (uint16_t) (p_ctrl->total - 3U));
+                                                       /* PRQA S 0306 # Framework pattern */ (uint16_t) (p_ctrl->total -
+                                                                                                         3U));
 
             p_ctrl->remain            = 4U;
             p_ctrl->loaded            = p_ctrl->total - 3U;
             p_ctrl->activation_on_rxi = true;
         }
 #endif
-        dummy_read = p_ctrl->p_reg->DRR_b.DRR;
+        dummy_read = p_ctrl->p_reg->DRR_b.DRR; /* PRQA S 0662 # Required R-1.1 */
 
         FSP_PARAMETER_NOT_USED(dummy_read);
 
@@ -1076,7 +1076,7 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
     /* If next data = (final byte - 2), enable WAIT */
     if (3U == p_ctrl->remain)
     {
-        p_ctrl->p_reg->MR3_b.WAIT = 1UL;
+        p_ctrl->p_reg->MR3_b.WAIT = 1UL; /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
     }
     /* If next data = (final byte - 1), enable NACK  */
     else if (2U == p_ctrl->remain)
@@ -1084,32 +1084,32 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
         /* Writes to be done separately.
          * See Note 1 in section 'I2C Bus Mode Register 3 (ICMR3)' of the user's manual.
          */
-        p_ctrl->p_reg->MR3_b.ACKWP = 1UL; /* Write enable ACKBT */
-        p_ctrl->p_reg->MR3_b.ACKBT = 1UL;
+        p_ctrl->p_reg->MR3_b.ACKWP = 1UL; /* Write enable ACKBT */    /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
+        p_ctrl->p_reg->MR3_b.ACKBT = 1UL; /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
     }
     /* If next data = final byte, send STOP or RESTART */
     else if (1U == p_ctrl->remain)
     {
-        if (p_ctrl->restart)
+        if (true == p_ctrl->restart)
         {
             /* NOTE:Only disable in GIC, disabling in I2C would cause the
              * restart condition to fail because of using the buffered
              * interrupt to start the next sequence */
             R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
-            p_ctrl->p_reg->IER_b.TIE = 1UL;
+            p_ctrl->p_reg->IER_b.TIE = 1UL;                               /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
-            p_ctrl->p_reg->MR3_b.ACKWP = 1UL; /* Write enable ACKBT */
+            p_ctrl->p_reg->MR3_b.ACKWP = 1UL;                             /* Write enable ACKBT */    /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
             /* This bit clears to 0 automatically by issuing stop condition.
              * For restart condition, clear bit by software.
              */
-            p_ctrl->p_reg->MR3_b.ACKBT = 0UL;
+            p_ctrl->p_reg->MR3_b.ACKBT = 0UL;                             /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
             /* Request IIC to issue the restart condition */
-            p_ctrl->p_reg->CR2 = (uint32_t) IIC_MASTER_ICCR2_RS_BIT_MASK;
+            p_ctrl->p_reg->CR2 = (uint32_t) IIC_MASTER_ICCR2_RS_BIT_MASK; /* PRQA S 0662 # Required R-1.1 */
 
             /* Disable timeout function */
-            p_ctrl->p_reg->FER_b.TMOE = 0UL;
+            p_ctrl->p_reg->FER_b.TMOE = 0UL;                              /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
             /* Remember the restart when doing the next transfer */
             p_ctrl->restarted = true;
@@ -1119,10 +1119,10 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
             /* Clear STOP flag and set SP.
              * It is ok to clear other status' as this transaction is over.
              */
-            p_ctrl->p_reg->SR2 &= (uint32_t) ~(IIC_MASTER_ICSR2_STOP_BIT);;
+            p_ctrl->p_reg->SR2 &= (uint32_t) ~(IIC_MASTER_ICSR2_STOP_BIT); /* PRQA S 0662 # Required R-1.1 */
 
             /* Request IIC to issue the stop condition */
-            p_ctrl->p_reg->CR2 = (uint32_t) IIC_MASTER_ICCR2_SP_BIT_MASK; /* It is safe to write 0's to other bits. */
+            p_ctrl->p_reg->CR2 = (uint32_t) IIC_MASTER_ICCR2_SP_BIT_MASK;  /* It is safe to write 0's to other bits. */    /* PRQA S 0662 # Required R-1.1 */
 
             /* STOP flag will not be set just yet.
              * STOP will be set only after reading the last byte from ICDRR and clearing the WAIT.
@@ -1135,17 +1135,18 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
         /* Do nothing */
     }
 
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
-    uint32_t volatile const * p_iic_master_rx_buffer = &(p_ctrl->p_reg->DRR);
+#if IIC_MASTER_CFG_TRANSFER_ENABLE                                            /* PRQA S 3332 # Required R-20.9 */
+    uint32_t volatile const * p_iic_master_rx_buffer = &(p_ctrl->p_reg->DRR); /* PRQA S 0662 # Required R-1.1 */
 
     /* Enable transfer support if possible */
     if ((NULL != p_ctrl->p_cfg->p_transfer_rx) && (p_ctrl->read))
     {
-        if ((p_ctrl->remain > 1) && (p_ctrl->total > 3U))
+        if ((p_ctrl->remain > 1) && (p_ctrl->total > 3U))                                          /* PRQA S 1842 # Required R-10.4 */
         {
             p_ctrl->p_cfg->p_transfer_rx->p_api->reset(p_ctrl->p_cfg->p_transfer_rx->p_ctrl,
-                                                       (uint8_t *) (p_iic_master_rx_buffer),
-                                                       (void *) (&p_ctrl->p_buff[p_ctrl->loaded]), (uint16_t) (1U));
+                                                       (uint8_t *) (p_iic_master_rx_buffer),       /* PRQA S 0311, 0312 # Required R-11.8, Required R-11.8 */
+                                                       (void *) (&p_ctrl->p_buff[p_ctrl->loaded]), /* PRQA S 0306 0488 # Framework + Array indexing */
+                                                       (uint16_t) (1U));
 
             p_ctrl->remain--;
             p_ctrl->loaded++;
@@ -1165,7 +1166,7 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
         }
         else
         {
-            p_ctrl->p_buff[p_ctrl->loaded] = (uint8_t) p_ctrl->p_reg->DRR_b.DRR;;
+            p_ctrl->p_buff[p_ctrl->loaded] = (uint8_t) p_ctrl->p_reg->DRR_b.DRR; /* PRQA S 0488, 0662 # Array indexing, Required R-1.1 */
 
             /* Update the counter values */
             p_ctrl->loaded++;
@@ -1175,15 +1176,14 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
     else
 #endif
     {
-        p_ctrl->p_buff[p_ctrl->loaded] = (uint8_t) p_ctrl->p_reg->DRR_b.DRR;;
+        p_ctrl->p_buff[p_ctrl->loaded] = (uint8_t) p_ctrl->p_reg->DRR_b.DRR; /* PRQA S 0488, 0662 # Array indexing, Required R-1.1 */
 
         /* Update the counter values */
         p_ctrl->loaded++;
         p_ctrl->remain--;
     }
 
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
-
+#if IIC_MASTER_CFG_TRANSFER_ENABLE     /* PRQA S 3332 # Required R-20.9 */
     /*  Complete the reception, clear the WAIT bit */
     if ((0U == p_ctrl->remain) && (false == p_ctrl->activation_on_rxi))
 #else
@@ -1192,7 +1192,7 @@ static void iic_master_rxi_read_data (iic_master_instance_ctrl_t * const p_ctrl)
     if (0U == p_ctrl->remain)
 #endif
     {
-        p_ctrl->p_reg->MR3_b.WAIT = 0UL;
+        p_ctrl->p_reg->MR3_b.WAIT = 0UL; /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
         /* If this transaction does not have the restart flag set to true,
          * last byte has been read and WAIT has been cleared.
@@ -1217,10 +1217,10 @@ static void iic_master_tei_master (iic_master_instance_ctrl_t * p_ctrl)
 #if IIC_MASTER_CFG_ADDR_MODE_10_BIT_ENABLE
 
         /* Enable TXI so that it fires after restart condition. */
-        p_ctrl->p_reg->IER_b.TIE = 1UL;
+        p_ctrl->p_reg->IER_b.TIE = 1UL;                                      /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
         /* Request IIC to issue the restart condition */
-        p_ctrl->p_reg->CR2        = (uint32_t) IIC_MASTER_ICCR2_RS_BIT_MASK;
+        p_ctrl->p_reg->CR2        = (uint32_t) IIC_MASTER_ICCR2_RS_BIT_MASK; /* PRQA S 0662 # Required R-1.1 */
         p_ctrl->address_restarted = true;
 #endif
     }
@@ -1228,19 +1228,19 @@ static void iic_master_tei_master (iic_master_instance_ctrl_t * p_ctrl)
     else if (0U == p_ctrl->remain)
     {
         /* Send RESTART */
-        if (p_ctrl->restart)
+        if (true == p_ctrl->restart)
         {
             /* NOTE:Only disable in GIC, disabling in I2C would cause the
              * restart condition to fail because of using the buffered
              * interrupt to start the next sequence */
             R_BSP_IrqDisable(p_ctrl->p_cfg->txi_irq);
-            p_ctrl->p_reg->IER_b.TIE = 1UL;
+            p_ctrl->p_reg->IER_b.TIE = 1UL;                               /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
             /* Request IIC to issue the restart condition and queue a TXI at the GIC level. */
-            p_ctrl->p_reg->CR2 = (uint32_t) IIC_MASTER_ICCR2_RS_BIT_MASK;
+            p_ctrl->p_reg->CR2 = (uint32_t) IIC_MASTER_ICCR2_RS_BIT_MASK; /* PRQA S 0662 # Required R-1.1 */
 
             /* Disable timeout function */
-            p_ctrl->p_reg->FER_b.TMOE = 0UL;
+            p_ctrl->p_reg->FER_b.TMOE = 0UL;                              /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
             /* Remember if there is issue with a restart for the next transfer */
             p_ctrl->restarted = true;
@@ -1251,10 +1251,10 @@ static void iic_master_tei_master (iic_master_instance_ctrl_t * p_ctrl)
             /* Clear STOP flag and set SP.
              * It is ok to clear other status' as this transaction is over.
              */
-            p_ctrl->p_reg->SR2 &= (uint32_t) ~(IIC_MASTER_ICSR2_STOP_BIT);
+            p_ctrl->p_reg->SR2 &= (uint32_t) ~(IIC_MASTER_ICSR2_STOP_BIT); /* PRQA S 0662 # Required R-1.1 */
 
             /* Request IIC to issue the stop condition */
-            p_ctrl->p_reg->CR2 = (uint32_t) IIC_MASTER_ICCR2_SP_BIT_MASK; /* It is safe to write 0's to other bits. */
+            p_ctrl->p_reg->CR2 = (uint32_t) IIC_MASTER_ICCR2_SP_BIT_MASK;  /* It is safe to write 0's to other bits. */    /* PRQA S 0662 # Required R-1.1 */
         }
     }
     else
@@ -1263,10 +1263,10 @@ static void iic_master_tei_master (iic_master_instance_ctrl_t * p_ctrl)
     }
 
     /* Disable the interrupt as finish the transfer */
-    p_ctrl->p_reg->IER_b.TEIE = 0UL;
+    p_ctrl->p_reg->IER_b.TEIE = 0UL;         /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
     /* Wait for the value to reflect at the peripheral. */
-    while (0UL != p_ctrl->p_reg->IER_b.TEIE)
+    while (0UL != p_ctrl->p_reg->IER_b.TEIE) /* PRQA S 0662 # Required R-1.1 */
     {
         /* Do nothing */
     }
@@ -1279,11 +1279,11 @@ static void iic_master_tei_master (iic_master_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void iic_master_naki_master (iic_master_instance_ctrl_t * p_ctrl)
 {
-    iic_master_extended_cfg_t * p_extend = (iic_master_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
+    const iic_master_extended_cfg_t * p_extend = (const iic_master_extended_cfg_t *) p_ctrl->p_cfg->p_extend; /* PRQA S 0316 # Advisory R-11.5 */
 
-    if ((1UL != p_ctrl->p_reg->CR2_b.MST) && (true != p_ctrl->nack_before_stop))
+    if ((1UL != p_ctrl->p_reg->CR2_b.MST) && (true != p_ctrl->nack_before_stop))                              /* PRQA S 0662 # Required R-1.1 */
     {
-        p_ctrl->p_reg->SR2_b.NACKF = 0UL;
+        p_ctrl->p_reg->SR2_b.NACKF = 0UL;                                                                     /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
         /*This is a NACK error and this device is no longer the active master on the bus.
          *    The MST bit here can get cleared:
@@ -1308,7 +1308,7 @@ static void iic_master_naki_master (iic_master_instance_ctrl_t * p_ctrl)
          */
         p_ctrl->nack_before_stop = false;
 
-        p_ctrl->p_reg->SR2_b.NACKF = 0UL;
+        p_ctrl->p_reg->SR2_b.NACKF = 0UL; /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
     }
     else
     {
@@ -1324,18 +1324,18 @@ static void iic_master_naki_master (iic_master_instance_ctrl_t * p_ctrl)
          * See item '[4]' under figure 'Example master transmission flow' of the user's manual. */
 
         /* Request IIC to issue the stop condition */
-        p_ctrl->p_reg->SR2 &= (uint32_t) ~(IIC_MASTER_ICSR2_STOP_BIT);
-        p_ctrl->p_reg->CR2  = (uint32_t) IIC_MASTER_ICCR2_SP_BIT_MASK; /* It is safe to write 0's to other bits. */
+        p_ctrl->p_reg->SR2 &= (uint32_t) ~(IIC_MASTER_ICSR2_STOP_BIT);               /* PRQA S 0662 # Required R-1.1 */
+        p_ctrl->p_reg->CR2  = (uint32_t) IIC_MASTER_ICCR2_SP_BIT_MASK;               /* It is safe to write 0's to other bits. */    /* PRQA S 0662 # Required R-1.1 */
         /* Allow timeouts to be generated on the low value of SCL using either long or short mode */
-        p_ctrl->p_reg->MR2 = (uint32_t) ((uint8_t) 0x02UL |
-                                         (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT ==
+        p_ctrl->p_reg->MR2 = (uint32_t) ((uint8_t) 0x02UL |                          /* PRQA S 0662, 4391 # Required R-1.1, Required R-10.8 */
+                                         (uint8_t) (IIC_MASTER_TIMEOUT_MODE_SHORT == /* PRQA S 4304 # Advisory R-10.5 */
                                                     p_extend->timeout_mode));
-        p_ctrl->p_reg->FER_b.TMOE = 1UL;
+        p_ctrl->p_reg->FER_b.TMOE = 1UL;                                             /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
         /* NACK flag must be cleared after SR2_b.STOP=1. */
-        if (1UL == p_ctrl->p_reg->SR2_b.STOP)
+        if (1UL == p_ctrl->p_reg->SR2_b.STOP)                                        /* PRQA S 0662 # Required R-1.1 */
         {
-            p_ctrl->p_reg->SR2_b.NACKF = 0UL;
+            p_ctrl->p_reg->SR2_b.NACKF = 0UL;                                        /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
         }
         else
         {
@@ -1354,7 +1354,7 @@ static void iic_master_naki_master (iic_master_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void iic_master_spi_master (iic_master_instance_ctrl_t * p_ctrl)
 {
-    p_ctrl->p_reg->SR2_b.STOP = 0UL;
+    p_ctrl->p_reg->SR2_b.STOP = 0UL;   /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
     i2c_master_event_t event = I2C_MASTER_EVENT_ABORTED;
     if (false == p_ctrl->err)          /* Successful transaction */
     {
@@ -1362,7 +1362,7 @@ static void iic_master_spi_master (iic_master_instance_ctrl_t * p_ctrl)
         event = (p_ctrl->read) ? I2C_MASTER_EVENT_RX_COMPLETE : I2C_MASTER_EVENT_TX_COMPLETE;
 
         /* Disable SPIE to prevent Detection of a stop condition interrupts in multi-master scenarios */
-        p_ctrl->p_reg->IER_b.SPIE = 0UL;
+        p_ctrl->p_reg->IER_b.SPIE = 0UL; /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
     }
     else
     {
@@ -1383,8 +1383,8 @@ static void iic_master_spi_master (iic_master_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void iic_master_sti_master (iic_master_instance_ctrl_t * p_ctrl)
 {
-    p_ctrl->p_reg->SR2_b.START = 0UL;
-    if (p_ctrl->restarted)
+    p_ctrl->p_reg->SR2_b.START = 0UL;  /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
+    if (true == p_ctrl->restarted)
     {
         i2c_master_event_t event = I2C_MASTER_EVENT_ABORTED;
         if (false == p_ctrl->err)      /* Successful transaction */
@@ -1393,7 +1393,7 @@ static void iic_master_sti_master (iic_master_instance_ctrl_t * p_ctrl)
             event = (p_ctrl->read) ? I2C_MASTER_EVENT_RX_COMPLETE : I2C_MASTER_EVENT_TX_COMPLETE;
 
             /* Disable STIE to prevent Detection of a start condition interrupts in multi-master scenarios */
-            p_ctrl->p_reg->IER_b.STIE = 0UL;
+            p_ctrl->p_reg->IER_b.STIE = 0UL; /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
         }
 
         /* Notify anyone waiting */
@@ -1408,7 +1408,7 @@ static void iic_master_sti_master (iic_master_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void iic_master_ali_master (iic_master_instance_ctrl_t * p_ctrl)
 {
-    p_ctrl->p_reg->SR2_b.AL = 0UL;
+    p_ctrl->p_reg->SR2_b.AL = 0UL;     /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
     /* This is arbitration loss error during an ongoing transaction */
     /* Set the error flag when an error event occurred */
@@ -1427,7 +1427,7 @@ static void iic_master_ali_master (iic_master_instance_ctrl_t * p_ctrl)
  **********************************************************************************************************************/
 static void iic_master_tmoi_master (iic_master_instance_ctrl_t * p_ctrl)
 {
-    p_ctrl->p_reg->SR2_b.TMOF = 0UL;
+    p_ctrl->p_reg->SR2_b.TMOF = 0UL;   /* PRQA S 0662, 1257 # Required R-1.1, Required R-10.3 */
 
     /* This is Timeout  error during an ongoing transaction */
     /* Set the error flag when an error event occurred */
@@ -1482,7 +1482,7 @@ static void iic_master_notify (iic_master_instance_ctrl_t * const p_ctrl, i2c_ma
     p_ctrl->err = false;
 }
 
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
+#if IIC_MASTER_CFG_TRANSFER_ENABLE                                                    /* PRQA S 3332 # Required R-20.9 */
 
 /*******************************************************************************************************************//**
  * Configures IIC related transfer drivers (if enabled).
@@ -1493,7 +1493,7 @@ static void iic_master_notify (iic_master_instance_ctrl_t * const p_ctrl, i2c_ma
  * @retval      FSP_SUCCESS                Transfer interface initialized successfully.
  * @retval      FSP_ERR_ASSERTION          Pointer to transfer instance for I2C receive in p_cfg is NULL.
  **********************************************************************************************************************/
-static fsp_err_t iic_master_transfer_open (iic_master_instance_ctrl_t * const p_ctrl,
+static fsp_err_t iic_master_transfer_open (iic_master_instance_ctrl_t * const p_ctrl, /* PRQA S 3673 # Advisory R-8.13 */
                                            i2c_master_cfg_t const * const     p_cfg)
 {
  #if (IIC_MASTER_CFG_PARAM_CHECKING_ENABLE)
@@ -1506,8 +1506,8 @@ static fsp_err_t iic_master_transfer_open (iic_master_instance_ctrl_t * const p_
                                                         p_cfg->p_transfer_rx->p_cfg);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
         err = p_ctrl->p_cfg->p_transfer_rx->p_api->callbackSet(p_ctrl->p_cfg->p_transfer_rx->p_ctrl,
-                                                               iic_master_rxi_transfer_callback,
-                                                               (void *) &p_ctrl->p_cfg->rxi_irq,
+                                                               iic_master_rxi_transfer_callback, /* PRQA S 3635 # Advisory R-17.12 */
+                                                               (void *) &p_ctrl->p_cfg->rxi_irq, /* PRQA S 0306, 0311 # Framework, Required R-11.8 */
                                                                NULL);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
         err = p_ctrl->p_cfg->p_transfer_rx->p_api->disable(p_ctrl->p_cfg->p_transfer_rx->p_ctrl);
@@ -1520,8 +1520,8 @@ static fsp_err_t iic_master_transfer_open (iic_master_instance_ctrl_t * const p_
                                                         p_cfg->p_transfer_tx->p_cfg);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
         err = p_ctrl->p_cfg->p_transfer_tx->p_api->callbackSet(p_ctrl->p_cfg->p_transfer_tx->p_ctrl,
-                                                               iic_master_txi_transfer_callback,
-                                                               (void *) &p_ctrl->p_cfg->txi_irq,
+                                                               iic_master_txi_transfer_callback, /* PRQA S 3635 # Advisory R-17.12 */
+                                                               (void *) &p_ctrl->p_cfg->txi_irq, /* PRQA S 0306, 0311 # Framework, Required R-11.8 */
                                                                NULL);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
         err = p_ctrl->p_cfg->p_transfer_tx->p_api->disable(p_ctrl->p_cfg->p_transfer_tx->p_ctrl);
@@ -1533,20 +1533,19 @@ static fsp_err_t iic_master_transfer_open (iic_master_instance_ctrl_t * const p_
 
 #endif
 
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
+#if IIC_MASTER_CFG_TRANSFER_ENABLE                                                                 /* PRQA S 3332 # Required R-20.9 */
 
 /*******************************************************************************************************************//**
  * Transmit data empty interrupt routine called when the transfer is completed.
  *
  * @param[in]     p_args     Pointer to callback.
  **********************************************************************************************************************/
-void iic_master_txi_transfer_callback (transfer_callback_args_t * p_args)
+void iic_master_txi_transfer_callback (transfer_callback_args_t * p_args)                          /* PRQA S 3673, 1505 # Advisory R-8.13, Advisory R-8.7 */
 {
-    IRQn_Type irq = *(IRQn_Type *) (p_args->p_context);
+    IRQn_Type irq = *(const IRQn_Type *) (p_args->p_context);                                      /* PRQA S 0316 # Advisory R-11.5 */
 
     /* Recover ISR context saved in open. */
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
     if (NULL != p_args)
     {
         p_ctrl->activation_on_txi = true;
@@ -1555,19 +1554,19 @@ void iic_master_txi_transfer_callback (transfer_callback_args_t * p_args)
 }
 
 #endif
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
+#if IIC_MASTER_CFG_TRANSFER_ENABLE                                                                 /* PRQA S 3332 # Required R-20.9 */
 
 /*******************************************************************************************************************//**
  * Receive data interrupt routine called when the transfer is completed.
  *
  * @param[in]     p_args     Pointer to callback.
  **********************************************************************************************************************/
-void iic_master_rxi_transfer_callback (transfer_callback_args_t * p_args)
+void iic_master_rxi_transfer_callback (transfer_callback_args_t * p_args)                          /* PRQA S 3673, 1505 # Advisory R-8.13, Advisory R-8.7 */
 {
-    IRQn_Type irq = *(IRQn_Type *) (p_args->p_context);
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    IRQn_Type irq = *(const IRQn_Type *) (p_args->p_context);                                      /* PRQA S 0316 # Advisory R-11.5 */
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
 
-    if ((NULL != p_args) && (p_ctrl->read))
+    if ((NULL != p_args) && (true == p_ctrl->read))
     {
         iic_master_rxi_master(p_ctrl);
     }
@@ -1581,7 +1580,7 @@ void iic_master_rxi_transfer_callback (transfer_callback_args_t * p_args)
  * This function implements Tx/Rx Interrupt Enable.
  *
  **********************************************************************************************************************/
-void iic_interrupt_handling_master (IRQn_Type const irq)
+void iic_interrupt_handling_master (IRQn_Type const irq) /* PRQA S 1505 # Advisory R-8.7 */
 {
     R_BSP_IrqStatusClear(irq);
     R_BSP_IrqEnable(irq);
@@ -1597,7 +1596,7 @@ void iic_interrupt_handling_master (IRQn_Type const irq)
  * This function implements the Transmit buffer empty ISR routine.
  *
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void iic_master_txi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_master_txi_isr (void) /* PRQA S 1503 # Required R-2.1 */
 {
     /* Save context if RTOS is used */
 
@@ -1606,7 +1605,7 @@ BSP_INTERRUPT_ATTRIBUTE void iic_master_txi_isr (void)
     /* Clear the IR flag */
     IRQn_Type irq = R_FSP_CurrentIrqGet();
 
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
     iic_master_txi_master(p_ctrl);
 
     /* Restore context if RTOS is used */
@@ -1620,7 +1619,7 @@ BSP_INTERRUPT_ATTRIBUTE void iic_master_txi_isr (void)
  * This function implements the IIC Receive buffer full ISR routine.
  *
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void iic_master_rxi_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_master_rxi_isr (void) /* PRQA S 1503 # Required R-2.1 */
 {
     /* Save context if RTOS is used */
 
@@ -1630,7 +1629,7 @@ BSP_INTERRUPT_ATTRIBUTE void iic_master_rxi_isr (void)
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
 
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
     iic_master_rxi_master(p_ctrl);
 
     /* Restore context if RTOS is used */
@@ -1643,7 +1642,7 @@ BSP_INTERRUPT_ATTRIBUTE void iic_master_rxi_isr (void)
  * This function implements the IIC Transmission End ISR routine.
  *
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void iic_master_tei_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_master_tei_isr (void) /* PRQA S 1503 # Required R-2.1 */
 {
     /* Save context if RTOS is used */
 
@@ -1651,7 +1650,7 @@ BSP_INTERRUPT_ATTRIBUTE void iic_master_tei_isr (void)
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
 
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
 
     iic_master_tei_master(p_ctrl);
 
@@ -1669,7 +1668,7 @@ BSP_INTERRUPT_ATTRIBUTE void iic_master_tei_isr (void)
  * This function implements the IIC Event/Error.
  *
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void iic_master_eri_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void iic_master_eri_isr (void) /* PRQA S 1503 # Required R-2.1 */
 {
     /* Save context if RTOS is used */
 
@@ -1677,8 +1676,8 @@ BSP_INTERRUPT_ATTRIBUTE void iic_master_eri_isr (void)
 
     IRQn_Type irq = R_FSP_CurrentIrqGet();
 
-    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-#if IIC_MASTER_CFG_TRANSFER_ENABLE
+    iic_master_instance_ctrl_t * p_ctrl = (iic_master_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
+#if IIC_MASTER_CFG_TRANSFER_ENABLE                                                                 /* PRQA S 3332 # Required R-20.9 */
     if (NULL != p_ctrl->p_cfg->p_transfer_rx)
     {
         p_ctrl->p_cfg->p_transfer_rx->p_cfg->p_info->number_transfer = 1U;
@@ -1699,23 +1698,23 @@ BSP_INTERRUPT_ATTRIBUTE void iic_master_eri_isr (void)
                                                          p_ctrl->p_cfg->p_transfer_tx->p_cfg->p_info);
     }
 #endif
-    if ((1U == p_ctrl->p_reg->SR2_b.NACKF) && (1U == p_ctrl->p_reg->IER_b.NAKIE))
+    if ((1U == p_ctrl->p_reg->SR2_b.NACKF) && (1U == p_ctrl->p_reg->IER_b.NAKIE))     /* PRQA S 0404, 0662 # ISR NACK detection, Required R-1.1 */
     {
         iic_master_naki_master(p_ctrl);
     }
-    else if ((1U == p_ctrl->p_reg->SR2_b.START) && (1U == p_ctrl->p_reg->IER_b.STIE))
+    else if ((1U == p_ctrl->p_reg->SR2_b.START) && (1U == p_ctrl->p_reg->IER_b.STIE)) /* PRQA S 0404, 0662 # ISR START detection, Required R-1.1 */
     {
         iic_master_sti_master(p_ctrl);
     }
-    else if ((1U == p_ctrl->p_reg->SR2_b.STOP) && (1U == p_ctrl->p_reg->IER_b.SPIE))
+    else if ((1U == p_ctrl->p_reg->SR2_b.STOP) && (1U == p_ctrl->p_reg->IER_b.SPIE))  /* PRQA S 0404, 0662 # ISR STOP detection, Required R-1.1 */
     {
         iic_master_spi_master(p_ctrl);
     }
-    else if ((1U == p_ctrl->p_reg->SR2_b.AL) && (p_ctrl->p_reg->IER_b.ALIE))
+    else if ((1U == p_ctrl->p_reg->SR2_b.AL) && (1U == p_ctrl->p_reg->IER_b.ALIE))    /* PRQA S 0404, 0662 # ISR AL detection, Required R-1.1 */
     {
         iic_master_ali_master(p_ctrl);
     }
-    else if ((1U == p_ctrl->p_reg->SR2_b.TMOF) && (1U == p_ctrl->p_reg->IER_b.TMOIE))
+    else if ((1U == p_ctrl->p_reg->SR2_b.TMOF) && (1U == p_ctrl->p_reg->IER_b.TMOIE)) /* PRQA S 0404, 0662 # ISR TMOF detection, Required R-1.1 */
     {
         iic_master_tmoi_master(p_ctrl);
     }
@@ -1728,3 +1727,5 @@ BSP_INTERRUPT_ATTRIBUTE void iic_master_eri_isr (void)
 
     FSP_CONTEXT_RESTORE
 }
+
+/* PRQA S 3432 -- */

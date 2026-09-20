@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes
  **********************************************************************************************************************/
-#include "bsp_api.h"
+#include "bsp_api.h"                   /* PRQA S 0380 # Dir-1.1-C99, Dir-1.1-C11 */
 #include "r_adck.h"
 
 /***********************************************************************************************************************
@@ -22,7 +22,7 @@
 
 /* This macro is used to get scan group register address from the register address of the first scan group
  * and scan group index */
-#define ADCK_SG_REG_ADDR(base, index)    ((uint8_t *) (base) + (ADCK_SG_OFFSET) *(index))
+#define ADCK_SG_REG_ADDR(base, index)    ((uint8_t *) (base) + (ADCK_SG_OFFSET) *(index)) /* PRQA S 3472 # Dir-4.9 */
 
 #define ADCK_NUMBER_OF_UNIT                             (BSP_FEATURE_ADCK_NUM_OF_UNIT)
 
@@ -71,7 +71,7 @@
 #define ADCK_THBHLDSTCR_HOLD_START                      (0x1U)
 #define ADCK_THBCR_HW_TRIGGER_ENABLE                    (0x1U)
 
-#define ADCK_PWDSGCR_HW_TRIGGER_ENABLE                  (0x1U)
+#define ADCK_PWDSGCR_HW_TRIGGER_ENABLE                  (0x1U) /* PRQA S 1534 # Rule-2.5 */
 
 #define ADCK_SGDIAGSTCR_SW_START                        (0x1U)
 
@@ -88,14 +88,14 @@
 #define ADCK_TOCER_SG0_MASK                             (0x1U << 1U)
 
 #define ADCK_ECR_ID_ERROR_STATUS_CLEAR                  (0x1U)
-#define ADCK_ECR_PARITY_ERROR_STATUS_CLEAR              (0x1U << 1U)
+#define ADCK_ECR_PARITY_ERROR_STATUS_CLEAR              (0x1U << 1U) /* PRQA S 1534 # Rule-2.5 */
 #define ADCK_ECR_OVERWRITE_ERROR_STATUS_CLEAR           (0x1U << 2U)
 #define ADCK_ECR_TRIGGER_OVERLAP_ERROR_SG_DIAG_CLEAR    (0x1U << 8U)
 #define ADCK_ECR_TRIGGER_OVERLAP_ERROR_SG0_CLEAR        (0x1U << 9U)
 #define ADCK_ECR_CLEAR_ALL                              (0x3F07U)
 
 #define ADCK_VIRTUAL_CHANNEL_UL_STATUS_CLEAR            (0x1U)
-#define ADCK_PWM_DIAG_UL_STATUS_CLEAR                   (0x1U)
+#define ADCK_PWM_DIAG_UL_STATUS_CLEAR                   (0x1U) /* PRQA S 1534 # Rule-2.5 */
 #define ADCK_SG_DIAG_UL_STATUS_CLEAR                    (0x1U)
 
 #define ADCK_TH_SAMPLING_DELAY_CLKAD_CYCLE              (30U)
@@ -155,14 +155,14 @@ __STATIC_INLINE void r_adck_trigger_overlap_error_handle(adck_instance_ctrl_t * 
 /***********************************************************************************************************************
  * ISR prototypes
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void adck_sg0_scan_end_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void adck_sg1_scan_end_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void adck_sg2_scan_end_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void adck_sg3_scan_end_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void adck_sg4_scan_end_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void adck_sg_diag_scan_end_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void adck_error_isr(void);
-BSP_INTERRUPT_ATTRIBUTE void adck_mpx_isr(void);
+BSP_INTERRUPT_ATTRIBUTE void adck_sg0_scan_end_isr(void);     /* PRQA S 3449, 3451 # Rule-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void adck_sg1_scan_end_isr(void);     /* PRQA S 3449, 3451 # Rule-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void adck_sg2_scan_end_isr(void);     /* PRQA S 3449, 3451 # Rule-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void adck_sg3_scan_end_isr(void);     /* PRQA S 3449, 3451 # Rule-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void adck_sg4_scan_end_isr(void);     /* PRQA S 3449, 3451 # Rule-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void adck_sg_diag_scan_end_isr(void); /* PRQA S 3449, 3451 # Rule-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void adck_error_isr(void);            /* PRQA S 3449, 3451 # Rule-8.5 */
+BSP_INTERRUPT_ATTRIBUTE void adck_mpx_isr(void);              /* PRQA S 3449, 3451 # Rule-8.5 */
 
 /***********************************************************************************************************************
  * Private global variables
@@ -171,27 +171,31 @@ BSP_INTERRUPT_ATTRIBUTE void adck_mpx_isr(void);
 /***********************************************************************************************************************
  * Global variables
  **********************************************************************************************************************/
-const adc_api_t g_adc_on_adck =
+const adc_api_t g_adc_on_adck =              /* PRQA S 1502 # Rule-2.8 */
 {
-    .open           = R_ADCK_Open,
-    .scanCfg        = R_ADCK_ScanCfg,
-    .scanStart      = R_ADCK_ScanStart,
-    .scanGroupStart = R_ADCK_ScanGroupStart,
-    .scanStop       = R_ADCK_ScanStop,
-    .scanStatusGet  = R_ADCK_ScanStatusGet,
-    .read           = R_ADCK_Read,
-    .read32         = R_ADCK_Read32,
-    .calibrate      = R_ADCK_Calibrate,
-    .offsetSet      = R_ADCK_OffsetSet,
-    .callbackSet    = R_ADCK_CallbackSet,
-    .close          = R_ADCK_Close,
-    .infoGet        = R_ADCK_InfoGet
+    .open           = R_ADCK_Open,           /* PRQA S 3635 # Rule-17.12 */
+    .scanCfg        = R_ADCK_ScanCfg,        /* PRQA S 3635 # Rule-17.12 */
+    .scanStart      = R_ADCK_ScanStart,      /* PRQA S 3635 # Rule-17.12 */
+    .scanGroupStart = R_ADCK_ScanGroupStart, /* PRQA S 3635 # Rule-17.12 */
+    .scanStop       = R_ADCK_ScanStop,       /* PRQA S 3635 # Rule-17.12 */
+    .scanStatusGet  = R_ADCK_ScanStatusGet,  /* PRQA S 3635 # Rule-17.12 */
+    .read           = R_ADCK_Read,           /* PRQA S 3635 # Rule-17.12 */
+    .read32         = R_ADCK_Read32,         /* PRQA S 3635 # Rule-17.12 */
+    .calibrate      = R_ADCK_Calibrate,      /* PRQA S 3635 # Rule-17.12 */
+    .offsetSet      = R_ADCK_OffsetSet,      /* PRQA S 3635 # Rule-17.12 */
+    .callbackSet    = R_ADCK_CallbackSet,    /* PRQA S 3635 # Rule-17.12 */
+    .close          = R_ADCK_Close,          /* PRQA S 3635 # Rule-17.12 */
+    .infoGet        = R_ADCK_InfoGet         /* PRQA S 3635 # Rule-17.12 */
 };
+
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
 
 /*******************************************************************************************************************//**
  * @addtogroup ADCK
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /***********************************************************************************************************************
  * Functions
@@ -213,62 +217,71 @@ const adc_api_t g_adc_on_adck =
  * @retval FSP_ERR_IP_UNIT_NOT_PRESENT     This unit is not supported
  * @retval FSP_ERR_INVALID_ARGUMENT        Invalid unit
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_Open (adc_ctrl_t * const p_ctrl, adc_cfg_t const * const p_cfg)
+fsp_err_t R_ADCK_Open (adc_ctrl_t * const p_ctrl, adc_cfg_t const * const p_cfg) /* PRQA S 1505 # Rule-8.7 */
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;    /* PRQA S 0316 # Rule-11.5 */
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
 
     /* Verify the pointers are valid */
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_cfg);
-    FSP_ASSERT(NULL != p_cfg->p_extend);
+    FSP_ASSERT(NULL != p_instance_ctrl);                                                                 /* PRQA S 3432 # Rule-20.7 */
+    FSP_ASSERT(NULL != p_cfg);                                                                           /* PRQA S 3432 # Rule-20.7 */
+    FSP_ASSERT(NULL != p_cfg->p_extend);                                                                 /* PRQA S 3432 # Rule-20.7 */
 
     /* Check if unit input is valid */
-    FSP_ERROR_RETURN((ADCK_NUMBER_OF_UNIT > p_cfg->unit), FSP_ERR_IP_UNIT_NOT_PRESENT);
+    FSP_ERROR_RETURN((ADCK_NUMBER_OF_UNIT > p_cfg->unit), FSP_ERR_IP_UNIT_NOT_PRESENT);                  /* PRQA S 3432 # Rule-20.7 */
 
     /* Verify this unit has already been opened   */
-    FSP_ERROR_RETURN(ADCK_OPEN != p_instance_ctrl->opened, FSP_ERR_ALREADY_OPEN);
-#endif                                 /* ADCK_CFG_PARAM_CHECKING_ENABLE */
+    FSP_ERROR_RETURN(ADCK_OPEN != p_instance_ctrl->opened, FSP_ERR_ALREADY_OPEN);                        /* PRQA S 3432 # Rule-20.7 */
+#endif                                                                                                   /* ADCK_CFG_PARAM_CHECKING_ENABLE */
 
     p_instance_ctrl->p_cfg = p_cfg;
-    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_cfg->p_extend;
+    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_cfg->p_extend;                            /* PRQA S 0311, 0316, 3678 # Rule-11.5, Rule-11.8, Rule-8.13 */
 
     /* Get the ADCK unit base address and store to p_reg */
-#if (BSP_MCU_GROUP_RH850U2Bx)
+#if ((BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x0100U) || (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x0010U)) /* PRQA S 3332 # Rule-20.9 */
     switch (p_instance_ctrl->p_cfg->unit)
     {
         case 0:
         {
-            p_instance_ctrl->p_reg = R_ADCK0;
+            p_instance_ctrl->p_reg = R_ADCK0;        /* PRQA S 0306 # Rule-11.4 */
+ #if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x0100U) /* PRQA S 3332 # Rule-20.9 */
+            p_instance_ctrl->p_selb2_reg = R_ADCK0_SELB2;
+ #endif
             break;
         }
 
         case 1:
         {
-            p_instance_ctrl->p_reg = R_ADCK1;
+            p_instance_ctrl->p_reg = R_ADCK1;        /* PRQA S 0306 # Rule-11.4 */
+ #if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x0100U) /* PRQA S 3332 # Rule-20.9 */
+            p_instance_ctrl->p_selb2_reg = R_ADCK1_SELB2;
+ #endif
             break;
         }
 
         case 2:
         {
-            p_instance_ctrl->p_reg = R_ADCK2;
+            p_instance_ctrl->p_reg = R_ADCK2;        /* PRQA S 0306 # Rule-11.4 */
+ #if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x0100U) /* PRQA S 3332 # Rule-20.9 */
+            p_instance_ctrl->p_selb2_reg = R_ADCK2_SELB2;
+ #endif
             break;
         }
 
         case 3:
         {
-            p_instance_ctrl->p_reg = R_ADCK3;
+            p_instance_ctrl->p_reg = R_ADCK3; /* PRQA S 0306 # Rule-11.4 */
             break;
         }
 
-        default:
+        default:                              /* PRQA S 2024 # Rule-16.3 */
 
             /* Invalid unit */
             return FSP_ERR_INVALID_ARGUMENT;
     }
 
-#elif (BSP_MCU_GROUP_RH850U2Cx)
+#elif (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U)
     if (0U == p_instance_ctrl->p_cfg->unit)
     {
         p_instance_ctrl->p_reg      = R_ADCKA;
@@ -296,49 +309,50 @@ fsp_err_t R_ADCK_Open (adc_ctrl_t * const p_ctrl, adc_cfg_t const * const p_cfg)
     r_adck_scan_groups_force_termination(p_instance_ctrl);
 
     /* Set suspend method */
-    p_instance_ctrl->p_reg->ADCKnADCR1 = (uint8_t) p_extend->suspend_method;
+    p_instance_ctrl->p_reg->ADCKnADCR1 = (uint8_t) p_extend->suspend_method;                   /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Set data format and addition count */
-    p_instance_ctrl->p_reg->ADCKnADCR2 = (uint8_t) p_extend->data_format_addition_count.adcr2;
+    p_instance_ctrl->p_reg->ADCKnADCR2 = (uint8_t) p_extend->data_format_addition_count.adcr2; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* If overwrite error interrupt is enabled, dummy read all data registers to clear the write flag if any */
-    if (ADCK_OVERWRITE_ERROR_INT_ENABLE == p_extend->safety_cfg.sftcr_b.overwrite)
+    if (ADCK_OVERWRITE_ERROR_INT_ENABLE == p_extend->safety_cfg.sftcr_b.overwrite)             /* PRQA S 1881 # Rule-10.4 */
     {
         for (uint32_t channel = 0U; channel < ADCK_NUMBER_OF_VIRTUAL_CHANNEL; channel++)
         {
-            (void) p_instance_ctrl->p_reg->ADCKnDR[channel];
+            (void) p_instance_ctrl->p_reg->ADCKnDR[channel];                                   /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
         }
     }
 
     /* Clear all id error flag, parity error flag, overwrite error flag, and trigger overlap error flags */
-    p_instance_ctrl->p_reg->ADCKnECR = ADCK_ECR_CLEAR_ALL;
+    p_instance_ctrl->p_reg->ADCKnECR = ADCK_ECR_CLEAR_ALL;                     /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Configure read and clear, id error interrupt enable, parity error interrupt enable,
      * overwrite error interrupt enable, trigger overlap error interrupt enable */
-    p_instance_ctrl->p_reg->ADCKnSFTCR = (uint8_t) p_extend->safety_cfg.sftcr;
+    p_instance_ctrl->p_reg->ADCKnSFTCR = (uint8_t) p_extend->safety_cfg.sftcr; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     r_adck_ul_limit_check_initialize(p_instance_ctrl);
 
     /* Setting sampling period, extended sampling period, sampling selection, and enable/disable input buffer */
-    p_instance_ctrl->p_reg->ADCKnSMPCR = p_extend->sampling_cfg.smpcr;
+    p_instance_ctrl->p_reg->ADCKnSMPCR = p_extend->sampling_cfg.smpcr;          /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Setting pin level self-diagnostic voltage level, enable/disable T&H path self-diagnostic */
-    p_instance_ctrl->p_reg->ADCKnTDCR = p_extend->pin_lv_self_diag_cfg.tdcr;
+    p_instance_ctrl->p_reg->ADCKnTDCR = p_extend->pin_lv_self_diag_cfg.tdcr;    /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Setting enable/disable addition wiring-break detection mode, setting detection pulse length in wiring-break
      * detection mode 1 */
-    p_instance_ctrl->p_reg->ADCKnODCR = p_extend->wiring_break_detect_cfg.odcr;
+    p_instance_ctrl->p_reg->ADCKnODCR = p_extend->wiring_break_detect_cfg.odcr; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     r_adc_mpx_initialize(p_instance_ctrl);
 
     /* Setting to enable/disable trigger overlap check function */
-    p_instance_ctrl->p_reg->ADCKnTOCCR = (uint8_t) p_extend->trigger_overlap_detect;
+    p_instance_ctrl->p_reg->ADCKnTOCCR = (uint8_t) p_extend->trigger_overlap_detect; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Setting target virtual channel for A/D conversion timing monitor v (v = 0 to 4) */
     for (uint32_t timing_monior = 0U; timing_monior < ADCK_NUMBER_OF_AD_CONVERSION_TIMING_MONITOR; timing_monior++)
     {
-        p_instance_ctrl->p_reg->ADCKnADENDP[timing_monior] =
-            (uint8_t) p_extend->ad_conv_timing_monitor.target_vc[timing_monior];
+        p_instance_ctrl->p_reg->ADCKnADENDP[timing_monior] = /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+                                                             (uint8_t) p_extend->ad_conv_timing_monitor.target_vc[
+            timing_monior];
     }
 
     r_adc_th_initialize(p_instance_ctrl);
@@ -348,8 +362,8 @@ fsp_err_t R_ADCK_Open (adc_ctrl_t * const p_ctrl, adc_cfg_t const * const p_cfg)
     /* Setting wait time table */
     for (uint32_t wait_setting = 0U; wait_setting < ADCK_WAIT_SETTING_TABLE_ENTRIES; wait_setting++)
     {
-        p_instance_ctrl->p_reg->ADCKnWAITTR[wait_setting] =
-            (uint16_t) p_extend->wait_setting.wait_setting[wait_setting];
+        p_instance_ctrl->p_reg->ADCKnWAITTR[wait_setting] = /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+                                                            (uint16_t) p_extend->wait_setting.wait_setting[wait_setting];
     }
 
     /* Initialize callback related variables */
@@ -361,7 +375,7 @@ fsp_err_t R_ADCK_Open (adc_ctrl_t * const p_ctrl, adc_cfg_t const * const p_cfg)
     r_adck_interrupts_enable(p_instance_ctrl);
 
     /* Mark this ADCK instance is opened */
-    p_instance_ctrl->opened = ADCK_OPEN;
+    p_instance_ctrl->opened = ADCK_OPEN; /* PRQA S 1257 # Rule-10.3 */
 
     return FSP_SUCCESS;
 }
@@ -375,13 +389,13 @@ fsp_err_t R_ADCK_Open (adc_ctrl_t * const p_ctrl, adc_cfg_t const * const p_cfg)
  * @retval FSP_ERR_ASSERTION           p_ctrl is NULL
  * @retval FSP_ERR_NOT_OPEN            Unit is not open.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_Close (adc_ctrl_t * const p_ctrl)
+fsp_err_t R_ADCK_Close (adc_ctrl_t * const p_ctrl)                            /* PRQA S 1505 # Rule-8.7 */
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl; /* PRQA S 0316 # Rule-11.5 */
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
-    FSP_ASSERT(p_instance_ctrl);
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
+    FSP_ASSERT(p_instance_ctrl);                                              /* PRQA S 3432 # Rule-20.7 */
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN); /* PRQA S 3432 # Rule-20.7 */
 #endif
 
     r_adck_interrupts_disable(p_instance_ctrl);
@@ -417,24 +431,24 @@ fsp_err_t R_ADCK_Close (adc_ctrl_t * const p_ctrl)
  * @retval FSP_ERR_ASSERTION               The pointer input is NULL
  * @retval FSP_ERR_NOT_OPEN                Unit is not open
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_ScanCfg (adc_ctrl_t * const p_ctrl, void const * const p_scan_group_cfg)
+fsp_err_t R_ADCK_ScanCfg (adc_ctrl_t * const p_ctrl, void const * const p_scan_group_cfg) /* PRQA S 1505 # Rule-8.7 */
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
-    adck_sg_cfg_t        * p_sgs_cfg       = (adck_sg_cfg_t *) p_scan_group_cfg;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;             /* PRQA S 0316 # Rule-11.5 */
+    adck_sg_cfg_t        * p_sgs_cfg       = (adck_sg_cfg_t *) p_scan_group_cfg;          /* PRQA S 0311, 0316, 3678 # Rule-11.5, Rule-11.8, Rule-8.13 */
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
 
     /* Verify the pointers are valid */
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_scan_group_cfg);
+    FSP_ASSERT(NULL != p_instance_ctrl);  /* PRQA S 3432 # Rule-20.7 */
+    FSP_ASSERT(NULL != p_scan_group_cfg); /* PRQA S 3432 # Rule-20.7 */
 
     /* Check if scan group is enable but virtual channel configuration pointer is NULL */
     for (uint8_t scan_group = 0U; scan_group < ADCK_NUMBER_OF_SG; scan_group++)
     {
-        FSP_ASSERT((NULL == p_sgs_cfg->p_sg_cfg[scan_group]) || (NULL != (p_sgs_cfg->p_sg_cfg[scan_group]->p_vc_cfg)));
+        FSP_ASSERT((NULL == p_sgs_cfg->p_sg_cfg[scan_group]) || (NULL != (p_sgs_cfg->p_sg_cfg[scan_group]->p_vc_cfg))); /* PRQA S 3432 # Rule-20.7 */
     }
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
-#endif                                 /* ADCK_CFG_PARAM_CHECKING_ENABLE */
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);                                           /* PRQA S 3432 # Rule-20.7 */
+#endif                                                                                                                  /* ADCK_CFG_PARAM_CHECKING_ENABLE */
 
     R_ADCK1_Type * p_reg = p_instance_ctrl->p_reg;
     p_instance_ctrl->p_sg_cfg = p_sgs_cfg;
@@ -444,7 +458,7 @@ fsp_err_t R_ADCK_ScanCfg (adc_ctrl_t * const p_ctrl, void const * const p_scan_g
     /* Set all virtual channel j (j = 0 to 63) to reset value */
     for (uint32_t channel = 0U; channel < ADCK_NUMBER_OF_VIRTUAL_CHANNEL; channel++)
     {
-        p_reg->ADCKnVCR[channel] = 0U;
+        p_reg->ADCKnVCR[channel] = 0U; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     }
 
     for (uint32_t scan_group = 0; scan_group < ADCK_NUMBER_OF_SG; scan_group++)
@@ -455,29 +469,31 @@ fsp_err_t R_ADCK_ScanCfg (adc_ctrl_t * const p_ctrl, void const * const p_scan_g
         if (NULL != p_sgx_cfg)
         {
             /* Setting start and end virtual channel pointers for scan group x */
-            *((uint16_t *) ADCK_SG_REG_ADDR(&p_reg->ADCKnSGVCPR0, scan_group)) =
-                (p_sgx_cfg->start_vc_ptr & ADCK_SGVCPR_VCSP_MASK) |
-                ((p_sgx_cfg->end_vc_ptr & ADCK_SGVCPR_VCEP_MASK) << ADCK_SGVCPR_VCEP_POS);
+            *((uint16_t *) ADCK_SG_REG_ADDR(&p_reg->ADCKnSGVCPR0, scan_group)) =                             /* PRQA S 0310, 0312, 0488, 0662, 3305, 3395, 3469, 4434 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.3, Rule-11.3, Rule-11.8, Rule-12.1, Rule-18.4 */
+                                                                                 (p_sgx_cfg->start_vc_ptr &  /* PRQA S 1861, 4542 # Rule-10.1, Rule-10.4 */
+                                                                                  ADCK_SGVCPR_VCSP_MASK) |   /* PRQA S 1861, 4532, 4542 # Rule-10.1, Rule-10.4 */
+                                                                                 ((p_sgx_cfg->end_vc_ptr &   /* PRQA S 1861, 4542 # Rule-10.1, Rule-10.4 */
+                                                                                   ADCK_SGVCPR_VCEP_MASK) << /* PRQA S 4533 # Rule-10.1 */
+                                                                                  ADCK_SGVCPR_VCEP_POS);     /* PRQA S 1861, 4533, 4542 # Rule-10.1, Rule-10.4 */
 
             /* Setting scan cycles for scan group in multi-cycle scan mode */
-            if (ADCK_SG_SCAN_MODE_MULTICYLE == p_sgx_cfg->sg_ctrl.sgcr_b.scan_mode)
+            if (ADCK_SG_SCAN_MODE_MULTICYLE == p_sgx_cfg->sg_ctrl.sgcr_b.scan_mode)                          /* PRQA S 1881 # Rule-10.4 */
             {
-                *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGMCYCR0, scan_group) = p_sgx_cfg->scan_cycle;
+                *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGMCYCR0, scan_group) = p_sgx_cfg->scan_cycle;                /* PRQA S 0312, 0488, 0662, 3395, 3469 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-11.8, Rule-12.1, Rule-18.4 */
             }
             else
             {
                 /* Clear multi-cycle register for scan group x */
-                *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGMCYCR0, scan_group) = 0U;
+                *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGMCYCR0, scan_group) = 0U; /* PRQA S 0312, 0488, 0662, 3395, 3469 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-11.8, Rule-12.1, Rule-18.4 */
             }
         }
         else
         {
             /* Scan group x is not used so reset the scan group control register to reset value */
-            *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) = 0U;
+            *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) = 0U; /* PRQA S 0312, 0488, 0662, 3395, 3469 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-11.8, Rule-12.1, Rule-18.4 */
         }
 
-#if (BSP_MCU_GROUP_RH850U2Cx)
-
+#if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U)                 /* PRQA S 3332 # Rule-20.9 */
         /* Check if this is ADCK0, if it is not, NULL is assigned to p_selb_reg in Open API */
         if (NULL != p_instance_ctrl->p_selb_reg)
         {
@@ -487,18 +503,18 @@ fsp_err_t R_ADCK_ScanCfg (adc_ctrl_t * const p_ctrl, void const * const p_scan_g
 #endif
 
         /* Set T&H target scan group to scan group x if it is triggered by T&H group A or T&H group B */
-        if (ADCK_SCAN_GROUP_SG1 <= scan_group)
+        if (ADCK_SCAN_GROUP_SG1 <= scan_group) /* PRQA S 1880 # Rule-10.4 */
         {
             /* Check if trigger method for this can group is T&H group A */
             if (ADCK_SG_TRIGGER_METHOD_THA == p_sgx_cfg->trigger_method)
             {
                 /* Set scan group x to be target scan group for T&H group A */
-                p_reg->ADCKnTHACR_b.SGS = (scan_group - (uint32_t) ADCK_SCAN_GROUP_SG1) & ADCK_THACR_SGS_MASK;
+                p_reg->ADCKnTHACR_b.SGS = (scan_group - (uint32_t) ADCK_SCAN_GROUP_SG1) & ADCK_THACR_SGS_MASK; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
             }
             else if (ADCK_SG_TRIGGER_METHOD_THB == p_sgx_cfg->trigger_method)
             {
                 /* Set scan group x to be target scan group for T&H group B */
-                p_reg->ADCKnTHBCR_b.SGS = (scan_group - (uint32_t) ADCK_SCAN_GROUP_SG1) & ADCK_THBCR_SGS_MASK;
+                p_reg->ADCKnTHBCR_b.SGS = (scan_group - (uint32_t) ADCK_SCAN_GROUP_SG1) & ADCK_THBCR_SGS_MASK; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
             }
             else
             {
@@ -511,28 +527,27 @@ fsp_err_t R_ADCK_ScanCfg (adc_ctrl_t * const p_ctrl, void const * const p_scan_g
     if (NULL != p_sg_diag_cfg)
     {
         /* Setting target physical channels for SG-Diag */
-        p_reg->ADCKnSGDIAGPCCR0 = p_sg_diag_cfg->physical_channel_cfg_0;
-        p_reg->ADCKnSGDIAGPCCR1 = p_sg_diag_cfg->physical_channel_cfg_1;
+        p_reg->ADCKnSGDIAGPCCR0 = p_sg_diag_cfg->physical_channel_cfg_0; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+        p_reg->ADCKnSGDIAGPCCR1 = p_sg_diag_cfg->physical_channel_cfg_1; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Setting conversion type for SG-Diag virtual channels k (k = 0 to 2) */
         for (uint32_t channel = 0U; channel < ADCK_NUMBER_OF_SG_DIAG_VIRTUAL_CHANNEL; channel++)
         {
-            p_reg->ADCKnSGDIAGVCR[channel] = p_sg_diag_cfg->sg_diag_vc_cfg[channel].conv_type;
+            p_reg->ADCKnSGDIAGVCR[channel] = p_sg_diag_cfg->sg_diag_vc_cfg[channel].conv_type; /* PRQA S 0662, 4424 # Dir-1.1, Rule-1.2, Rule-10.3 */
         }
 
         /* Setting SG-Diag end interrupt enable, end pointer select, end interrupt mode select, subtraction type select
          * upper/lower limit check table register select 0, upper/lower limit check table register select 1, and disable
          * HW trigger for SG-Diag */
-        p_reg->ADCKnSGDIAGCR = p_sg_diag_cfg->sg_ctrl.sgdiagcr;
+        p_reg->ADCKnSGDIAGCR = p_sg_diag_cfg->sg_ctrl.sgdiagcr;                                /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     }
     else
     {
         /* SG-Diag is not used so reset entire SGDIAGCR to its reset value */
-        p_reg->ADCKnSGDIAGCR = 0U;
+        p_reg->ADCKnSGDIAGCR = 0U;                  /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     }
 
-#if (BSP_MCU_GROUP_RH850U2Cx)
-
+#if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U) /* PRQA S 3332 # Rule-20.9 */
     /* Check if scan group 4 is configure as PWM-Diag */
     if (ADCK_PWM_DIAG_CFG_ENABLE == p_instance_ctrl->p_sg_cfg->pwm_diag_cfg)
     {
@@ -559,7 +574,7 @@ fsp_err_t R_ADCK_ScanCfg (adc_ctrl_t * const p_ctrl, void const * const p_scan_g
 #endif
 
     /* Set initialized to ADCK_OPEN to indicate that the scan groups are configured */
-    p_instance_ctrl->initialized = ADCK_OPEN;
+    p_instance_ctrl->initialized = ADCK_OPEN; /* PRQA S 1257 # Rule-10.3 */
 
     return FSP_SUCCESS;
 }
@@ -569,7 +584,7 @@ fsp_err_t R_ADCK_ScanCfg (adc_ctrl_t * const p_ctrl, void const * const p_scan_g
  *
  * @retval FSP_ERR_UNSUPPORTED            Function not supported in this implemention.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_ScanStart (adc_ctrl_t * const p_ctrl)
+fsp_err_t R_ADCK_ScanStart (adc_ctrl_t * const p_ctrl) /* PRQA S 1505, 3673 # Rule-8.13, Rule-8.7 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
 
@@ -581,7 +596,7 @@ fsp_err_t R_ADCK_ScanStart (adc_ctrl_t * const p_ctrl)
  *
  * @retval FSP_ERR_UNSUPPORTED            Function not supported in this implemention.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_ScanStop (adc_ctrl_t * const p_ctrl)
+fsp_err_t R_ADCK_ScanStop (adc_ctrl_t * const p_ctrl) /* PRQA S 1505, 3673 # Rule-8.13, Rule-8.7 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
 
@@ -610,22 +625,22 @@ fsp_err_t R_ADCK_ScanStop (adc_ctrl_t * const p_ctrl)
  * @return                                      See @ref RENESAS_ERROR_CODES or functions called by this function for
  *                                              other possible return codes.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_ScanGroupStart (adc_ctrl_t * p_ctrl, adc_group_mask_t group_mask)
+fsp_err_t R_ADCK_ScanGroupStart (adc_ctrl_t * p_ctrl, adc_group_mask_t group_mask) /* PRQA S 1505 # Rule-8.7 */
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;      /* PRQA S 0316 # Rule-11.5 */
     fsp_err_t              return_val      = FSP_SUCCESS;
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
 
     /* Verify the pointers are valid */
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->initialized, FSP_ERR_NOT_INITIALIZED);
+    FSP_ASSERT(NULL != p_instance_ctrl);                                                  /* PRQA S 3432 # Rule-20.7 */
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);             /* PRQA S 3432 # Rule-20.7 */
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->initialized, FSP_ERR_NOT_INITIALIZED); /* PRQA S 3432 # Rule-20.7 */
 
     /* Verify group_mask is valid for ADCK */
     return_val = r_adck_group_mask_param_check(group_mask, p_instance_ctrl->p_sg_cfg);
-    FSP_ERROR_RETURN(FSP_SUCCESS == return_val, return_val);
-#endif                                 /* ADCK_CFG_PARAM_CHECKING_ENABLE */
+    FSP_ERROR_RETURN(FSP_SUCCESS == return_val, return_val);                              /* PRQA S 3432 # Rule-20.7 */
+#endif                                                                                    /* ADCK_CFG_PARAM_CHECKING_ENABLE */
 
     R_ADCK1_Type        * p_reg         = p_instance_ctrl->p_reg;
     adck_sg_cfg_t const * p_sg_cfg      = p_instance_ctrl->p_sg_cfg;
@@ -636,17 +651,17 @@ fsp_err_t R_ADCK_ScanGroupStart (adc_ctrl_t * p_ctrl, adc_group_mask_t group_mas
     if ((group_mask >= ADC_GROUP_MASK_0) && (group_mask <= ADC_GROUP_MASK_4))
     {
         /* Get the scan group number */
-        sg_number     = SCH1R(group_mask) - 1;
-        sg_status     = *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGSR0, sg_number);
-        sg_hw_trigger = (*ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, sg_number)) &
+        sg_number     = SCH1R(group_mask) - 1;                               /* PRQA S 3469, 4434 # Dir-4.9, Rule-10.3 */
+        sg_status     = *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGSR0, sg_number);    /* PRQA S 0311, 0312, 0488, 0662, 3395, 3469 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-11.8, Rule-12.1, Rule-18.4 */
+        sg_hw_trigger = (*ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, sg_number)) & /* PRQA S 0312, 0488, 0662, 3395, 3469 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-11.8, Rule-12.1, Rule-18.4 */
                         (ADCK_SGCR_HW_TRIGGER_ENABLE | ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE);
 
         if ((0U == sg_status) && ((0U == sg_hw_trigger) ||
                                   ((ADCK_SGCR_HW_TRIGGER_ENABLE == sg_hw_trigger) &&
-                                   r_adck_is_th_sw_trigger(p_instance_ctrl, (adck_scan_group_t) sg_number))))
+                                   r_adck_is_th_sw_trigger(p_instance_ctrl, (adck_scan_group_t) sg_number)))) /* PRQA S 4342 # Rule-10.5 */
         {
             /* Start the scan group */
-            return_val = r_adck_scan_group_start(p_instance_ctrl, (adck_scan_group_t) sg_number);
+            return_val = r_adck_scan_group_start(p_instance_ctrl, (adck_scan_group_t) sg_number);             /* PRQA S 4342 # Rule-10.5 */
         }
         else
         {
@@ -655,7 +670,7 @@ fsp_err_t R_ADCK_ScanGroupStart (adc_ctrl_t * p_ctrl, adc_group_mask_t group_mas
         }
     }
 
-#if (BSP_MCU_GROUP_RH850U2Cx)
+#if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U) /* PRQA S 3332 # Rule-20.9 */
     else if (ADC_GROUP_MASK_PWM_DIAG == group_mask)
     {
         /* Check if scan group 4 is inactive */
@@ -673,17 +688,17 @@ fsp_err_t R_ADCK_ScanGroupStart (adc_ctrl_t * p_ctrl, adc_group_mask_t group_mas
     else if (ADC_GROUP_MASK_SG_DIAG == group_mask)
     {
         /* Check if SG-Diag scan group is inactive */
-        if ((0U == p_reg->ADCKnSGDIAGSR) && (0U == p_reg->ADCKnSGDIAGCR_b.TRGMD))
+        if ((0U == p_reg->ADCKnSGDIAGSR) && (0U == p_reg->ADCKnSGDIAGCR_b.TRGMD)) /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
         {
             if (ADCK_SG_DIAG_TRIGGER_METHOD_SW == p_sg_cfg->p_sg_diag_cfg->trigger_method)
             {
                 /* Start SG-Diag by software */
-                p_reg->ADCKnSGDIAGSTCR = ADCK_SGDIAGSTCR_SW_START;
+                p_reg->ADCKnSGDIAGSTCR = ADCK_SGDIAGSTCR_SW_START; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
             }
             else
             {
                 /* Enable HW trigger for SG-Diag */
-                p_reg->ADCKnSGDIAGCR_b.TRGMD = ADCK_SGDIAGCR_HW_TRIGGER_ENABLE;
+                p_reg->ADCKnSGDIAGCR_b.TRGMD = ADCK_SGDIAGCR_HW_TRIGGER_ENABLE; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
             }
         }
         else
@@ -719,22 +734,22 @@ fsp_err_t R_ADCK_ScanGroupStart (adc_ctrl_t * p_ctrl, adc_group_mask_t group_mas
  * @return                                         See @ref RENESAS_ERROR_CODES or functions called by this function
  *                                                 for other possible return codes.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_ScanGroupStop (adc_ctrl_t * p_ctrl, adc_group_mask_t group_mask)
+fsp_err_t R_ADCK_ScanGroupStop (adc_ctrl_t * p_ctrl, adc_group_mask_t group_mask) /* PRQA S 1503 # Rule-2.1 */
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;     /* PRQA S 0316 # Rule-11.5 */
     fsp_err_t              return_val      = FSP_SUCCESS;
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
 
     /* Verify the pointers are valid */
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->initialized, FSP_ERR_NOT_INITIALIZED);
+    FSP_ASSERT(NULL != p_instance_ctrl);                                                  /* PRQA S 3432 # Rule-20.7 */
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);             /* PRQA S 3432 # Rule-20.7 */
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->initialized, FSP_ERR_NOT_INITIALIZED); /* PRQA S 3432 # Rule-20.7 */
 
     /* Verify group_mask is valid for ADCK */
     return_val = r_adck_group_mask_param_check(group_mask, p_instance_ctrl->p_sg_cfg);
-    FSP_ERROR_RETURN(FSP_SUCCESS == return_val, return_val);
-#endif                                 /* ADCK_CFG_PARAM_CHECKING_ENABLE */
+    FSP_ERROR_RETURN(FSP_SUCCESS == return_val, return_val);                              /* PRQA S 3432 # Rule-20.7 */
+#endif                                                                                    /* ADCK_CFG_PARAM_CHECKING_ENABLE */
 
     R_ADCK1_Type * p_reg     = p_instance_ctrl->p_reg;
     uint32_t       sg_number = 0U;
@@ -742,13 +757,13 @@ fsp_err_t R_ADCK_ScanGroupStop (adc_ctrl_t * p_ctrl, adc_group_mask_t group_mask
     if ((group_mask >= ADC_GROUP_MASK_0) && (group_mask <= ADC_GROUP_MASK_4))
     {
         /* Get the scan group number */
-        sg_number = SCH1R(group_mask) - 1;
+        sg_number = SCH1R(group_mask) - 1;                                      /* PRQA S 3469, 4434 # Dir-4.9, Rule-10.3 */
 
         /* Stop the scan group */
-        r_adck_scan_group_stop(p_instance_ctrl, (adck_scan_group_t) sg_number);
+        r_adck_scan_group_stop(p_instance_ctrl, (adck_scan_group_t) sg_number); /* PRQA S 4342 # Rule-10.5 */
     }
 
-#if (BSP_MCU_GROUP_RH850U2Cx)
+#if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U)                             /* PRQA S 3332 # Rule-20.9 */
     else if (ADC_GROUP_MASK_PWM_DIAG == group_mask)
     {
         /* Disable HW trigger for PWM-Diag */
@@ -761,13 +776,13 @@ fsp_err_t R_ADCK_ScanGroupStop (adc_ctrl_t * p_ctrl, adc_group_mask_t group_mask
     else if (ADC_GROUP_MASK_SG_DIAG == group_mask)
     {
         /* Disable HW trigger for SG-Diag scan group */
-        p_reg->ADCKnSGDIAGCR_b.TRGMD = 0U;
+        p_reg->ADCKnSGDIAGCR_b.TRGMD = 0U;                                               /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Request to stop SG-Diag */
-        p_reg->ADCKnSGDIAGSTPCR = ADCK_SGDIAGSTPCR_SG_STOP;
+        p_reg->ADCKnSGDIAGSTPCR = ADCK_SGDIAGSTPCR_SG_STOP;                              /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Wait until scan group is stopped */
-        FSP_HARDWARE_REGISTER_WAIT(p_reg->ADCKnSGDIAGSR, ADCK_SGDIAGSR_SCAN_GROUP_IDLE);
+        FSP_HARDWARE_REGISTER_WAIT(p_reg->ADCKnSGDIAGSR, ADCK_SGDIAGSR_SCAN_GROUP_IDLE); /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     }
     else
     {
@@ -786,24 +801,24 @@ fsp_err_t R_ADCK_ScanGroupStop (adc_ctrl_t * p_ctrl, adc_group_mask_t group_mask
  * @retval FSP_ERR_ASSERTION        The pointer input is NULL
  * @retval FSP_ERR_NOT_OPEN         This ADCK instance is not open by @ref adc_api_t::open
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_ScanStatusGet (adc_ctrl_t * const p_ctrl, adc_status_t * p_status)
+fsp_err_t R_ADCK_ScanStatusGet (adc_ctrl_t * const p_ctrl, adc_status_t * p_status) /* PRQA S 1505, 3673 # Rule-8.13, Rule-8.7 */
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;       /* PRQA S 0316, 3678 # Rule-11.5, Rule-8.13 */
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
 
     /* Verify the pointers are valid */
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_status);
+    FSP_ASSERT(NULL != p_instance_ctrl);                                      /* PRQA S 3432 # Rule-20.7 */
+    FSP_ASSERT(NULL != p_status);                                             /* PRQA S 3432 # Rule-20.7 */
 
     /* Verify if unit and scan groups are opened */
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
-#endif                                 /* ADCK_CFG_PARAM_CHECKING_ENABLE */
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN); /* PRQA S 3432 # Rule-20.7 */
+#endif                                                                        /* ADCK_CFG_PARAM_CHECKING_ENABLE */
 
-    R_ADCK1_Type * p_reg = p_instance_ctrl->p_reg;
+    R_ADCK1_Type * p_reg = p_instance_ctrl->p_reg;                            /* PRQA S 3678 # Rule-8.13 */
 
     /* Check if any scan group is active */
-    if (0U != (p_reg->ADCKnSGSTR & ADCK_SGSTR_SGS_STATUS_MASK))
+    if (0U != (p_reg->ADCKnSGSTR & ADCK_SGSTR_SGS_STATUS_MASK))               /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     {
         p_status->state = ADC_STATE_SCAN_IN_PROGRESS;
     }
@@ -831,41 +846,41 @@ fsp_err_t R_ADCK_ScanStatusGet (adc_ctrl_t * const p_ctrl, adc_status_t * p_stat
  * @return                                          See @ref RENESAS_ERROR_CODES or functions called by this function
  *                                                  for other possible return codes
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_ScanGroupStatusGet (adc_ctrl_t * const       p_ctrl,
+fsp_err_t R_ADCK_ScanGroupStatusGet (adc_ctrl_t * const       p_ctrl,         /* PRQA S 1503, 3673 # Rule-2.1, Rule-8.13 */
                                      adc_group_mask_t const   group_mask,
                                      adck_sg_status_t * const p_status)
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl; /* PRQA S 0316, 3678 # Rule-11.5, Rule-8.13 */
     fsp_err_t              return_val      = FSP_SUCCESS;
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
 
     /* Verify the pointers are valid */
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_status);
+    FSP_ASSERT(NULL != p_instance_ctrl);                                      /* PRQA S 3432 # Rule-20.7 */
+    FSP_ASSERT(NULL != p_status);                                             /* PRQA S 3432 # Rule-20.7 */
 
     /* Verify if unit and scan groups are opened */
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN); /* PRQA S 3432 # Rule-20.7 */
 
     /* Verify group_mask is valid for ADCK */
     return_val = r_adck_group_mask_param_check(group_mask, p_instance_ctrl->p_sg_cfg);
-    FSP_ERROR_RETURN(FSP_SUCCESS == return_val, return_val);
-#endif                                 /* ADCK_CFG_PARAM_CHECKING_ENABLE */
+    FSP_ERROR_RETURN(FSP_SUCCESS == return_val, return_val);                  /* PRQA S 3432 # Rule-20.7 */
+#endif                                                                        /* ADCK_CFG_PARAM_CHECKING_ENABLE */
 
-    R_ADCK1_Type * p_reg     = p_instance_ctrl->p_reg;
+    R_ADCK1_Type * p_reg     = p_instance_ctrl->p_reg;                        /* PRQA S 3678 # Rule-8.13 */
     uint32_t       sg_number = 0U;
 
     if ((group_mask >= ADC_GROUP_MASK_0) && (group_mask <= ADC_GROUP_MASK_4))
     {
         /* Get the scan group number */
-        sg_number = SCH1R(group_mask) - 1;
+        sg_number = SCH1R(group_mask) - 1;                                                                         /* PRQA S 3469, 4434 # Dir-4.9, Rule-10.3 */
 
         /* Get status of scan group */
         *p_status =
-            (adck_sg_status_t) (*ADCK_SG_REG_ADDR(&p_reg->ADCKnSGSR0, sg_number) >> R_ADCK1_ADCKnSGSR0_SGACT_Pos);
+            (adck_sg_status_t) (*ADCK_SG_REG_ADDR(&p_reg->ADCKnSGSR0, sg_number) >> R_ADCK1_ADCKnSGSR0_SGACT_Pos); /* PRQA S 0311, 0312, 0488, 0662, 3395, 3469, 4342, 4394 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.5, Rule-10.8, Rule-11.8, Rule-12.1, Rule-18.4 */
     }
 
-#if (BSP_MCU_GROUP_RH850U2Cx)
+#if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U)                                                                /* PRQA S 3332 # Rule-20.9 */
     else if (ADC_GROUP_MASK_PWM_DIAG == group_mask)
     {
         /* Scan group 4 and PWM-Diag use the same status register */
@@ -875,7 +890,7 @@ fsp_err_t R_ADCK_ScanGroupStatusGet (adc_ctrl_t * const       p_ctrl,
     else if (ADC_GROUP_MASK_SG_DIAG == group_mask)
     {
         /* Get the status of SG-Diag */
-        *p_status = (adck_sg_status_t) p_reg->ADCKnSGDIAGSR_b.SDACT;
+        *p_status = (adck_sg_status_t) p_reg->ADCKnSGDIAGSR_b.SDACT; /* PRQA S 0662, 4342 # Dir-1.1, Rule-1.2, Rule-10.5 */
     }
     else
     {
@@ -895,27 +910,27 @@ fsp_err_t R_ADCK_ScanGroupStatusGet (adc_ctrl_t * const       p_ctrl,
  * @retval FSP_ERR_NOT_OPEN                     This ADCK instance is not open by @ref adc_api_t::open
  * @retval FSP_ERR_ADCK_CHANNEL_NOT_SUPPORT     This reg_id is not supported
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_Read (adc_ctrl_t * const p_ctrl, adc_channel_t const reg_id, uint16_t * const p_data)
+fsp_err_t R_ADCK_Read (adc_ctrl_t * const p_ctrl, adc_channel_t const reg_id, uint16_t * const p_data) /* PRQA S 1505, 3673 # Rule-8.13, Rule-8.7 */
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;                          /* PRQA S 0316, 3678 # Rule-11.5, Rule-8.13 */
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
 
     /* Verify the pointers are valid */
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_data);
+    FSP_ASSERT(NULL != p_instance_ctrl);                                                         /* PRQA S 3432 # Rule-20.7 */
+    FSP_ASSERT(NULL != p_data);                                                                  /* PRQA S 3432 # Rule-20.7 */
 
     /* Verify if unit and scan groups are opened and initialized */
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);                    /* PRQA S 3432 # Rule-20.7 */
 
     /* Check reg_id input valid */
-    FSP_ERROR_RETURN(reg_id < ADCK_NUMBER_OF_VIRTUAL_CHANNEL, FSP_ERR_ADCK_CHANNEL_NOT_SUPPORT);
-#endif                                 /* ADCK_CFG_PARAM_CHECKING_ENABLE */
+    FSP_ERROR_RETURN(reg_id < ADCK_NUMBER_OF_VIRTUAL_CHANNEL, FSP_ERR_ADCK_CHANNEL_NOT_SUPPORT); /* PRQA S 1880, 3432 # Rule-10.4, Rule-20.7 */
+#endif                                                                                           /* ADCK_CFG_PARAM_CHECKING_ENABLE */
 
-    R_ADCK1_Type * p_reg = p_instance_ctrl->p_reg;
+    R_ADCK1_Type * p_reg = p_instance_ctrl->p_reg;                                               /* PRQA S 3678 # Rule-8.13 */
 
     /* Write data of channel reg_id into p_data*/
-    *p_data = p_reg->ADCKnDR[reg_id];
+    *p_data = p_reg->ADCKnDR[reg_id];                                                            /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     return FSP_SUCCESS;
 }
@@ -931,35 +946,35 @@ fsp_err_t R_ADCK_Read (adc_ctrl_t * const p_ctrl, adc_channel_t const reg_id, ui
  * @retval FSP_ERR_NOT_OPEN                     This ADCK instance is not open by @ref adc_api_t::open
  * @retval FSP_ERR_ADCK_CHANNEL_NOT_SUPPORT     This reg_id is not supported
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_Read32 (adc_ctrl_t * const p_ctrl, adc_channel_t const reg_id, uint32_t * const p_data)
+fsp_err_t R_ADCK_Read32 (adc_ctrl_t * const p_ctrl, adc_channel_t const reg_id, uint32_t * const p_data) /* PRQA S 1505, 3673 # Rule-8.13, Rule-8.7 */
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;                            /* PRQA S 0316, 3678 # Rule-11.5, Rule-8.13 */
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
 
     /* Verify the pointers are valid */
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_data);
+    FSP_ASSERT(NULL != p_instance_ctrl);                                                         /* PRQA S 3432 # Rule-20.7 */
+    FSP_ASSERT(NULL != p_data);                                                                  /* PRQA S 3432 # Rule-20.7 */
 
     /* Verify if unit and scan groups are opened and initialized */
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);                    /* PRQA S 3432 # Rule-20.7 */
 
     /* Check reg_id input valid */
-    FSP_ERROR_RETURN(reg_id < ADCK_NUMBER_OF_VIRTUAL_CHANNEL, FSP_ERR_ADCK_CHANNEL_NOT_SUPPORT);
-#endif                                 /* ADCK_CFG_PARAM_CHECKING_ENABLE */
+    FSP_ERROR_RETURN(reg_id < ADCK_NUMBER_OF_VIRTUAL_CHANNEL, FSP_ERR_ADCK_CHANNEL_NOT_SUPPORT); /* PRQA S 1880, 3432 # Rule-10.4, Rule-20.7 */
+#endif                                                                                           /* ADCK_CFG_PARAM_CHECKING_ENABLE */
 
-    R_ADCK1_Type * p_reg = p_instance_ctrl->p_reg;
+    R_ADCK1_Type * p_reg = p_instance_ctrl->p_reg;                                               /* PRQA S 3678 # Rule-8.13 */
 
     /* Check if number of channel is even */
-    if (0U == ((uint32_t) reg_id) % 2U)
+    if (0U == ((uint32_t) reg_id) % 2U)                                                          /* PRQA S 3397 # Rule-12.1 */
     {
         /* Write data of channels reg_id and reg_id + 1 into p_data */
-        *p_data = *(uint32_t *) (&p_reg->ADCKnDR[reg_id]);
+        *p_data = *(uint32_t *) (&p_reg->ADCKnDR[reg_id]);                                       /* PRQA S 0310, 0311, 0312, 0662, 3305 # Dir-1.1, Rule-1.2, Rule-11.3, Rule-11.8 */
     }
     else
     {
         /* Write data of channel reg_id into p_data */
-        *p_data = (uint32_t) (p_reg->ADCKnDR[reg_id]);
+        *p_data = (uint32_t) (p_reg->ADCKnDR[reg_id]); /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     }
 
     return FSP_SUCCESS;
@@ -976,9 +991,9 @@ fsp_err_t R_ADCK_Read32 (adc_ctrl_t * const p_ctrl, adc_channel_t const reg_id, 
  * @retval    FSP_ERR_NOT_INITIALIZED      Scan groups is not initialized by @ref adc_api_t::scanCfg
  * @retval    FSP_ERR_PWM_DIAG_DISABLED    PWM-Diag is disabled.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_PWMDiagRead (adc_ctrl_t * const p_ctrl, uint16_t * const p_data)
+fsp_err_t R_ADCK_PWMDiagRead (adc_ctrl_t * const p_ctrl, uint16_t * const p_data) /* PRQA S 1503, 3206 # Rule-2.1, Rule-2.7 */
 {
-#if (BSP_MCU_GROUP_RH850U2Cx)
+#if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U)                               /* PRQA S 3332 # Rule-20.9 */
     adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
 
  #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
@@ -1011,7 +1026,7 @@ fsp_err_t R_ADCK_PWMDiagRead (adc_ctrl_t * const p_ctrl, uint16_t * const p_data
  * @param[out] p_data                       Pointer to variable to store read data
  * @retval     FSP_ERR_UNSUPPORTED            Function not supported in this implemention.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_SGDiagRead (adc_ctrl_t * const p_ctrl, uint16_t * const p_data)
+fsp_err_t R_ADCK_SGDiagRead (adc_ctrl_t * const p_ctrl, uint16_t * const p_data) /* PRQA S 1503, 3673 # Rule-2.1, Rule-8.13 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
     FSP_PARAMETER_NOT_USED(p_data);
@@ -1027,17 +1042,17 @@ fsp_err_t R_ADCK_SGDiagRead (adc_ctrl_t * const p_ctrl, uint16_t * const p_data)
  * @retval  FSP_ERR_ASSERTION            p_ctrl or p_callback is NULL.
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_CallbackSet (adc_ctrl_t * const          p_ctrl,
-                              void (                    * p_callback)(adc_callback_args_t *),
+fsp_err_t R_ADCK_CallbackSet (adc_ctrl_t * const          p_ctrl,                             /* PRQA S 1505 # Rule-8.7 */
+                              void (                    * p_callback)(adc_callback_args_t *), /* PRQA S 1336 # Rule-8.2 */
                               void * const                p_context,
                               adc_callback_args_t * const p_callback_memory)
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;                 /* PRQA S 0316 # Rule-11.5 */
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
-    FSP_ASSERT(p_instance_ctrl);
-    FSP_ASSERT(p_callback);
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
+    FSP_ASSERT(p_instance_ctrl);                                                              /* PRQA S 3432 # Rule-20.7 */
+    FSP_ASSERT(p_callback);                                                                   /* PRQA S 3344, 3432 # Rule-14.4, Rule-20.7 */
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);                 /* PRQA S 3432 # Rule-20.7 */
 #endif
 
     /* Update variables related to callback */
@@ -1058,16 +1073,16 @@ fsp_err_t R_ADCK_CallbackSet (adc_ctrl_t * const          p_ctrl,
  * @retval FSP_ERR_ASSERTION           An input argument is invalid.
  * @retval FSP_ERR_NOT_OPEN            Unit is not open.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_InfoGet (adc_ctrl_t * const p_ctrl, adc_info_t * const p_adc_info)
+fsp_err_t R_ADCK_InfoGet (adc_ctrl_t * const p_ctrl, adc_info_t * const p_adc_info)  /* PRQA S 1505, 3673 # Rule-8.13, Rule-8.7 */
 {
-    adck_instance_ctrl_t        * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t        * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl; /* PRQA S 0316, 3678 # Rule-11.5, Rule-8.13 */
     adck_sg_generic_cfg_t const * p_sgx_cfg       = NULL;
     fsp_err_t err = FSP_SUCCESS;
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
-    FSP_ASSERT(NULL != p_instance_ctrl);
-    FSP_ASSERT(NULL != p_adc_info);
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
+    FSP_ASSERT(NULL != p_instance_ctrl);                                      /* PRQA S 3432 # Rule-20.7 */
+    FSP_ASSERT(NULL != p_adc_info);                                           /* PRQA S 3432 # Rule-20.7 */
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN); /* PRQA S 3432 # Rule-20.7 */
 #endif
 
     /* Loop through each scan group to search for the lowest and number of consecutive virtual channels */
@@ -1078,10 +1093,10 @@ fsp_err_t R_ADCK_InfoGet (adc_ctrl_t * const p_ctrl, adc_info_t * const p_adc_in
         if (NULL != p_sgx_cfg)
         {
             /* Determine the lowest virtual channel that is configured */
-            p_adc_info->p_address[scan_group] = &p_instance_ctrl->p_reg->ADCKnDR[p_sgx_cfg->start_vc_ptr];
+            p_adc_info->p_address[scan_group] = &p_instance_ctrl->p_reg->ADCKnDR[p_sgx_cfg->start_vc_ptr];       /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
             /* Determine the number of virtual channels that is configured consecutively */
-            p_adc_info->length[scan_group] = (uint32_t) ((p_sgx_cfg->end_vc_ptr - p_sgx_cfg->start_vc_ptr) + 1);
+            p_adc_info->length[scan_group] = (uint32_t) ((p_sgx_cfg->end_vc_ptr - p_sgx_cfg->start_vc_ptr) + 1); /* PRQA S 1860, 4393 # Rule-10.4, Rule-10.8 */
         }
         else
         {
@@ -1098,7 +1113,7 @@ fsp_err_t R_ADCK_InfoGet (adc_ctrl_t * const p_ctrl, adc_info_t * const p_adc_in
  *
  * @retval FSP_ERR_UNSUPPORTED            Function not supported in this implemention.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_Calibrate (adc_ctrl_t * const p_ctrl, void const * p_extend)
+fsp_err_t R_ADCK_Calibrate (adc_ctrl_t * const p_ctrl, void const * p_extend) /* PRQA S 1505, 3673 # Rule-8.13, Rule-8.7 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
     FSP_PARAMETER_NOT_USED(p_extend);
@@ -1111,7 +1126,7 @@ fsp_err_t R_ADCK_Calibrate (adc_ctrl_t * const p_ctrl, void const * p_extend)
  *
  * @retval FSP_ERR_UNSUPPORTED            Function not supported in this implemention.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_OffsetSet (adc_ctrl_t * const p_ctrl, adc_channel_t const reg_id, int32_t const offset)
+fsp_err_t R_ADCK_OffsetSet (adc_ctrl_t * const p_ctrl, adc_channel_t const reg_id, int32_t const offset) /* PRQA S 1505, 3673 # Rule-8.13, Rule-8.7 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
     FSP_PARAMETER_NOT_USED(reg_id);
@@ -1131,34 +1146,34 @@ fsp_err_t R_ADCK_OffsetSet (adc_ctrl_t * const p_ctrl, adc_channel_t const reg_i
  * @retval    FSP_ERR_NOT_OPEN               This ADCK instance is not open by @ref adc_api_t::open
  * @retval    FSP_ERR_SG_AD_TIMER_ACTIVE     Any scan group or A/D timer of any scan group is active
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_THEnable (adc_ctrl_t * const p_ctrl)
+fsp_err_t R_ADCK_THEnable (adc_ctrl_t * const p_ctrl)                                               /* PRQA S 1503 # Rule-2.1 */
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;                       /* PRQA S 0316 # Rule-11.5 */
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
-    FSP_ASSERT(p_instance_ctrl);
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
+    FSP_ASSERT(p_instance_ctrl);                                                                    /* PRQA S 3432 # Rule-20.7 */
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);                       /* PRQA S 3432 # Rule-20.7 */
 #endif
 
     R_ADCK1_Type        * p_reg      = p_instance_ctrl->p_reg;
-    adck_extended_cfg_t * p_extend   = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    adck_extended_cfg_t * p_extend   = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;    /* PRQA S 0311, 0316, 3678 # Rule-11.5, Rule-11.8, Rule-8.13 */
     fsp_err_t             return_val = FSP_SUCCESS;
 
     /* Check if all scan groups and A/D timer are in idle state */
-    if (0U == (p_reg->ADCKnSGSTR & (ADCK_SGSTR_SGS_STATUS_MASK | ADCK_SGSTR_AD_TIMER_STATUS_MASK)))
+    if (0U == (p_reg->ADCKnSGSTR & (ADCK_SGSTR_SGS_STATUS_MASK | ADCK_SGSTR_AD_TIMER_STATUS_MASK))) /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     {
         /* Disable T&H triggers */
-        p_reg->ADCKnTHACR_b.HLDTE = 0U;
-        p_reg->ADCKnTHBCR_b.HLDTE = 0U;
+        p_reg->ADCKnTHACR_b.HLDTE = 0U;                                                             /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+        p_reg->ADCKnTHBCR_b.HLDTE = 0U;                                                             /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Stop sampling of all T&H units */
-        p_reg->ADCKnTHSTPCR = ADCK_THSTPCR_SAMPLING_STOP;
+        p_reg->ADCKnTHSTPCR = ADCK_THSTPCR_SAMPLING_STOP;                                           /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Setting to enable/disable individual T&H unit */
-        p_reg->ADCKnTHER = (uint8_t) p_extend->th_cfg.th_enable_cfg.ther;
+        p_reg->ADCKnTHER = (uint8_t) p_extend->th_cfg.th_enable_cfg.ther;                           /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Start all T&H units sampling */
-        p_reg->ADCKnTHSMPSTCR = ADCK_THSMPSTCR_SAMPLING_START;
+        p_reg->ADCKnTHSMPSTCR = ADCK_THSMPSTCR_SAMPLING_START;                                      /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Update status of T&H group A and T&H group B */
         p_instance_ctrl->th_state[ADCK_TH_GROUP_A] = ADCK_TH_STATE_SAMPLING;
@@ -1168,9 +1183,9 @@ fsp_err_t R_ADCK_THEnable (adc_ctrl_t * const p_ctrl)
          *  before start a hold trigger.
          *  CLKAD (A/D conversion clock) and PCLK (Register access clock) clock source are the same (CLK_ADC0).
          *  So by read ADCKnSGSTR 15 times, we get the minimum time delay required for T&H sampling */
-        for (uint32_t cnt = 0U; cnt < ADCK_TH_SAMPLING_DELAY_CLKAD_CYCLE / ADCK_REG_ACCESS_TIME_CLKAD_CYCLE; cnt++)
+        for (uint32_t cnt = 0U; cnt < ADCK_TH_SAMPLING_DELAY_CLKAD_CYCLE / ADCK_REG_ACCESS_TIME_CLKAD_CYCLE; cnt++) /* PRQA S 3397 # Rule-12.1 */
         {
-            volatile uint16_t sgstr = p_reg->ADCKnSGSTR;
+            volatile uint16_t sgstr = p_reg->ADCKnSGSTR;                                                            /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
             (void) sgstr;
         }
     }
@@ -1194,26 +1209,26 @@ fsp_err_t R_ADCK_THEnable (adc_ctrl_t * const p_ctrl)
  * @retval    FSP_ERR_NOT_OPEN          This ADCK instance is not open by @ref adc_api_t::open
  * @retval    FSP_ERR_IN_USE            T&H path self-diagnosis is disabled and any scan group is on-going.
  **********************************************************************************************************************/
-fsp_err_t R_ADCK_PinLVSelfDiagVoltageChange (adc_ctrl_t * const p_ctrl, const adck_pin_lv_self_diag_vol_t voltage_level)
+fsp_err_t R_ADCK_PinLVSelfDiagVoltageChange (adc_ctrl_t * const p_ctrl, const adck_pin_lv_self_diag_vol_t voltage_level) /* PRQA S 1503, 3673 # Rule-2.1, Rule-8.13 */
 {
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) p_ctrl;                                            /* PRQA S 0316, 3678 # Rule-11.5, Rule-8.13 */
 
 #if (ADCK_CFG_PARAM_CHECKING_ENABLE)
 
     /* Verify the pointers are valid */
-    FSP_ASSERT(NULL != p_instance_ctrl);
+    FSP_ASSERT(NULL != p_instance_ctrl);                                      /* PRQA S 3432 # Rule-20.7 */
 
     /* Verify if unit and scan groups are opened */
-    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN);
-#endif                                 /* ADCK_CFG_PARAM_CHECKING_ENABLE */
+    FSP_ERROR_RETURN(ADCK_OPEN == p_instance_ctrl->opened, FSP_ERR_NOT_OPEN); /* PRQA S 3432 # Rule-20.7 */
+#endif                                                                        /* ADCK_CFG_PARAM_CHECKING_ENABLE */
 
     R_ADCK1_Type * p_reg      = p_instance_ctrl->p_reg;
     fsp_err_t      return_val = FSP_SUCCESS;
 
-    if ((ADCK_TH_PATH_SELF_DIAG_ENABLE == p_reg->ADCKnTDCR_b.THSDE) ||
-        (0U == (p_reg->ADCKnSGSTR & ADCK_SGSTR_SGS_STATUS_MASK)))
+    if ((ADCK_TH_PATH_SELF_DIAG_ENABLE == p_reg->ADCKnTDCR_b.THSDE) || /* PRQA S 0662, 1881 # Dir-1.1, Rule-1.2, Rule-10.4 */
+        (0U == (p_reg->ADCKnSGSTR & ADCK_SGSTR_SGS_STATUS_MASK)))      /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     {
-        p_reg->ADCKnTDCR_b.TDLV = voltage_level;
+        p_reg->ADCKnTDCR_b.TDLV = voltage_level;                       /* PRQA S 0662, 4424 # Dir-1.1, Rule-1.2, Rule-10.3 */
     }
     else
     {
@@ -1244,37 +1259,38 @@ fsp_err_t R_ADCK_PinLVSelfDiagVoltageChange (adc_ctrl_t * const p_ctrl, const ad
 static void r_adck_scan_groups_force_termination (adck_instance_ctrl_t * const p_instance_ctrl)
 {
     /* Disable T&H triggers */
-    p_instance_ctrl->p_reg->ADCKnTHACR_b.HLDTE = 0U;
-    p_instance_ctrl->p_reg->ADCKnTHBCR_b.HLDTE = 0U;
+    p_instance_ctrl->p_reg->ADCKnTHACR_b.HLDTE = 0U; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+    p_instance_ctrl->p_reg->ADCKnTHBCR_b.HLDTE = 0U; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Disable Hardware trigger of all scan groups */
-    p_instance_ctrl->p_reg->ADCKnSGCR0_b.TRGMD = 0U;
-    p_instance_ctrl->p_reg->ADCKnSGCR1_b.TRGMD = 0U;
-    p_instance_ctrl->p_reg->ADCKnSGCR2_b.TRGMD = 0U;
+    p_instance_ctrl->p_reg->ADCKnSGCR0_b.TRGMD = 0U; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+    p_instance_ctrl->p_reg->ADCKnSGCR1_b.TRGMD = 0U; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+    p_instance_ctrl->p_reg->ADCKnSGCR2_b.TRGMD = 0U; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Clear hardware trigger and A/D timer trigger of scan group 3 and scan group 4 */
-    p_instance_ctrl->p_reg->ADCKnSGCR3 &=
-        (uint8_t) (~(ADCK_SGCR_HW_TRIGGER_ENABLE | ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE));
-    p_instance_ctrl->p_reg->ADCKnSGCR4 &=
-        (uint8_t) (~(ADCK_SGCR_HW_TRIGGER_ENABLE | ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE));
+    p_instance_ctrl->p_reg->ADCKnSGCR3 &=            /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+                                          (uint8_t) (~(ADCK_SGCR_HW_TRIGGER_ENABLE |
+                                                       ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE));
+    p_instance_ctrl->p_reg->ADCKnSGCR4 &=            /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+                                          (uint8_t) (~(ADCK_SGCR_HW_TRIGGER_ENABLE |
+                                                       ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE));
 
-#if (BSP_MCU_GROUP_RH850U2Cx)
-
+#if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U)  /* PRQA S 3332 # Rule-20.9 */
     /* Disable Hardware trigger of PWM-Diag */
     p_instance_ctrl->p_reg->ADCKnPWDSGCR = 0U;
 #endif
 
     /* Disable Hardware trigger of SG-Diag */
-    p_instance_ctrl->p_reg->ADCKnSGDIAGCR_b.TRGMD = 0U;
+    p_instance_ctrl->p_reg->ADCKnSGDIAGCR_b.TRGMD = 0U;                /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Kill all scan groups, clear the information of held physical number of SG-Diag */
-    p_instance_ctrl->p_reg->ADCKnADHALTR = ADCK_HALTR_HALT;
+    p_instance_ctrl->p_reg->ADCKnADHALTR = ADCK_HALTR_HALT;            /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Stop sampling of all T&H units */
-    p_instance_ctrl->p_reg->ADCKnTHSTPCR = ADCK_THSTPCR_SAMPLING_STOP;
+    p_instance_ctrl->p_reg->ADCKnTHSTPCR = ADCK_THSTPCR_SAMPLING_STOP; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Disable all T&H units */
-    p_instance_ctrl->p_reg->ADCKnTHER = 0U;
+    p_instance_ctrl->p_reg->ADCKnTHER = 0U;                            /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Update T&H group state */
     p_instance_ctrl->th_state[ADCK_TH_GROUP_A] = ADCK_TH_STATE_STOP;
@@ -1292,35 +1308,34 @@ static void r_adck_scan_groups_force_termination (adck_instance_ctrl_t * const p
  * - Setting upper/lower limit check enable for SG-Diag
  * @param[in] p_instance_ctrl Pointer to this ADCK instance control block
  **********************************************************************************************************************/
-static void r_adck_ul_limit_check_initialize (adck_instance_ctrl_t * const p_instance_ctrl)
+static void r_adck_ul_limit_check_initialize (adck_instance_ctrl_t * const p_instance_ctrl)    /* PRQA S 3673 # Rule-8.13 */
 {
-    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend; /* PRQA S 0311, 0316, 3678 # Rule-11.5, Rule-11.8, Rule-8.13 */
 
     /* Setup upper/lower limit check table (from 0 to 7) */
     for (uint32_t limit_entry = 0U; limit_entry < ADCK_UPPER_LOWER_LIMIT_TABLE_ENTRIES; limit_entry++)
     {
-        p_instance_ctrl->p_reg->ADCKnVCULLMTBR[limit_entry] =
-            p_extend->ul_limit_cfg.ul_limit_tb[limit_entry].vcullmtbr;
+        p_instance_ctrl->p_reg->ADCKnVCULLMTBR[limit_entry] = /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+                                                              p_extend->ul_limit_cfg.ul_limit_tb[limit_entry].vcullmtbr;
     }
 
     /* Clear all status bits of virtual channels (scan group, PWM-Diag, SG-Diag) upper/lower limit check */
-    p_instance_ctrl->p_reg->ADCKnVCLMASCR = ADCK_VCLMASCR_ALLMSC;
+    p_instance_ctrl->p_reg->ADCKnVCLMASCR = ADCK_VCLMASCR_ALLMSC;                       /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Clear all scan groups x (x = 0 to 4), SG-Diag upper/lower limit check status bits */
-    p_instance_ctrl->p_reg->ADCKnSGULCCR = ADCK_SGULCCR_CLEAR_ALL;
+    p_instance_ctrl->p_reg->ADCKnSGULCCR = ADCK_SGULCCR_CLEAR_ALL;                      /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Enable upper/lower limit check for individual virtual channel j */
-    p_instance_ctrl->p_reg->ADCKnVCLMINTER1 = p_extend->ul_limit_cfg.vc_ul_limit_int_0;
-    p_instance_ctrl->p_reg->ADCKnVCLMINTER2 = p_extend->ul_limit_cfg.vc_ul_limit_int_1;
+    p_instance_ctrl->p_reg->ADCKnVCLMINTER1 = p_extend->ul_limit_cfg.vc_ul_limit_int_0; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+    p_instance_ctrl->p_reg->ADCKnVCLMINTER2 = p_extend->ul_limit_cfg.vc_ul_limit_int_1; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
-#if (BSP_MCU_GROUP_RH850U2Cx)
-
+#if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U)                                     /* PRQA S 3332 # Rule-20.9 */
     /* Enable upper/lower limit check for PWM-Diag */
     p_instance_ctrl->p_reg->ADCKnPWVCLMINTER = p_extend->ul_limit_cfg.pwm_diag_ul_limit_int;
 #endif
 
     /* Enable upper/lower limit check for SG-Diag */
-    p_instance_ctrl->p_reg->ADCKnSDVCLMINTER = p_extend->ul_limit_cfg.sg_diag_ul_limit_int;
+    p_instance_ctrl->p_reg->ADCKnSDVCLMINTER = p_extend->ul_limit_cfg.sg_diag_ul_limit_int;     /* PRQA S 0662, 4424 # Dir-1.1, Rule-1.2, Rule-10.3 */
 }
 
 /*******************************************************************************************************************//**
@@ -1331,18 +1346,18 @@ static void r_adck_ul_limit_check_initialize (adck_instance_ctrl_t * const p_ins
  * - Setting to enable/disable MPX interrupt
  * @param[in] p_instance_ctrl Pointer to this ADCK instance control blockss
  **********************************************************************************************************************/
-static void r_adc_mpx_initialize (adck_instance_ctrl_t * const p_instance_ctrl)
+static void r_adc_mpx_initialize (adck_instance_ctrl_t * const p_instance_ctrl)                 /* PRQA S 3673 # Rule-8.13 */
 {
-    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;  /* PRQA S 0311, 0316, 3678 # Rule-11.5, Rule-11.8, Rule-8.13 */
 
     /* Setting mask control format for MPX in I/O port output mode */
-    p_instance_ctrl->p_reg->ADCKnMPXCURCR = (uint8_t) p_extend->mpx_cfg.mask_control_format;
+    p_instance_ctrl->p_reg->ADCKnMPXCURCR = (uint8_t) p_extend->mpx_cfg.mask_control_format;    /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Setting SPI communication command for MPX using SPI output mode */
-    p_instance_ctrl->p_reg->ADCKnMPXCMDR = (uint8_t) p_extend->mpx_cfg.spi_command_information;
+    p_instance_ctrl->p_reg->ADCKnMPXCMDR = (uint8_t) p_extend->mpx_cfg.spi_command_information; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Setting to enable/disable MPX interrupt */
-    p_instance_ctrl->p_reg->ADCKnMPXINTER = (uint8_t) p_extend->mpx_cfg.mpx_int;
+    p_instance_ctrl->p_reg->ADCKnMPXINTER = (uint8_t) p_extend->mpx_cfg.mpx_int;                /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 }
 
 /*******************************************************************************************************************//**
@@ -1364,28 +1379,42 @@ static void r_adc_mpx_initialize (adck_instance_ctrl_t * const p_instance_ctrl)
  **********************************************************************************************************************/
 static void r_adc_th_initialize (adck_instance_ctrl_t * const p_instance_ctrl)
 {
-    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend; /* PRQA S 0311, 0316, 3678 # Rule-11.5, Rule-11.8, Rule-8.13 */
 
     /* Reset T&H group A, B control register to their reset value */
-    p_instance_ctrl->p_reg->ADCKnTHACR = 0U;
-    p_instance_ctrl->p_reg->ADCKnTHBCR = 0U;
+    p_instance_ctrl->p_reg->ADCKnTHACR = 0U;                                                   /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+    p_instance_ctrl->p_reg->ADCKnTHBCR = 0U;                                                   /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Check if T&H is used */
     if (0U != p_extend->th_cfg.th_enable_cfg.ther)
     {
+        /* PRQA S 0288 ++ # DP_MSR_D-1.1_UC1 */
+
         /* When T&H is used, it is recommended to set 0 to ADCKnTHCR.ASMPMSK (automatic sampling is effective)
          * Reference cautions 1 of section 1.2.5.10 "ADCKnTHSMPSTCR — T&H Sampling Start Control Register"
-         * in the ADCK IP manual r01uh1122ej0040 Rev.0.40 */
-        p_instance_ctrl->p_reg->ADCKnTHCR = 0U;
+         * in the ADCK IP manual r01uh1122ej0040 Rev .0 .40 */
+
+        /* PRQA S 0288 ++ # DP_MSR_D-1.1_UC1 */
+
+        p_instance_ctrl->p_reg->ADCKnTHCR = 0U;                                                  /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Select T&H group for for each T&H unit */
-        p_instance_ctrl->p_reg->ADCKnTHGSR = (uint16_t) p_extend->th_cfg.group_select_cfg.thgsr;
+        p_instance_ctrl->p_reg->ADCKnTHGSR = (uint16_t) p_extend->th_cfg.group_select_cfg.thgsr; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Setting to enable/disable individual T&H unit */
-        p_instance_ctrl->p_reg->ADCKnTHER = (uint8_t) p_extend->th_cfg.th_enable_cfg.ther;
+        p_instance_ctrl->p_reg->ADCKnTHER = (uint8_t) p_extend->th_cfg.th_enable_cfg.ther;       /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+
+        /* Select input channel for each TH unit (THCHS0–3) */
+#if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x0100U)                                              /* PRQA S 3332 # Rule-20.9 */
+        for (uint32_t i = 0; i < ADCK_NUMBER_OF_TH_UNIT; i++)
+        {
+            p_instance_ctrl->p_selb2_reg->ADCKnTHCHS[i] =
+                (uint32_t) p_extend->th_cfg.channel_select[i];
+        }
+#endif
 
         /* Start all T&H units sampling */
-        p_instance_ctrl->p_reg->ADCKnTHSMPSTCR = ADCK_THSMPSTCR_SAMPLING_START;
+        p_instance_ctrl->p_reg->ADCKnTHSMPSTCR = ADCK_THSMPSTCR_SAMPLING_START; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Update status of T&H group A and T&H group B */
         p_instance_ctrl->th_state[ADCK_TH_GROUP_A] = ADCK_TH_STATE_SAMPLING;
@@ -1400,7 +1429,7 @@ static void r_adc_th_initialize (adck_instance_ctrl_t * const p_instance_ctrl)
         /* Because all T&H units are disabled by r_adck_scan_groups_force_termination there is not need to do it again */
 
         /* Clear T&H group select for each T&H unit */
-        p_instance_ctrl->p_reg->ADCKnTHGSR = 0U;
+        p_instance_ctrl->p_reg->ADCKnTHGSR = 0U; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     }
 }
 
@@ -1413,17 +1442,17 @@ static void r_adc_th_initialize (adck_instance_ctrl_t * const p_instance_ctrl)
  * AD timers hardware trigger are disabled so there is no need to disable it again in this function
  * @param[in] p_instance_ctrl Pointer to this ADCK instance control blocks
  **********************************************************************************************************************/
-static void r_adc_ad_timer_initialize (adck_instance_ctrl_t * const p_instance_ctrl)
+static void r_adc_ad_timer_initialize (adck_instance_ctrl_t * const p_instance_ctrl)                          /* PRQA S 3673 # Rule-8.13 */
 {
-    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;                /* PRQA S 0311, 0316, 3678 # Rule-11.5, Rule-11.8, Rule-8.13 */
 
     /* Setting AD timer x (x = 3 to 4) initial phase */
-    p_instance_ctrl->p_reg->ADCKnADTIPR3 = p_extend->ad_timer_cfg.initial_phase[ADCK_SG3_AD_TIMER_CFG_INDEX];
-    p_instance_ctrl->p_reg->ADCKnADTIPR4 = p_extend->ad_timer_cfg.initial_phase[ADCK_SG4_AD_TIMER_CFG_INDEX];
+    p_instance_ctrl->p_reg->ADCKnADTIPR3 = p_extend->ad_timer_cfg.initial_phase[ADCK_SG3_AD_TIMER_CFG_INDEX]; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+    p_instance_ctrl->p_reg->ADCKnADTIPR4 = p_extend->ad_timer_cfg.initial_phase[ADCK_SG4_AD_TIMER_CFG_INDEX]; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Setting AD timer x (x = 3 to 4) cycle time */
-    p_instance_ctrl->p_reg->ADCKnADTPRR3 = p_extend->ad_timer_cfg.cycle[ADCK_SG3_AD_TIMER_CFG_INDEX];
-    p_instance_ctrl->p_reg->ADCKnADTPRR4 = p_extend->ad_timer_cfg.cycle[ADCK_SG4_AD_TIMER_CFG_INDEX];
+    p_instance_ctrl->p_reg->ADCKnADTPRR3 = p_extend->ad_timer_cfg.cycle[ADCK_SG3_AD_TIMER_CFG_INDEX];         /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+    p_instance_ctrl->p_reg->ADCKnADTPRR4 = p_extend->ad_timer_cfg.cycle[ADCK_SG4_AD_TIMER_CFG_INDEX];         /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 }
 
 /*******************************************************************************************************************//**
@@ -1441,37 +1470,71 @@ static void r_adc_ad_timer_initialize (adck_instance_ctrl_t * const p_instance_c
  **********************************************************************************************************************/
 static void r_adck_interrupts_enable (adck_instance_ctrl_t * const p_instance_ctrl)
 {
-    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;           /* PRQA S 0311, 0316, 3678 # Rule-11.5, Rule-11.8, Rule-8.13 */
 
-#if (BSP_MCU_GROUP_RH850U2Bx)
-    p_instance_ctrl->p_air_reg              = R_AIR;
-    p_instance_ctrl->p_air_reg->AIRISELR[0] = 0U;
-    p_instance_ctrl->p_air_reg->AIRISELR[1] = 0U;
+#if ((BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x0100U) || (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x0010U)) /* PRQA S 3332 # Rule-20.9 */
+    p_instance_ctrl->p_air_reg              = R_AIR;                                                     /* PRQA S 0306 # Rule-11.4 */
+    p_instance_ctrl->p_air_reg->AIRISELR[0] = 0U;                                                        /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+    p_instance_ctrl->p_air_reg->AIRISELR[1] = 0U;                                                        /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 #endif
 
     /* ADCK error interrupt enable */
-    R_BSP_IrqCfgEnable(p_extend->int_cfg.error_irq, p_extend->int_cfg.error_ipl, p_instance_ctrl);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.error_ipl)
+    {
+        R_BSP_IrqCfgEnable(p_extend->int_cfg.error_irq, p_extend->int_cfg.error_ipl, p_instance_ctrl);
+    }
 
     /* ADCK scan group 0 end interrupt enable */
-    R_BSP_IrqCfgEnable(p_extend->int_cfg.scan_group_0_end_irq, p_extend->int_cfg.scan_group_0_end_ipl, p_instance_ctrl);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.scan_group_0_end_ipl)
+    {
+        R_BSP_IrqCfgEnable(p_extend->int_cfg.scan_group_0_end_irq,
+                           p_extend->int_cfg.scan_group_0_end_ipl,
+                           p_instance_ctrl);
+    }
 
     /* ADCK scan group 1 end interrupt enable */
-    R_BSP_IrqCfgEnable(p_extend->int_cfg.scan_group_1_end_irq, p_extend->int_cfg.scan_group_1_end_ipl, p_instance_ctrl);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.scan_group_1_end_ipl)
+    {
+        R_BSP_IrqCfgEnable(p_extend->int_cfg.scan_group_1_end_irq,
+                           p_extend->int_cfg.scan_group_1_end_ipl,
+                           p_instance_ctrl);
+    }
 
     /* ADCK scan group 2 end interrupt enable */
-    R_BSP_IrqCfgEnable(p_extend->int_cfg.scan_group_2_end_irq, p_extend->int_cfg.scan_group_2_end_ipl, p_instance_ctrl);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.scan_group_2_end_ipl)
+    {
+        R_BSP_IrqCfgEnable(p_extend->int_cfg.scan_group_2_end_irq,
+                           p_extend->int_cfg.scan_group_2_end_ipl,
+                           p_instance_ctrl);
+    }
 
     /* ADCK scan group 3 end interrupt enable */
-    R_BSP_IrqCfgEnable(p_extend->int_cfg.scan_group_3_end_irq, p_extend->int_cfg.scan_group_3_end_ipl, p_instance_ctrl);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.scan_group_3_end_ipl)
+    {
+        R_BSP_IrqCfgEnable(p_extend->int_cfg.scan_group_3_end_irq,
+                           p_extend->int_cfg.scan_group_3_end_ipl,
+                           p_instance_ctrl);
+    }
 
     /* ADCK scan group 4 end interrupt enable */
-    R_BSP_IrqCfgEnable(p_extend->int_cfg.scan_group_4_end_irq, p_extend->int_cfg.scan_group_4_end_ipl, p_instance_ctrl);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.scan_group_4_end_ipl)
+    {
+        R_BSP_IrqCfgEnable(p_extend->int_cfg.scan_group_4_end_irq,
+                           p_extend->int_cfg.scan_group_4_end_ipl,
+                           p_instance_ctrl);
+    }
 
     /* ADCK SG-Diag end interrupt enable */
-    R_BSP_IrqCfgEnable(p_extend->int_cfg.sg_diag_end_irq, p_extend->int_cfg.sg_diag_end_ipl, p_instance_ctrl);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.sg_diag_end_ipl)
+    {
+        R_BSP_IrqCfgEnable(p_extend->int_cfg.sg_diag_end_irq, p_extend->int_cfg.sg_diag_end_ipl, p_instance_ctrl);
+    }
 
     /* ADCK MPX interrupt enable */
-    R_BSP_IrqCfgEnable(p_extend->int_cfg.mpx_irq, p_extend->int_cfg.mpx_ipl, p_instance_ctrl);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.mpx_ipl)
+    {
+        R_BSP_IrqCfgEnable(p_extend->int_cfg.mpx_irq, p_extend->int_cfg.mpx_ipl, p_instance_ctrl);
+    }
 }
 
 /*******************************************************************************************************************//**
@@ -1487,33 +1550,57 @@ static void r_adck_interrupts_enable (adck_instance_ctrl_t * const p_instance_ct
  * - MPX interrupt
  * @param[in] p_instance_ctrl Pointer to this ADCK instance control block
  **********************************************************************************************************************/
-static void r_adck_interrupts_disable (adck_instance_ctrl_t * const p_instance_ctrl)
+static void r_adck_interrupts_disable (adck_instance_ctrl_t * const p_instance_ctrl)           /* PRQA S 3673 # Rule-8.13 */
 {
-    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend; /* PRQA S 0311, 0316, 3678 # Rule-11.5, Rule-11.8, Rule-8.13 */
 
     /* ADCK error interrupt disable */
-    R_BSP_IrqDisable(p_extend->int_cfg.error_irq);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.error_ipl)
+    {
+        R_BSP_IrqDisable(p_extend->int_cfg.error_irq);
+    }
 
     /* ADCK scan group 0 end interrupt disable */
-    R_BSP_IrqDisable(p_extend->int_cfg.scan_group_0_end_irq);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.scan_group_0_end_ipl)
+    {
+        R_BSP_IrqDisable(p_extend->int_cfg.scan_group_0_end_irq);
+    }
 
     /* ADCK scan group 1 end interrupt disable */
-    R_BSP_IrqDisable(p_extend->int_cfg.scan_group_1_end_irq);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.scan_group_1_end_ipl)
+    {
+        R_BSP_IrqDisable(p_extend->int_cfg.scan_group_1_end_irq);
+    }
 
     /* ADCK scan group 2 end interrupt disable */
-    R_BSP_IrqDisable(p_extend->int_cfg.scan_group_2_end_irq);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.scan_group_2_end_ipl)
+    {
+        R_BSP_IrqDisable(p_extend->int_cfg.scan_group_2_end_irq);
+    }
 
     /* ADCK scan group 3 end interrupt disable */
-    R_BSP_IrqDisable(p_extend->int_cfg.scan_group_3_end_irq);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.scan_group_3_end_ipl)
+    {
+        R_BSP_IrqDisable(p_extend->int_cfg.scan_group_3_end_irq);
+    }
 
     /* ADCK scan group 4 end interrupt disable */
-    R_BSP_IrqDisable(p_extend->int_cfg.scan_group_4_end_irq);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.scan_group_4_end_ipl)
+    {
+        R_BSP_IrqDisable(p_extend->int_cfg.scan_group_4_end_irq);
+    }
 
     /* ADCK SG-Diag end interrupt disable */
-    R_BSP_IrqDisable(p_extend->int_cfg.sg_diag_end_irq);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.sg_diag_end_ipl)
+    {
+        R_BSP_IrqDisable(p_extend->int_cfg.sg_diag_end_irq);
+    }
 
     /* ADCK MPX interrupt disable */
-    R_BSP_IrqDisable(p_extend->int_cfg.mpx_irq);
+    if (BSP_IRQ_DISABLED != p_extend->int_cfg.mpx_ipl)
+    {
+        R_BSP_IrqDisable(p_extend->int_cfg.mpx_irq);
+    }
 }
 
 /*******************************************************************************************************************//**
@@ -1524,11 +1611,11 @@ static void r_adck_interrupts_disable (adck_instance_ctrl_t * const p_instance_c
  * @retval      FSP_SUCCESS      Scan group is started successfully
  * @retval      FSP_ERR_TH_STOP  T&H units of scan group is stopped. Use @ref R_ADCK_THEnable to re-enable it.
  **********************************************************************************************************************/
-static fsp_err_t r_adck_scan_group_start (adck_instance_ctrl_t * const p_instance_ctrl,
+static fsp_err_t r_adck_scan_group_start (adck_instance_ctrl_t * const p_instance_ctrl,          /* PRQA S 3673 # Rule-8.13 */
                                           adck_scan_group_t const      scan_group)
 {
     R_ADCK1_Type        * p_reg      = p_instance_ctrl->p_reg;
-    adck_extended_cfg_t * p_extend   = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    adck_extended_cfg_t * p_extend   = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend; /* PRQA S 0311, 0316, 3678 # Rule-11.5, Rule-11.8, Rule-8.13 */
     adck_sg_cfg_t const * p_sg_cfg   = p_instance_ctrl->p_sg_cfg;
     fsp_err_t             return_val = FSP_SUCCESS;
 
@@ -1537,7 +1624,7 @@ static fsp_err_t r_adck_scan_group_start (adck_instance_ctrl_t * const p_instanc
 
     /* Disable hardware trigger, AD timer trigger, setting scan end interrupt enable and scan mode
      * for scan group */
-    *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) = p_sg_cfg->p_sg_cfg[scan_group]->sg_ctrl.sgcr;
+    *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) = p_sg_cfg->p_sg_cfg[scan_group]->sg_ctrl.sgcr; /* PRQA S 0312, 0488, 0662, 3395, 3469, 4521 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.1, Rule-11.8, Rule-12.1, Rule-18.4 */
 
     /* Get scan group trigger method */
     adck_sg_trigger_method_t sgx_trigger_method = p_sg_cfg->p_sg_cfg[scan_group]->trigger_method;
@@ -1546,14 +1633,14 @@ static fsp_err_t r_adck_scan_group_start (adck_instance_ctrl_t * const p_instanc
         case ADCK_SG_TRIGGER_METHOD_SW:
         {
             /* Start scan group */
-            *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGSTCR0, scan_group) = ADCK_SGSTCR_SW_START;
+            *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGSTCR0, scan_group) = ADCK_SGSTCR_SW_START; /* PRQA S 0312, 0488, 0662, 3395, 3469, 4521 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.1, Rule-11.8, Rule-12.1, Rule-18.4 */
             break;
         }
 
         case ADCK_SG_TRIGGER_METHOD_HW:
         {
             /* Enable hardware trigger for scan group */
-            *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) |= ADCK_SGCR_HW_TRIGGER_ENABLE;
+            *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) |= ADCK_SGCR_HW_TRIGGER_ENABLE; /* PRQA S 0312, 0488, 0662, 3395, 3469, 4521 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.1, Rule-11.8, Rule-12.1, Rule-18.4 */
             break;
         }
 
@@ -1565,15 +1652,15 @@ static fsp_err_t r_adck_scan_group_start (adck_instance_ctrl_t * const p_instanc
                     p_extend->ad_timer_cfg.trigger_method[ADCK_SG3_AD_TIMER_CFG_INDEX])
                 {
                     /* Enable scan group 3 to be trigger by A/D timer */
-                    p_reg->ADCKnSGCR3 |= ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE;
+                    p_reg->ADCKnSGCR3 |= ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
                     /* Start A/D timer for scan group 3 */
-                    p_reg->ADCKnADTSTCR3 = ADCK_ADTSTCR_AD_TIMER_SW_START;
+                    p_reg->ADCKnADTSTCR3 = ADCK_ADTSTCR_AD_TIMER_SW_START;  /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
                 }
                 else
                 {
                     /* Enable scan group 4 to be trigger by A/D timer and A/D timer is trigger by HW */
-                    p_reg->ADCKnSGCR3 |= ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE | ADCK_SGCR_HW_TRIGGER_ENABLE;
+                    p_reg->ADCKnSGCR3 |= ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE | ADCK_SGCR_HW_TRIGGER_ENABLE; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
                 }
             }
             else if (ADCK_SCAN_GROUP_SG4 == scan_group)
@@ -1582,15 +1669,15 @@ static fsp_err_t r_adck_scan_group_start (adck_instance_ctrl_t * const p_instanc
                     p_extend->ad_timer_cfg.trigger_method[ADCK_SG4_AD_TIMER_CFG_INDEX])
                 {
                     /* Enable scan group to be trigger by A/D timer */
-                    p_reg->ADCKnSGCR4 |= ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE;
+                    p_reg->ADCKnSGCR4 |= ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
                     /* Start A/D timer for scan group 4 */
-                    p_reg->ADCKnADTSTCR4 = ADCK_ADTSTCR_AD_TIMER_SW_START;
+                    p_reg->ADCKnADTSTCR4 = ADCK_ADTSTCR_AD_TIMER_SW_START;  /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
                 }
                 else
                 {
                     /* Enable scan group 4 to be trigger by A/D timer and A/D timer is trigger by HW */
-                    p_reg->ADCKnSGCR4 |= ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE | ADCK_SGCR_HW_TRIGGER_ENABLE;
+                    p_reg->ADCKnSGCR4 |= ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE | ADCK_SGCR_HW_TRIGGER_ENABLE; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
                 }
             }
             else
@@ -1607,29 +1694,29 @@ static fsp_err_t r_adck_scan_group_start (adck_instance_ctrl_t * const p_instanc
             if (ADCK_TH_STATE_SAMPLING == p_instance_ctrl->th_state[ADCK_TH_GROUP_A])
             {
                 /* Check if T&H group A target scan group is scan_group */
-                if (p_reg->ADCKnTHACR_b.SGS + ADCK_SCAN_GROUP_SG1 == scan_group)
+                if (p_reg->ADCKnTHACR_b.SGS + ADCK_SCAN_GROUP_SG1 == scan_group) /* PRQA S 0662, 1881, 3397, 4521 # Dir-1.1, Rule-1.2, Rule-10.1, Rule-10.4, Rule-12.1 */
                 {
                     if (ADCK_TH_GROUP_TRIGGER_METHOD_SW == p_extend->th_cfg.trigger_method[ADCK_TH_GROUP_A])
                     {
                         /* Enable hold control for T&H group A */
-                        p_reg->ADCKnTHACR_b.HLDCTE = ADCK_THACR_HOLD_CTRL_ENABLE;
+                        p_reg->ADCKnTHACR_b.HLDCTE = ADCK_THACR_HOLD_CTRL_ENABLE;                         /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
                         /* Enable hardware trigger for scan group */
-                        *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) |= ADCK_SGCR_HW_TRIGGER_ENABLE;
+                        *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) |= ADCK_SGCR_HW_TRIGGER_ENABLE; /* PRQA S 0312, 0488, 0662, 3395, 3469, 4521 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.1, Rule-11.8, Rule-12.1, Rule-18.4 */
 
                         /* Start T&H group A by software */
-                        p_reg->ADCKnTHAHLDSTCR = ADCK_THAHLDSTCR_HOLD_START;
+                        p_reg->ADCKnTHAHLDSTCR = ADCK_THAHLDSTCR_HOLD_START;                              /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
                     }
                     else
                     {
                         /* Enable hold control for T&H group A */
-                        p_reg->ADCKnTHACR_b.HLDCTE = ADCK_THACR_HOLD_CTRL_ENABLE;
+                        p_reg->ADCKnTHACR_b.HLDCTE = ADCK_THACR_HOLD_CTRL_ENABLE;                         /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
                         /* Enable hardware trigger for scan group */
-                        *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) |= ADCK_SGCR_HW_TRIGGER_ENABLE;
+                        *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) |= ADCK_SGCR_HW_TRIGGER_ENABLE; /* PRQA S 0312, 0488, 0662, 3395, 3469, 4521 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.1, Rule-11.8, Rule-12.1, Rule-18.4 */
 
                         /* T&H group A is triggered by HW trigger */
-                        p_reg->ADCKnTHACR_b.HLDTE = ADCK_THACR_HW_TRIGGER_ENABLE;
+                        p_reg->ADCKnTHACR_b.HLDTE = ADCK_THACR_HW_TRIGGER_ENABLE;                         /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
                     }
                 }
             }
@@ -1647,29 +1734,29 @@ static fsp_err_t r_adck_scan_group_start (adck_instance_ctrl_t * const p_instanc
             if (ADCK_TH_STATE_SAMPLING == p_instance_ctrl->th_state[ADCK_TH_GROUP_B])
             {
                 /* Check if T&H group B target scan group is scan_group */
-                if (p_reg->ADCKnTHBCR_b.SGS + ADCK_SCAN_GROUP_SG1 == scan_group)
+                if (p_reg->ADCKnTHBCR_b.SGS + ADCK_SCAN_GROUP_SG1 == scan_group) /* PRQA S 0662, 1881, 3397, 4521 # Dir-1.1, Rule-1.2, Rule-10.1, Rule-10.4, Rule-12.1 */
                 {
                     if (ADCK_TH_GROUP_TRIGGER_METHOD_SW == p_extend->th_cfg.trigger_method[ADCK_TH_GROUP_B])
                     {
                         /* Enable hold control for T&H group B */
-                        p_reg->ADCKnTHBCR_b.HLDCTE = ADCK_THBCR_HOLD_CTRL_ENABLE;
+                        p_reg->ADCKnTHBCR_b.HLDCTE = ADCK_THBCR_HOLD_CTRL_ENABLE;                         /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
                         /* Enable hardware trigger for scan group */
-                        *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) |= ADCK_SGCR_HW_TRIGGER_ENABLE;
+                        *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) |= ADCK_SGCR_HW_TRIGGER_ENABLE; /* PRQA S 0312, 0488, 0662, 3395, 3469, 4521 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.1, Rule-11.8, Rule-12.1, Rule-18.4 */
 
                         /* Start T&H group B by software */
-                        p_reg->ADCKnTHBHLDSTCR = ADCK_THBHLDSTCR_HOLD_START;
+                        p_reg->ADCKnTHBHLDSTCR = ADCK_THBHLDSTCR_HOLD_START;                              /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
                     }
                     else
                     {
                         /* Enable hold control for T&H group B */
-                        p_reg->ADCKnTHBCR_b.HLDCTE = ADCK_THBCR_HOLD_CTRL_ENABLE;
+                        p_reg->ADCKnTHBCR_b.HLDCTE = ADCK_THBCR_HOLD_CTRL_ENABLE;                         /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
                         /* Enable hardware trigger for scan group */
-                        *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) |= ADCK_SGCR_HW_TRIGGER_ENABLE;
+                        *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) |= ADCK_SGCR_HW_TRIGGER_ENABLE; /* PRQA S 0312, 0488, 0662, 3395, 3469, 4521 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.1, Rule-11.8, Rule-12.1, Rule-18.4 */
 
                         /* T&H group B is triggered by HW trigger */
-                        p_reg->ADCKnTHBCR_b.HLDTE = ADCK_THBCR_HW_TRIGGER_ENABLE;
+                        p_reg->ADCKnTHBCR_b.HLDTE = ADCK_THBCR_HW_TRIGGER_ENABLE;                         /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
                     }
                 }
             }
@@ -1700,9 +1787,9 @@ static fsp_err_t r_adck_scan_group_start (adck_instance_ctrl_t * const p_instanc
 __STATIC_INLINE void r_adck_scan_group_vc_init (R_ADCK1_Type * const p_reg, adck_sg_generic_cfg_t const * p_sg_cfg)
 {
     /* Setting virtual channels for scan group */
-    for (uint32_t channel = p_sg_cfg->start_vc_ptr, cnt = 0U; channel <= p_sg_cfg->end_vc_ptr; channel++, cnt++)
+    for (uint32_t channel = p_sg_cfg->start_vc_ptr, cnt = 0U; channel <= p_sg_cfg->end_vc_ptr; channel++, cnt++) /* PRQA S 2462, 2463, 3387, 3418 # Rule-12.3, Rule-13.3, Rule-14.2 */
     {
-        p_reg->ADCKnVCR[channel] = p_sg_cfg->p_vc_cfg[cnt].vcr;
+        p_reg->ADCKnVCR[channel] = p_sg_cfg->p_vc_cfg[cnt].vcr;                                                  /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     }
 }
 
@@ -1724,12 +1811,12 @@ static void r_adck_scan_group_stop (adck_instance_ctrl_t * const p_instance_ctrl
     if (ADCK_SG_TRIGGER_METHOD_THA == sgx_trigger_method)
     {
         /* Disable hold trigger for T&H group A */
-        p_reg->ADCKnTHACR_b.HLDTE = 0U;
+        p_reg->ADCKnTHACR_b.HLDTE = 0U; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     }
     else if (ADCK_SG_TRIGGER_METHOD_THB == sgx_trigger_method)
     {
         /* Disable hold trigger for T&H group B */
-        p_reg->ADCKnTHBCR_b.HLDTE = 0U;
+        p_reg->ADCKnTHBCR_b.HLDTE = 0U; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     }
     else
     {
@@ -1737,7 +1824,7 @@ static void r_adck_scan_group_stop (adck_instance_ctrl_t * const p_instance_ctrl
     }
 
     /* Disable HW trigger and A/D timer trigger (for scan group 3 and 4) and scan end interrupt */
-    *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) &= (uint8_t) (~(ADCK_SGCR_HW_TRIGGER_ENABLE |
+    *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGCR0, scan_group) &= (uint8_t) (~(ADCK_SGCR_HW_TRIGGER_ENABLE | /* PRQA S 0312, 0488, 0662, 3395, 3469, 4521 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.1, Rule-11.8, Rule-12.1, Rule-18.4 */
                                                                       ADCK_SGCR_AD_TIMER_TRIGGER_ENABLE |
                                                                       ADCK_SGCR_SCAN_END_INT_MASK));
 
@@ -1747,11 +1834,11 @@ static void r_adck_scan_group_stop (adck_instance_ctrl_t * const p_instance_ctrl
         /* Request to stop AD timer */
         if (ADCK_SCAN_GROUP_SG3 == scan_group)
         {
-            p_reg->ADCKnADTENDCR3 = ADCK_ADTENDCR_AD_TIMER_STOP;
+            p_reg->ADCKnADTENDCR3 = ADCK_ADTENDCR_AD_TIMER_STOP; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
         }
         else if (ADCK_SCAN_GROUP_SG4 == scan_group)
         {
-            p_reg->ADCKnADTENDCR4 = ADCK_ADTENDCR_AD_TIMER_STOP;
+            p_reg->ADCKnADTENDCR4 = ADCK_ADTENDCR_AD_TIMER_STOP; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
         }
         else
         {
@@ -1763,17 +1850,17 @@ static void r_adck_scan_group_stop (adck_instance_ctrl_t * const p_instance_ctrl
     r_adck_scan_group_vc_deinit(p_reg, p_sg_cfg->p_sg_cfg[scan_group]);
 
     /* Request to stop scan group */
-    *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGSTPCR0, scan_group) = ADCK_SGSTPCR_SG_STOP;
+    *ADCK_SG_REG_ADDR(&p_reg->ADCKnSGSTPCR0, scan_group) = ADCK_SGSTPCR_SG_STOP; /* PRQA S 0312, 0488, 0662, 3395, 3469, 4521 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.1, Rule-11.8, Rule-12.1, Rule-18.4 */
 
     if (ADCK_SG_TRIGGER_METHOD_AD_TIMER == sgx_trigger_method)
     {
         if (ADCK_SCAN_GROUP_SG3 == scan_group)
         {
-            FSP_HARDWARE_REGISTER_WAIT(p_reg->ADCKnSGSR3_b.ADTACT, 0U);
+            FSP_HARDWARE_REGISTER_WAIT(p_reg->ADCKnSGSR3_b.ADTACT, 0U); /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
         }
         else if (ADCK_SCAN_GROUP_SG4 == scan_group)
         {
-            FSP_HARDWARE_REGISTER_WAIT(p_reg->ADCKnSGSR4_b.ADTACT, 0U);
+            FSP_HARDWARE_REGISTER_WAIT(p_reg->ADCKnSGSR4_b.ADTACT, 0U); /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
         }
         else
         {
@@ -1782,7 +1869,7 @@ static void r_adck_scan_group_stop (adck_instance_ctrl_t * const p_instance_ctrl
     }
 
     /* Wait until scan group is stopped */
-    FSP_HARDWARE_REGISTER_WAIT(*ADCK_SG_REG_ADDR(&p_reg->ADCKnSGSR0, scan_group), ADCK_SGSR_SCAN_GROUP_IDLE);
+    FSP_HARDWARE_REGISTER_WAIT(*ADCK_SG_REG_ADDR(&p_reg->ADCKnSGSR0, scan_group), ADCK_SGSR_SCAN_GROUP_IDLE); /* PRQA S 0311, 0312, 0488, 0662, 3395, 3469, 4521 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.1, Rule-11.8, Rule-12.1, Rule-18.4 */
 
     /* Check if scan group use track and hold */
     if (ADCK_SG_TRIGGER_METHOD_THA == sgx_trigger_method)
@@ -1809,10 +1896,10 @@ static void r_adck_scan_group_stop (adck_instance_ctrl_t * const p_instance_ctrl
  * @retval     true             Scan group uses track and hold software trigger
  * @retval     false            Scan group is not use track and hold software trigger
  **********************************************************************************************************************/
-__STATIC_INLINE bool r_adck_is_th_sw_trigger (adck_instance_ctrl_t * const p_instance_ctrl,
+__STATIC_INLINE bool r_adck_is_th_sw_trigger (adck_instance_ctrl_t * const p_instance_ctrl,    /* PRQA S 3673 # Rule-8.13 */
                                               adck_scan_group_t const      scan_group)
 {
-    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    adck_extended_cfg_t * p_extend = (adck_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend; /* PRQA S 0311, 0316, 3678 # Rule-11.5, Rule-11.8, Rule-8.13 */
     bool return_val                = true;
 
     /* Get scan group trigger method */
@@ -1853,9 +1940,9 @@ __STATIC_INLINE bool r_adck_is_th_sw_trigger (adck_instance_ctrl_t * const p_ins
 __STATIC_INLINE void r_adck_scan_group_vc_deinit (R_ADCK1_Type * const p_reg, adck_sg_generic_cfg_t const * p_sg_cfg)
 {
     /* Disable all virtual channel end interrupt for scan group */
-    for (uint32_t channel = p_sg_cfg->start_vc_ptr, cnt = 0U; channel <= p_sg_cfg->end_vc_ptr; channel++, cnt++)
+    for (uint32_t channel = p_sg_cfg->start_vc_ptr, cnt = 0U; channel <= p_sg_cfg->end_vc_ptr; channel++, cnt++) /* PRQA S 2462, 2463, 3387, 3418 # Rule-12.3, Rule-13.3, Rule-14.2 */
     {
-        p_reg->ADCKnVCR[channel] = p_sg_cfg->p_vc_cfg[cnt].vcr & (~ADCK_VCR_END_INT_MASK);
+        p_reg->ADCKnVCR[channel] = p_sg_cfg->p_vc_cfg[cnt].vcr & (~ADCK_VCR_END_INT_MASK);                       /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     }
 }
 
@@ -1871,12 +1958,12 @@ static void r_adck_th_disable (adck_instance_ctrl_t * const p_instance_ctrl, adc
     R_ADCK1_Type * p_reg    = p_instance_ctrl->p_reg;
     uint8_t        ther_tha = 0U;
     uint8_t        ther_thb = 0U;
-    uint16_t       thgsr    = p_reg->ADCKnTHGSR;
+    uint16_t       thgsr    = p_reg->ADCKnTHGSR; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     for (uint32_t th_unit = 0U; th_unit < ADCK_NUMBER_OF_TH_UNIT; th_unit++)
     {
         /* Check if T&H unit z is belong to T&H group A or T&H group B */
-        if (ADCK_TH_GROUP_A == (thgsr & 0x1U))
+        if (ADCK_TH_GROUP_A == (thgsr & 0x1U)) /* PRQA S 1881 # Rule-10.4 */
         {
             ther_tha |= 0x1U << th_unit;
         }
@@ -1891,7 +1978,7 @@ static void r_adck_th_disable (adck_instance_ctrl_t * const p_instance_ctrl, adc
     if (ADCK_TH_GROUP_A == th_group)
     {
         /* Disable T&H units used by T&H group A */
-        p_reg->ADCKnTHER &= ~ther_tha;
+        p_reg->ADCKnTHER &= ~ther_tha; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Mask this T&H group as stopped so user can not use it */
         p_instance_ctrl->th_state[ADCK_TH_GROUP_A] = ADCK_TH_STATE_STOP;
@@ -1899,7 +1986,7 @@ static void r_adck_th_disable (adck_instance_ctrl_t * const p_instance_ctrl, adc
     else
     {
         /* Disable T&H units used by T&H group B */
-        p_reg->ADCKnTHER &= ~ther_thb;
+        p_reg->ADCKnTHER &= ~ther_thb; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Mask this T&H group as stopped so user can not use it */
         p_instance_ctrl->th_state[ADCK_TH_GROUP_B] = ADCK_TH_STATE_STOP;
@@ -1926,7 +2013,7 @@ static fsp_err_t r_adck_group_mask_param_check (adc_group_mask_t const group_mas
     if ((group_mask >= ADC_GROUP_MASK_0) && (group_mask <= ADC_GROUP_MASK_4))
     {
         /* Check if scan group is enabled in scan groups configuration */
-        if (NULL == p_sg_cfg->p_sg_cfg[SCH1R(group_mask) - 1])
+        if (NULL == p_sg_cfg->p_sg_cfg[SCH1R(group_mask) - 1]) /* PRQA S 3469 # Dir-4.9 */
         {
             return_val = FSP_ERR_SGX_DISABLED;
         }
@@ -1956,7 +2043,7 @@ static fsp_err_t r_adck_group_mask_param_check (adc_group_mask_t const group_mas
     return return_val;
 }
 
-#endif                                 /* ADCK_CFG_PARAM_CHECKING_ENABLE */
+#endif                                                                                                              /* ADCK_CFG_PARAM_CHECKING_ENABLE */
 
 /*******************************************************************************************************************//**
  * Calls user callback.
@@ -1964,7 +2051,7 @@ static fsp_err_t r_adck_group_mask_param_check (adc_group_mask_t const group_mas
  * @param[in]     p_ctrl     Pointer to ADCK instance control block
  * @param[in]     p_args     Pointer to arguments on stack
  **********************************************************************************************************************/
-__STATIC_INLINE void r_adck_call_callback (adck_instance_ctrl_t * const p_ctrl, adc_callback_args_t * const p_args)
+__STATIC_INLINE void r_adck_call_callback (adck_instance_ctrl_t * const p_ctrl, adc_callback_args_t * const p_args) /* PRQA S 3673 # Rule-8.13 */
 {
     adc_callback_args_t args;
 
@@ -2016,14 +2103,14 @@ __STATIC_INLINE void r_adck_scan_end_common_handle (adc_event_t const event)
     R_BSP_IrqStatusClear(irq);
 
     /* Recover ISR context saved in open. */
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Rule-11.5 */
     adc_callback_args_t    args            = {0U};
 
     args.unit       = p_instance_ctrl->p_cfg->unit;
     args.event      = event;
     args.p_context  = p_instance_ctrl->p_context;
-    args.channel    = (adc_channel_t) ADCK_CALLBACK_ARGS_CHANNEL_NOT_USE;
-    args.group_mask = (adc_group_mask_t) ADCK_CALLBACK_ARGS_GROUP_MASK_NOT_USE;
+    args.channel    = (adc_channel_t) ADCK_CALLBACK_ARGS_CHANNEL_NOT_USE;       /* PRQA S 4342 # Rule-10.5 */
+    args.group_mask = (adc_group_mask_t) ADCK_CALLBACK_ARGS_GROUP_MASK_NOT_USE; /* PRQA S 4342 # Rule-10.5 */
 
     /* Call user callback function */
     r_adck_call_callback(p_instance_ctrl, &args);
@@ -2047,11 +2134,11 @@ __STATIC_INLINE void r_adck_id_error_handle (adck_instance_ctrl_t * const p_inst
     args.p_context = p_instance_ctrl;
 
     /* Get the channel in which ID error occurred */
-    args.channel    = (adc_channel_t) p_reg->ADCKnIDER_b.IDECAP;
-    args.group_mask = (adc_group_mask_t) ADCK_CALLBACK_ARGS_GROUP_MASK_NOT_USE;
+    args.channel    = (adc_channel_t) p_reg->ADCKnIDER_b.IDECAP;                /* PRQA S 0662, 4342 # Dir-1.1, Rule-1.2, Rule-10.5 */
+    args.group_mask = (adc_group_mask_t) ADCK_CALLBACK_ARGS_GROUP_MASK_NOT_USE; /* PRQA S 4342 # Rule-10.5 */
 
     /* Clear the ID error status flag */
-    p_reg->ADCKnECR_b.IDEC = ADCK_ECR_ID_ERROR_STATUS_CLEAR;
+    p_reg->ADCKnECR_b.IDEC = ADCK_ECR_ID_ERROR_STATUS_CLEAR;                    /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Call user callback function to notify an ID error had occurred */
     r_adck_call_callback(p_instance_ctrl, &args);
@@ -2072,11 +2159,11 @@ __STATIC_INLINE void r_adck_overwrite_error_handle (adck_instance_ctrl_t * const
     args.p_context = p_instance_ctrl;
 
     /* Get the channel in which overwrite error occurred */
-    args.channel    = (adc_channel_t) p_reg->ADCKnOWER_b.OWECAP;
-    args.group_mask = (adc_group_mask_t) ADCK_CALLBACK_ARGS_GROUP_MASK_NOT_USE;
+    args.channel    = (adc_channel_t) p_reg->ADCKnOWER_b.OWECAP;                /* PRQA S 0662, 4342 # Dir-1.1, Rule-1.2, Rule-10.5 */
+    args.group_mask = (adc_group_mask_t) ADCK_CALLBACK_ARGS_GROUP_MASK_NOT_USE; /* PRQA S 4342 # Rule-10.5 */
 
     /* Clear the overwrite error status flag */
-    p_reg->ADCKnECR = ADCK_ECR_OVERWRITE_ERROR_STATUS_CLEAR;
+    p_reg->ADCKnECR = ADCK_ECR_OVERWRITE_ERROR_STATUS_CLEAR;                    /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
     /* Call user callback function to notify an overwrite error had occurred */
     r_adck_call_callback(p_instance_ctrl, &args);
@@ -2090,24 +2177,24 @@ __STATIC_INLINE void r_adck_overwrite_error_handle (adck_instance_ctrl_t * const
 __STATIC_INLINE void r_adck_trigger_overlap_error_handle (adck_instance_ctrl_t * const p_instance_ctrl)
 {
     R_ADCK1_Type      * p_reg     = p_instance_ctrl->p_reg;
-    uint8_t             tocer_reg = p_reg->ADCKnTOCER;
+    uint8_t             tocer_reg = p_reg->ADCKnTOCER; /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     uint16_t            ecr_reg   = 0U;
     adc_callback_args_t args      = {0U};
 
     args.unit      = p_instance_ctrl->p_cfg->unit;
     args.event     = ADC_EVENT_TRIGGER_OVERLAP_ERROR;
     args.p_context = p_instance_ctrl->p_context;
-    args.channel   = (adc_channel_t) ADCK_CALLBACK_ARGS_CHANNEL_NOT_USE;
+    args.channel   = (adc_channel_t) ADCK_CALLBACK_ARGS_CHANNEL_NOT_USE; /* PRQA S 4342 # Rule-10.5 */
 
     for (uint32_t scan_group = 0U; scan_group < ADCK_NUMBER_OF_SG; scan_group++)
     {
         /* Check if trigger overlap had occurred in scan group */
         if (0U != (tocer_reg & (ADCK_TOCER_SG0_MASK << scan_group)))
         {
-            args.group_mask = (adc_group_mask_t) (0x1U << scan_group);
+            args.group_mask = (adc_group_mask_t) (0x1U << scan_group);         /* PRQA S 4342, 4394 # Rule-10.5, Rule-10.8 */
 
             /* Clear the trigger overlap interrupt for scan group 0 */
-            ecr_reg |= ADCK_ECR_TRIGGER_OVERLAP_ERROR_SG0_CLEAR << scan_group;
+            ecr_reg |= ADCK_ECR_TRIGGER_OVERLAP_ERROR_SG0_CLEAR << scan_group; /* PRQA S 0499, 1891 # Rule-10.7, Rule-12.2 */
 
             /* Call user callback function to notify an trigger overlap error had occurred */
             r_adck_call_callback(p_instance_ctrl, &args);
@@ -2120,14 +2207,14 @@ __STATIC_INLINE void r_adck_trigger_overlap_error_handle (adck_instance_ctrl_t *
         args.group_mask = ADC_GROUP_MASK_SG_DIAG;
 
         /* Clear the trigger overlap interrupt for SG-Diag */
-        ecr_reg |= ADCK_ECR_TRIGGER_OVERLAP_ERROR_SG_DIAG_CLEAR;
+        ecr_reg |= ADCK_ECR_TRIGGER_OVERLAP_ERROR_SG_DIAG_CLEAR; /* PRQA S 0499 # Rule-12.2 */
 
         /* Call user callback function to notify an trigger overlap error had occurred */
         r_adck_call_callback(p_instance_ctrl, &args);
     }
 
     /* Request to clear the trigger overlap activated */
-    p_reg->ADCKnECR = ecr_reg;
+    p_reg->ADCKnECR = ecr_reg;         /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 }
 
 /*******************************************************************************************************************//**
@@ -2143,9 +2230,9 @@ __STATIC_INLINE void r_adck_upper_lower_error_handle (adck_instance_ctrl_t * con
     args.unit       = p_instance_ctrl->p_cfg->unit;
     args.event      = ADC_EVENT_UPPER_LOWER_LIMIT_ERROR;
     args.p_context  = p_instance_ctrl->p_context;
-    args.group_mask = (adc_group_mask_t) ADCK_CALLBACK_ARGS_GROUP_MASK_NOT_USE;
+    args.group_mask = (adc_group_mask_t) ADCK_CALLBACK_ARGS_GROUP_MASK_NOT_USE; /* PRQA S 4342 # Rule-10.5 */
 
-#if (BSP_MCU_GROUP_RH850U2Cx)
+#if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U)
 
     /* Check if Upper/Lower Limit error had occured in PWM-Diag */
     if (0U != p_reg->ADCKnPWVCLMSR_b.PWVCLMS)
@@ -2158,42 +2245,42 @@ __STATIC_INLINE void r_adck_upper_lower_error_handle (adck_instance_ctrl_t * con
         /* Call user callback function to notify a PWM-diag upper/lower limit check error had occurred */
         r_adck_call_callback(p_instance_ctrl, &args);
     }
-#endif                                 /* BSP_MCU_GROUP_RH850U2Cx */
+#endif                                                                            /* BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U */
 
     /* Check if Upper/Lower Limit error had occured in SG-Diag */
-    if (0U != p_reg->ADCKnSDVCLMSR)
+    if (0U != p_reg->ADCKnSDVCLMSR)                                               /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     {
-        uint32_t channel = SCH1R(p_reg->ADCKnSDVCLMSR) - 1;
-        args.channel = (adc_channel_t) (ADC_CHANNEL_SG_DIAG_CHANNEL_0 + channel);
+        uint32_t channel = SCH1R(p_reg->ADCKnSDVCLMSR) - 1;                       /* PRQA S 0662, 3469, 4434 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.3 */
+        args.channel = (adc_channel_t) (ADC_CHANNEL_SG_DIAG_CHANNEL_0 + channel); /* PRQA S 4342, 4394, 4521 # Rule-10.1, Rule-10.5, Rule-10.8 */
 
         /* Clear the SG-diag upper/lower limit interrupt status */
-        p_reg->ADCKnSDVCLMSCR |= (ADCK_SG_DIAG_UL_STATUS_CLEAR << channel);
+        p_reg->ADCKnSDVCLMSCR |= (ADCK_SG_DIAG_UL_STATUS_CLEAR << channel);       /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
 
         /* Call user callback function to notify a SG-diag upper/lower limit check error had occurred */
         r_adck_call_callback(p_instance_ctrl, &args);
     }
 
     /* Check if Upper/Lower Limit error had occured in Virtual Channel and get the channel number */
-    if (0U != p_reg->ADCKnVCLMSR1)
+    if (0U != p_reg->ADCKnVCLMSR1)                                                 /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     {
         /* Get the lower channel (0..31) that interrupt had occurred */
-        uint32_t channel = SCH1R(p_reg->ADCKnVCLMSR1) - 1;
-        args.channel = (adc_channel_t) channel;
+        uint32_t channel = SCH1R(p_reg->ADCKnVCLMSR1) - 1;                         /* PRQA S 0662, 3469, 4434 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.3 */
+        args.channel = (adc_channel_t) channel;                                    /* PRQA S 4342 # Rule-10.5 */
 
         /* Clear the Upper/Lower limit interrupt status for the current channel */
-        p_reg->ADCKnVCLMSCR1 |= (ADCK_VIRTUAL_CHANNEL_UL_STATUS_CLEAR << channel);
+        p_reg->ADCKnVCLMSCR1 |= (ADCK_VIRTUAL_CHANNEL_UL_STATUS_CLEAR << channel); /* PRQA S 0662, 1891 # Dir-1.1, Rule-1.2, Rule-10.7 */
 
         /* Call user callback function to notify a Virtual Channel upper/lower limit check error had occurred */
         r_adck_call_callback(p_instance_ctrl, &args);
     }
-    else if (0U != p_reg->ADCKnVCLMSR2)
+    else if (0U != p_reg->ADCKnVCLMSR2)                                            /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
     {
         /* Get the higher channel (32..63) that interrupt had occurred */
-        uint32_t channel = SCH1R(p_reg->ADCKnVCLMSR2) - 1;
-        args.channel = (adc_channel_t) (channel + 32);
+        uint32_t channel = SCH1R(p_reg->ADCKnVCLMSR2) - 1;                         /* PRQA S 0662, 3469, 4434 # Dir-1.1, Rule-1.2, Dir-4.9, Rule-10.3 */
+        args.channel = (adc_channel_t) (channel + 32);                             /* PRQA S 1840, 4342, 4394 # Rule-10.4, Rule-10.5, Rule-10.8 */
 
         /* Clear the Upper/Lower limit interrupt status for the current channel */
-        p_reg->ADCKnVCLMSCR2 |= (ADCK_VIRTUAL_CHANNEL_UL_STATUS_CLEAR << channel);
+        p_reg->ADCKnVCLMSCR2 |= (ADCK_VIRTUAL_CHANNEL_UL_STATUS_CLEAR << channel); /* PRQA S 0662, 1891 # Dir-1.1, Rule-1.2, Rule-10.7 */
 
         /* Call user callback function to notify a Virtual Channel upper/lower limit check error had occurred */
         r_adck_call_callback(p_instance_ctrl, &args);
@@ -2213,7 +2300,7 @@ __STATIC_INLINE void r_adck_upper_lower_error_handle (adck_instance_ctrl_t * con
  * of scan group 0 is activated.
  * The user callback function is called with the event ADC_EVENT_SCAN_COMPLETE_GROUP_0 if it is available.
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void adck_sg0_scan_end_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void adck_sg0_scan_end_isr (void) /* PRQA S 1503 # Rule-2.1 */
 {
     r_adck_scan_end_common_handle(ADC_EVENT_SCAN_COMPLETE_GROUP_0);
 }
@@ -2223,7 +2310,7 @@ BSP_INTERRUPT_ATTRIBUTE void adck_sg0_scan_end_isr (void)
  * of scan group 0 is activated.
  * The user callback function is called with the event ADC_EVENT_SCAN_COMPLETE_GROUP_1 if it is available.
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void adck_sg1_scan_end_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void adck_sg1_scan_end_isr (void) /* PRQA S 1503 # Rule-2.1 */
 {
     r_adck_scan_end_common_handle(ADC_EVENT_SCAN_COMPLETE_GROUP_1);
 }
@@ -2233,7 +2320,7 @@ BSP_INTERRUPT_ATTRIBUTE void adck_sg1_scan_end_isr (void)
  * of scan group 2 is activated.
  * The user callback function is called with the event ADC_EVENT_SCAN_COMPLETE_GROUP_2 if it is available.
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void adck_sg2_scan_end_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void adck_sg2_scan_end_isr (void) /* PRQA S 1503 # Rule-2.1 */
 {
     r_adck_scan_end_common_handle(ADC_EVENT_SCAN_COMPLETE_GROUP_2);
 }
@@ -2243,7 +2330,7 @@ BSP_INTERRUPT_ATTRIBUTE void adck_sg2_scan_end_isr (void)
  * of scan group 3 is activated.
  * The user callback function is called with the event ADC_EVENT_SCAN_COMPLETE_GROUP_3 if it is available.
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void adck_sg3_scan_end_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void adck_sg3_scan_end_isr (void) /* PRQA S 1503 # Rule-2.1 */
 {
     r_adck_scan_end_common_handle(ADC_EVENT_SCAN_COMPLETE_GROUP_3);
 }
@@ -2253,7 +2340,7 @@ BSP_INTERRUPT_ATTRIBUTE void adck_sg3_scan_end_isr (void)
  * of scan group 4 is activated.
  * The user callback function is called with the event ADC_EVENT_SCAN_COMPLETE_GROUP_4 if it is available.
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void adck_sg4_scan_end_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void adck_sg4_scan_end_isr (void) /* PRQA S 1503 # Rule-2.1 */
 {
     r_adck_scan_end_common_handle(ADC_EVENT_SCAN_COMPLETE_GROUP_4);
 }
@@ -2263,7 +2350,7 @@ BSP_INTERRUPT_ATTRIBUTE void adck_sg4_scan_end_isr (void)
  * of SG-Diag is activated.
  * The user callback function is called with the event ADC_EVENT_SCAN_COMPLETE_SG_DIAG if it is available.
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void adck_sg_diag_scan_end_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void adck_sg_diag_scan_end_isr (void) /* PRQA S 1503 # Rule-2.1 */
 {
     r_adck_scan_end_common_handle(ADC_EVENT_SCAN_COMPLETE_SG_DIAG);
 }
@@ -2273,7 +2360,7 @@ BSP_INTERRUPT_ATTRIBUTE void adck_sg_diag_scan_end_isr (void)
  * ID error, upper/lower limit check interrupt is activated.
  * The user callback function is called with the corresponding even code if it is available.
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void adck_error_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void adck_error_isr (void) /* PRQA S 1503 # Rule-2.1 */
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
@@ -2284,35 +2371,35 @@ BSP_INTERRUPT_ATTRIBUTE void adck_error_isr (void)
     R_BSP_IrqStatusClear(irq);
 
     /* Recover ISR context saved in open. */
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
-    R_ADCK1_Type         * p_reg           = p_instance_ctrl->p_reg;
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Rule-11.5 */
+    R_ADCK1_Type         * p_reg           = p_instance_ctrl->p_reg;                            /* PRQA S 3678 # Rule-8.13 */
 
     /* Check if ID error interrupt had happened and handle it */
-    if ((ADCK_ID_ERROR_INT_ENABLE == p_reg->ADCKnSFTCR_b.IDEIE) && (0U != p_reg->ADCKnIDER))
+    if ((ADCK_ID_ERROR_INT_ENABLE == p_reg->ADCKnSFTCR_b.IDEIE) && (0U != p_reg->ADCKnIDER))    /* PRQA S 0662, 1881 # Dir-1.1, Rule-1.2, Rule-10.4 */
     {
         r_adck_id_error_handle(p_instance_ctrl);
     }
 
     /* Check if overwrite error interrupt had happened and handle it */
-    if ((ADCK_OVERWRITE_ERROR_INT_ENABLE == p_reg->ADCKnSFTCR_b.OWEIE) && (0U != p_reg->ADCKnOWER))
+    if ((ADCK_OVERWRITE_ERROR_INT_ENABLE == p_reg->ADCKnSFTCR_b.OWEIE) && (0U != p_reg->ADCKnOWER)) /* PRQA S 0662, 1881 # Dir-1.1, Rule-1.2, Rule-10.4 */
     {
         r_adck_overwrite_error_handle(p_instance_ctrl);
     }
 
     /* Check if trigger overlap error interrupt had happened and handle it */
-    if ((ADCK_TRIGGER_OVERLAP_ENABLE == p_reg->ADCKnSFTCR_b.TOCEIE) && (0U != p_reg->ADCKnTOCER))
+    if ((ADCK_TRIGGER_OVERLAP_ENABLE == p_reg->ADCKnSFTCR_b.TOCEIE) && (0U != p_reg->ADCKnTOCER)) /* PRQA S 0662, 1881 # Dir-1.1, Rule-1.2, Rule-10.4 */
     {
         r_adck_trigger_overlap_error_handle(p_instance_ctrl);
     }
 
     /* Check if upper/lower limit error interrupt had happened and handle it */
-    if (((0U != p_reg->ADCKnVCLMINTER1) && (0U != p_reg->ADCKnVCLMSR1)) ||
-        ((0U != p_reg->ADCKnVCLMINTER2) && (0U != p_reg->ADCKnVCLMSR2)) ||
-#if (BSP_MCU_GROUP_RH850U2Cx)
+    if (((0U != p_reg->ADCKnVCLMINTER1) && (0U != p_reg->ADCKnVCLMSR1)) ||                                          /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+        ((0U != p_reg->ADCKnVCLMINTER2) && (0U != p_reg->ADCKnVCLMSR2)) ||                                          /* PRQA S 0662 # Dir-1.1, Rule-1.2 */
+#if (BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U)                                                                 /* PRQA S 3332 # Rule-20.9 */
         ((ADCK_PWM_DIAG_UL_LIMIT_INT_ENABLE == p_reg->ADCKnPWVCLMINTER_b.PWADULIE) &&
          (0U != p_reg->ADCKnPWVCLMSR_b.PWVCLMS)) ||
-#endif                                 /* BSP_MCU_GROUP_RH850U2Cx */
-        ((ADCK_SG_DIAG_UL_LIMIT_INT_ENABLE == p_reg->ADCKnSDVCLMINTER_b.SDADULIE) && (0U != p_reg->ADCKnSDVCLMSR)))
+#endif                                                                                                              /* BSP_FEATURE_ADCK_SUPPORTED_VARIANT == 0x1000U */
+        ((ADCK_SG_DIAG_UL_LIMIT_INT_ENABLE == p_reg->ADCKnSDVCLMINTER_b.SDADULIE) && (0U != p_reg->ADCKnSDVCLMSR))) /* PRQA S 0662, 1881 # Dir-1.1, Rule-1.2, Rule-10.4 */
     {
         r_adck_upper_lower_error_handle(p_instance_ctrl);
     }
@@ -2326,7 +2413,7 @@ BSP_INTERRUPT_ATTRIBUTE void adck_error_isr (void)
  * or MPX addition mode A/D conversion.
  * The user callback function is called with event code ADC_EVENT_MPX_CONVERSION if it is available.
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void adck_mpx_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void adck_mpx_isr (void) /* PRQA S 1503 # Rule-2.1 */
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
@@ -2337,14 +2424,14 @@ BSP_INTERRUPT_ATTRIBUTE void adck_mpx_isr (void)
     R_BSP_IrqStatusClear(irq);
 
     /* Recover ISR context saved in open. */
-    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    adck_instance_ctrl_t * p_instance_ctrl = (adck_instance_ctrl_t *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Rule-11.5 */
     adc_callback_args_t    args            = {0U};
 
     args.unit       = p_instance_ctrl->p_cfg->unit;
     args.event      = ADC_EVENT_MPX_CONVERSION;
     args.p_context  = p_instance_ctrl;
-    args.channel    = (adc_channel_t) ADCK_CALLBACK_ARGS_CHANNEL_NOT_USE;
-    args.group_mask = (adc_group_mask_t) ADCK_CALLBACK_ARGS_GROUP_MASK_NOT_USE;
+    args.channel    = (adc_channel_t) ADCK_CALLBACK_ARGS_CHANNEL_NOT_USE;       /* PRQA S 4342 # Rule-10.5 */
+    args.group_mask = (adc_group_mask_t) ADCK_CALLBACK_ARGS_GROUP_MASK_NOT_USE; /* PRQA S 4342 # Rule-10.5 */
 
     /* Call user callback function to notify an MPX interrupt had occurred */
     r_adck_call_callback(p_instance_ctrl, &args);

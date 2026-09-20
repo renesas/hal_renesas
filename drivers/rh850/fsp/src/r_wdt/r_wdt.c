@@ -7,7 +7,7 @@
 /***********************************************************************************************************************
  * Includes
  **********************************************************************************************************************/
-#include "r_wdt.h"
+#include "r_wdt.h"                                 /* PRQA S 0380 # DP_MSR_D-1.1-C99_UC1 & DP_MSR_D-1.1-C11_UC1 */
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -26,15 +26,20 @@
 /***********************************************************************************************************************
  * ISR prototypes
  **********************************************************************************************************************/
+
+/* PRQA S 3449, 3451 ++ # DP_MSR_R-8.5_UC1 */
 BSP_INTERRUPT_ATTRIBUTE void wdt_isr(void);
+
+/* PRQA S 3449, 3451 -- */
 
 /***********************************************************************************************************************
  * Global variables
  **********************************************************************************************************************/
 
 /** Watchdog implementation of WDT Driver  */
-const wdt_api_t g_wdt_on_wdt =
+const wdt_api_t g_wdt_on_wdt =         /* PRQA S 1502 # Advisory R-2.8 */
 {
+/* PRQA S 3635 ++ # Advisory R-17.12 */
     .open        = R_WDT_Open,
     .refresh     = R_WDT_Refresh,
     .statusGet   = R_WDT_StatusGet,
@@ -42,41 +47,47 @@ const wdt_api_t g_wdt_on_wdt =
     .counterGet  = R_WDT_CounterGet,
     .timeoutGet  = R_WDT_TimeoutGet,
     .callbackSet = R_WDT_CallbackSet,
+
+/* PRQA S 3635 -- */
 };
 
 /* WDTB Unit Base Addresses */
-const uint32_t g_wdtb_unit_base_addr[] =
+static const uint32_t g_wdtb_unit_base_addr[] = /* PRQA S 3218 # Advisory R-8.9 */
 {
 #if defined(R_WDTBA)
-    (uint32_t) R_WDTBA,
+    (uint32_t) R_WDTBA,                         /* PRQA S 0306, 0329 # Advisory R-11.4 */
 #endif
 #if defined(R_WDTB0)
-    (uint32_t) R_WDTB0,
+    (uint32_t) R_WDTB0,                         /* PRQA S 0306, 0329 # Advisory R-11.4 */
 #endif
 #if defined(R_WDTB1)
-    (uint32_t) R_WDTB1,
+    (uint32_t) R_WDTB1,                         /* PRQA S 0306, 0329 # Advisory R-11.4 */
 #endif
 #if defined(R_WDTB2)
-    (uint32_t) R_WDTB2,
+    (uint32_t) R_WDTB2,                         /* PRQA S 0306, 0329 # Advisory R-11.4 */
 #endif
 #if defined(R_WDTB3)
-    (uint32_t) R_WDTB3,
+    (uint32_t) R_WDTB3,                         /* PRQA S 0306, 0329 # Advisory R-11.4 */
 #endif
 #if defined(R_WDTB4)
-    (uint32_t) R_WDTB4,
+    (uint32_t) R_WDTB4,                         /* PRQA S 0306, 0329 # Advisory R-11.4 */
 #endif
 #if defined(R_WDTB5)
-    (uint32_t) R_WDTB5,
+    (uint32_t) R_WDTB5,                         /* PRQA S 0306, 0329 # Advisory R-11.4 */
 #endif
 #if defined(R_WDTB6)
-    (uint32_t) R_WDTB6
+    (uint32_t) R_WDTB6                          /* PRQA S 0306, 0329 # Advisory R-11.4 */
 #endif
 };
+
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
 
 /*******************************************************************************************************************//**
  * @addtogroup WDT WDT
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /***********************************************************************************************************************
  * Functions
@@ -92,29 +103,28 @@ const uint32_t g_wdtb_unit_base_addr[] =
  * @retval FSP_ERR_ASSERTION        Null pointer, one or more configuration options is invalid.
  * @retval FSP_ERR_ALREADY_OPEN     Module is already open.  This module can only be opened once.
  **********************************************************************************************************************/
-fsp_err_t R_WDT_Open (wdt_ctrl_t * const p_ctrl, wdt_cfg_t const * const p_cfg)
+fsp_err_t R_WDT_Open (wdt_ctrl_t * const p_ctrl, wdt_cfg_t const * const p_cfg) /* PRQA S 1505 # Advisory R-8.7 */
 {
-    wdt_instance_ctrl_t * p_instance_ctrl = (wdt_instance_ctrl_t *) p_ctrl;
+    wdt_instance_ctrl_t * p_instance_ctrl = (wdt_instance_ctrl_t *) p_ctrl;     /* PRQA S 0316 # Advisory R-11.5 */
 
 #if WDT_CFG_PARAM_CHECKING_ENABLE
 
     /* Check that control and config structure pointers are valid. */
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ASSERT(NULL != p_cfg);
-    wdt_extended_cfg_t * p_extend = (wdt_extended_cfg_t *) p_cfg->p_extend;
     FSP_ASSERT(NULL != p_cfg->p_extend);
     FSP_ERROR_RETURN(WDT_OPEN != p_instance_ctrl->wdt_open, FSP_ERR_ALREADY_OPEN);
-#else
-    wdt_extended_cfg_t * p_extend = (wdt_extended_cfg_t *) p_cfg->p_extend;
 #endif
+
+    wdt_extended_cfg_t * p_extend = (wdt_extended_cfg_t *) p_cfg->p_extend; /* PRQA S 0311, 0316, 3678 # DP_MSR_R-11.8_UC1, Advisory R-11.5, Advisory R-8.13 */
 
     uint8_t wdt_mode_setup = 0U;
 
     p_instance_ctrl->p_cfg = p_cfg;
-    p_instance_ctrl->p_reg = (R_WDTB1_Type *) g_wdtb_unit_base_addr[p_extend->unit];
+    p_instance_ctrl->p_reg = (R_WDTB1_Type *) g_wdtb_unit_base_addr[p_extend->unit]; /* PRQA S 0306 # Advisory R-11.4 */
 
     /* Check validity of the parameters */
-    if ((FSP_INVALID_VECTOR != p_extend->wdt_irq) && (0 <= p_extend->wdt_irq))
+    if ((FSP_INVALID_VECTOR != p_extend->wdt_irq) && (0 <= (int32_t) p_extend->wdt_irq))
     {
         R_BSP_IrqCfgEnable(p_extend->wdt_irq, p_extend->ipl, p_ctrl);
     }
@@ -127,7 +137,7 @@ fsp_err_t R_WDT_Open (wdt_ctrl_t * const p_ctrl, wdt_cfg_t const * const p_cfg)
     /* Set the window-open mode select*/
     wdt_mode_setup |= (uint8_t) p_extend->window_open_mode_select << R_WDTB1_WDTBnMD_WDTBnWMS_Pos;
 
-    if (WDT_WINDOW_OPEN_FUNCTION_MODE_SELECT_BY_WS == (uint8_t) p_extend->window_open_mode_select)
+    if (WDT_WINDOW_OPEN_FUNCTION_MODE_SELECT_BY_WS == (uint8_t) p_extend->window_open_mode_select) /* PRQA S 1881 # Rule-10.4 */
     {
         /* Set the window-open period*/
         wdt_mode_setup |= (uint8_t) p_extend->window_open << R_WDTB1_WDTBnMD_WDTBnWS_Pos;
@@ -137,11 +147,11 @@ fsp_err_t R_WDT_Open (wdt_ctrl_t * const p_ctrl, wdt_cfg_t const * const p_cfg)
         if (WDT_INTERRUPT_ENABLED == p_extend->isr_request)
         {
             /* Configures the timing of the WDTB interrupt (WDTBnTIT/WDTBATIT) generation */
-            p_instance_ctrl->p_reg->WDTBnWIS = p_extend->window_open_interrupt_output_timimg;
+            p_instance_ctrl->p_reg->WDTBnWIS = p_extend->window_open_interrupt_output_timimg; /* PRQA S 0662 # DP_MSR_D-1.1 & DP_MSR_R-1.2 */
         }
 
         /* Set the Window-open Start for setting start timing of the window open */
-        p_instance_ctrl->p_reg->WDTBnWOST = p_extend->window_open_start;
+        p_instance_ctrl->p_reg->WDTBnWOST = p_extend->window_open_start;                      /* PRQA S 0662 # DP_MSR_D-1.1 & DP_MSR_R-1.2 */
     }
 
     if (WDT_UNIT_A != p_extend->unit)
@@ -151,14 +161,11 @@ fsp_err_t R_WDT_Open (wdt_ctrl_t * const p_ctrl, wdt_cfg_t const * const p_cfg)
         {
             wdt_mode_setup &= (uint8_t) (~(1U << R_WDTB1_WDTBnMD_WDTBnERM_Pos));
         }
+
         /* Configure the WDT to use reset mode when an error is detected by setting the WDTBnERM bit */
-        else if (WDT_RESET_CONTROL_RESET == p_cfg->reset_control)
-        {
-            wdt_mode_setup |= (uint8_t) (1U << R_WDTB1_WDTBnMD_WDTBnERM_Pos);
-        }
         else
         {
-            /* Do nothing */
+            wdt_mode_setup |= (uint8_t) (1U << R_WDTB1_WDTBnMD_WDTBnERM_Pos);
         }
     }
 
@@ -169,9 +176,9 @@ fsp_err_t R_WDT_Open (wdt_ctrl_t * const p_ctrl, wdt_cfg_t const * const p_cfg)
     wdt_mode_setup |= (uint8_t) p_extend->overflow_time << R_WDTB1_WDTBnMD_WDTBnOVF_Pos;
 
     /* Set the mode of the watchdog */
-    p_instance_ctrl->p_reg->WDTBnMD = wdt_mode_setup;
+    p_instance_ctrl->p_reg->WDTBnMD = wdt_mode_setup; /* PRQA S 0662 # DP_MSR_D-1.1 & DP_MSR_R-1.2 */
 
-    p_instance_ctrl->wdt_open = WDT_OPEN;
+    p_instance_ctrl->wdt_open = WDT_OPEN;             /* PRQA S 1257 # DP_MSR_R-10.3_UC1 */
 
     return FSP_SUCCESS;
 }
@@ -184,7 +191,7 @@ fsp_err_t R_WDT_Open (wdt_ctrl_t * const p_ctrl, wdt_cfg_t const * const p_cfg)
  * @note This function is not supported in this implementation.
  *
  **********************************************************************************************************************/
-fsp_err_t R_WDT_TimeoutGet (wdt_ctrl_t * const p_ctrl, wdt_timeout_values_t * const p_timeout)
+fsp_err_t R_WDT_TimeoutGet (wdt_ctrl_t * const p_ctrl, wdt_timeout_values_t * const p_timeout) /* PRQA S 1505 # Advisory R-8.7 */ /* PRQA S 3673 # Advisory R-8.13 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
     FSP_PARAMETER_NOT_USED(p_timeout);
@@ -205,33 +212,27 @@ fsp_err_t R_WDT_TimeoutGet (wdt_ctrl_t * const p_ctrl, wdt_timeout_values_t * co
  * @note This function only returns FSP_SUCCESS. If the refresh fails due to being performed outside of the
  *       permitted refresh period the device will either reset or trigger an NMI ISR to run.
  **********************************************************************************************************************/
-fsp_err_t R_WDT_Refresh (wdt_ctrl_t * const p_ctrl)
+fsp_err_t R_WDT_Refresh (wdt_ctrl_t * const p_ctrl)                         /* PRQA S 1505 # Advisory R-8.7 */ /* PRQA S 3673 # Advisory R-8.13 */
 {
-    wdt_instance_ctrl_t * p_instance_ctrl = (wdt_instance_ctrl_t *) p_ctrl;
+    wdt_instance_ctrl_t * p_instance_ctrl = (wdt_instance_ctrl_t *) p_ctrl; /* PRQA S 0316, 3678 # Advisory R-11.5, Advisory R-8.13 */
 
 #if WDT_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
-    wdt_extended_cfg_t * p_extend = (wdt_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
-    FSP_ASSERT(NULL != p_extend);
     FSP_ERROR_RETURN(WDT_OPEN == p_instance_ctrl->wdt_open, FSP_ERR_NOT_OPEN);
-#else
-    wdt_extended_cfg_t * p_extend = (wdt_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
 #endif
+    wdt_extended_cfg_t * p_extend = (wdt_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend; /* PRQA S 0311, 0316, 3678 # DP_MSR_R-11.8_UC1, Advisory R-11.5, Advisory R-8.13 */
+
     uint8_t  wdt_activation_code = (uint8_t) p_extend->activation_code;
     uint16_t wdt_ref             = 0U;
 
-    if (WDT_ACTIVATION_CODE_FIX == wdt_activation_code)
+    if (WDT_ACTIVATION_CODE_FIX == wdt_activation_code)                                    /* PRQA S 1881 # Rule-10.4 */
     {
-        p_instance_ctrl->p_reg->WDTBnWDTE = WDT_PRV_START_CODE;
-    }
-    else if (WDT_ACTIVATION_CODE_VARIABLE == wdt_activation_code)
-    {
-        wdt_ref = (uint16_t) (p_instance_ctrl->p_reg->WDTBnREF);
-        p_instance_ctrl->p_reg->WDTBnEVAC = (uint8_t) (WDT_PRV_ACTIVATION_CODE - wdt_ref);
+        p_instance_ctrl->p_reg->WDTBnWDTE = WDT_PRV_START_CODE;                            /* PRQA S 0662 # DP_MSR_D-1.1 & DP_MSR_R-1.2 */
     }
     else
     {
-        /* Do nothing */
+        wdt_ref = (uint16_t) (p_instance_ctrl->p_reg->WDTBnREF);                           /* PRQA S 0662 # DP_MSR_D-1.1 & DP_MSR_R-1.2 */
+        p_instance_ctrl->p_reg->WDTBnEVAC = (uint8_t) (WDT_PRV_ACTIVATION_CODE - wdt_ref); /* PRQA S 0662 # DP_MSR_D-1.1 & DP_MSR_R-1.2 */ /* PRQA S 1860, 4393 # Rule-10.4, Rule-10.8 */
     }
 
     return FSP_SUCCESS;
@@ -247,7 +248,7 @@ fsp_err_t R_WDT_Refresh (wdt_ctrl_t * const p_ctrl)
  * @note This function is not supported in this implementation.
  *
  **********************************************************************************************************************/
-fsp_err_t R_WDT_StatusGet (wdt_ctrl_t * const p_ctrl, wdt_status_t * const p_status)
+fsp_err_t R_WDT_StatusGet (wdt_ctrl_t * const p_ctrl, wdt_status_t * const p_status) /* PRQA S 1505 # Advisory R-8.7 */ /* PRQA S 3673 # Advisory R-8.13 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
     FSP_PARAMETER_NOT_USED(p_status);
@@ -263,7 +264,7 @@ fsp_err_t R_WDT_StatusGet (wdt_ctrl_t * const p_ctrl, wdt_status_t * const p_sta
  * @note This function is not supported in this implementation.
  *
  **********************************************************************************************************************/
-fsp_err_t R_WDT_StatusClear (wdt_ctrl_t * const p_ctrl, const wdt_status_t status)
+fsp_err_t R_WDT_StatusClear (wdt_ctrl_t * const p_ctrl, const wdt_status_t status) /* PRQA S 1505 # Advisory R-8.7 */ /* PRQA S 3673 # Advisory R-8.13 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
     FSP_PARAMETER_NOT_USED(status);
@@ -279,7 +280,7 @@ fsp_err_t R_WDT_StatusClear (wdt_ctrl_t * const p_ctrl, const wdt_status_t statu
  * @note This function is not supported in this implementation.
  *
  **********************************************************************************************************************/
-fsp_err_t R_WDT_CounterGet (wdt_ctrl_t * const p_ctrl, uint32_t * const p_count)
+fsp_err_t R_WDT_CounterGet (wdt_ctrl_t * const p_ctrl, uint32_t * const p_count) /* PRQA S 1505 # Advisory R-8.7 */ /* PRQA S 3673 # Advisory R-8.13 */
 {
     FSP_PARAMETER_NOT_USED(p_ctrl);
     FSP_PARAMETER_NOT_USED(p_count);
@@ -295,16 +296,16 @@ fsp_err_t R_WDT_CounterGet (wdt_ctrl_t * const p_ctrl, uint32_t * const p_count)
  * @retval  FSP_ERR_ASSERTION            A required pointer is NULL.
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
  **********************************************************************************************************************/
-fsp_err_t R_WDT_CallbackSet (wdt_ctrl_t * const          p_ctrl,
-                             void (                    * p_callback)(wdt_callback_args_t *),
+fsp_err_t R_WDT_CallbackSet (wdt_ctrl_t * const          p_ctrl, /* PRQA S 1505 # Advisory R-8.7 */
+                             void (                    * p_callback)(wdt_callback_args_t * p_args),
                              void * const                p_context,
                              wdt_callback_args_t * const p_callback_memory)
 {
-    wdt_instance_ctrl_t * p_instance_ctrl = (wdt_instance_ctrl_t *) p_ctrl;
+    wdt_instance_ctrl_t * p_instance_ctrl = (wdt_instance_ctrl_t *) p_ctrl; /* PRQA S 0316 # Advisory R-11.5 */
 
 #if WDT_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(p_ctrl);
-    FSP_ASSERT(p_callback);
+    FSP_ASSERT(NULL != p_ctrl);
+    FSP_ASSERT(NULL != p_callback);
     FSP_ERROR_RETURN(WDT_OPEN == p_instance_ctrl->wdt_open, FSP_ERR_NOT_OPEN);
 #endif
 
@@ -327,7 +328,7 @@ fsp_err_t R_WDT_CallbackSet (wdt_ctrl_t * const          p_ctrl,
 /*******************************************************************************************************************//**
  * This function implements the 75% interrupt handler.
  **********************************************************************************************************************/
-BSP_INTERRUPT_ATTRIBUTE void wdt_isr (void)
+BSP_INTERRUPT_ATTRIBUTE void wdt_isr (void) /* PRQA S 1503 # DP_MSR_R-2.1_UC1 */
 {
     /* Save context if RTOS is used */
     FSP_CONTEXT_SAVE
@@ -338,7 +339,7 @@ BSP_INTERRUPT_ATTRIBUTE void wdt_isr (void)
      * be called again. */
     R_BSP_IrqStatusClear(irq);
 
-    wdt_instance_ctrl_t * p_ctrl = (wdt_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
+    wdt_instance_ctrl_t const * p_ctrl = (wdt_instance_ctrl_t const *) R_FSP_IsrContextGet(irq); /* PRQA S 0316 # Advisory R-11.5 */
 
     if ((NULL != p_ctrl) && (NULL != p_ctrl->p_callback))
     {
