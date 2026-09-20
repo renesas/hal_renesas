@@ -4,10 +4,14 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @addtogroup IIC_B_MASTER
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 #ifndef R_IIC_B_MASTER_H
 #define R_IIC_B_MASTER_H
@@ -28,72 +32,72 @@ FSP_HEADER
  **********************************************************************************************************************/
 
 /** I2C Timeout mode parameter definition */
-typedef enum e_iic_b_master_timeout_mode
+typedef enum e_iic_b_master_timeout_mode           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    IIC_B_MASTER_TIMEOUT_MODE_16BIT = 0, ///< Timeout Detection Time Select: 16bit-timeout -> TODTS = 0
-    IIC_B_MASTER_TIMEOUT_MODE_14BIT = 1, ///< Timeout Detection Time Select: 14bit-timeout -> TODTS = 1
-    IIC_B_MASTER_TIMEOUT_MODE_8BIT  = 2, ///< Timeout Detection Time Select: 8bit-timeout -> TODTS = 2
-    IIC_B_MASTER_TIMEOUT_MODE_6BIT  = 3, ///< Timeout Detection Time Select: 6bit-timeout -> TODTS = 3
+    IIC_B_MASTER_TIMEOUT_MODE_16BIT = 0x0U,        ///< Timeout Detection Time Select: 16bit-timeout -> TODTS = 0
+    IIC_B_MASTER_TIMEOUT_MODE_14BIT = 0x1U,        ///< Timeout Detection Time Select: 14bit-timeout -> TODTS = 1
+    IIC_B_MASTER_TIMEOUT_MODE_8BIT  = 0x2U,        ///< Timeout Detection Time Select: 8bit-timeout -> TODTS = 2
+    IIC_B_MASTER_TIMEOUT_MODE_6BIT  = 0x3U,        ///< Timeout Detection Time Select: 6bit-timeout -> TODTS = 3
 } iic_b_master_timeout_mode_t;
 
-typedef enum e_iic_b_master_timeout_scl_low
+typedef enum e_iic_b_master_timeout_scl_low        /* PRQA S 1536 # Advisory R-2.4 */
 {
-    IIC_B_MASTER_TIMEOUT_SCL_LOW_DISABLED = 0, ///< Timeout detection during SCL low disabled
-    IIC_B_MASTER_TIMEOUT_SCL_LOW_ENABLED  = 1  ///< Timeout detection during SCL low enabled
+    IIC_B_MASTER_TIMEOUT_SCL_LOW_DISABLED = 0x0U,  ///< Timeout detection during SCL low disabled
+    IIC_B_MASTER_TIMEOUT_SCL_LOW_ENABLED  = 0x1U   ///< Timeout detection during SCL low enabled
 } iic_b_master_timeout_scl_low_t;
 
-typedef enum e_iic_b_master_timeout_scl_high
+typedef enum e_iic_b_master_timeout_scl_high       /* PRQA S 1536 # Advisory R-2.4 */
 {
-    IIC_B_MASTER_TIMEOUT_SCL_HIGH_DISABLED = 0, ///< Timeout detection during SCL high disabled
-    IIC_B_MASTER_TIMEOUT_SCL_HIGH_ENABLED  = 1  ///< Timeout detection during SCL high enabled
+    IIC_B_MASTER_TIMEOUT_SCL_HIGH_DISABLED = 0x0U, ///< Timeout detection during SCL high disabled
+    IIC_B_MASTER_TIMEOUT_SCL_HIGH_ENABLED  = 0x1U  ///< Timeout detection during SCL high enabled
 } iic_b_master_timeout_scl_high_t;
 
 /** I2C clock settings */
-typedef struct iic_b_master_clock_settings
+typedef struct iic_b_master_clock_settings         /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint8_t cks_value;                 ///< Internal Reference Clock Select
-    uint8_t brh_value;                 ///< High-level period of SCL clock
-    uint8_t brl_value;                 ///< Low-level period of SCL clock
-    uint8_t sdod_value;                ///< SDA Output Delay Counter
-    bool    sdodcs_value;              ///< SDA Output Delay Clock Source
+    uint8_t cks_value;                             ///< Internal Reference Clock Select
+    uint8_t brh_value;                             ///< High-level period of SCL clock
+    uint8_t brl_value;                             ///< Low-level period of SCL clock
+    uint8_t sdod_value;                            ///< SDA Output Delay Counter
+    bool    sdodcs_value;                          ///< SDA Output Delay Clock Source
 } iic_b_master_clock_settings_t;
 
 /** I2C control structure. DO NOT INITIALIZE. */
-typedef struct st_iic_b_master_instance_ctrl
+typedef struct st_iic_b_master_instance_ctrl       /* PRQA S 1536 # Advisory R-2.4 */
 {
-    i2c_master_cfg_t const * p_cfg;     ///< Pointer to the configuration structure
-    uint32_t                 slave;     ///< The address of the slave device
-    i2c_master_addr_mode_t   addr_mode; ///< Indicates how slave fields should be interpreted
+    i2c_master_cfg_t const * p_cfg;                ///< Pointer to the configuration structure
+    uint32_t                 slave;                ///< The address of the slave device
+    i2c_master_addr_mode_t   addr_mode;            ///< Indicates how slave fields should be interpreted
 
-    uint32_t       open;                ///< Flag to determine if the device is open
-    R_RI3C0_Type * p_reg;               ///< Base register for this channel
+    uint32_t       open;                           ///< Flag to determine if the device is open
+    R_RI3C0_Type * p_reg;                          ///< Base register for this channel
 
     /* Current transfer information. */
-    uint8_t * p_buff;                   ///< Holds the data associated with the transfer
-    uint32_t  total;                    ///< Holds the total number of data bytes to transfer
-    uint32_t  remain;                   ///< Tracks the remaining data bytes to transfer
-    uint32_t  loaded;                   ///< Tracks the number of data bytes written to the register
+    uint8_t * p_buff;                              ///< Holds the data associated with the transfer
+    uint32_t  total;                               ///< Holds the total number of data bytes to transfer
+    uint32_t  remain;                              ///< Tracks the remaining data bytes to transfer
+    uint32_t  loaded;                              ///< Tracks the number of data bytes written to the register
 
-    uint8_t addr_low;                   ///< Holds the last address byte to issue
-    uint8_t addr_high;                  ///< Holds the first address byte to issue in 10-bit mode
-    uint8_t addr_total;                 ///< Holds the total number of address bytes to transfer
-    uint8_t addr_remain;                ///< Tracks the remaining address bytes to transfer
-    uint8_t addr_loaded;                ///< Tracks the number of address bytes written to the register
+    uint8_t addr_low;                              ///< Holds the last address byte to issue
+    uint8_t addr_high;                             ///< Holds the first address byte to issue in 10-bit mode
+    uint8_t addr_total;                            ///< Holds the total number of address bytes to transfer
+    uint8_t addr_remain;                           ///< Tracks the remaining address bytes to transfer
+    uint8_t addr_loaded;                           ///< Tracks the number of address bytes written to the register
 
-    volatile bool read;                 ///< Holds the direction of the data byte transfer
-    volatile bool restart;              ///< Holds whether or not the restart should be issued when done
-    volatile bool err;                  ///< Tracks whether or not an error occurred during processing
-    volatile bool restarted;            ///< Tracks whether or not a restart was issued during the previous transfer
-    volatile bool dummy_read_completed; ///< Tracks whether the dummy read is performed
-    volatile bool activation_on_rxi;    ///< Tracks whether the transfer is activated on RXI interrupt
-    volatile bool activation_on_txi;    ///< Tracks whether the transfer is activated on TXI interrupt
-    volatile bool address_restarted;    ///< Tracks whether the restart condition is send on 10 bit read
+    volatile bool read;                            ///< Holds the direction of the data byte transfer
+    volatile bool restart;                         ///< Holds whether or not the restart should be issued when done
+    volatile bool err;                             ///< Tracks whether or not an error occurred during processing
+    volatile bool restarted;                       ///< Tracks whether or not a restart was issued during the previous transfer
+    volatile bool dummy_read_completed;            ///< Tracks whether the dummy read is performed
+    volatile bool activation_on_rxi;               ///< Tracks whether the transfer is activated on RXI interrupt
+    volatile bool activation_on_txi;               ///< Tracks whether the transfer is activated on TXI interrupt
+    volatile bool address_restarted;               ///< Tracks whether the restart condition is send on 10 bit read
 
-    uint8_t sdod_value;                 ///< SDOD value when using SMBus
-    bool    sdodcs_value;               ///< SDODCS value when using SMBus
+    uint8_t sdod_value;                            ///< SDOD value when using SMBus
+    bool    sdodcs_value;                          ///< SDODCS value when using SMBus
 
     /* Pointer to callback and optional working memory */
-    void (* p_callback)(i2c_master_callback_args_t *);
+    void (* p_callback)(i2c_master_callback_args_t * p_args);
     i2c_master_callback_args_t * p_callback_memory;
 
     /* Pointer to context to be passed into callback function */
@@ -101,14 +105,14 @@ typedef struct st_iic_b_master_instance_ctrl
 } iic_b_master_instance_ctrl_t;
 
 /** R_IIC_B extended configuration */
-typedef struct st_iic_b_master_extended_cfg
+typedef struct st_iic_b_master_extended_cfg           /* PRQA S 1536 # Advisory R-2.4 */
 {
     iic_b_master_timeout_mode_t     timeout_mode;     ///< Timeout Detection Time Select: Long Mode = 0 and Short Mode = 1.
     iic_b_master_timeout_scl_low_t  timeout_scl_low;  ///< Allows timeouts to occur when SCL is held low.
-    iic_b_master_timeout_scl_high_t timeout_scl_high; ///< Allows timeouts to occur when SCL is held low.
+    iic_b_master_timeout_scl_high_t timeout_scl_high; ///< Allows timeouts to occur when SCL is held high.
     iic_b_master_clock_settings_t   clock_settings;   ///< I2C Clock settings
     uint32_t iic_clock_freq;                          ///< I2C Clock frequency in Hz
-    uint32_t bus_free_detection_time;                 ///< The time in I2C mode on I3C reference clock ticks needed in order to detect the bus free condition>
+    uint32_t bus_free_detection_time;                 ///< The time in I2C mode on I3C reference clock ticks needed in order to detect the bus free condition
     bool     smbus_operation;                         ///< SMBus operation on I2C bus
 } iic_b_master_extended_cfg_t;
 
@@ -141,7 +145,8 @@ fsp_err_t R_IIC_B_MASTER_SlaveAddressSet(i2c_master_ctrl_t * const    p_api_ctrl
                                          i2c_master_addr_mode_t const addr_mode);
 fsp_err_t R_IIC_B_MASTER_Close(i2c_master_ctrl_t * const p_api_ctrl);
 fsp_err_t R_IIC_B_MASTER_CallbackSet(i2c_master_ctrl_t * const          p_api_ctrl,
-                                     void (                           * p_callback)(i2c_master_callback_args_t *),
+                                     void (                           * p_callback)(
+                                         i2c_master_callback_args_t   * p_args),
                                      void * const                       p_context,
                                      i2c_master_callback_args_t * const p_callback_memory);
 fsp_err_t R_IIC_B_MASTER_StatusGet(i2c_master_ctrl_t * const p_api_ctrl, i2c_master_status_t * p_status);

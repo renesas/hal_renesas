@@ -216,7 +216,7 @@ typedef enum e_cgc_system_clock_behavior
 
 #ifndef BSP_OVERRIDE_CGC_SYSTEM_CLOCK_CFG_T
 
-/** Clock configuration structure - Used as an input parameter to the @ref cgc_api_t::systemClockSet function for the system clock. */
+/** Clock configuration structure - Used as an input parameter to the @ref cgc_api_t::systemClockGearSet function for the system clock. */
 typedef struct st_cgc_system_clock_cfg
 {
     cgc_system_clock_behavior_t clean_clock_gear; ///< Gear behavior for CLK_SYS_CLEAN

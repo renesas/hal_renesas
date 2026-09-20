@@ -7,10 +7,14 @@
 #ifndef R_CGC_H
 #define R_CGC_H
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @addtogroup CGC
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /***********************************************************************************************************************
  * Includes
@@ -24,22 +28,22 @@ FSP_HEADER
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-#define CGC_CLOCK_STABLED    (0x03)
-#define CGC_CLOCK_STOPPED    (0x00)
+#define CGC_CLOCK_STABLED    (0x03U)
+#define CGC_CLOCK_STOPPED    (0x00U)
 
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /* Private enumeration used to tell if a clock is running or not. */
-typedef enum e_cgc_prv_clock_state
+typedef enum e_cgc_prv_clock_state                /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_PRV_CLOCK_STATE_STOPPED = 0,   ///< The clock source is stopped
-    CGC_PRV_CLOCK_STATE_RUNNING = 1,   ///< The clock source is running
+    CGC_PRV_CLOCK_STATE_STOPPED = 0,              ///< The clock source is stopped
+    CGC_PRV_CLOCK_STATE_RUNNING = 1,              ///< The clock source is running
 } cgc_prv_clock_state_t;
 
 /* Private enumeration used to tell if a clock is stable or not. */
-typedef enum e_cgc_prv_clock_stability_state
+typedef enum e_cgc_prv_clock_stability_state      /* PRQA S 1536 # Advisory R-2.4 */
 {
     CGC_PRV_CLOCK_STABILITY_STATE_NOT_STABLE = 0, ///< The clock source is not stable
     CGC_PRV_CLOCK_STABILITY_STATE_STABLE     = 1, ///< The clock source is stable
@@ -48,54 +52,54 @@ typedef enum e_cgc_prv_clock_stability_state
 #if BSP_FEATURE_CGC_EXTENDED_PERIPHERAL_CLK_SELECTORS
 
 /** CGC RLIN3 clock source */
-typedef enum e_cgc_rlin_clk_sel
+typedef enum e_cgc_rlin_clk_sel           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_RLIN_CLK_SEL_EMG        = 0,   ///< The RLIN3 input clock source is EMG
-    CGC_RLIN_CLK_SEL_HSB        = 1,   ///< The RLIN3 input clock source is P080
-    CGC_RLIN_CLK_SEL_HBUS       = 1,   ///< The RLIN23 input clock source is P080
-    CGC_RLIN_CLK_SEL_MOSC       = 2,   ///< The RLIN3 input clock source is Main OSC
-    CGC_RLIN_CLK_SEL_MOSC_DIV_4 = 3,   ///< The RLIN3 input clock source is CLK_MOSC/4
-    CGC_RLIN_CLK_SEL_MOSC_DIV_8 = 4    ///< The RLIN3 input clock source is CLK_MOSC/8
+    CGC_RLIN_CLK_SEL_EMG        = 0,      ///< The RLIN3 input clock source is EMG
+    CGC_RLIN_CLK_SEL_HSB        = 1,      ///< The RLIN3 input clock source is P080
+    CGC_RLIN_CLK_SEL_HBUS       = 1,      ///< The RLIN23 input clock source is P080
+    CGC_RLIN_CLK_SEL_MOSC       = 2,      ///< The RLIN3 input clock source is Main OSC
+    CGC_RLIN_CLK_SEL_MOSC_DIV_4 = 3,      ///< The RLIN3 input clock source is CLK_MOSC/4
+    CGC_RLIN_CLK_SEL_MOSC_DIV_8 = 4       ///< The RLIN3 input clock source is CLK_MOSC/8
 } cgc_rlin_clk_sel_t;
 
 /** CGC TAUJ clock source */
-typedef enum e_cgc_tauj_clk_sel
+typedef enum e_cgc_tauj_clk_sel           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_TAUJ_CLK_SEL_EMG           = 0, ///< The TAUJ input clock source is EMG
-    CGC_TAUJ_CLK_SEL_LSIOSC        = 1, ///< The TAUJ input clock source is CLK_MOSC/8
-    CGC_TAUJ_CLK_SEL_HSIOSC_DIV_20 = 2, ///< The TAUJ input clock source is CLK_MOSC/4
-    CGC_TAUJ_CLK_SEL_MOSC          = 3, ///< The TAUJ input clock source is Main OSC
-    CGC_TAUJ_CLK_SEL_HSB           = 4  ///< The TAUJ input clock source is CLK_MOSC/8
+    CGC_TAUJ_CLK_SEL_EMG           = 0,   ///< The TAUJ input clock source is EMG
+    CGC_TAUJ_CLK_SEL_LSIOSC        = 1,   ///< The TAUJ input clock source is CLK_LSIOSC
+    CGC_TAUJ_CLK_SEL_HSIOSC_DIV_20 = 2,   ///< The TAUJ input clock source is CLK_HSIOSC/20
+    CGC_TAUJ_CLK_SEL_MOSC          = 3,   ///< The TAUJ input clock source is Main OSC
+    CGC_TAUJ_CLK_SEL_HSB           = 4    ///< The TAUJ input clock source is CLK_MOSC/8
 } cgc_tauj_clk_sel_t;
 
 /** CGC RTCA clock source */
-typedef enum e_cgc_rtca_clk_sel
+typedef enum e_cgc_rtca_clk_sel           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_RTCA_CLK_SEL_EMG         = 0,  ///< The RTCA input clock source is EMG
-    CGC_RTCA_CLK_SEL_LSIOSC      = 1,  ///< The RTCA input clock source is CLK_LSIOSC
-    CGC_RTCA_CLK_SEL_MOSC_DIV_16 = 2,  ///< The RTCA input clock source is CLK_MOSC/16
-    CGC_RTCA_CLK_SEL_SOSC        = 3   ///< The RTCA input clock source is Sub OSC
+    CGC_RTCA_CLK_SEL_EMG         = 0,     ///< The RTCA input clock source is EMG
+    CGC_RTCA_CLK_SEL_LSIOSC      = 1,     ///< The RTCA input clock source is CLK_LSIOSC
+    CGC_RTCA_CLK_SEL_MOSC_DIV_16 = 2,     ///< The RTCA input clock source is CLK_MOSC/16
+    CGC_RTCA_CLK_SEL_SOSC        = 3      ///< The RTCA input clock source is Sub OSC
 } cgc_rtca_clk_sel_t;
 
 /** CGC AADC clock source */
-typedef enum e_cgc_aadc_clk_sel
+typedef enum e_cgc_aadc_clk_sel           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_AADC_CLK_SEL_EMG           = 0, ///< The AADC input clock source is EMG
-    CGC_AADC_CLK_SEL_HSIOSC_DIV_20 = 1, ///< The AADC input clock source is CLK_HSIOSC/20
-    CGC_AADC_CLK_SEL_MOSC          = 2, ///< The AADC input clock source is Main OSC
-    CGC_AADC_CLK_SEL_CLKC_LSB      = 3  ///< The AADC input clock source is CLK_MOSC/8
+    CGC_AADC_CLK_SEL_EMG           = 0,   ///< The AADC input clock source is EMG
+    CGC_AADC_CLK_SEL_HSIOSC_DIV_20 = 1,   ///< The AADC input clock source is CLK_HSIOSC/20
+    CGC_AADC_CLK_SEL_MOSC          = 2,   ///< The AADC input clock source is Main OSC
+    CGC_AADC_CLK_SEL_CLKC_LSB      = 3    ///< The AADC input clock source is CLK_MOSC/8
 } cgc_aadc_clk_sel_t;
 
 /** CGC MSPI clock source */
-typedef enum e_cgc_mspi_clk_sel
+typedef enum e_cgc_mspi_clk_sel           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_MSPI_CLK_SEL_EMG  = 0,         ///< The MSPI input clock source is EMG
-    CGC_MSPI_CLK_SEL_MOSC = 1,         ///< The MSPI input clock source is Main OSC
-    CGC_MSPI_CLK_SEL_HSB  = 2          ///< The MSPI input clock source is CLK_MOSC/4
+    CGC_MSPI_CLK_SEL_EMG  = 0,            ///< The MSPI input clock source is EMG
+    CGC_MSPI_CLK_SEL_MOSC = 1,            ///< The MSPI input clock source is Main OSC
+    CGC_MSPI_CLK_SEL_HSB  = 2             ///< The MSPI input clock source is CLK_MOSC/4
 } cgc_mspi_clk_sel_t;
 
 /** CGC EXTCLK0 clock source */
-typedef enum e_cgc_extclk_clk_sel
+typedef enum e_cgc_extclk_clk_sel         /* PRQA S 1536 # Advisory R-2.4 */
 {
     CGC_EXTCLK_CLK_SEL_MOSC          = 0, ///< The EXTCLK0 input clock source is Main OSC
     CGC_EXTCLK_CLK_SEL_LSIOSC        = 1, ///< The EXTCLK0 input clock source is LSIOSC
@@ -113,16 +117,16 @@ typedef enum e_cgc_extclk_clk_sel
 #else
 
 /** CGC RLIN3 clock source */
-typedef enum e_cgc_rlin_clk_sel
+typedef enum e_cgc_rlin_clk_sel         /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_RLIN_CLK_SEL_MOSC       = 0,   ///< The RLIN3 input clock source is Main OSC
-    CGC_RLIN_CLK_SEL_HSB        = 1,   ///< The RLIN3 input clock source is P080
-    CGC_RLIN_CLK_SEL_MOSC_DIV_4 = 2,   ///< The RLIN3 input clock source is CLK_MOSC/4
-    CGC_RLIN_CLK_SEL_MOSC_DIV_8 = 3    ///< The RLIN3 input clock source is CLK_MOSC/8
+    CGC_RLIN_CLK_SEL_MOSC       = 0,    ///< The RLIN3 input clock source is Main OSC
+    CGC_RLIN_CLK_SEL_HSB        = 1,    ///< The RLIN3 input clock source is P080
+    CGC_RLIN_CLK_SEL_MOSC_DIV_4 = 2,    ///< The RLIN3 input clock source is CLK_MOSC/4
+    CGC_RLIN_CLK_SEL_MOSC_DIV_8 = 3     ///< The RLIN3 input clock source is CLK_MOSC/8
 } cgc_rlin_clk_sel_t;
 
 /** CGC TAUJ clock source */
-typedef enum e_cgc_tauj_clk_sel
+typedef enum e_cgc_tauj_clk_sel         /* PRQA S 1536 # Advisory R-2.4 */
 {
     CGC_TAUJ_CLK_SEL_LSIOSC        = 0, ///< The TAUJ input clock source is EMG
     CGC_TAUJ_CLK_SEL_HSIOSC_DIV_20 = 1, ///< The TAUJ input clock source is CLK_MOSC/8
@@ -131,21 +135,21 @@ typedef enum e_cgc_tauj_clk_sel
 } cgc_tauj_clk_sel_t;
 
 /** CGC MSPI clock source */
-typedef enum e_cgc_mspi_clk_sel
+typedef enum e_cgc_mspi_clk_sel         /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_MSPI_CLK_SEL_MOSC = 0,         ///< The MSPI input clock source is Main OSC
-    CGC_MSPI_CLK_SEL_HSB  = 1          ///< The MSPI input clock source is CLK_MOSC/4
+    CGC_MSPI_CLK_SEL_MOSC = 0,          ///< The MSPI input clock source is Main OSC
+    CGC_MSPI_CLK_SEL_HSB  = 1           ///< The MSPI input clock source is CLK_MOSC/4
 } cgc_mspi_clk_sel_t;
 
 /** CGC RTCA clock source */
-typedef enum e_cgc_rtca_clk_sel
+typedef enum e_cgc_rtca_clk_sel         /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_RTCA_CLK_SEL_MOSC_DIV_16 = 0,  ///< The RTCA input clock source is CLK_MOSC/16
-    CGC_RTCA_CLK_SEL_LSIOSC      = 1,  ///< The RTCA input clock source is CLK_LSIOSC
+    CGC_RTCA_CLK_SEL_MOSC_DIV_16 = 0,   ///< The RTCA input clock source is CLK_MOSC/16
+    CGC_RTCA_CLK_SEL_LSIOSC      = 1,   ///< The RTCA input clock source is CLK_LSIOSC
 } cgc_rtca_clk_sel_t;
 
 /** CGC AADC clock source */
-typedef enum e_cgc_aadc_clk_sel
+typedef enum e_cgc_aadc_clk_sel         /* PRQA S 1536 # Advisory R-2.4 */
 {
     CGC_AADC_CLK_SEL_MOSC          = 0, ///< The AADC input clock source is EMG
     CGC_AADC_CLK_SEL_HSIOSC_DIV_20 = 1, ///< The AADC input clock source is CLK_HSIOSC/20
@@ -153,7 +157,7 @@ typedef enum e_cgc_aadc_clk_sel
 } cgc_aadc_clk_sel_t;
 
 /** CGC EXTCLK clock source */
-typedef enum e_cgc_extclk_clk_sel
+typedef enum e_cgc_extclk_clk_sel       /* PRQA S 1536 # Advisory R-2.4 */
 {
     CGC_FOUT_CLK_SEL_MOSC          = 0, ///< The FOUT0 input clock source is Main OSC
     CGC_FOUT_CLK_SEL_HSB           = 1, ///< The FOUT0 input clock source is CLK_HSB
@@ -166,63 +170,67 @@ typedef enum e_cgc_extclk_clk_sel
 #endif
 
 /** CGC CANFD clock source */
-typedef enum e_cgc_canfd_clk_sel
+typedef enum e_cgc_canfd_clk_sel                                              /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_CANFD_CLK_SEL_EMG        = 0,  ///< The CANFD input clock source is EMG
-    CGC_CANFD_CLK_SEL_MOSC       = 1,  ///< The CANFD input clock source is Main OSC
-    CGC_CANFD_CLK_SEL_MOSC_DIV_2 = 2,  ///< The CANFD input clock source is CLK_MOSC/2
-    CGC_CANFD_CLK_SEL_MOSC_DIV_4 = 3   ///< The CANFD input clock source is CLK_MOSC/4
+    CGC_CANFD_CLK_SEL_EMG        = 0,                                         ///< The CANFD input clock source is EMG
+    CGC_CANFD_CLK_SEL_MOSC       = 1,                                         ///< The CANFD input clock source is Main OSC
+    CGC_CANFD_CLK_SEL_MOSC_DIV_2 = 2,                                         ///< The CANFD input clock source is CLK_MOSC/2
+    CGC_CANFD_CLK_SEL_MOSC_DIV_4 = 3                                          ///< The CANFD input clock source is CLK_MOSC/4
 } cgc_canfd_clk_sel_t;
 
 /* CGC private system clock source */
-typedef enum e_cgc_prv_sys_clk_src
+typedef enum e_cgc_prv_sys_clk_src                                            /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_PRV_SYS_CLK_SRC_PLLO = 0,      ///< The SYS_CLEAN/SSCG/SSCG1 clock source is PLLO/SSCG/SSCG1
-    CGC_PRV_SYS_CLK_SRC_IOSC = 1       ///< The SYS_CLEAN/SSCG/SSCG1 clock source is IOSC
+    CGC_PRV_SYS_CLK_SRC_PLLO = 0,                                             ///< The SYS_CLEAN/SSCG/SSCG1 clock source is PLLO/SSCG/SSCG1
+    CGC_PRV_SYS_CLK_SRC_IOSC = 1                                              ///< The SYS_CLEAN/SSCG/SSCG1 clock source is IOSC
 } cgc_prv_sys_clk_src_t;
 
 /* CGC private system clock name */
-typedef enum e_cgc_prv_system_clock
+typedef enum e_cgc_prv_system_clock                                           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    CGC_PRV_SYSTEM_CLOCK_SYS       = 0, ///< The CPU System clock is CLK_SYSSYS
-    CGC_PRV_SYSTEM_CLOCK_SYS_CLEAN = 0, ///< The CPU System clock is CLK_SYS_CLEAN
-    CGC_PRV_SYSTEM_CLOCK_SYS_SSCG  = 1, ///< The CPU System clock is CLK_SYS_SSCG
-    CGC_PRV_SYSTEM_CLOCK_SYS_SSCG1 = 2, ///< The CPU System clock is CLK_SYS_SSCG1
+    CGC_PRV_SYSTEM_CLOCK_SYS       = 0,                                       ///< The CPU System clock is CLK_SYSSYS
+    CGC_PRV_SYSTEM_CLOCK_SYS_CLEAN = 0,                                       ///< The CPU System clock is CLK_SYS_CLEAN
+    CGC_PRV_SYSTEM_CLOCK_SYS_SSCG  = 1,                                       ///< The CPU System clock is CLK_SYS_SSCG
+    CGC_PRV_SYSTEM_CLOCK_SYS_SSCG1 = 2,                                       ///< The CPU System clock is CLK_SYS_SSCG1
 } cgc_prv_system_clock_t;
 
 /** CGC private system clock information */
-typedef struct st_cgc_sys_clock_info
+typedef struct st_cgc_sys_clock_info                                          /* PRQA S 1536 # Advisory R-2.4 */
 {
-    volatile uint32_t * p_ckd_ctrl;                   ///< Divider control register
-    volatile uint32_t * p_ckd_stat;                   ///< Divider status register
-    volatile uint32_t * p_cks_ctrl;                   ///< Clock source control register
-    volatile uint32_t * p_cks_stat;                   ///< Clock source status register
-    cgc_prv_sys_clk_src_t (* get_clock_source)(void); ///< Function to read current clock source
+    volatile uint32_t       * p_ckd_ctrl;                                     ///< Divider control register
+    volatile const uint32_t * p_ckd_stat;                                     ///< Divider status register
+    volatile uint32_t       * p_cks_ctrl;                                     ///< Clock source control register
+    volatile const uint32_t * p_cks_stat;                                     ///< Clock source status register
+    cgc_prv_sys_clk_src_t (* get_clock_source)(void);                         ///< Function to read current clock source
 } cgc_sys_clock_info_t;
 
 /** CGC private peripheral input clock source information */
-typedef struct st_cgc_peripheral_clock_backup
+typedef struct st_cgc_peripheral_clock_backup                                 /* PRQA S 1536 # Advisory R-2.4 */
 {
-    cgc_rlin_clk_sel_t   clk_rlin;      ///< Backup of RLIN3 clock source
-    cgc_rlin_clk_sel_t   clk_rlin_ch23; ///< Backup of RLIN3_CH23 clock source
-    cgc_tauj_clk_sel_t   clk_tauj;      ///< Backup of TAUJ clock source
-    cgc_rtca_clk_sel_t   clk_rtca;      ///< Backup of RTCA clock source
-    cgc_aadc_clk_sel_t   clk_aadc;      ///< Backup of AADC clock source
-    cgc_mspi_clk_sel_t   clk_mspi;      ///< Backup of MSPI clock source
-    cgc_extclk_clk_sel_t clk_extclk0;   ///< Backup of EXTCLK0 clock source
-    cgc_extclk_clk_sel_t clk_extclk1;   ///< Backup of EXTCLK1 clock source
-    cgc_canfd_clk_sel_t  clk_canfd;     ///< Backup of CANFD clock source
+    cgc_rlin_clk_sel_t   clk_rlin;                                            ///< Backup of RLIN3 clock source
+    cgc_rlin_clk_sel_t   clk_rlin_ch23;                                       ///< Backup of RLIN3_CH23 clock source
+    cgc_tauj_clk_sel_t   clk_tauj;                                            ///< Backup of TAUJ clock source
+    cgc_rtca_clk_sel_t   clk_rtca;                                            ///< Backup of RTCA clock source
+    cgc_aadc_clk_sel_t   clk_aadc;                                            ///< Backup of AADC clock source
+    cgc_mspi_clk_sel_t   clk_mspi;                                            ///< Backup of MSPI clock source
+    cgc_extclk_clk_sel_t clk_extclk0;                                         ///< Backup of EXTCLK0 clock source
+    cgc_extclk_clk_sel_t clk_extclk1;                                         ///< Backup of EXTCLK1 clock source
+    cgc_canfd_clk_sel_t  clk_canfd;                                           ///< Backup of CANFD clock source
 } cgc_peripheral_clock_backup_t;
 
 /** CGC private control block. DO NOT MODIFY. Initialization occurs when R_CGC_Open() is called. */
-typedef struct st_cgc_instance_ctrl
+typedef struct st_cgc_instance_ctrl                                           /* PRQA S 1536 # Advisory R-2.4 */
 {
     uint32_t             open;                                                ///< Open status of CGC
     cgc_sys_clock_info_t cgc_sys_clocks[BSP_FEATURE_CGC_NUM_OF_SYSTEM_CLOCK]; ///< System clock information
 #if (BSP_FEATURE_CGC_SUB_OSC_IS_AVAILABLE)
     cgc_peripheral_clock_backup_t cgc_peripheral_clocks[2];                   ///< Peripheral clock source backup
 #else
+
+    /* PRQA S 1039 ++ # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
     cgc_peripheral_clock_backup_t cgc_peripheral_clocks[1];                   ///< Peripheral clock source backup
+
+    /* PRQA S 1039 -- */
 #endif
 } cgc_instance_ctrl_t;
 

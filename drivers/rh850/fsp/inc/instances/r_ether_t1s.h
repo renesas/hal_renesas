@@ -7,10 +7,14 @@
 #ifndef R_ETHER_T1S_H
 #define R_ETHER_T1S_H
 
+/* PRQA S 0292 ++ # Dir-1.1 */
+
 /*******************************************************************************************************************//**
  * @addtogroup ETHER_T1S
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /***********************************************************************************************************************
  * Includes
@@ -40,204 +44,212 @@ extern const ether_api_t g_ether_t1s_on_ether_t1s;
 typedef uint32_t ether_t1s_buf_idx_type;
 typedef uint8_t  ether_t1s_data_type;
 typedef uint16_t ether_t1s_frame_type;
-typedef enum e_ether_t1s_loopback_config
+
+/** Select MII timestamp or T1S timestamp */
+typedef enum e_ether_t1s_time_stamp_sel          /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_LOOPBACK_ON  = 0,        ///< Enable lookback mode
-    ETHER_T1S_LOOPBACK_OFF = 1,        ///< Disable lookback mode
+    ETHER_T1S_TIME_STAMP_MII = 0,                ///< MII timestamp select
+    ETHER_T1S_TIME_STAMP_T1S = 1,                ///< T1S timestamp select
+} ether_t1s_time_stamp_t;
+
+typedef enum e_ether_t1s_loopback_config         /* PRQA S 1536 # Advisory R-2.4 */
+{
+    ETHER_T1S_LOOPBACK_ON  = 0,                  ///< Enable lookback mode
+    ETHER_T1S_LOOPBACK_OFF = 1,                  ///< Disable lookback mode
 } ether_t1s_loopback_config_t;
 
 /** Ethernet Network Speed */
-typedef enum e_ether_t1s_network_speed
+typedef enum e_ether_t1s_network_speed           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_SPEED_10MBPS     = 0,    ///< Ethernet network speed 10mbps
-    ETHER_T1S_SPEED_100MBPS    = 1,    ///< Ethernet network speed 100mbps
-    ETHER_T1S_SPEED_PROHIBITED = 2,    ///< Ethernet network speed Setting prohibited
+    ETHER_T1S_SPEED_10MBPS     = 0,              ///< Ethernet network speed 10mbps
+    ETHER_T1S_SPEED_100MBPS    = 1,              ///< Ethernet network speed 100mbps
+    ETHER_T1S_SPEED_PROHIBITED = 2,              ///< Ethernet network speed Setting prohibited
 } ether_t1s_network_speed_t;
 
 /** Ethernet PHY Interface Select  */
-typedef enum e_ether_t1s_phy_interface
+typedef enum e_ether_t1s_phy_interface           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_MODE               = 0,  ///< Ethernet T1S interface
-    ETHER_T1S_RMII               = 1,  ///< Ethernet RMII interface
-    ETHER_T1S_SETTING_PROHIBITED = 2,  ///< Ethernet setting prohibited
+    ETHER_T1S_MODE               = 0,            ///< Ethernet T1S interface
+    ETHER_T1S_RMII               = 1,            ///< Ethernet RMII interface
+    ETHER_T1S_SETTING_PROHIBITED = 2,            ///< Ethernet setting prohibited
 } ether_t1s_phy_interface_t;
 
 /** Header data added type */
-typedef enum e_ether_t1s_header_type
+typedef enum e_ether_t1s_header_type             /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_HEADER_ADDED  = 0,       ///< Header added in configuration
-    ETHER_T1S_HEADER_CUSTOM = 1,       ///< Added header in buffer manual
+    ETHER_T1S_HEADER_ADDED  = 0,                 ///< Header added in configuration
+    ETHER_T1S_HEADER_CUSTOM = 1,                 ///< Added header in buffer manual
 } ether_t1s_header_type_t;
 
-typedef enum e_ether_t1s_previous_link_status
+typedef enum e_ether_t1s_previous_link_status    /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_PREVIOUS_LINK_STATUS_DOWN = 0, ///< Previous link status is down
-    ETHER_T1S_PREVIOUS_LINK_STATUS_UP   = 1, ///< Previous link status is up
+    ETHER_T1S_PREVIOUS_LINK_STATUS_DOWN = 0,     ///< Previous link status is down
+    ETHER_T1S_PREVIOUS_LINK_STATUS_UP   = 1,     ///< Previous link status is up
 } ether_t1s_previous_link_status_t;
 
-typedef enum e_ether_t1s_link_change
+typedef enum e_ether_t1s_link_change             /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_LINK_CHANGE_NO_CHANGE = 0, ///< Link status is no change
-    ETHER_T1S_LINK_CHANGE_LINK_DOWN = 1, ///< Link status changes to down
-    ETHER_T1S_LINK_CHANGE_LINK_UP   = 2, ///< Link status changes to up
+    ETHER_T1S_LINK_CHANGE_NO_CHANGE = 0,         ///< Link status is no change
+    ETHER_T1S_LINK_CHANGE_LINK_DOWN = 1,         ///< Link status changes to down
+    ETHER_T1S_LINK_CHANGE_LINK_UP   = 2,         ///< Link status changes to up
 } ether_t1s_link_change_t;
 
-typedef enum e_ether_t1s_link_establish_status
+typedef enum e_ether_t1s_link_establish_status   /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_LINK_ESTABLISH_STATUS_DOWN = 0, ///< Link establish status is down
-    ETHER_T1S_LINK_ESTABLISH_STATUS_UP   = 1, ///< Link establish status is up
+    ETHER_T1S_LINK_ESTABLISH_STATUS_DOWN = 0,    ///< Link establish status is down
+    ETHER_T1S_LINK_ESTABLISH_STATUS_UP   = 1,    ///< Link establish status is up
 } ether_t1s_link_establish_status_t;
 
 /** AVB operation status. */
-typedef enum e_ether_t1s_operation_status_type_t
+typedef enum e_ether_t1s_operation_status_type_t /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_RESET     = 0,           ///< Reset
-    ETHER_T1S_CONFIG    = 1,           ///< Configuration
-    ETHER_T1S_OPERATION = 2,           ///< Operation
-    ETHER_T1S_STANDBY   = 3,           ///< Standby
-    ETHER_T1S_UNINIT    = 4            ///< Not initialized
+    ETHER_T1S_RESET     = 0,                     ///< Reset
+    ETHER_T1S_CONFIG    = 1,                     ///< Configuration
+    ETHER_T1S_OPERATION = 2,                     ///< Operation
+    ETHER_T1S_STANDBY   = 3,                     ///< Standby
+    ETHER_T1S_UNINIT    = 4                      ///< Not initialized
 } ether_t1s_operation_status_type_t;
 
 /** Setting option. */
-typedef enum e_ether_t1s_option_type_t
+typedef enum e_ether_t1s_option_type_t           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_DISABLE = 0,             ///< Disable
-    ETHER_T1S_ENABLE  = 1              ///< Enable
+    ETHER_T1S_DISABLE = 0,                       ///< Disable
+    ETHER_T1S_ENABLE  = 1                        ///< Enable
 } ether_t1s_option_type_t;
 
 /** controller state type structure */
-typedef enum e_ether_t1s_mode_type
+typedef enum e_ether_t1s_mode_type               /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_MODE_DOWN              = 0, ///< Controller Disabled Mode
-    ETHER_T1S_MODE_ACTIVE            = 1, ///< Controller Enabled Mode
-    ETHER_T1S_MODE_STANDBY           = 2, ///< Controller Standby Mode
-    ETHER_T1S_MODE_ACTIVE_TX_OFFLINE = 3  ///< Controller Silent Communication Mode
+    ETHER_T1S_MODE_DOWN              = 0,        ///< Controller Disabled Mode
+    ETHER_T1S_MODE_ACTIVE            = 1,        ///< Controller Enabled Mode
+    ETHER_T1S_MODE_STANDBY           = 2,        ///< Controller Standby Mode
+    ETHER_T1S_MODE_ACTIVE_TX_OFFLINE = 3         ///< Controller Silent Communication Mode
 } ether_t1s_mode_type_t;
 
 /** Enumeration for quality information regarding the evaluated time stamp.  */
 /** Meaning of each value is depending on the HW. */
 typedef enum
 {
-    ETHER_T1S_VALID     = 0,           ///< Valid
-    ETHER_T1S_INVALID   = 1,           ///< Invalid
-    ETHER_T1S_UNCERTAIN = 2            ///< Uncertain
+    ETHER_T1S_VALID     = 0,                                 ///< Valid
+    ETHER_T1S_INVALID   = 1,                                 ///< Invalid
+    ETHER_T1S_UNCERTAIN = 2                                  ///< Uncertain
 } ether_t1s_time_stamp_qual_type;
 
-typedef enum e_ether_t1s_tx_ch_type
+typedef enum e_ether_t1s_tx_ch_type                          /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_TX_BE = 0,               ///< Transmit queue 0
-    ETHER_T1S_TX_NC = 1,               ///< Transmit queue 1
-    ETHER_T1S_TX_SB = 2,               ///< Transmit queue 2
-    ETHER_T1S_TX_SA = 3                ///< Transmit queue 3
+    ETHER_T1S_TX_BE = 0,                                     ///< Transmit queue 0
+    ETHER_T1S_TX_NC = 1,                                     ///< Transmit queue 1
+    ETHER_T1S_TX_SB = 2,                                     ///< Transmit queue 2
+    ETHER_T1S_TX_SA = 3                                      ///< Transmit queue 3
 } ether_t1s_tx_ch_type;
 
-typedef enum e_ether_t1s_tx_sync_mode_type
+typedef enum e_ether_t1s_tx_sync_mode_type                   /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_TXNORMAL = 0,            ///< Sync Mode Transmit Normal
-    ETHER_T1S_TXNOWB   = 1             ///< Sync Mode Transmit No Write Back
+    ETHER_T1S_TXNORMAL = 0,                                  ///< Sync Mode Transmit Normal
+    ETHER_T1S_TXNOWB   = 1                                   ///< Sync Mode Transmit No Write Back
 } ether_t1s_tx_sync_mode_type;
 
-typedef enum e_ether_t1s_sf_option_type
+typedef enum e_ether_t1s_sf_option_type                      /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_SFDISABLE = 0,           ///< Stream Filtering Disable
-    ETHER_T1S_SEPFILTER = 1,           ///< Separation Filtering only
-    ETHER_T1S_AVBNMDISC = 2,           ///< AVB Stream with Separation Filtering, no matching frames discarded
-    ETHER_T1S_AVBNMQUE0 = 3            ///< AVB Stream with Separation Filtering, no matching frames into queue0
+    ETHER_T1S_SFDISABLE = 0,                                 ///< Stream Filtering Disable
+    ETHER_T1S_SEPFILTER = 1,                                 ///< Separation Filtering only
+    ETHER_T1S_AVBNMDISC = 2,                                 ///< AVB Stream with Separation Filtering, no matching frames discarded
+    ETHER_T1S_AVBNMQUE0 = 3                                  ///< AVB Stream with Separation Filtering, no matching frames into queue0
 } ether_t1s_sf_option_type;
 
-typedef enum e_ether_t1s_tx_q_prio_type
+typedef enum e_ether_t1s_tx_q_prio_type                      /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_AVBDEF = 0,              ///< Default AVB Priority (Q3 > Q2 > Q1 > Q0)
-    ETHER_T1S_AVBALT = 1               ///< Alternate AVB Priority (Q1 > Q3 > Q2 > Q0)
+    ETHER_T1S_AVBDEF = 0,                                    ///< Default AVB Priority (Q3 > Q2 > Q1 > Q0)
+    ETHER_T1S_AVBALT = 1                                     ///< Alternate AVB Priority (Q1 > Q3 > Q2 > Q0)
 } ether_t1s_tx_q_prio_type;
-typedef enum e_ether_t1s_rx_ch_type
+typedef enum e_ether_t1s_rx_ch_type                          /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_RX_BE = 0,               ///< Receive Best Effort Channel
-    ETHER_T1S_RX_NC = 1,               ///< Receive Network Control Channel
-    ETHER_T1S_RX_S  = 2                ///< Receive Stream Channel
+    ETHER_T1S_RX_BE = 0,                                     ///< Receive Best Effort Channel
+    ETHER_T1S_RX_NC = 1,                                     ///< Receive Network Control Channel
+    ETHER_T1S_RX_S  = 2                                      ///< Receive Stream Channel
 } ether_t1s_rx_ch_type;
 
-typedef enum e_ether_t1s_pia_config_type
+typedef enum e_ether_t1s_pia_config_type                     /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_GAP32 = 0,               ///< Frame data starts always 32 bit aligned
-    ETHER_T1S_NOGAP = 1                ///< No gaps between frame data in incremental data area
+    ETHER_T1S_GAP32 = 0,                                     ///< Frame data starts always 32 bit aligned
+    ETHER_T1S_NOGAP = 1                                      ///< No gaps between frame data in incremental data area
 } ether_t1s_pia_config_type;
 
-typedef enum e_ether_t1s_ufc_config_type
+typedef enum e_ether_t1s_ufc_config_type                     /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_UFCC0 = 0,               ///< Unread Frame Counter Configuration 0
-    ETHER_T1S_UFCC1 = 1,               ///< Unread Frame Counter Configuration 1
-    ETHER_T1S_UFCC2 = 2,               ///< Unread Frame Counter Configuration 2
-    ETHER_T1S_UFCC3 = 3                ///< Unread Frame Counter Configuration 3
+    ETHER_T1S_UFCC0 = 0,                                     ///< Unread Frame Counter Configuration 0
+    ETHER_T1S_UFCC1 = 1,                                     ///< Unread Frame Counter Configuration 1
+    ETHER_T1S_UFCC2 = 2,                                     ///< Unread Frame Counter Configuration 2
+    ETHER_T1S_UFCC3 = 3                                      ///< Unread Frame Counter Configuration 3
 } ether_t1s_ufc_config_type;
 
-typedef enum e_ether_t1s_rx_sync_mode_type
+typedef enum e_ether_t1s_rx_sync_mode_type                   /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_RXNORMAL = 0,            ///< Normal mode (full descriptor write back)
-    ETHER_T1S_RXKEEPDT = 1,            ///< Keep DT mode (no update of DT field at descriptor write back)
-    ETHER_T1S_RXNOWB   = 2             ///< No Write Back (no descriptor write back)
+    ETHER_T1S_RXNORMAL = 0,                                  ///< Normal mode (full descriptor write back)
+    ETHER_T1S_RXKEEPDT = 1,                                  ///< Keep DT mode (no update of DT field at descriptor write back)
+    ETHER_T1S_RXNOWB   = 2                                   ///< No Write Back (no descriptor write back)
 } ether_t1s_rx_sync_mode_type;
 
-typedef enum e_ether_t1s_direction_type
+typedef enum e_ether_t1s_direction_type                      /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_TX = 0,                  ///< Transmit
-    ETHER_T1S_RX = 1                   ///< Receive
+    ETHER_T1S_TX = 0,                                        ///< Transmit
+    ETHER_T1S_RX = 1                                         ///< Receive
 } ether_t1s_direction_type;
 
 /* Type of Shaper for a specific Queue */
-typedef enum e_ether_t1s_queue_policy_type
+typedef enum e_ether_t1s_queue_policy_type                   /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_NONE = 0,                ///< None
-    ETHER_T1S_CBS  = 1                 ///< Credit Based Shaping
-} ether_t1s_queue_policy_type;
+    ETHER_T1S_NONE = 0,                                      ///< None
+    ETHER_T1S_CBS  = 1                                       ///< Credit Based Shaping
+} ether_t1s_queue_policy_type;                               /* PRQA S 1535 # Advisory R-2.3 */
 
 /** Setting control mode type */
-typedef enum e_ether_t1s_control_mode
+typedef enum e_ether_t1s_control_mode                        /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_CTRL_INTERRUPT_MODE = 0, ///< Pre-compile option for Control Enable for receive Interrupt
-    ETHER_T1S_CTRL_POLLING_MODE   = 1, ///< Pre-compile option for Control Enable for receive polling
+    ETHER_T1S_CTRL_INTERRUPT_MODE = 0,                       ///< Pre-compile option for Control Enable for receive Interrupt
+    ETHER_T1S_CTRL_POLLING_MODE   = 1,                       ///< Pre-compile option for Control Enable for receive polling
 } ether_t1s_control_mode_t;
 
 /** Filter action type ethernet */
-typedef enum e_ether_t1s_filter_action_type
+typedef enum e_ether_t1s_filter_action_type                  /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_ADD_TO_FILTER      = 0,  ///< Add the MAC address to the filter
-    ETHER_T1S_REMOVE_FROM_FILTER = 1   ///< Remove the MAC address from the filter
+    ETHER_T1S_ADD_TO_FILTER      = 0,                        ///< Add the MAC address to the filter
+    ETHER_T1S_REMOVE_FROM_FILTER = 1                         ///< Remove the MAC address from the filter
 } ether_t1s_filter_action_type_t;
 
 /** Buffer request return type ethernet */
-typedef enum e_ether_t1s_buf_req_return_type
+typedef enum e_ether_t1s_buf_req_return_type                 /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_BUFREQ_OK       = 0,     ///< Buffer confirm OK.
-    ETHER_T1S_BUFREQ_E_NOT_OK = 1,     ///< Buffer confirm Not OK.
-    ETHER_T1S_BUFREQ_E_BUSY   = 2,     ///< Buffer confirm busy.
-    ETHER_T1S_BUFREQ_E_OVFL   = 3      ///< Buffer confirm overflow.
+    ETHER_T1S_BUFREQ_OK       = 0,                           ///< Buffer confirm OK.
+    ETHER_T1S_BUFREQ_E_NOT_OK = 1,                           ///< Buffer confirm Not OK.
+    ETHER_T1S_BUFREQ_E_BUSY   = 2,                           ///< Buffer confirm busy.
+    ETHER_T1S_BUFREQ_E_OVFL   = 3                            ///< Buffer confirm overflow.
 } ether_t1s_buf_req_return_type_t;
 
 /** Receive status type ethernet */
-typedef enum e_ether_t1s_rx_status_type
+typedef enum e_ether_t1s_rx_status_type                      /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_RECEIVED                     = 0, ///< There was one received frame.
-    ETHER_T1S_NOT_RECEIVED                 = 1, ///< There was no received frame.
-    ETHER_T1S_RECEIVED_MORE_DATA_AVAILABLE = 2  ///< There were more than one received frames.
+    ETHER_T1S_RECEIVED                     = 0,              ///< There was one received frame.
+    ETHER_T1S_NOT_RECEIVED                 = 1,              ///< There was no received frame.
+    ETHER_T1S_RECEIVED_MORE_DATA_AVAILABLE = 2               ///< There were more than one received frames.
 } ether_t1s_rx_status_type_t;
 
 /** MDIO interface type for T1S Ethernet specific */
-typedef enum e_ether_t1s_mdio_interface_type
+typedef enum e_ether_t1s_mdio_interface_type                 /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_MDIO_INTERFACE_DEDICATED = 0, ///< Use ETS0_MDC, ETS0_MDIO (use a dedicated MDIO interface of Transceiver)
-    ETHER_T1S_MDIO_INTERFACE_SHARED    = 1, ///< Use ETS0_RX_MDC, ETS0_ED_MDIO
+    ETHER_T1S_MDIO_INTERFACE_DEDICATED = 0,                  ///< Use ETS0_MDC, ETS0_MDIO (use a dedicated MDIO interface of Transceiver)
+    ETHER_T1S_MDIO_INTERFACE_SHARED    = 1,                  ///< Use ETS0_RX_MDC, ETS0_ED_MDIO
 } ether_t1s_mdio_interface_type_t;
 
 /** PMA type for T1S Ethernet specific */
-typedef enum e_ether_t1s_pma_type
+typedef enum e_ether_t1s_pma_type                            /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ETHER_T1S_PMA_UNFILTERED = 0,      ///< Handle an unfiltered
-    ETHER_T1S_PMA_FILTERED   = 1,      ///< Handle a filtered
+    ETHER_T1S_PMA_UNFILTERED = 0,                            ///< Handle an unfiltered
+    ETHER_T1S_PMA_FILTERED   = 1,                            ///< Handle a filtered
 } ether_t1s_pma_type_t;
 
 /** Initialization occurs when open is called. */
-typedef struct st_ether_t1s_instance_ctrl
+typedef struct st_ether_t1s_instance_ctrl                    /* PRQA S 1536 # Advisory R-2.4 */
 {
     uint32_t open;                                           ///< Used to determine if the channel is configured.
 
@@ -253,7 +265,7 @@ typedef struct st_ether_t1s_instance_ctrl
     ether_t1s_link_establish_status_t link_establish_status; ///< Current Link status
 
     /* Pointer to callback and optional working memory */
-    void (* p_callback)(ether_callback_args_t *);
+    void (* p_callback)(ether_callback_args_t *);            /* PRQA S 1336 # Rule-8.2 */
     ether_callback_args_t * p_callback_memory;
 
     /* Pointer to context to be passed into callback function */
@@ -261,15 +273,15 @@ typedef struct st_ether_t1s_instance_ctrl
 } ether_t1s_instance_ctrl_t;
 
 /** MAC address type structure */
-typedef struct st_ether_t1s_mac_address_type
+typedef struct st_ether_t1s_mac_address_type /* PRQA S 1536 # Advisory R-2.4 */
 {
     /* e.g. when a address is "12:34:56:78:9A:BC": */
-    uint32_t h32;                      ///< has 0x12345678.
-    uint32_t l16;                      ///< has 0x00009ABC.
+    uint32_t h32;                            ///< has 0x12345678.
+    uint32_t l16;                            ///< has 0x00009ABC.
 } ether_t1s_mac_address_type_t;
 
 /** Transmit and receive status type structure */
-typedef struct st_ether_t1s_tx_rx_stats_type
+typedef struct st_ether_t1s_tx_rx_stats_type /* PRQA S 1536 # Advisory R-2.4 */
 {
     /* The total number of good packets received that were directed to the broadcast address.*/
     uint32_t stats_broad_cast_pkts;
@@ -345,7 +357,7 @@ typedef struct st_ether_t1s_tx_rx_stats_type
 } ether_t1s_tx_rx_stats_type_t;
 
 /** Hardware status type structure */
-typedef struct st_ether_t1s_hw_status_type
+typedef struct st_ether_t1s_hw_status_type                                           /* PRQA S 1536 # Advisory R-2.4 */
 {
     uint32_t                          desc_table_addr;                               ///< Descriptor Table Address
     uint32_t                          buf_tx_cnt[ETH_TXQ_NUM];                       ///< Buffer Transmit Count
@@ -364,7 +376,7 @@ typedef struct st_ether_t1s_hw_status_type
 } ether_t1s_hw_status_type_t;
 
 /** Status of each controller */
-typedef struct st_ether_t1s_controller_status_type
+typedef struct st_ether_t1s_controller_status_type                                   /* PRQA S 1536 # Advisory R-2.4 */
 {
     /* MAC address of this controller */
     ether_t1s_mac_address_type_t mac_addr;
@@ -413,69 +425,69 @@ typedef struct st_ether_t1s_double_list_node_type
     struct st_ether_t1s_double_list_node_type * p_prev; ///< Prev size.
 } ether_t1s_double_list_node_type_t;
 
-typedef struct st_ether_t1s_buf_handler_type
+typedef struct st_ether_t1s_buf_handler_type            /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ether_t1s_double_list_node_type_t node; ///< The Node for linked list management
-    uint32_t             buf_idx;           ///< The Index of buffer
-    uint32_t             buf_addr;          ///< Pointer to the Frame to be transmitted
-    uint32_t             tx_length;         ///< Transmit request size
-    uint32_t             eth_type_addr;     ///< Ethernet Type Address
-    ether_t1s_tx_ch_type channel;           ///< Channel
-    bool                 enable_ts;         ///< Flag to store if TimeStamp shall be stored
-    bool                 tx_confirm;        ///< The Tx Confirmation flag
-    uint8_t              dummy[3];          ///< Dummy data
+    ether_t1s_double_list_node_type_t node;             ///< The Node for linked list management
+    uint32_t             buf_idx;                       ///< The Index of buffer
+    uint32_t             buf_addr;                      ///< Pointer to the Frame to be transmitted
+    uint32_t             tx_length;                     ///< Transmit request size
+    uint32_t             eth_type_addr;                 ///< Ethernet Type Address
+    ether_t1s_tx_ch_type channel;                       ///< Channel
+    bool                 enable_ts;                     ///< Flag to store if TimeStamp shall be stored
+    bool                 tx_confirm;                    ///< The Tx Confirmation flag
+    uint8_t              dummy[3];                      ///< Dummy data
 } ether_t1s_buf_handler_type_t;
 
 /** Setting transmit buffer type structure */
-typedef struct st_ether_t1s_tx_buffer_type
+typedef struct st_ether_t1s_tx_buffer_type              /* PRQA S 1536 # Advisory R-2.4 */
 {
-    volatile ether_t1s_buf_handler_type_t * p_buffer_hdr; ///< Pointer for buffer address.
-    bool    tx_ongoing;                          ///< Transmit ongoing status.
-    uint8_t dummy[3];                            ///< Dummy data.
-#if (ETH_GLOBAL_TIME_SUPPORT == STD_ON)
-    ether_t1s_time_stamp_type      time_stamp;   ///< Timestamp Information
-    ether_t1s_time_stamp_qual_type time_qual;    ///< Timestamp Quality
+    ether_t1s_buf_handler_type_t * p_buffer_hdr;        ///< Pointer for buffer address.
+    bool    tx_ongoing;                                 ///< Transmit ongoing status.
+    uint8_t dummy[3];                                   ///< Dummy data.
+#if (ETHER_T1S_CFG_GLOBAL_TIME_SUPPORT)
+    ether_t1s_time_stamp_type      time_stamp;          ///< Timestamp Information
+    ether_t1s_time_stamp_qual_type time_qual;           ///< Timestamp Quality
 #endif
-    bool locked;                                 ///< Transmit locked status
+    bool locked;                                        ///< Transmit locked status
 } ether_t1s_tx_buffer_type_t;
 
 /** Rx Timestamp structure  */
-typedef struct st_ether_t1s_desc_time_stamp_type
+typedef struct st_ether_t1s_desc_time_stamp_type        /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint32_t time_stamp0;              ///< Timestamp[31:0]
-    uint32_t time_stamp1;              ///< Timestamp[63:32]
-    uint16_t time_stamp2;              ///< Timestamp[79:64]
+    uint32_t time_stamp0;                               ///< Timestamp[31:0]
+    uint32_t time_stamp1;                               ///< Timestamp[63:32]
+    uint16_t time_stamp2;                               ///< Timestamp[79:64]
 
     /* Add dummy variable */
     uint16_t dummy;
 } ether_t1s_desc_time_stamp_type;
 
 /** Rx frame information structure */
-typedef struct st_ether_t1s_rx_frame_type
+typedef struct st_ether_t1s_rx_frame_type /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint32_t frame_addr;               ///< Frame address.
-    uint32_t eth_type_addr;            ///< Ethernet type address.
-    uint32_t frame_length;             ///< Frame length.
+    uint32_t frame_addr;                  ///< Frame address.
+    uint32_t eth_type_addr;               ///< Ethernet type address.
+    uint32_t frame_length;                ///< Frame length.
     ether_t1s_desc_time_stamp_type time_stamp;
     ether_t1s_time_stamp_qual_type time_qual;
 } ether_t1s_rx_frame_type_t;
 
 /** Heap manager type structure */
-typedef struct st_ether_t1s_list_type
+typedef struct st_ether_t1s_list_type           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    volatile uint32_t count;                             ///< Number of node.
+    uint32_t count;                             ///< Number of node.
     ether_t1s_double_list_node_type_t * p_last; ///< Last node.
     ether_t1s_double_list_node_type_t * p_head; ///< Head node.
 } ether_t1s_list_type_t;
 typedef uint8_t ether_t1s_type;
 
 /** Ethernet frame type */
-typedef struct st_ether_t1s_eth_frame_type_etnf
+typedef struct st_ether_t1s_eth_frame_type_etnf /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint8_t        dst_addr[6];        ///< Destination Address
-    uint8_t        src_addr[6];        ///< Source Address
-    uint8_t        frame_type[2];      ///< EtherType
-    ether_t1s_type payload;            ///< Payload
+    uint8_t        dst_addr[6];                 ///< Destination Address
+    uint8_t        src_addr[6];                 ///< Source Address
+    uint8_t        frame_type[2];               ///< EtherType
+    ether_t1s_type payload;                     ///< Payload
 } ether_t1s_frame_type_etnf;
 
 /* OS Tick reference type */
@@ -485,63 +497,63 @@ typedef uint32_t ether_t1s_tick_type;
 typedef ether_t1s_tick_type ether_t1s_tick_ref_type;
 
 /* Contains data to be used for register read/write check */
-typedef struct st_ether_t1s_etnf_check_rw_register_type
+typedef struct st_ether_t1s_etnf_check_rw_register_type /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint32_t offset;                   ///< Register offset address
-    uint32_t mask_value;               ///< Mask Value
-    uint32_t write_pattern0;           ///< Pattern 0 to write to register
-    uint32_t write_pattern1;           ///< Pattern 1 to write to register
-} ether_t1s_etnf_check_rw_register_type;
+    uint32_t offset;                                    ///< Register offset address
+    uint32_t mask_value;                                ///< Mask Value
+    uint32_t write_pattern0;                            ///< Pattern 0 to write to register
+    uint32_t write_pattern1;                            ///< Pattern 1 to write to register
+} ether_t1s_etnf_check_rw_register_type;                /* PRQA S 1535 # Advisory R-2.3 */
 
 /* Contains data to be used for register read check */
-typedef struct st_ether_t1s_etnf_check_ro_register_type
+typedef struct st_ether_t1s_etnf_check_ro_register_type /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint32_t offset;                   ///< Register offset address
-    uint32_t mask_value;               ///< Mask Value
-    uint32_t expected_value;           ///< Expected Value
-} ether_t1s_etnf_check_ro_register_type;
+    uint32_t offset;                                    ///< Register offset address
+    uint32_t mask_value;                                ///< Mask Value
+    uint32_t expected_value;                            ///< Expected Value
+} ether_t1s_etnf_check_ro_register_type;                /* PRQA S 1535 # Advisory R-2.3 */
 
-typedef struct st_ether_t1s_rx_config_type_etnf
+typedef struct st_ether_t1s_rx_config_type_etnf         /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ether_t1s_option_type_t  encf;     ///< Enable Network Control Filtering
-    ether_t1s_sf_option_type esf;      ///< Enable Stream Filtering
-    ether_t1s_option_type_t  ets0;     ///< Enable Timestamp Storage (Best Effort)
-    ether_t1s_option_type_t  ets2;     ///< Enable Timestamp Storage (Stream)
-    uint32_t                 rfcl;     ///< Reception FIFO Critical Level
+    ether_t1s_option_type_t  encf;                      ///< Enable Network Control Filtering
+    ether_t1s_sf_option_type esf;                       ///< Enable Stream Filtering
+    ether_t1s_option_type_t  ets0;                      ///< Enable Timestamp Storage (Best Effort)
+    ether_t1s_option_type_t  ets2;                      ///< Enable Timestamp Storage (Stream)
+    uint32_t                 rfcl;                      ///< Reception FIFO Critical Level
 #if (ETHER_T1S_CFG_STREAM_FILTERING)
     ether_t1s_option_type_t srp_talker_filtering;
 #endif
 } ether_t1s_rx_config_type_etnf;
 
-typedef struct st_ether_t1s_tx_config_type_etnf
+typedef struct st_ether_t1s_tx_config_type_etnf /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ether_t1s_tx_sync_mode_type tsm0;  ///< Transmit Synchronization Mode0 (BE class)
-    ether_t1s_tx_sync_mode_type tsm1;  ///< Transmit Synchronization Mode1 (NC class)
-    ether_t1s_tx_sync_mode_type tsm2;  ///< Transmit Synchronization Mode2 (Stream Class B)
-    ether_t1s_tx_sync_mode_type tsm3;  ///< Transmit Synchronization Mode2 (Stream Class A)
-    ether_t1s_option_type_t     ecbs;  ///< Enable Credit Based Shaping
-    ether_t1s_tx_q_prio_type    tqp;   ///< Transmission Queues Priority
+    ether_t1s_tx_sync_mode_type tsm0;           ///< Transmit Synchronization Mode0 (BE class)
+    ether_t1s_tx_sync_mode_type tsm1;           ///< Transmit Synchronization Mode1 (NC class)
+    ether_t1s_tx_sync_mode_type tsm2;           ///< Transmit Synchronization Mode2 (Stream Class B)
+    ether_t1s_tx_sync_mode_type tsm3;           ///< Transmit Synchronization Mode2 (Stream Class A)
+    ether_t1s_option_type_t     ecbs;           ///< Enable Credit Based Shaping
+    ether_t1s_tx_q_prio_type    tqp;            ///< Transmission Queues Priority
 } ether_t1s_tx_config_type_etnf;
 
-typedef struct st_ether_t1s_avb_config_type
+typedef struct st_ether_t1s_avb_config_type     /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ether_t1s_rx_config_type_etnf rx_config; ///< Rx Configuration
-    ether_t1s_tx_config_type_etnf tx_config; ///< Tx Configuration
+    ether_t1s_rx_config_type_etnf rx_config;    ///< Rx Configuration
+    ether_t1s_tx_config_type_etnf tx_config;    ///< Tx Configuration
 } ether_t1s_avb_config_type_t;
 
-typedef struct st_ether_t1s_rx_ch_config_type
+typedef struct st_ether_t1s_rx_ch_config_type   /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ether_t1s_rx_ch_type ch_type;           ///< Channel Type
-    uint8_t              ch_num;            ///< Channel Number
-    uint8_t              dummy[3];          ///< Dummy data
-    uint8_t              pattern_stream[8]; ///< Pattern Stream to be written into ETNFnSFPi
+    ether_t1s_rx_ch_type ch_type;               ///< Channel Type
+    uint8_t              ch_num;                ///< Channel Number
+    uint8_t              dummy[3];              ///< Dummy data
+    uint8_t              pattern_stream[8];     ///< Pattern Stream to be written into ETNFnSFPi
 } ether_t1s_rx_ch_config_type;
 
-typedef struct st_ether_t1s_queue_config_type
+typedef struct st_ether_t1s_queue_config_type   /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ether_t1s_pia_config_type   pia;   ///< Packed Incremental Data Area
-    ether_t1s_ufc_config_type   ufcc;  ///< Unread Frame Counter Configuration
-    ether_t1s_rx_sync_mode_type rsm;   ///< Receive Synchronization Mode
+    ether_t1s_pia_config_type   pia;            ///< Packed Incremental Data Area
+    ether_t1s_ufc_config_type   ufcc;           ///< Unread Frame Counter Configuration
+    ether_t1s_rx_sync_mode_type rsm;            ///< Receive Synchronization Mode
 } ether_t1s_queue_config_type;
 
 typedef struct st_ether_t1s_mem_manager_type
@@ -553,41 +565,41 @@ typedef struct st_ether_t1s_mem_manager_type
     uint8_t  dummy[3];                             ///< Dummy data
 } ether_t1s_mem_manager_type;
 
-typedef struct st_ether_t1s_link_desc_l_type
+typedef struct st_ether_t1s_link_desc_l_type       /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint32_t res : 24;                 ///< Reserved
-    uint32_t die : 4;                  ///< Descriptor Interrupt Enable
-    uint32_t dt  : 4;                  ///< Descriptor Type
+    uint32_t res : 24;                             ///< Reserved
+    uint32_t die : 4;                              ///< Descriptor Interrupt Enable
+    uint32_t dt  : 4;                              ///< Descriptor Type
 } ether_t1s_link_desc_l_type;
 
-typedef struct st_ether_t1s_data_desc_l_type
+typedef struct st_ether_t1s_data_desc_l_type       /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint32_t ds   : 12;                ///< Size of descriptor data
-    uint32_t ctrl : 12;                ///< Content control code for Tx/Rx
-    uint32_t die  : 4;                 ///< Descriptor Interrupt Enable
-    uint32_t dt   : 4;                 ///< Descriptor Type
+    uint32_t ds   : 12;                            ///< Size of descriptor data
+    uint32_t ctrl : 12;                            ///< Content control code for Tx/Rx
+    uint32_t die  : 4;                             ///< Descriptor Interrupt Enable
+    uint32_t dt   : 4;                             ///< Descriptor Type
 } ether_t1s_data_desc_l_type;
 
-typedef struct st_ether_t1s_link_desc_type
+typedef struct st_ether_t1s_link_desc_type         /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ether_t1s_link_desc_l_type header; ///< Low word of the link descriptor
-    uint32_t dptr;                     ///< Point to the next descriptor
+    ether_t1s_link_desc_l_type header;             ///< Low word of the link descriptor
+    uint32_t dptr;                                 ///< Point to the next descriptor
 } ether_t1s_link_desc_type;
 
-typedef struct st_ether_t1s_data_desc_type
+typedef struct st_ether_t1s_data_desc_type         /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ether_t1s_data_desc_l_type header; ///< Low word of the data descriptor
-    uint32_t dptr;                     ///< Point to the descriptor data
+    ether_t1s_data_desc_l_type header;             ///< Low word of the data descriptor
+    uint32_t dptr;                                 ///< Point to the descriptor data
 } ether_t1s_data_desc_type;
 
-typedef struct st_ether_t1s_ext_data_desc_type
+typedef struct st_ether_t1s_ext_data_desc_type     /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ether_t1s_data_desc_l_type header;         ///< Low word of the data descriptor
-    uint32_t dptr;                             ///< Point to the descriptor data
-    ether_t1s_desc_time_stamp_type time_stamp; ///< Timestamp for received frame
+    ether_t1s_data_desc_l_type header;             ///< Low word of the data descriptor
+    uint32_t dptr;                                 ///< Point to the descriptor data
+    ether_t1s_desc_time_stamp_type time_stamp;     ///< Timestamp for received frame
 } ether_t1s_ext_data_desc_type;
 
-#if (ETHER_T1S_CFG_QOS_SUPPORT)
+#if (ETHER_T1S_CFG_QOS_SUPPORT)                    /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
 
 /*******Traffic Priorities Table****************/
 typedef struct st_ether_t1s_priority_mapping_type
@@ -609,7 +621,7 @@ typedef struct st_ether_t1s_ctrl_priority_type
 } ether_t1s_ctrl_priority_type;
 #endif
 
-#if (ETHER_T1S_CFG_QOS_SUPPORT)
+#if (ETHER_T1S_CFG_QOS_SUPPORT)        /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
 
 /* Tx Queue Shaper */
 typedef struct st_ether_t1s_queue_shaper_type
@@ -621,26 +633,26 @@ typedef struct st_ether_t1s_queue_shaper_type
 #endif
 
 /* Tx Queue Struct */
-typedef struct st_ether_t1s_tx_queue_type_etnf
+typedef struct st_ether_t1s_tx_queue_type_etnf              /* PRQA S 1536 # Advisory R-2.4 */
 {
-#if (ETHER_T1S_CFG_QOS_SUPPORT)
+#if (ETHER_T1S_CFG_QOS_SUPPORT)                             /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
     ether_t1s_queue_shaper_type tx_queue_shaper;
 #endif
-    uint16_t eth_tx_queue_bufs;        ///< Ethernet Tx Queue Buffer
-    uint8_t  eth_tx_queue_id;          ///< Ethernet Tx Queue ID
+    uint16_t eth_tx_queue_bufs;                             ///< Ethernet Tx Queue Buffer
+    uint8_t  eth_tx_queue_id;                               ///< Ethernet Tx Queue ID
 } ether_t1s_tx_queue_type_etnf;
 
 /* Rx Queue struct */
-typedef struct st_ether_t1s_rx_queue_type_etnf
+typedef struct st_ether_t1s_rx_queue_type_etnf              /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint16_t eth_rx_queue_bufs;        ///< Ethernet Rx Queue Buffer
-    uint8_t  eth_rx_queue_id;          ///< Ethernet Rx Queue ID
+    uint16_t eth_rx_queue_bufs;                             ///< Ethernet Rx Queue Buffer
+    uint8_t  eth_rx_queue_id;                               ///< Ethernet Rx Queue ID
 #if (ETHER_T1S_CFG_STREAM_FILTERING)
-    uint8_t eth_pattern_stream[8];     ///< Pattern Stream to be written into ETNFnSFPi
+    uint8_t eth_pattern_stream[8];                          ///< Pattern Stream to be written into ETNFnSFPi
 #endif
 } ether_t1s_rx_queue_type_etnf;
 
-typedef struct st_ether_t1s_queue_config_type_etnf
+typedef struct st_ether_t1s_queue_config_type_etnf          /* PRQA S 1536 # Advisory R-2.4 */
 {
     const ether_t1s_tx_queue_type_etnf * p_tx_queue_config; ///< Pointer to Tx Queue Configuration
     const ether_t1s_rx_queue_type_etnf * p_rx_queue_config; ///< Pointer to Rx Queue Configuration
@@ -649,19 +661,19 @@ typedef struct st_ether_t1s_queue_config_type_etnf
 } ether_t1s_queue_config_type_etnf;
 
 /* ETNF LLDriver specific hardware configuration */
-typedef struct st_ether_t1s_etnf_config_type
+typedef struct st_ether_t1s_etnf_config_type                /* PRQA S 1536 # Advisory R-2.4 */
 {
-    ether_t1s_queue_config_type_etnf queue_config; ///< Queue Configuration
-    ether_t1s_rx_config_type_etnf    rx_config;    ///< Rx Configuration
-    ether_t1s_tx_q_prio_type         tx_config;    ///< Tx Configuration
-    ether_t1s_option_type_t          ecbs;         ///< Enable Credit Based Shaping
-#if (ETHER_T1S_CFG_QOS_SUPPORT)
-    ether_t1s_ctrl_priority_type ctrl_priority;    ///< Control Priority
+    ether_t1s_queue_config_type_etnf queue_config;          ///< Queue Configuration
+    ether_t1s_rx_config_type_etnf    rx_config;             ///< Rx Configuration
+    ether_t1s_tx_q_prio_type         tx_config;             ///< Tx Configuration
+    ether_t1s_option_type_t          ecbs;                  ///< Enable Credit Based Shaping
+#if (ETHER_T1S_CFG_QOS_SUPPORT)                             /* PRQA S 3332 # DP_MSR_R-20.9_UC1 */
+    ether_t1s_ctrl_priority_type ctrl_priority;             ///< Control Priority
 #endif
 } ether_t1s_etnf_config_type;
 
 /** ETHER extension configures the buffer descriptor for ETHER. */
-typedef struct st_ether_t1s_extended_cfg
+typedef struct st_ether_t1s_extended_cfg                         /* PRQA S 1536 # Advisory R-2.4 */
 {
     uint8_t eth_mac_addr[6];
     ether_t1s_control_mode_t       ether_t1s_cfg_type_tx_isr;    ///< Setting option for tx interrupt type.
@@ -682,19 +694,22 @@ typedef struct st_ether_t1s_extended_cfg
     uint8_t                         mdio_slave_address;          ///< Specifies the address of the mdio slave module (PHY MDIO address)
     uint32_t                        ether_t1s_ram_size;          ///< Ethernet RAM size
     uint8_t                       * p_mem_pool_buffer_table;     ///< Ethernet RAM memory pool buffer table
+    IRQn_Type                       other_irq;                   ///< Other Management Interrupt number
+    uint32_t                        interrupt_priority;          ///< Interrupt priority
+    ether_t1s_time_stamp_t          time_stamp_sel;              ///< Select MII timestamp or T1S timestamp
 } ether_t1s_extended_cfg_t;
 
-typedef struct st_ether_t1s_tx_ctrl_tag_type
+typedef struct st_ether_t1s_tx_ctrl_tag_type                     /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint32_t tag : 10;                 ///< Frame tag
-    uint32_t tsr : 1;                  ///< Timestamp storage request
-    uint32_t msr : 1;                  ///< MAC Status storage Request
+    uint32_t tag : 10;                                           ///< Frame tag
+    uint32_t tsr : 1;                                            ///< Timestamp storage request
+    uint32_t msr : 1;                                            ///< MAC Status storage Request
 } ether_t1s_tx_ctrl_tag_type;
 
-typedef union u_ether_t1s_tx_rx_ctrl
-{
-    ether_t1s_tx_ctrl_tag_type tx_ctrl; ///< Tx Control field
-    uint32_t word;                      ///< Allow access of the whole word
+typedef union u_ether_t1s_tx_rx_ctrl                             /* PRQA S 1536 # Advisory R-2.4 */
+{                                                                /* PRQA S 0750 # Advisory R-19.2 */
+    ether_t1s_tx_ctrl_tag_type tx_ctrl;                          ///< Tx Control field
+    uint32_t word;                                               ///< Allow access of the whole word
 } ether_t1s_tx_rx_ctrl;
 
 /** @endcond */
@@ -711,7 +726,7 @@ fsp_err_t R_ETHER_T1S_Read(ether_ctrl_t * const p_ctrl, void * const p_buffer, u
 fsp_err_t R_ETHER_T1S_Write(ether_ctrl_t * const p_ctrl, void * const p_buffer, uint32_t const frame_length);
 
 fsp_err_t R_ETHER_T1S_CallbackSet(ether_ctrl_t * const          p_ctrl,
-                                  void (                      * p_callback)(ether_callback_args_t *),
+                                  void (                      * p_callback)(ether_callback_args_t *), /* PRQA S 1336 # Rule-8.2 */
                                   void * const                  p_context,
                                   ether_callback_args_t * const p_callback_memory);
 
@@ -722,6 +737,33 @@ fsp_err_t R_ETHER_T1S_BufferRelease(ether_ctrl_t * const p_ctrl);
 fsp_err_t R_ETHER_T1S_RxBufferUpdate(ether_ctrl_t * const p_ctrl, void * const p_buffer);
 
 fsp_err_t R_ETHER_T1S_LinkProcess(ether_ctrl_t * const p_ctrl);
+
+fsp_err_t R_ETHER_T1S_WriteBuffer(ether_ctrl_t * const p_ctrl, uint32_t buf_id, uint32_t const frame_length);
+fsp_err_t R_ETHER_T1S_GetTxBuffer(ether_ctrl_t * const p_ctrl, /* PRQA S 1710 # Advisory D-4.5 */
+                                  uint8_t              priority,
+                                  uint32_t           * p_buf_id,
+                                  void * const         p_buffer,
+                                  uint32_t * const     frame_length);
+fsp_err_t R_ETHER_T1S_TxConfirm(ether_ctrl_t * const p_ctrl);
+
+fsp_err_t R_ETHER_T1S_ReadQueue(ether_ctrl_t * const p_ctrl,
+                                uint8_t              queue_idx,
+                                void * const         p_buffer,
+                                uint32_t * const     length_bytes);
+
+fsp_err_t R_ETHER_T1S_SetMACAddr(ether_ctrl_t * const p_ctrl, const uint8_t * p_mac_address);
+
+fsp_err_t R_ETHER_T1S_GetMACAddr(ether_ctrl_t * const p_ctrl, uint8_t * p_mac_address);
+
+fsp_err_t R_ETHER_T1S_UpdateQueueStream(ether_ctrl_t * const  p_ctrl,
+                                        const uint8_t         queue_index,
+                                        const uint8_t * const p_stream_id);
+
+fsp_err_t R_ETHER_T1S_EnableTxTimestamp(ether_ctrl_t * const p_ctrl, uint32_t buf_id);
+fsp_err_t R_ETHER_T1S_GetTxTimestamp(ether_ctrl_t * const        p_ctrl,
+                                     uint32_t                    buf_id,
+                                     ether_t1s_time_stamp_type * p_time_stamp);
+fsp_err_t R_ETHER_T1S_GetRxTimestamp(ether_ctrl_t * const p_ctrl, ether_t1s_time_stamp_type * p_time_stamp);
 
 /*******************************************************************************************************************//**
  * @} (end addtogroup ETHER_T1S)

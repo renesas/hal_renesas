@@ -7,10 +7,14 @@
 #ifndef R_MSPI_H
 #define R_MSPI_H
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @addtogroup SPI
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /***********************************************************************************************************************
  * Includes
@@ -24,6 +28,8 @@ FSP_HEADER
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
+
+/* PRQA S 1534 ++ # Advisory R-2.5 */
 #define MSPI_CS_CHANNEL_0     (0U)     ///< Chip select channel 0
 #define MSPI_CS_CHANNEL_1     (1U)     ///< Chip select channel 1
 #define MSPI_CS_CHANNEL_2     (2U)     ///< Chip select channel 2
@@ -37,10 +43,13 @@ FSP_HEADER
 #define MSPI_CS_CHANNEL_10    (10U)    ///< Chip select channel 10
 #define MSPI_CS_CHANNEL_11    (11U)    ///< Chip select channel 11
 
+/* PRQA S 1534 -- */
+
 /**********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
+/* PRQA S 1535, 1536 ++ # Advisory R-2.3, Advisory R-2.4 */
 /** Active or inactive the MSPInCS[11:0] */
 typedef enum e_mspi_chip_select_state
 {
@@ -52,7 +61,7 @@ typedef enum e_mspi_chip_select_state
 typedef enum e_mspi_slave_select
 {
     MSPI_SLAVE_SELECT_IGNORED,         ///< Input CS signal(MSPInCSI) is ignored in slave mode.
-    MSPI_SLAVE_SELECT_RECONGNIZED      ///< Input CS signal(MSPInCSI) is recognized in slave mode.
+    MSPI_SLAVE_SELECT_RECOGNIZED       ///< Input CS signal(MSPInCSI) is recognized in slave mode.
 } mspi_slave_select_t;
 
 /** Select sampling time of Master (MSPInSAMP) */
@@ -65,37 +74,37 @@ typedef enum e_mspi_internal_sampling
 /** Select communications clock frequency division in master mode */
 typedef enum e_mspi_clock_mode
 {
-    MSPI_CLOCK_MODE_CLK_2  = (uint16_t)(0x1 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/2 (Master mode)
-    MSPI_CLOCK_MODE_CLK_4  = (uint16_t)(0x2 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/4 (Master mode)
-    MSPI_CLOCK_MODE_CLK_6  = (uint16_t)(0x3 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/6 (Master mode)
-    MSPI_CLOCK_MODE_CLK_8  = (uint16_t)(0x4 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/8 (Master mode)
-    MSPI_CLOCK_MODE_CLK_10 = (uint16_t)(0x5 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/10 (Master mode)
-    MSPI_CLOCK_MODE_CLK_12 = (uint16_t)(0x6 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/12 (Master mode)
-    MSPI_CLOCK_MODE_CLK_14 = (uint16_t)(0x7 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/14 (Master mode)
-    MSPI_CLOCK_MODE_CLK_16 = (uint16_t)(0x8 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/16 (Master mode)
-    MSPI_CLOCK_MODE_CLK_18 = (uint16_t)(0x9 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/18 (Master mode)
-    MSPI_CLOCK_MODE_CLK_20 = (uint16_t)(0xA << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/20 (Master mode)
-    MSPI_CLOCK_MODE_CLK_22 = (uint16_t)(0xB << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/22 (Master mode)
-    MSPI_CLOCK_MODE_CLK_24 = (uint16_t)(0xC << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/24 (Master mode)
-    MSPI_CLOCK_MODE_CLK_26 = (uint16_t)(0xD << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/26 (Master mode)
-    MSPI_CLOCK_MODE_CLK_28 = (uint16_t)(0xE << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/28 (Master mode)
-    MSPI_CLOCK_MODE_CLK_30 = (uint16_t)(0xF << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/30 (Master mode)
-    MSPI_CLOCK_MODE_CLK_32 = (uint16_t)(0x10 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/32 (Master mode)
-    MSPI_CLOCK_MODE_CLK_34 = (uint16_t)(0x11 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/34 (Master mode)
-    MSPI_CLOCK_MODE_CLK_36 = (uint16_t)(0x12 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/36 (Master mode)
-    MSPI_CLOCK_MODE_CLK_38 = (uint16_t)(0x13 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/38 (Master mode)
-    MSPI_CLOCK_MODE_CLK_40 = (uint16_t)(0x14 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/40 (Master mode)
-    MSPI_CLOCK_MODE_CLK_42 = (uint16_t)(0x15 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/42 (Master mode)
-    MSPI_CLOCK_MODE_CLK_44 = (uint16_t)(0x16 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/44 (Master mode)
-    MSPI_CLOCK_MODE_CLK_46 = (uint16_t)(0x17 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/46 (Master mode)
-    MSPI_CLOCK_MODE_CLK_48 = (uint16_t)(0x18 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/48 (Master mode)
-    MSPI_CLOCK_MODE_CLK_50 = (uint16_t)(0x19 << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/50 (Master mode)
-    MSPI_CLOCK_MODE_CLK_52 = (uint16_t)(0x1A << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/52 (Master mode)
-    MSPI_CLOCK_MODE_CLK_54 = (uint16_t)(0x1B << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/54 (Master mode)
-    MSPI_CLOCK_MODE_CLK_56 = (uint16_t)(0x1C << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/56 (Master mode)
-    MSPI_CLOCK_MODE_CLK_58 = (uint16_t)(0x1D << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/58 (Master mode)
-    MSPI_CLOCK_MODE_CLK_60 = (uint16_t)(0x1E << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/60 (Master mode)
-    MSPI_CLOCK_MODE_CLK_62 = (uint16_t)(0x1F << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/62 (Master mode)
+    MSPI_CLOCK_MODE_CLK_2  = (uint16_t)(0x1U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/2 (Master mode)
+    MSPI_CLOCK_MODE_CLK_4  = (uint16_t)(0x2U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/4 (Master mode)
+    MSPI_CLOCK_MODE_CLK_6  = (uint16_t)(0x3U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/6 (Master mode)
+    MSPI_CLOCK_MODE_CLK_8  = (uint16_t)(0x4U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/8 (Master mode)
+    MSPI_CLOCK_MODE_CLK_10 = (uint16_t)(0x5U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/10 (Master mode)
+    MSPI_CLOCK_MODE_CLK_12 = (uint16_t)(0x6U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/12 (Master mode)
+    MSPI_CLOCK_MODE_CLK_14 = (uint16_t)(0x7U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/14 (Master mode)
+    MSPI_CLOCK_MODE_CLK_16 = (uint16_t)(0x8U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/16 (Master mode)
+    MSPI_CLOCK_MODE_CLK_18 = (uint16_t)(0x9U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/18 (Master mode)
+    MSPI_CLOCK_MODE_CLK_20 = (uint16_t)(0xAU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/20 (Master mode)
+    MSPI_CLOCK_MODE_CLK_22 = (uint16_t)(0xBU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/22 (Master mode)
+    MSPI_CLOCK_MODE_CLK_24 = (uint16_t)(0xCU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/24 (Master mode)
+    MSPI_CLOCK_MODE_CLK_26 = (uint16_t)(0xDU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/26 (Master mode)
+    MSPI_CLOCK_MODE_CLK_28 = (uint16_t)(0xEU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/28 (Master mode)
+    MSPI_CLOCK_MODE_CLK_30 = (uint16_t)(0xFU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos),  ///< Unit operates as MSPI  MSPInCLK/30 (Master mode)
+    MSPI_CLOCK_MODE_CLK_32 = (uint16_t)(0x10U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/32 (Master mode)
+    MSPI_CLOCK_MODE_CLK_34 = (uint16_t)(0x11U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/34 (Master mode)
+    MSPI_CLOCK_MODE_CLK_36 = (uint16_t)(0x12U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/36 (Master mode)
+    MSPI_CLOCK_MODE_CLK_38 = (uint16_t)(0x13U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/38 (Master mode)
+    MSPI_CLOCK_MODE_CLK_40 = (uint16_t)(0x14U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/40 (Master mode)
+    MSPI_CLOCK_MODE_CLK_42 = (uint16_t)(0x15U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/42 (Master mode)
+    MSPI_CLOCK_MODE_CLK_44 = (uint16_t)(0x16U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/44 (Master mode)
+    MSPI_CLOCK_MODE_CLK_46 = (uint16_t)(0x17U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/46 (Master mode)
+    MSPI_CLOCK_MODE_CLK_48 = (uint16_t)(0x18U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/48 (Master mode)
+    MSPI_CLOCK_MODE_CLK_50 = (uint16_t)(0x19U << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/50 (Master mode)
+    MSPI_CLOCK_MODE_CLK_52 = (uint16_t)(0x1AU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/52 (Master mode)
+    MSPI_CLOCK_MODE_CLK_54 = (uint16_t)(0x1BU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/54 (Master mode)
+    MSPI_CLOCK_MODE_CLK_56 = (uint16_t)(0x1CU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/56 (Master mode)
+    MSPI_CLOCK_MODE_CLK_58 = (uint16_t)(0x1DU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/58 (Master mode)
+    MSPI_CLOCK_MODE_CLK_60 = (uint16_t)(0x1EU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/60 (Master mode)
+    MSPI_CLOCK_MODE_CLK_62 = (uint16_t)(0x1FU << R_MSPI0_MSPI0_CH_CFG3_CDIV_Pos), ///< Unit operates as MSPI  MSPInCLK/62 (Master mode)
 } mspi_clock_mode_t;
 
 /** Selects MSPIn Clock default level (MSPInCKR) */
@@ -159,7 +168,7 @@ typedef enum e_mspi_transmission
 } mspi_transmission_t;
 
 /** Enable reception */
-typedef enum e_mspi_enable_reception
+typedef enum e_mspi_reception
 {
     MSPI_RECEPTION_DISABLE,            ///< Disable reception
     MSPI_RECEPTION_ENABLE              ///< Enable reception
@@ -215,13 +224,6 @@ typedef enum e_mspi_phase_select
     ///< sampling for reception takes place on even-numbered edges.
 } mspi_phase_select_t;
 
-/** Select communication direction */
-typedef enum e_mspi_data_direction
-{
-    MSPI_DATA_DIRECTION_MSB_FIRST,     ///< Data is sent and received in MSB first order
-    MSPI_DATA_DIRECTION_LSB_FIRST      ///< Data is sent and received in LSB first order
-} mspi_data_direction_t;
-
 /** Select bit controls the MSPInCS level for idle time in the Direct memory mode */
 typedef enum e_mspi_idle_level
 {
@@ -246,8 +248,8 @@ typedef enum e_mspi_insert_idle_last
 /** Masks the CRC error of the first frame in Safe-SPI protocol function */
 typedef enum e_mspi_crc_mask_enable
 {
-    MSPI_CRC_MASK_DISABLE,             ///< Does not mask the CRC error of the first frame
-    MSPI_CRC_MASK_ENABLE               ///< Masks the CRC error of the first frame
+    MSPI_CRC_MASK_DISABLE,                                                          ///< Does not mask the CRC error of the first frame
+    MSPI_CRC_MASK_ENABLE /* PRQA S 1710, 3108 # Advisory D-4.5, DP_MSR_R-3.1_UC1 */ ///< Masks the CRC error of the first frame
 } mspi_crc_mask_enable_t;
 
 /** Select the format of the Safe-SPI protocol function */
@@ -260,16 +262,16 @@ typedef enum e_mspi_safe_format
 /** Enables/disables the safe format for data transfer */
 typedef enum e_mspi_safe
 {
-    MSPI_SAFE_DISABLE,                 ///< Safe format is disabled
-    MSPI_SAFE_ENABLE                   ///< Safe format is enabled
+    MSPI_SAFE_DISABLE,                                                          ///< Safe format is disabled
+    MSPI_SAFE_ENABLE /* PRQA S 1710, 3108 # Advisory D-4.5, DP_MSR_R-3.1_UC1 */ ///< Safe format is enabled
 } mspi_safe_t;
 
 /** Odd parity check */
 typedef enum e_mspi_parity
 {
-    MSPI_ODD_PARITY,                   ///< Adds odd parity
-    MSPI_EVEN_PARITY,                  ///< Adds even parity
-    MSPI_NO_PARITY                     ///< No parity
+    MSPI_ODD_PARITY, /* PRQA S 1710, 3108 # Advisory D-4.5, DP_MSR_R-3.1_UC1 */ ///< Adds odd parity
+    MSPI_EVEN_PARITY,                                                           ///< Adds even parity
+    MSPI_NO_PARITY                                                              ///< No parity
 } mspi_parity_t;
 
 /** Enable the parity check */
@@ -290,8 +292,8 @@ typedef enum e_mspi_fifo_stage
 /** Activate Job function */
 typedef enum e_mspi_job
 {
-    MSPI_JOB_DISABLE,                  ///< Disable Job function
-    MSPI_JOB_ENABLE                    ///< Enable Job function
+    MSPI_JOB_DISABLE,                                                          ///< Disable Job function
+    MSPI_JOB_ENABLE /* PRQA S 1710, 3108 # Advisory D-4.5, DP_MSR_R-3.1_UC1 */ ///< Enable Job function
 } mspi_job_t;
 
 /** Interrupt mask */
@@ -312,13 +314,13 @@ typedef enum e_mspi_transfer_trigger
 typedef enum e_mspi_hardware_trigger
 {
     MSPI_HARDWARE_TRIGGER_DISABLE = 0x0U,       ///< Disable hardware reset
-#if (0 == BSP_FEATURE_ATU_GTM_SEL)
- #if (defined(BSP_MCU_GROUP_RH850U2Bx) || defined(BSP_MCU_GROUP_RH850U2Cx))
+#if (BSP_FEATURE_ATU_GTM_SEL == 0U)             /* PRQA S 0499 # DP_MSR_R-12.2_UC1 */
+ #if (BSP_FEATURE_PIC_MSPI_TRIG_SEL != 0U)
     MSPI_HARDWARE_TRIGGER_IRQ0 = 0x1U,          ///< External Interrupt 0
     MSPI_HARDWARE_TRIGGER_IRQ1 = 0x2U,          ///< External Interrupt 1
     MSPI_HARDWARE_TRIGGER_IRQ2 = 0x3U,          ///< External Interrupt 2
     MSPI_HARDWARE_TRIGGER_IRQ3 = 0x4U,          ///< External Interrupt 3
- #elif defined(BSP_MCU_GROUP_RH850U2Ax)
+ #else
     MSPI_HARDWARE_TRIGGER_INTP0 = 0x1U,         ///< External Interrupt 0
     MSPI_HARDWARE_TRIGGER_INTP1 = 0x2U,         ///< External Interrupt 1
     MSPI_HARDWARE_TRIGGER_INTP2 = 0x3U,         ///< External Interrupt 2
@@ -332,7 +334,7 @@ typedef enum e_mspi_hardware_trigger
     MSPI_HARDWARE_TRIGGER_INTTPTMU11 = 0xAU,    ///< TPTM1 an up timer interrupt for comparison value 1
     MSPI_HARDWARE_TRIGGER_INTTPTMU12 = 0xBU,    ///< TPTM1 an up timer interrupt for comparison value 2
     MSPI_HARDWARE_TRIGGER_INTTPTMU13 = 0xCU,    ///< TPTM1 an up timer interrupt for comparison value 3
- #if (defined(BSP_MCU_GROUP_RH850U2Ax) || defined(BSP_MCU_GROUP_RH850U2Bx))
+ #if (BSP_FEATURE_MSPI_TRIG_TPTM_NUMBER_UNIT > 2U)
     MSPI_HARDWARE_TRIGGER_INTTPTMU20 = 0xDU,    ///< TPTM2 an up timer interrupt for comparison value 0
     MSPI_HARDWARE_TRIGGER_INTTPTMU21 = 0xEU,    ///< TPTM2 an up timer interrupt for comparison value 1
     MSPI_HARDWARE_TRIGGER_INTTPTMU22 = 0xFU,    ///< TPTM2 an up timer interrupt for comparison value 2
@@ -342,7 +344,7 @@ typedef enum e_mspi_hardware_trigger
     MSPI_HARDWARE_TRIGGER_INTTPTMU32 = 0x13U,   ///< TPTM3 an up timer interrupt for comparison value 2
     MSPI_HARDWARE_TRIGGER_INTTPTMU33 = 0x14U,   ///< TPTM3 an up timer interrupt for comparison value 3
  #endif
- #if (defined(BSP_MCU_GROUP_RH850U2Bx) || defined(BSP_MCU_GROUP_RH850U2Cx))
+ #if (BSP_FEATURE_PIC_MSPI_TRIG_SEL != 0U)
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG00 = 0x15U, ///< GTM Interrupt trigger channel 0 through PIC_TOP
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG01 = 0x16U, ///< GTM Interrupt trigger channel 1 through PIC_TOP
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG02 = 0x17U, ///< GTM Interrupt trigger channel 2 through PIC_TOP
@@ -352,7 +354,7 @@ typedef enum e_mspi_hardware_trigger
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG20 = 0x1BU, ///< GTM Interrupt trigger channel 6 through PIC_TOP
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG21 = 0x1CU, ///< GTM Interrupt trigger channel 7 through PIC_TOP
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG22 = 0x1DU, ///< GTM Interrupt trigger channel 8 through PIC_TOP
- #elif (defined(BSP_MCU_GROUP_RH850U2Bx))
+  #if (BSP_FEATURE_PIC_GTMMSPI_NUMBER > 9U)
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG30 = 0x1EU, ///< GTM Interrupt trigger channel 9 through PIC_TOP
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG31 = 0x1FU, ///< GTM Interrupt trigger channel 10 through PIC_TOP
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG32 = 0x20U, ///< GTM Interrupt trigger channel 11 through PIC_TOP
@@ -374,7 +376,8 @@ typedef enum e_mspi_hardware_trigger
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG90 = 0x30U, ///< GTM Interrupt trigger channel 27 through PIC_TOP
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG91 = 0x31U, ///< GTM Interrupt trigger channel 28 through PIC_TOP
     MSPI_HARDWARE_TRIGGER_GTMMSPICFG92 = 0x32U, ///< GTM Interrupt trigger channel 29 through PIC_TOP
- #elif defined(BSP_MCU_GROUP_RH850U2Ax)
+  #endif
+ #else
     MSPI_HARDWARE_TRIGGER_MCS0_IRQ0 = 0x15U,    ///< MCS0 Interrupt for channel
     MSPI_HARDWARE_TRIGGER_MCS0_IRQ1 = 0x16U,    ///< MCS0 Interrupt for channel
     MSPI_HARDWARE_TRIGGER_MCS0_IRQ2 = 0x17U,    ///< MCS0 Interrupt for channel
@@ -459,6 +462,7 @@ typedef enum e_mspi_activation_source
     MSPI_TRIGGER_SOURCE_TX1_RX2 = 7,
 } mspi_trigger_source_t;
 
+/* PRQA S 0750 ++ # Advisory R-19.2 */
 /** Configure the chip selection function 0*/
 typedef union u_mspi_chip_select_cfg_0
 {
@@ -467,25 +471,28 @@ typedef union u_mspi_chip_select_cfg_0
     /** Struct contain bit field of CFGx0 register  */
     struct
     {
-        mspi_interrupt_out_t mspi_txe_inr       : 1; ///< Select enables or disables the output of INTMSPInTXEm interrupt.
-        mspi_interrupt_out_t mspi_rxe_inr       : 1; ///< Select enables or disables the output of INTMSPInRXEm interrupt.
-        mspi_interrupt_out_t mspi_fee_inr       : 1; ///< Select enables or disables the output of INTMSPInFEEm interrupt.
-        mspi_interrupt_out_t mspi_ere_inr       : 1; ///< Select enables or disables the output of INTMSPInERRm interrupt.
-        uint32_t                                : 8; ///< Unused
-        mspi_channel_frame_end_t mspi_frame_end : 1; ///< Select the number of frames to be transferred
-        uint32_t                                : 3; ///< Unused
-        mspi_channel_lock_t mspi_lock           : 1; ///< Select channel lock operation
-        uint32_t                                : 3; ///< Unused
-        mspi_channel_priority_t mspi_priority   : 3; ///< Select channel priority
-        uint32_t                                : 1; ///< Unused
-        mspi_transfer_mode_t mspi_transfer_mode : 2; ///< Select channel mode
-        uint32_t                                : 2; ///< Unused
-        mspi_reception_t    mspi_enable_rec     : 1; ///< Enable or disable reception
-        mspi_transmission_t mspi_enable_trans   : 1; ///< Enable or disable transmission
-        uint32_t                                : 2; ///< Unused
+        uint32_t mspi_txe_inr       : 1; ///< [mspi_interrupt_out_t]     Enables/disables the output of INTMSPInTXEm interrupt
+        uint32_t mspi_rxe_inr       : 1; ///< [mspi_interrupt_out_t]     Enables/disables the output of INTMSPInRXEm interrupt
+        uint32_t mspi_fee_inr       : 1; ///< [mspi_interrupt_out_t]     Enables/disables the output of INTMSPInFEEm interrupt
+        uint32_t mspi_ere_inr       : 1; ///< [mspi_interrupt_out_t]     Enables/disables the output of INTMSPInERRm interrupt
+        uint32_t                    : 8; ///< Unused
+        uint32_t mspi_frame_end     : 1; ///< [mspi_channel_frame_end_t] Select the frame end operation
+        uint32_t                    : 3; ///< Unused
+        uint32_t mspi_lock          : 1; ///< [mspi_channel_lock_t]      Select channel lock operation
+        uint32_t                    : 3; ///< Unused
+        uint32_t mspi_priority      : 3; ///< [mspi_channel_priority_t]  Select channel priority
+        uint32_t                    : 1; ///< Unused
+        uint32_t mspi_transfer_mode : 2; ///< [mspi_transfer_mode_t]     Select channel memory mode
+        uint32_t                    : 2; ///< Unused
+        uint32_t mspi_enable_rec    : 1; ///< [mspi_reception_t]         Enable or disable reception
+        uint32_t mspi_enable_trans  : 1; ///< [mspi_transmission_t]      Enable or disable transmission
+        uint32_t                    : 2; ///< Unused
     } mspi_chip_select_cfg0;
 } mspi_chip_select_cfg0_t;
 
+/* PRQA S 0750 -- */
+
+/* PRQA S 0750 ++ # Advisory R-19.2 */
 /** Configure the chip selection function 1*/
 typedef union u_mspi_chip_select_cfg1
 {
@@ -494,40 +501,46 @@ typedef union u_mspi_chip_select_cfg1
     /** Struct contain bit field of CFGx1 register  */
     struct
     {
-        mspi_parity_check_t mspi_parity_check       : 1; ///< Enables/disables the parity check
-        uint32_t                                    : 3; ///< Unused
-        mspi_parity_t mspi_odd_parity               : 2; ///<
-        uint32_t                                    : 2; ///< Unused
-        mspi_safe_t        mspi_safe_enable         : 1; ///< Enables/disables the safe format for data transfer
-        mspi_safe_format_t mspi_safe_format         : 1; ///< Selects the safe format for data transfer
-        uint32_t                                    : 1; ///< Unused
-        mspi_crc_mask_enable_t mspi_crc_mask_enable : 1; ///< Enables/disables CRC function
-        uint32_t                                    : 4; ///< Unused
-        mspi_insert_idle_last_t mspi_idle_last      : 1; ///< Select bit controls whether to insert an idle period after the last frame end
-        mspi_insert_idle_end_t  mspi_idle_end       : 1; ///< Select bit controls whether to insert an idle period after each end of a frame
-        mspi_idle_level_t       mspi_idle_level     : 1; ///< Select bit controls the MSPInCS level for idle time in the Direct memory mode
-        uint32_t                                    : 1; ///< Unused
-        spi_bit_order_t mspi_direction              : 1; ///< Select the communication direction
-        uint32_t                                    : 3; ///< Unused
-        mspi_phase_select_t mspi_phase_select       : 1; ///< Select the clock phase selection bit
-        mspi_polarity_t     mspi_sck_polarity       : 1; ///< Select the polarity of the chip select signal
-        uint32_t                                    : 6; ///< Unused
+        uint32_t mspi_parity_check    : 1; ///< [mspi_parity_check_t]     Enables/disables the parity check
+        uint32_t                      : 3; ///< Unused
+        uint32_t mspi_odd_parity      : 2; ///< [mspi_parity_t]           Selects the parity type (odd/even/no parity)
+        uint32_t                      : 2; ///< Unused
+        uint32_t mspi_safe_enable     : 1; ///< [mspi_safe_t]             Enables/disables the safe format for data transfer
+        uint32_t mspi_safe_format     : 1; ///< [mspi_safe_format_t]      Selects the safe format for data transfer
+        uint32_t                      : 1; ///< Unused
+        uint32_t mspi_crc_mask_enable : 1; ///< [mspi_crc_mask_enable_t]  Enables/disables CRC function
+        uint32_t                      : 4; ///< Unused
+        uint32_t mspi_idle_last       : 1; ///< [mspi_insert_idle_last_t] Insert an idle period after the last frame end
+        uint32_t mspi_idle_end        : 1; ///< [mspi_insert_idle_end_t]  Insert an idle period after each end of a frame
+        uint32_t mspi_idle_level      : 1; ///< [mspi_idle_level_t]       MSPInCS level for idle time in the Direct memory mode
+        uint32_t                      : 1; ///< Unused
+        uint32_t mspi_direction       : 1; ///< [spi_bit_order_t]         Select the communication direction
+        uint32_t                      : 3; ///< Unused
+        uint32_t mspi_phase_select    : 1; ///< [mspi_phase_select_t]     Select the clock phase selection bit
+        uint32_t mspi_sck_polarity    : 1; ///< [mspi_polarity_t]         Selects the clock (MSPInSCK) polarity
+        uint32_t                      : 6; ///< Unused
     } mspi_chip_select_cfg1;
 } mspi_chip_select_cfg1_t;
 
+/* PRQA S 0750 -- */
+
+/* PRQA S 0750 ++ # Advisory R-19.2 */
 typedef union u_mspi_chip_select_cfg4
 {
     uint32_t chip_select_config_4_u32;
     struct
     {
-        mspi_fifo_stage_t mspi_fifo_stage_size  : 2;  ///< FIFO size stage
-        uint32_t                                : 14; ///< Unused
-        mspi_hardware_trigger_t mspi_hw_trigger : 6;  ///< Hardware trigger source
-        uint32_t                                : 10; ///< Unused
+        uint32_t mspi_fifo_stage_size : 2;  ///< [mspi_fifo_stage_t]       FIFO size stage
+        uint32_t                      : 14; ///< Unused
+        uint32_t mspi_hw_trigger      : 6;  ///< [mspi_hardware_trigger_t] Hardware trigger source
+        uint32_t                      : 10; ///< Unused
     } mspi_chip_select_cfg4;
 } mspi_chip_select_cfg4_t;
 
+/* PRQA S 0750 -- */
+
 /** Configure register control 1 */
+/* PRQA S 0750 ++ # Advisory R-19.2 */
 typedef union u_mspi_control_register_1
 {
     uint32_t control_register_1;
@@ -535,15 +548,17 @@ typedef union u_mspi_control_register_1
     /** Struct contain bit field of CTL1 register  */
     struct
     {
-        uint16_t mspi_control_polarity                  : 12; ///< Select the control polarity of MSPInCS
-        uint32_t                                        : 12; ///< Unused
-        mspi_sout_func_t mspi_sout_function             : 2;  ///< Select the SOUT function in Master mode
-        uint32_t                                        : 1;  ///< Unused
-        mspi_clock_level_t       mspi_clock_level       : 1;  ///< Selects MSPIn Clock default level
-        mspi_internal_sampling_t mspi_internal_sampling : 1;  ///< Select the internal sampling mode
-        mspi_slave_select_t      mspi_slave_select      : 1;  ///< Enables/disables the slave select signal in slave mode
-        uint32_t                                        : 1;  ///< Unused
-        spi_mode_t mspi_mode_selection                  : 1;  ///< Enables/disables the slave select function
+        uint32_t mspi_control_polarity : 12; ///< Select the control polarity of MSPInCS
+        uint32_t                       : 12; ///< Unused
+        uint32_t mspi_sout_function    : 2;  ///< [mspi_sout_func_t]         Select the SOUT function in Master mode
+        uint32_t                       : 1;  ///< Unused
+
+/* PRQA S 0750 -- */
+        uint32_t mspi_clock_level       : 1; ///< [mspi_clock_level_t]       Selects MSPIn Clock default level
+        uint32_t mspi_internal_sampling : 1; ///< [mspi_internal_sampling_t] Select the internal sampling mode
+        uint32_t mspi_slave_select      : 1; ///< [mspi_slave_select_t]      Enables/disables the slave select signal in slave mode
+        uint32_t                        : 1; ///< Unused
+        uint32_t mspi_mode_selection    : 1; ///< [spi_mode_t]               Selects master or slave operating mode
     } mspi_bit_control_register_1;
 } mspi_control_register_1_t;
 
@@ -567,9 +582,9 @@ typedef struct st_mspi_extended_cfg
     uint16_t                  mspi_inter_data;         ///< Inter-data time for the delay between MSPInSCK operation stop and MSPInSCK operation start between two frames with same MSPInCS configuration
     uint16_t                  mspi_ram_start;          ///< Start address of the RAM area used for data transfer in the Fixed buffer memory mode
     mspi_interrupt_mask_t     mspi_err_isr_mask;       ///< Mask MSPIn error interrupts output to INTC2
-    mspi_interrupt_mask_t     mspi_fe_isr_mask;        ///< Mask MSPIn frame end interrupts output to INTC
-    mspi_interrupt_mask_t     mspi_rx_isr_mask;        ///< Mask MSPIn reception interrupts output to INTC
-    mspi_interrupt_mask_t     mspi_tx_isr_mask;        ///< Mask MSPIn transmission interrupts output to INTC
+    mspi_interrupt_mask_t     mspi_fe_isr_mask;        ///< Mask MSPIn frame end interrupts output to INTC2
+    mspi_interrupt_mask_t     mspi_rx_isr_mask;        ///< Mask MSPIn reception interrupts output to INTC2
+    mspi_interrupt_mask_t     mspi_tx_isr_mask;        ///< Mask MSPIn transmission interrupts output to INTC2
     uint8_t                     mspi_number_of_cs;     ///< Number of chip select for each unit
     uint8_t                     unit;                  ///< MSPI unit number
     mspi_transfer_trigger_t     mspi_transfer_trigger; ///< MSPI transfer trigger source
@@ -587,22 +602,30 @@ typedef struct st_mspi_extended_cfg
 
 /** MSPI instance control block. */
 typedef struct st_mspi_instance_ctrl
+/* PRQA S 1535, 1536 -- */
 {
-    uint32_t            open;          ///< Indicates whether the open() API has been successfully called.
-    spi_cfg_t const   * p_cfg;         ///< Pointer to instance configuration
-    R_MSPI0_Type      * p_regs;        ///< Base register for this unit
-    R_MSPI0_INTF_Type * p_regs_intf;   ///< Base register for interrupt register
-    R_MSPITG_Type     * p_regs_tg;     ///< Base register for trigger generator register
-    void const        * p_tx_data;     ///< Buffer to transmit
-    void              * p_rx_data;     ///< Buffer to receive
-    uint32_t            tx_count;      ///< Number of Data Frames to transfer (2-bit,3-bit...16-bit)
-    uint32_t            rx_count;      ///< Number of Data Frames to receiver (2-bit,3-bit...16-bit)
-    spi_bit_width_t     bitwidth;      ///< Length of data frame (up to 128-bit)
-    uint32_t            length;        ///< Number of frames
-    uint8_t             stage_size;    ///< Stage size in FIFO mode
+    uint32_t            open;              ///< Indicates whether the open() API has been successfully called.
+    spi_cfg_t const   * p_cfg;             ///< Pointer to instance configuration
+    R_MSPI0_Type      * p_regs;            ///< Base register for this unit
+    R_MSPI0_INTF_Type * p_regs_intf;       ///< Base register for interrupt register
+    R_MSPITG_Type     * p_regs_tg;         ///< Base register for trigger generator register
+    void const        * p_tx_data;         ///< Buffer to transmit
+    void              * p_rx_data;         ///< Buffer to receive
+    uint32_t            tx_count;          ///< Number of Data Frames to transfer (2-bit,3-bit...16-bit)
+    uint32_t            rx_count;          ///< Number of Data Frames to receiver (2-bit,3-bit...16-bit)
+    spi_bit_width_t     bitwidth;          ///< Length of data frame (up to 128-bit)
+    uint32_t            length;            ///< Number of frames
+    uint8_t             stage_size;        ///< Stage size in FIFO mode
+    uint8_t             transfer_notified; ///< Guard: completion reported only once
+    uint32_t            frames_done;       ///< User frames completed across chunks
+    uint32_t            chunk_frames;      ///< User frames of the in-flight chunk
+    uint32_t            chunk_read_done;   ///< Register reads done in this chunk (incl. refill padding)
+    uint8_t             completion_source; ///< Which source drives continuation/complete
+    uint8_t             chunk_tx_pending;  ///< In-flight chunk TX not yet acknowledged
+    uint8_t             chunk_rx_pending;  ///< In-flight chunk RX not yet acknowledged
 
     /* Pointer to callback and optional working memory */
-    void (* p_callback)(spi_callback_args_t *);
+    void (* p_callback)(spi_callback_args_t * p_args);
     spi_callback_args_t * p_callback_memory;
 
     /* Pointer to context to be passed into callback function */
@@ -630,9 +653,9 @@ fsp_err_t R_MSPI_WriteRead(spi_ctrl_t * const    p_ctrl,
                            void                * p_dest,
                            uint32_t const        length,
                            spi_bit_width_t const bit_width);
-fsp_err_t R_MSPI_ChipSelect(spi_ctrl_t * const p_ctrl, uint32_t chip_select);
+
 fsp_err_t R_MSPI_CallbackSet(spi_ctrl_t * const          p_ctrl,
-                             void (                    * p_callback)(spi_callback_args_t *),
+                             void (                    * p_callback)(spi_callback_args_t * p_args),
                              void * const                p_context,
                              spi_callback_args_t * const p_callback_memory);
 

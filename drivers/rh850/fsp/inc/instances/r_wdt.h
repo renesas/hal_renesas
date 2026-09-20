@@ -17,84 +17,88 @@
 /* Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @addtogroup WDT
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 /**********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
 
 /**Window Open function mode selection */
-typedef enum e_wdt_window_open_function_mode
+typedef enum e_wdt_window_open_function_mode                      /* PRQA S 1536 # Advisory R-2.4 */
 {
-    WDT_WINDOW_OPEN_FUNCTION_MODE_SELECT_BY_WS = 0, ///< Outputs when the counter reaches 75% of the overflow setting defined
-    WDT_WINDOW_OPEN_FUNCTION_MODE_SET_BY_WOST       ///< Outputs when WDTBnWIS/WDTBAWIS matches WDTB counter
+    WDT_WINDOW_OPEN_FUNCTION_MODE_SELECT_BY_WS = 0,               ///< Outputs when the counter reaches 75% of the overflow setting defined
+    WDT_WINDOW_OPEN_FUNCTION_MODE_SET_BY_WOST                     ///< Outputs when WDTBnWIS/WDTBAWIS matches WDTB counter
 } wdt_window_open_function_mode_t;
 
 /** Enables/disables the 75% interrupt request */
-typedef enum e_wdt_interrupt_request
+typedef enum e_wdt_interrupt_request                              /* PRQA S 1536 # Advisory R-2.4 */
 {
-    WDT_INTERRUPT_DISABLED = 0,        ///< Disable 75% interrupt
-    WDT_INTERRUPT_ENABLED              ///< Enable 75% interrupt
+    WDT_INTERRUPT_DISABLED = 0,                                   ///< Disable 75% interrupt
+    WDT_INTERRUPT_ENABLED                                         ///< Enable 75% interrupt
 } wdt_interrrupt_request_t;
 
 /** Select the period over which the window is open */
-typedef enum e_wdt_window_open
+typedef enum e_wdt_window_open                                    /* PRQA S 1536 # Advisory R-2.4 */
 {
-    WDT_PERIOD_25 = 0,                 ///< Window-Open Period 25%
-    WDT_PERIOD_50,                     ///< Window-Open Period 50%
-    WDT_PERIOD_75,                     ///< Window-Open Period 75%
-    WDT_PERIOD_100                     ///< Window-Open Period 100%
+    WDT_PERIOD_25 = 0,                                            ///< Window-Open Period 25%
+    WDT_PERIOD_50,                                                ///< Window-Open Period 50%
+    WDT_PERIOD_75,                                                ///< Window-Open Period 75%
+    WDT_PERIOD_100                                                ///< Window-Open Period 100%
 } wdt_window_open_t;
 
 /** Select the overflow interval time */
-typedef enum e_wdt_overflow_time
+typedef enum e_wdt_overflow_time                                  /* PRQA S 1536 # Advisory R-2.4 */
 {
-    WDT_OVERFLOW_WDTBTCKI_2_9 = 0,     ///< Overflow Interval Time: 2^9/WDTBTCKI
-    WDT_OVERFLOW_WDTBTCKI_2_10,        ///< Overflow Interval Time: 2^10/WDTBTCKI
-    WDT_OVERFLOW_WDTBTCKI_2_11,        ///< Overflow Interval Time: 2^11/WDTBTCKI
-    WDT_OVERFLOW_WDTBTCKI_2_12,        ///< Overflow Interval Time: 2^12/WDTBTCKI
-    WDT_OVERFLOW_WDTBTCKI_2_13,        ///< Overflow Interval Time: 2^13/WDTBTCKI
-    WDT_OVERFLOW_WDTBTCKI_2_14,        ///< Overflow Interval Time: 2^14/WDTBTCKI
-    WDT_OVERFLOW_WDTBTCKI_2_15,        ///< Overflow Interval Time: 2^15/WDTBTCKI
-    WDT_OVERFLOW_WDTBTCKI_2_16         ///< Overflow Interval Time: 2^16/WDTBTCKI
+    WDT_OVERFLOW_WDTBTCKI_2_9 = 0,                                ///< Overflow Interval Time: 2^9/WDTBTCKI
+    WDT_OVERFLOW_WDTBTCKI_2_10,                                   ///< Overflow Interval Time: 2^10/WDTBTCKI
+    WDT_OVERFLOW_WDTBTCKI_2_11,                                   ///< Overflow Interval Time: 2^11/WDTBTCKI
+    WDT_OVERFLOW_WDTBTCKI_2_12,                                   ///< Overflow Interval Time: 2^12/WDTBTCKI
+    WDT_OVERFLOW_WDTBTCKI_2_13,                                   ///< Overflow Interval Time: 2^13/WDTBTCKI
+    WDT_OVERFLOW_WDTBTCKI_2_14,                                   ///< Overflow Interval Time: 2^14/WDTBTCKI
+    WDT_OVERFLOW_WDTBTCKI_2_15,                                   ///< Overflow Interval Time: 2^15/WDTBTCKI
+    WDT_OVERFLOW_WDTBTCKI_2_16                                    ///< Overflow Interval Time: 2^16/WDTBTCKI
 } wdt_overflow_time_t;
 
 /** Select the activation code method. The WDTB trigger register, which generates a WDTB trigger, is specified by the start-up option OPWDVAC */
-typedef enum e_wdt_activation_code
+typedef enum e_wdt_activation_code                                /* PRQA S 1536 # Advisory R-2.4 */
 {
-    WDT_ACTIVATION_CODE_FIX = 0,       ///< WDTB trigger with fixed activation code (0xAC)
-    WDT_ACTIVATION_CODE_VARIABLE       ///< WDTB trigger with variable activation code
+    WDT_ACTIVATION_CODE_FIX = 0,                                  ///< WDTB trigger with fixed activation code (0xAC)
+    WDT_ACTIVATION_CODE_VARIABLE                                  ///< WDTB trigger with variable activation code
 } wdt_activation_code_t;
 
-typedef enum e_wdt_unit
+typedef enum e_wdt_unit                                           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    WDT_UNIT_A = 0,                    ///< WDTB Unit A
-    WDT_UNIT_0,                        ///< WDTB Unit 0
-    WDT_UNIT_1,                        ///< WDTB Unit 1
-    WDT_UNIT_2,                        ///< WDTB Unit 2
-    WDT_UNIT_3,                        ///< WDTB Unit 3
-    WDT_UNIT_4,                        ///< WDTB Unit 4
-    WDT_UNIT_5,                        ///< WDTB Unit 5
-    WDT_UNIT_6                         ///< WDTB Unit 6
+    WDT_UNIT_A = 0,                                               ///< WDTB Unit A
+    WDT_UNIT_0,                                                   ///< WDTB Unit 0
+    WDT_UNIT_1,                                                   ///< WDTB Unit 1
+    WDT_UNIT_2,                                                   ///< WDTB Unit 2
+    WDT_UNIT_3,                                                   ///< WDTB Unit 3
+    WDT_UNIT_4,                                                   ///< WDTB Unit 4
+    WDT_UNIT_5,                                                   ///< WDTB Unit 5
+    WDT_UNIT_6                                                    ///< WDTB Unit 6
 } wdt_unit_t;
 
 /** WDT private control block. DO NOT MODIFY. Initialization occurs when R_WDT_Open() is called. */
-typedef struct st_wdt_instance_ctrl
+typedef struct st_wdt_instance_ctrl                               /* PRQA S 1536 # Advisory R-2.4 */
 {
-    wdt_cfg_t const * p_cfg;                           ///< Pointer to the configuration block
+    wdt_cfg_t const * p_cfg;                                      ///< Pointer to the configuration block
 
-    uint32_t       wdt_open;                           ///< Indicates whether the open() API has been successfully called.
-    R_WDTB1_Type * p_reg;                              ///< Base register for this channel
-    void         * p_context;                          ///< Placeholder for user data.  Passed to the user callback in wdt_callback_args_t.
-    void (* p_callback)(wdt_callback_args_t * p_args); ///< Callback provided when a WDT ISR occurs.
-    wdt_callback_args_t * p_callback_memory;           ///< Pointer to non-secure memory that can be used to pass arguments to a callback in non-secure memory.
+    uint32_t       wdt_open;                                      ///< Indicates whether the open() API has been successfully called.
+    R_WDTB1_Type * p_reg;                                         ///< Base register for this channel
+    void         * p_context;                                     ///< Placeholder for user data.  Passed to the user callback in wdt_callback_args_t.
+    void (* p_callback)(wdt_callback_args_t * p_args);            ///< Callback provided when a WDT ISR occurs.
+    wdt_callback_args_t * p_callback_memory;                      ///< Pointer to non-secure memory that can be used to pass arguments to a callback in non-secure memory.
 } wdt_instance_ctrl_t;
 
 /** WDT extended configuration */
-typedef struct st_wdt_extended_cfg
+typedef struct st_wdt_extended_cfg                                /* PRQA S 1536 # Advisory R-2.4 */
 {
     wdt_window_open_function_mode_t window_open_mode_select;      ///< Window Open function mode selection.
     uint16_t                 window_open_start;                   ///< Setting for the start timing of the window open.
@@ -136,7 +140,7 @@ fsp_err_t R_WDT_CounterGet(wdt_ctrl_t * const p_ctrl, uint32_t * const p_count);
 fsp_err_t R_WDT_TimeoutGet(wdt_ctrl_t * const p_ctrl, wdt_timeout_values_t * const p_timeout);
 
 fsp_err_t R_WDT_CallbackSet(wdt_ctrl_t * const          p_ctrl,
-                            void (                    * p_callback)(wdt_callback_args_t *),
+                            void (                    * p_callback)(wdt_callback_args_t *), /* PRQA S 1336 # DP_MSR_R-8.2_UC1 */
                             void * const                p_context,
                             wdt_callback_args_t * const p_callback_memory);
 

@@ -59,7 +59,6 @@ typedef enum e_timer_event
     TIMER_EVENT_COMPARE_F,                     ///< A compare has occurred on signal F
     TIMER_EVENT_DEAD_TIME                      ///< Dead time event
 } timer_event_t;
-
 #endif
 
 /** Timer variant types. */
@@ -86,7 +85,7 @@ typedef enum e_timer_compare_match
 
 #endif
 
-#ifndef BSP_OVERRIDE_CALLBACK_PARAMETER_T
+#ifndef BSP_OVERRIDE_TIMER_CALLBACK_ARGS_T
 
 /** Callback function parameter data */
 typedef struct st_timer_callback_args
@@ -105,6 +104,8 @@ typedef struct st_timer_callback_args
  */
 typedef void timer_ctrl_t;
 
+#ifndef BSP_OVERRIDE_TIMER_STATE_T
+
 /** Possible status values returned by @ref timer_api_t::statusGet. */
 typedef enum e_timer_state
 {
@@ -112,6 +113,8 @@ typedef enum e_timer_state
     TIMER_STATE_COUNTING = 1,          ///< Timer is running
     TIMER_STATE_UNKNOWN  = 2           ///< Timer state could not be defined
 } timer_state_t;
+
+#endif
 
 #ifndef BSP_OVERRIDE_TIMER_MODE_T
 
@@ -135,12 +138,16 @@ typedef enum e_timer_mode
 
 #endif
 
+#ifndef BSP_OVERRIDE_TIMER_DIRECTION_T
+
 /** Direction of timer count */
 typedef enum e_timer_direction
 {
-    TIMER_DIRECTION_DOWN = 0,          ///< Timer count goes up
-    TIMER_DIRECTION_UP   = 1           ///< Timer count goes down
+    TIMER_DIRECTION_DOWN = 0,          ///< Timer count goes down
+    TIMER_DIRECTION_UP   = 1           ///< Timer count goes up
 } timer_direction_t;
+
+#endif
 
 #ifndef BSP_OVERRIDE_TIMER_SOURCE_DIV_T
 
@@ -160,8 +167,9 @@ typedef enum e_timer_source_div
     TIMER_SOURCE_DIV_1024 = 10,        ///< Timer clock source divided by 1024
     TIMER_SOURCE_DIV_8192 = 13,        ///< Timer clock source divided by 8192
 } timer_source_div_t;
-
 #endif
+
+#ifndef BSP_OVERRIDE_TIMER_INFO_T
 
 /** Timer information structure to store various information for a timer resource */
 typedef struct st_timer_info
@@ -175,13 +183,18 @@ typedef struct st_timer_info
     uint32_t period_counts;
 } timer_info_t;
 
+#endif
+
+#ifndef BSP_OVERRIDE_TIMER_STATUS_T
+
 /** Current timer status. */
 typedef struct st_timer_status
 {
     uint32_t      counter;             ///< Current counter value
     timer_state_t state;               ///< Current timer state (running or stopped)
-    bool          is_rsf_active;       ///< Current simultaneous rewrite status
 } timer_status_t;
+
+#endif
 
 /** User configuration structure, used in open function */
 typedef struct st_timer_cfg

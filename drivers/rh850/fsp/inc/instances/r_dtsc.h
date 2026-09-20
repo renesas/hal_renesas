@@ -4,10 +4,15 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @addtogroup DTSC
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
+
 #ifndef R_DTSC_H_
 #define R_DTSC_H_
 
@@ -23,40 +28,40 @@
  **********************************************************************************************************************/
 
 /** Events that can trigger a callback function. */
-typedef enum e_dtsc_event
+typedef enum e_dtsc_event                                    /* PRQA S 1536 # Advisory R-2.4 */
 {
-    DTSC_EVENT_TRANS_RQ_FLAG     = 0x01 << 0,  ///< DTSC transfer request in this channel is being held.
-    DTSC_EVENT_TRANS_OVERFLOW    = 0x01 << 1,  ///< DTSC Transfer request overflow.
-    DTSC_EVENT_TRANS_COMPLETION  = 0x01 << 4,  ///< The last transfer will generate this event for transfer completion
-    DTSC_EVENT_TRANS_COUNT_MATCH = 0x01 << 5,  ///< The number of transfer count match the value set in transfer compare register.
-    DTSC_EVENT_ERR_TRANS         = 0x01 << 7,  ///< DTSC transfer error occurs.
-    DTSC_EVENT_ERR_TRANS_CYCLE   = 0x01 << 11, ///< DTSC transfer error has occurred at read cycle or at write cycle.
+    DTSC_EVENT_TRANS_RQ_FLAG     = (1UL << 0),               ///< DTSC transfer request in this channel is being held.
+    DTSC_EVENT_TRANS_OVERFLOW    = (1UL << 1),               ///< DTSC Transfer request overflow.
+    DTSC_EVENT_TRANS_COMPLETION  = (1UL << 4),               ///< The last transfer will generate this event for transfer completion
+    DTSC_EVENT_TRANS_COUNT_MATCH = (1UL << 5),               ///< The number of transfer count match the value set in transfer compare register.
+    DTSC_EVENT_ERR_TRANS         = (1UL << 7),               ///< DTSC transfer error occurs.
+    DTSC_EVENT_ERR_TRANS_CYCLE   = (1UL << 11),              ///< DTSC transfer error has occurred at read cycle or at write cycle.
 } dtsc_event_t;
 
 /** Callback function parameter data. */
-typedef struct st_dtsc_callback_args
+typedef struct st_dtsc_callback_args                         /* PRQA S 1536 # Advisory R-2.4 */
 {
-    dtsc_event_t event;                ///< Event code
-    void const * p_context;            ///< Placeholder for user data.  Set in @ref transfer_api_t::open function in ::transfer_cfg_t.
-} dtsc_callback_args_t;
+    dtsc_event_t event;                                      ///< Event code
+    void const * p_context;                                  ///< Placeholder for user data.  Set in @ref transfer_api_t::open function in ::transfer_cfg_t.
+} dtsc_callback_args_t;                                      /* PRQA S 1535 # Advisory R-2.3 */
 
 /** Control block used by driver. DO NOT INITIALIZE - this structure will be initialized in @ref transfer_api_t::open.*/
-typedef struct st_dtsc_instance_ctrl
+typedef struct st_dtsc_instance_ctrl                         /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint32_t open;                                   ///< Driver ID
+    uint32_t open;                                           ///< Driver ID
 
     /* Pointer to base register. */
-    R_DTS0_Type      * p_reg;                        ///< Pointer to DTSC unit register base address
-    R_DTSTRGSEL_Type * p_hwsel;                      ///< Pointer to DTSC selection hardware source
+    R_DTS0_Type      * p_reg;                                ///< Pointer to DTSC unit register base address
+    R_DTSTRGSEL_Type * p_hwsel;                              ///< Pointer to DTSC selection hardware source
 
-    transfer_cfg_t const * p_cfg;                    ///< Pointer to the configuration structure
-    void (* p_callback)(transfer_callback_args_t *); ///< Pointer to callback
-    transfer_callback_args_t * p_callback_memory;    ///< Pointer to optional callback argument memory
-    void const               * p_context;            ///< Pointer to context to be passed into callback function
+    transfer_cfg_t const * p_cfg;                            ///< Pointer to the configuration structure
+    void (* p_callback)(transfer_callback_args_t * p_args);  ///< Pointer to callback
+    transfer_callback_args_t * p_callback_memory;            ///< Pointer to optional callback argument memory
+    void const               * p_context;                    ///< Pointer to context to be passed into callback function
 } dtsc_instance_ctrl_t;
 
 /** DTSC transfer configuration extension. This extension is required. */
-typedef struct st_dtsc_extended_cfg
+typedef struct st_dtsc_extended_cfg                          /* PRQA S 1536 # Advisory R-2.4 */
 {
     uint8_t   channel;                                       ///< Channel number, does not apply to all HAL drivers.
     uint8_t   transfer_complete_ipl;                         ///< DTSC transfer completion priority level
@@ -72,10 +77,10 @@ typedef struct st_dtsc_extended_cfg
     transfer_callback_args_t * p_callback_memory;            ///< Pointer to optional callback argument memory
 
     /** Select which event will trigger the transfer. */
-    dtsc_trigger_event_t activation_source;                  ///< DTSC interrupt priority level
+    dtsc_trigger_event_t activation_source;                  ///< DTSC activation source
 
     /** Chain Restriction Config*/
-    transfer_chain_restrict_cfg_t * p_chain_restrict_cfg;    ///< Confi for the chain restriction of each channel
+    transfer_chain_restrict_cfg_t * p_chain_restrict_cfg;    ///< Config for the chain restriction of each channel
 
     /** Placeholder for user data.  Passed to the user p_callback in ::transfer_callback_args_t. */
     void const * p_context;                                  ///< User defined context passed into callback function
@@ -112,7 +117,7 @@ fsp_err_t R_DTSC_Reset(transfer_ctrl_t * const p_api_ctrl,
                        uint16_t const          num_transfers);
 
 fsp_err_t R_DTSC_CallbackSet(transfer_ctrl_t * const          p_api_ctrl,
-                             void (                         * p_callback)(transfer_callback_args_t *),
+                             void (                         * p_callback)(transfer_callback_args_t * p_args),
                              void * const                     p_context,
                              transfer_callback_args_t * const p_callback_memory);
 

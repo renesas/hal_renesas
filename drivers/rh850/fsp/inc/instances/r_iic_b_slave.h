@@ -4,10 +4,14 @@
 * SPDX-License-Identifier: BSD-3-Clause
 */
 
+/* PRQA S 0292 ++ # DP_MSR_D-1.1_UC1 */
+
 /*******************************************************************************************************************//**
  * @addtogroup IIC_B_SLAVE
  * @{
  **********************************************************************************************************************/
+
+/* PRQA S 0292 -- */
 
 #ifndef R_IIC_B_SLAVE_H
 #define R_IIC_B_SLAVE_H
@@ -28,43 +32,43 @@ FSP_HEADER
  ***********************************************************************************************************************/
 
 /* IIC Slave transaction enumeration */
-typedef enum e_iic_b_slave_transfer_dir_option
+typedef enum e_iic_b_slave_transfer_dir_option /* PRQA S 1536 # Advisory R-2.4 */
 {
-    IIC_B_SLAVE_TRANSFER_DIR_MASTER_READ_SLAVE_WRITE = 0x0,
-    IIC_B_SLAVE_TRANSFER_DIR_MASTER_WRITE_SLAVE_READ = 0x1,
-    IIC_B_SLAVE_TRANSFER_DIR_NOT_ESTABLISHED         = 0x2
+    IIC_B_SLAVE_TRANSFER_DIR_MASTER_READ_SLAVE_WRITE = 0x0U,
+    IIC_B_SLAVE_TRANSFER_DIR_MASTER_WRITE_SLAVE_READ = 0x1U,
+    IIC_B_SLAVE_TRANSFER_DIR_NOT_ESTABLISHED         = 0x2U
 } iic_b_slave_transfer_dir_t;
 
 /** I2C clock settings */
-typedef struct iic_b_slave_clock_settings
+typedef struct iic_b_slave_clock_settings             /* PRQA S 1536 # Advisory R-2.4 */
 {
-    uint8_t cks_value;                 ///< Internal Reference Clock Select
-    uint8_t brl_value;                 ///< Low-level period of SCL clock
-    uint8_t digital_filter_stages;     ///< Number of digital filter stages based on brl_value
+    uint8_t cks_value;                                ///< Internal Reference Clock Select
+    uint8_t brl_value;                                ///< Low-level period of SCL clock
+    uint8_t digital_filter_stages;                    ///< Number of digital filter stages based on brl_value
 } iic_b_slave_clock_settings_t;
 
 /* I2C control structure. DO NOT INITIALIZE. */
-typedef struct st_iic_b_slave_instance_ctrl
+typedef struct st_iic_b_slave_instance_ctrl           /* PRQA S 1536 # Advisory R-2.4 */
 {
-    i2c_slave_cfg_t const * p_cfg;                 ///< Information describing I2C device
-    uint32_t                open;                  ///< Flag to determine if the device is open
-    R_RI3C0_Type          * p_reg;                 ///< Base register for this channel
+    i2c_slave_cfg_t const * p_cfg;                    ///< Information describing I2C device
+    uint32_t                open;                     ///< Flag to determine if the device is open
+    R_RI3C0_Type          * p_reg;                    ///< Base register for this channel
 
     /* Current transfer information. */
-    uint8_t     * p_buff;                          ///< Holds the data associated with the transfer
-    uint32_t      total;                           ///< Holds the total number of data bytes to transfer
-    uint32_t      remain;                          ///< Tracks the remaining data bytes to transfer
-    uint32_t      loaded;                          ///< Tracks the number of data bytes written to the register
-    uint32_t      transaction_count;               ///< Tracks the actual number of transactions
-    volatile bool notify_request;                  ///< Track whether the master request is notified to the application
-    volatile iic_b_slave_transfer_dir_t direction; ///< Holds the direction of the data byte transfer
-    volatile bool activation_on_rxi;               ///< Tracks whether the transfer is activated on RXI interrupt
-    volatile bool activation_on_txi;               ///< Tracks whether the transfer is activated on TXI interrupt
-    volatile bool do_dummy_read;                   ///< Tracks whether a dummy read is issued on the first RX
-    volatile bool transaction_completed;           ///< Tracks whether previous transaction restarted
+    uint8_t     * p_buff;                             ///< Holds the data associated with the transfer
+    uint32_t      total;                              ///< Holds the total number of data bytes to transfer
+    uint32_t      remain;                             ///< Tracks the remaining data bytes to transfer
+    uint32_t      loaded;                             ///< Tracks the number of data bytes written to the register
+    uint32_t      transaction_count;                  ///< Tracks the actual number of transactions
+    volatile bool notify_request;                     ///< Track whether the master request is notified to the application
+    volatile iic_b_slave_transfer_dir_t direction;    ///< Holds the direction of the data byte transfer
+    volatile bool activation_on_rxi;                  ///< Tracks whether the transfer is activated on RXI interrupt
+    volatile bool activation_on_txi;                  ///< Tracks whether the transfer is activated on TXI interrupt
+    volatile bool do_dummy_read;                      ///< Tracks whether a dummy read is issued on the first RX
+    volatile bool transaction_completed;              ///< Tracks whether previous transaction restarted
 
     /* Pointer to callback and optional working memory */
-    void (* p_callback)(i2c_slave_callback_args_t *);
+    void (* p_callback)(i2c_slave_callback_args_t *); /* PRQA S 1336 # Required R-8.2 */
     i2c_slave_callback_args_t * p_callback_memory;
 
     /* Pointer to context to be passed into callback function */
@@ -72,7 +76,7 @@ typedef struct st_iic_b_slave_instance_ctrl
 } iic_b_slave_instance_ctrl_t;
 
 /** R_IIC_SLAVE extended configuration */
-typedef struct st_iic_b_slave_extended_cfg
+typedef struct st_iic_b_slave_extended_cfg       /* PRQA S 1536 # Advisory R-2.4 */
 {
     iic_b_slave_clock_settings_t clock_settings; ///< I2C Clock settings
 } iic_b_slave_extended_cfg_t;
@@ -96,7 +100,7 @@ fsp_err_t R_IIC_B_SLAVE_Read(i2c_slave_ctrl_t * const p_api_ctrl, uint8_t * cons
 fsp_err_t R_IIC_B_SLAVE_Write(i2c_slave_ctrl_t * const p_api_ctrl, uint8_t * const p_src, uint32_t const bytes);
 fsp_err_t R_IIC_B_SLAVE_Close(i2c_slave_ctrl_t * const p_api_ctrl);
 fsp_err_t R_IIC_B_SLAVE_CallbackSet(i2c_slave_ctrl_t * const          p_api_ctrl,
-                                    void (                          * p_callback)(i2c_slave_callback_args_t *),
+                                    void (                          * p_callback)(i2c_slave_callback_args_t *), /* PRQA S 1336 # Required R-8.2 */
                                     void * const                      p_context,
                                     i2c_slave_callback_args_t * const p_callback_memory);
 

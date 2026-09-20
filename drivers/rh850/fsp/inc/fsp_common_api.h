@@ -131,7 +131,7 @@ typedef enum e_fsp_err
     /* Start of FLASH Specific */
     FSP_ERR_PE_FAILURE             = 500,                   ///< Unable to enter Programming mode.
     FSP_ERR_CMD_LOCKED             = 501,                   ///< Peripheral in command locked state
-    FSP_ERR_FCLK                   = 502,                   ///< FCLK must be >= 4 MHz
+    FSP_ERR_FCLK                   = 502,                   ///< FCLK is below the minimum frequency required for flash operation.
     FSP_ERR_INVALID_LINKED_ADDRESS = 503,                   ///< Function or data are linked at an invalid region of memory
     FSP_ERR_BLANK_CHECK_FAILED     = 504,                   ///< Blank check operation failed
 
