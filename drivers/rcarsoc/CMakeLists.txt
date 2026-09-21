@@ -13,3 +13,10 @@ if(CONFIG_USE_RCARSOC_DRV_DMAC)
 	zephyr_include_directories(drv/inc/dmac)
 endif()
 
+if(CONFIG_USE_RCARSOC_DRV_MFIS)
+	file(GLOB rcarsoc_drv_mfis_srcs
+			"drv/src/mfis/mfis.c")
+	zephyr_library_sources(${rcarsoc_drv_mfis_srcs})
+	zephyr_include_directories(drv/src/mfis)
+	zephyr_include_directories(drv/inc/mfis)
+endif()
