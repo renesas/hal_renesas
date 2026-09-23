@@ -64,7 +64,8 @@ extern "C" {
   #include "core_cm33.h"               /*!< ARM Cortex-M33 processor and core peripherals                             */
  #endif
  #if defined(BSP_SUPPORT_CORE_CR8)
-  #include "core_cr8.h"                /*!< Core setting for Cortex-R                                                 */
+  #include "cr_compiler.h"          /*!< Compiler support for Cortex-R                                             */
+  #include "core_cr.h"              /*!< Core setting for Cortex-R                                               */
  #endif
  #include "system.h"                   /*!< R9A09G057H System                                                         */
 

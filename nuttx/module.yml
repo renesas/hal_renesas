@@ -1,0 +1,13 @@
+name: hal_renesas
+build:
+  cmake: .
+blobs:
+  # libcmac
+  - path: smartbond/cmac/libcmac/libcmac.a
+    sha256: 3d7fcb880a0a2d635e333ff6eb131a17acf466ec7b19947a7d3ea1ebfb68ab1b
+    type: lib
+    version: '1.2'
+    license-path: zephyr/blobs/license.txt
+    url: https://github.com/dialog-semiconductor/CMAC-library/raw/main/libcmac.a
+    description: "Binary libraries with firmware for CMAC controller"
+    doc-url: https://github.com/dialog-semiconductor/CMAC-library
