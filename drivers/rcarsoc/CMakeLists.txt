@@ -20,3 +20,15 @@ if(CONFIG_USE_RCARSOC_DRV_MFIS)
 	zephyr_include_directories(drv/src/mfis)
 	zephyr_include_directories(drv/inc/mfis)
 endif()
+
+if(CONFIG_USE_RCARSOC_DRV_ECM)
+	file(GLOB rcarsoc_drv_ecm_srcs
+			"drv/src/ecm/r_ecm.c")
+	zephyr_library_sources(${rcarsoc_drv_ecm_srcs})
+	zephyr_include_directories(drv/inc/ecm)
+endif()
+
+if(CONFIG_USE_RCARSOC_DRV_WATCHDOG)
+	zephyr_include_directories(drv/inc/watchdog)
+endif()
+
