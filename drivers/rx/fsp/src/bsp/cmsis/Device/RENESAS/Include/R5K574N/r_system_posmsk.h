@@ -8,7 +8,15 @@
 #define R_SYSTEM_POSMSK_H
 
 /* =========================================================================================================================== */
-/* ================                                          R_SYSTEM                                           ================ */
+/* ================                                Pos/Mask Peripheral Section                                ================ */
+/* =========================================================================================================================== */
+
+/** @addtogroup PosMask_peripherals
+ * @{
+ */
+
+/* =========================================================================================================================== */
+/* ================                                         R_SYSTEM                                          ================ */
 /* =========================================================================================================================== */
 
 /* ========================================================  SYSCR0  ========================================================= */
@@ -19,123 +27,132 @@
 /* =========================================================  MDSAR  ========================================================= */
 #define R_SYSTEM_MDSAR_NONSEC8_Pos              (8UL)          /*!< NONSEC8 (Bit 8)                                       */
 #define R_SYSTEM_MDSAR_NONSEC8_Msk              (0x100UL)      /*!< NONSEC8 (Bitfield-Mask: 0x01)                         */
-/* ======================================================  VBATTMNSELR  ====================================================== */
-#define R_SYSTEM_VBATTMNSELR_VBATTMNSEL_Pos     (0UL)          /*!< VBATTMNSEL (Bit 0)                                    */
-#define R_SYSTEM_VBATTMNSELR_VBATTMNSEL_Msk     (0x1UL)        /*!< VBATTMNSEL (Bitfield-Mask: 0x01)                      */
-/* ========================================================  VBTBER  ========================================================= */
-#define R_SYSTEM_VBTBER_VBAE_Pos                (3UL)          /*!< VBAE (Bit 3)                                          */
-#define R_SYSTEM_VBTBER_VBAE_Msk                (0x8UL)        /*!< VBAE (Bitfield-Mask: 0x01)                            */
-/* =======================================================  VBTBPCR1  ======================================================== */
-#define R_SYSTEM_VBTBPCR1_BPWSWSTP_Pos          (0UL)          /*!< BPWSWSTP (Bit 0)                                      */
-#define R_SYSTEM_VBTBPCR1_BPWSWSTP_Msk          (0x1UL)        /*!< BPWSWSTP (Bitfield-Mask: 0x01)                        */
-/* =======================================================  VBTBPCR2  ======================================================== */
-#define R_SYSTEM_VBTBPCR2_VDETE_Pos             (4UL)          /*!< VDETE (Bit 4)                                         */
-#define R_SYSTEM_VBTBPCR2_VDETE_Msk             (0x10UL)       /*!< VDETE (Bitfield-Mask: 0x01)                           */
-#define R_SYSTEM_VBTBPCR2_VDETLVL_Pos           (0UL)          /*!< VDETLVL (Bit 0)                                       */
-#define R_SYSTEM_VBTBPCR2_VDETLVL_Msk           (0x7UL)        /*!< VDETLVL (Bitfield-Mask: 0x07)                         */
-/* ========================================================  VBTBPSR  ======================================================== */
-#define R_SYSTEM_VBTBPSR_BPWSWM_Pos             (5UL)          /*!< BPWSWM (Bit 5)                                        */
-#define R_SYSTEM_VBTBPSR_BPWSWM_Msk             (0x20UL)       /*!< BPWSWM (Bitfield-Mask: 0x01)                          */
-#define R_SYSTEM_VBTBPSR_VBPORM_Pos             (4UL)          /*!< VBPORM (Bit 4)                                        */
-#define R_SYSTEM_VBTBPSR_VBPORM_Msk             (0x10UL)       /*!< VBPORM (Bitfield-Mask: 0x01)                          */
-#define R_SYSTEM_VBTBPSR_VBPORF_Pos             (0UL)          /*!< VBPORF (Bit 0)                                        */
-#define R_SYSTEM_VBTBPSR_VBPORF_Msk             (0x1UL)        /*!< VBPORF (Bitfield-Mask: 0x01)                          */
-/* ========================================================  VBTADSR  ======================================================== */
-#define R_SYSTEM_VBTADSR_VBTADF2_Pos            (2UL)          /*!< VBTADF2 (Bit 2)                                       */
-#define R_SYSTEM_VBTADSR_VBTADF2_Msk            (0x4UL)        /*!< VBTADF2 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_VBTADSR_VBTADF1_Pos            (1UL)          /*!< VBTADF1 (Bit 1)                                       */
-#define R_SYSTEM_VBTADSR_VBTADF1_Msk            (0x2UL)        /*!< VBTADF1 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_VBTADSR_VBTADF0_Pos            (0UL)          /*!< VBTADF0 (Bit 0)                                       */
-#define R_SYSTEM_VBTADSR_VBTADF0_Msk            (0x1UL)        /*!< VBTADF0 (Bitfield-Mask: 0x01)                         */
-/* =======================================================  VBTADCR1  ======================================================== */
-#define R_SYSTEM_VBTADCR1_VBTADCE2_Pos          (6UL)          /*!< VBTADCE2 (Bit 6)                                      */
-#define R_SYSTEM_VBTADCR1_VBTADCE2_Msk          (0x40UL)       /*!< VBTADCE2 (Bitfield-Mask: 0x01)                        */
-#define R_SYSTEM_VBTADCR1_VBTADCE1_Pos          (5UL)          /*!< VBTADCE1 (Bit 5)                                      */
-#define R_SYSTEM_VBTADCR1_VBTADCE1_Msk          (0x20UL)       /*!< VBTADCE1 (Bitfield-Mask: 0x01)                        */
-#define R_SYSTEM_VBTADCR1_VBTADCE0_Pos          (4UL)          /*!< VBTADCE0 (Bit 4)                                      */
-#define R_SYSTEM_VBTADCR1_VBTADCE0_Msk          (0x10UL)       /*!< VBTADCE0 (Bitfield-Mask: 0x01)                        */
-#define R_SYSTEM_VBTADCR1_VBTADIE2_Pos          (2UL)          /*!< VBTADIE2 (Bit 2)                                      */
-#define R_SYSTEM_VBTADCR1_VBTADIE2_Msk          (0x4UL)        /*!< VBTADIE2 (Bitfield-Mask: 0x01)                        */
-#define R_SYSTEM_VBTADCR1_VBTADIE1_Pos          (1UL)          /*!< VBTADIE1 (Bit 1)                                      */
-#define R_SYSTEM_VBTADCR1_VBTADIE1_Msk          (0x2UL)        /*!< VBTADIE1 (Bitfield-Mask: 0x01)                        */
-#define R_SYSTEM_VBTADCR1_VBTADIE0_Pos          (0UL)          /*!< VBTADIE0 (Bit 0)                                      */
-#define R_SYSTEM_VBTADCR1_VBTADIE0_Msk          (0x1UL)        /*!< VBTADIE0 (Bitfield-Mask: 0x01)                        */
-/* =======================================================  VBTADCR2  ======================================================== */
-#define R_SYSTEM_VBTADCR2_VBRTCES2_Pos          (2UL)          /*!< VBRTCES2 (Bit 2)                                      */
-#define R_SYSTEM_VBTADCR2_VBRTCES2_Msk          (0x4UL)        /*!< VBRTCES2 (Bitfield-Mask: 0x01)                        */
-#define R_SYSTEM_VBTADCR2_VBRTCES1_Pos          (1UL)          /*!< VBRTCES1 (Bit 1)                                      */
-#define R_SYSTEM_VBTADCR2_VBRTCES1_Msk          (0x2UL)        /*!< VBRTCES1 (Bitfield-Mask: 0x01)                        */
-#define R_SYSTEM_VBTADCR2_VBRTCES0_Pos          (0UL)          /*!< VBRTCES0 (Bit 0)                                      */
-#define R_SYSTEM_VBTADCR2_VBRTCES0_Msk          (0x1UL)        /*!< VBRTCES0 (Bitfield-Mask: 0x01)                        */
-/* =======================================================  VBTADCR3  ======================================================== */
-#define R_SYSTEM_VBTADCR3_VBTADZE2_Pos          (2UL)          /*!< VBTADZE2 (Bit 2)                                      */
-#define R_SYSTEM_VBTADCR3_VBTADZE2_Msk          (0x4UL)        /*!< VBTADZE2 (Bitfield-Mask: 0x01)                        */
-#define R_SYSTEM_VBTADCR3_VBTADZE1_Pos          (1UL)          /*!< VBTADZE1 (Bit 1)                                      */
-#define R_SYSTEM_VBTADCR3_VBTADZE1_Msk          (0x2UL)        /*!< VBTADZE1 (Bitfield-Mask: 0x01)                        */
-#define R_SYSTEM_VBTADCR3_VBTADZE0_Pos          (0UL)          /*!< VBTADZE0 (Bit 0)                                      */
-#define R_SYSTEM_VBTADCR3_VBTADZE0_Msk          (0x1UL)        /*!< VBTADZE0 (Bitfield-Mask: 0x01)                        */
-/* =======================================================  VBTICTLR  ======================================================== */
-#define R_SYSTEM_VBTICTLR_VCH2INEN_Pos          (2UL)          /*!< VCH2INEN (Bit 2)                                      */
-#define R_SYSTEM_VBTICTLR_VCH2INEN_Msk          (0x4UL)        /*!< VCH2INEN (Bitfield-Mask: 0x01)                        */
-#define R_SYSTEM_VBTICTLR_VCH1INEN_Pos          (1UL)          /*!< VCH1INEN (Bit 1)                                      */
-#define R_SYSTEM_VBTICTLR_VCH1INEN_Msk          (0x2UL)        /*!< VCH1INEN (Bitfield-Mask: 0x01)                        */
-#define R_SYSTEM_VBTICTLR_VCH0INEN_Pos          (0UL)          /*!< VCH0INEN (Bit 0)                                      */
-#define R_SYSTEM_VBTICTLR_VCH0INEN_Msk          (0x1UL)        /*!< VCH0INEN (Bitfield-Mask: 0x01)                        */
-/* =======================================================  VBTICTLR2  ======================================================= */
-#define R_SYSTEM_VBTICTLR2_VCH2EG_Pos           (6UL)          /*!< VCH2EG (Bit 6)                                        */
-#define R_SYSTEM_VBTICTLR2_VCH2EG_Msk           (0x40UL)       /*!< VCH2EG (Bitfield-Mask: 0x01)                          */
-#define R_SYSTEM_VBTICTLR2_VCH1EG_Pos           (5UL)          /*!< VCH1EG (Bit 5)                                        */
-#define R_SYSTEM_VBTICTLR2_VCH1EG_Msk           (0x20UL)       /*!< VCH1EG (Bitfield-Mask: 0x01)                          */
-#define R_SYSTEM_VBTICTLR2_VCH0EG_Pos           (4UL)          /*!< VCH0EG (Bit 4)                                        */
-#define R_SYSTEM_VBTICTLR2_VCH0EG_Msk           (0x10UL)       /*!< VCH0EG (Bitfield-Mask: 0x01)                          */
-#define R_SYSTEM_VBTICTLR2_VCH2NCE_Pos          (2UL)          /*!< VCH2NCE (Bit 2)                                       */
-#define R_SYSTEM_VBTICTLR2_VCH2NCE_Msk          (0x4UL)        /*!< VCH2NCE (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_VBTICTLR2_VCH1NCE_Pos          (1UL)          /*!< VCH1NCE (Bit 1)                                       */
-#define R_SYSTEM_VBTICTLR2_VCH1NCE_Msk          (0x2UL)        /*!< VCH1NCE (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_VBTICTLR2_VCH0NCE_Pos          (0UL)          /*!< VCH0NCE (Bit 0)                                       */
-#define R_SYSTEM_VBTICTLR2_VCH0NCE_Msk          (0x1UL)        /*!< VCH0NCE (Bitfield-Mask: 0x01)                         */
-/* =======================================================  VBTIMONR  ======================================================== */
-#define R_SYSTEM_VBTIMONR_VCH2MON_Pos           (2UL)          /*!< VCH2MON (Bit 2)                                       */
-#define R_SYSTEM_VBTIMONR_VCH2MON_Msk           (0x4UL)        /*!< VCH2MON (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_VBTIMONR_VCH1MON_Pos           (1UL)          /*!< VCH1MON (Bit 1)                                       */
-#define R_SYSTEM_VBTIMONR_VCH1MON_Msk           (0x2UL)        /*!< VCH1MON (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_VBTIMONR_VCH0MON_Pos           (0UL)          /*!< VCH0MON (Bit 0)                                       */
-#define R_SYSTEM_VBTIMONR_VCH0MON_Msk           (0x1UL)        /*!< VCH0MON (Bitfield-Mask: 0x01)                         */
-/* =======================================================  VBTNCWCR  ======================================================== */
-#define R_SYSTEM_VBTNCWCR_VINCW_Pos             (0UL)          /*!< VINCW (Bit 0)                                         */
-#define R_SYSTEM_VBTNCWCR_VINCW_Msk             (0x7UL)        /*!< VINCW (Bitfield-Mask: 0x07)                           */
-/* ========================================================  VBTBKR  ========================================================= */
-/* ========================================================  BBFSAR  ========================================================= */
-#define R_SYSTEM_BBFSAR_NONSEC6_Pos             (6UL)          /*!< NONSEC6 (Bit 6)                                       */
-#define R_SYSTEM_BBFSAR_NONSEC6_Msk             (0x40UL)       /*!< NONSEC6 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_BBFSAR_NONSEC5_Pos             (5UL)          /*!< NONSEC5 (Bit 5)                                       */
-#define R_SYSTEM_BBFSAR_NONSEC5_Msk             (0x20UL)       /*!< NONSEC5 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_BBFSAR_NONSEC4_Pos             (4UL)          /*!< NONSEC4 (Bit 4)                                       */
-#define R_SYSTEM_BBFSAR_NONSEC4_Msk             (0x10UL)       /*!< NONSEC4 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_BBFSAR_NONSEC3_Pos             (3UL)          /*!< NONSEC3 (Bit 3)                                       */
-#define R_SYSTEM_BBFSAR_NONSEC3_Msk             (0x8UL)        /*!< NONSEC3 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_BBFSAR_NONSEC2_Pos             (2UL)          /*!< NONSEC2 (Bit 2)                                       */
-#define R_SYSTEM_BBFSAR_NONSEC2_Msk             (0x4UL)        /*!< NONSEC2 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_BBFSAR_NONSEC1_Pos             (1UL)          /*!< NONSEC1 (Bit 1)                                       */
-#define R_SYSTEM_BBFSAR_NONSEC1_Msk             (0x2UL)        /*!< NONSEC1 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_BBFSAR_NONSEC0_Pos             (0UL)          /*!< NONSEC0 (Bit 0)                                       */
-#define R_SYSTEM_BBFSAR_NONSEC0_Msk             (0x1UL)        /*!< NONSEC0 (Bitfield-Mask: 0x01)                         */
-/* =======================================================  VBRSABAR  ======================================================== */
-#define R_SYSTEM_VBRSABAR_SABA_Pos              (0UL)          /*!< SABA (Bit 0)                                          */
-#define R_SYSTEM_VBRSABAR_SABA_Msk              (0xffffUL)     /*!< SABA (Bitfield-Mask: 0xffff)                          */
-/* ==========================================================  PRCR  ========================================================= */
-#define R_SYSTEM_PRCR_PRKEY_Pos                 (8UL)          /*!< PRKEY (Bit 8)                                         */
-#define R_SYSTEM_PRCR_PRKEY_Msk                 (0xff00UL)     /*!< PRKEY (Bitfield-Mask: 0xff)                           */
-#define R_SYSTEM_PRCR_PRC5_Pos                  (5UL)          /*!< PRC5 (Bit 5)                                          */
-#define R_SYSTEM_PRCR_PRC5_Msk                  (0x20UL)       /*!< PRC5 (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PRCR_PRC4_Pos                  (4UL)          /*!< PRC4 (Bit 4)                                          */
-#define R_SYSTEM_PRCR_PRC4_Msk                  (0x10UL)       /*!< PRC4 (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PRCR_PRC3_Pos                  (3UL)          /*!< PRC3 (Bit 3)                                          */
-#define R_SYSTEM_PRCR_PRC3_Msk                  (0x8UL)        /*!< PRC3 (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PRCR_PRC1_Pos                  (1UL)          /*!< PRC1 (Bit 1)                                          */
-#define R_SYSTEM_PRCR_PRC1_Msk                  (0x2UL)        /*!< PRC1 (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PRCR_PRC0_Pos                  (0UL)          /*!< PRC0 (Bit 0)                                          */
-#define R_SYSTEM_PRCR_PRC0_Msk                  (0x1UL)        /*!< PRC0 (Bitfield-Mask: 0x01)                            */
+/* ========================================================  PRCR_S  ========================================================= */
+#define R_SYSTEM_PRCR_S_PRKEY_Pos               (8UL)          /*!< PRKEY (Bit 8)                                         */
+#define R_SYSTEM_PRCR_S_PRKEY_Msk               (0xff00UL)     /*!< PRKEY (Bitfield-Mask: 0xff)                           */
+#define R_SYSTEM_PRCR_S_PRC5_Pos                (5UL)          /*!< PRC5 (Bit 5)                                          */
+#define R_SYSTEM_PRCR_S_PRC5_Msk                (0x20UL)       /*!< PRC5 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_S_PRC4_Pos                (4UL)          /*!< PRC4 (Bit 4)                                          */
+#define R_SYSTEM_PRCR_S_PRC4_Msk                (0x10UL)       /*!< PRC4 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_S_PRC3_Pos                (3UL)          /*!< PRC3 (Bit 3)                                          */
+#define R_SYSTEM_PRCR_S_PRC3_Msk                (0x8UL)        /*!< PRC3 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_S_PRC1_Pos                (1UL)          /*!< PRC1 (Bit 1)                                          */
+#define R_SYSTEM_PRCR_S_PRC1_Msk                (0x2UL)        /*!< PRC1 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_S_PRC0_Pos                (0UL)          /*!< PRC0 (Bit 0)                                          */
+#define R_SYSTEM_PRCR_S_PRC0_Msk                (0x1UL)        /*!< PRC0 (Bitfield-Mask: 0x01)                            */
+/* ========================================================  PRCR_NS  ======================================================== */
+#define R_SYSTEM_PRCR_NS_PRKEY_Pos              (8UL)          /*!< PRKEY (Bit 8)                                         */
+#define R_SYSTEM_PRCR_NS_PRKEY_Msk              (0xff00UL)     /*!< PRKEY (Bitfield-Mask: 0xff)                           */
+#define R_SYSTEM_PRCR_NS_PRC3_Pos               (3UL)          /*!< PRC3 (Bit 3)                                          */
+#define R_SYSTEM_PRCR_NS_PRC3_Msk               (0x8UL)        /*!< PRC3 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_NS_PRC1_Pos               (1UL)          /*!< PRC1 (Bit 1)                                          */
+#define R_SYSTEM_PRCR_NS_PRC1_Msk               (0x2UL)        /*!< PRC1 (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PRCR_NS_PRC0_Pos               (0UL)          /*!< PRC0 (Bit 0)                                          */
+#define R_SYSTEM_PRCR_NS_PRC0_Msk               (0x1UL)        /*!< PRC0 (Bitfield-Mask: 0x01)                            */
+/* ========================================================  PVDSAR  ========================================================= */
+#define R_SYSTEM_PVDSAR_NONSEC1_Pos             (1UL)          /*!< NONSEC1 (Bit 1)                                       */
+#define R_SYSTEM_PVDSAR_NONSEC1_Msk             (0x2UL)        /*!< NONSEC1 (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_PVDSAR_NONSEC0_Pos             (0UL)          /*!< NONSEC0 (Bit 0)                                       */
+#define R_SYSTEM_PVDSAR_NONSEC0_Msk             (0x1UL)        /*!< NONSEC0 (Bitfield-Mask: 0x01)                         */
+/* =======================================================  PVD1CMPCR  ======================================================= */
+#define R_SYSTEM_PVD1CMPCR_PVDE_Pos             (7UL)          /*!< PVDE (Bit 7)                                          */
+#define R_SYSTEM_PVD1CMPCR_PVDE_Msk             (0x80UL)       /*!< PVDE (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PVD1CMPCR_PVDLVL_Pos           (0UL)          /*!< PVDLVL (Bit 0)                                        */
+#define R_SYSTEM_PVD1CMPCR_PVDLVL_Msk           (0x1fUL)       /*!< PVDLVL (Bitfield-Mask: 0x1f)                          */
+/* =======================================================  PVD2CMPCR  ======================================================= */
+#define R_SYSTEM_PVD2CMPCR_PVDE_Pos             (7UL)          /*!< PVDE (Bit 7)                                          */
+#define R_SYSTEM_PVD2CMPCR_PVDE_Msk             (0x80UL)       /*!< PVDE (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PVD2CMPCR_PVDLVL_Pos           (0UL)          /*!< PVDLVL (Bit 0)                                        */
+#define R_SYSTEM_PVD2CMPCR_PVDLVL_Msk           (0x1fUL)       /*!< PVDLVL (Bitfield-Mask: 0x1f)                          */
+/* =======================================================  PVD4CMPCR  ======================================================= */
+#define R_SYSTEM_PVD4CMPCR_PVDE_Pos             (7UL)          /*!< PVDE (Bit 7)                                          */
+#define R_SYSTEM_PVD4CMPCR_PVDE_Msk             (0x80UL)       /*!< PVDE (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PVD4CMPCR_PVDLVL_Pos           (0UL)          /*!< PVDLVL (Bit 0)                                        */
+#define R_SYSTEM_PVD4CMPCR_PVDLVL_Msk           (0x1fUL)       /*!< PVDLVL (Bitfield-Mask: 0x1f)                          */
+/* =======================================================  PVD5CMPCR  ======================================================= */
+#define R_SYSTEM_PVD5CMPCR_PVDE_Pos             (7UL)          /*!< PVDE (Bit 7)                                          */
+#define R_SYSTEM_PVD5CMPCR_PVDE_Msk             (0x80UL)       /*!< PVDE (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PVD5CMPCR_PVDLVL_Pos           (0UL)          /*!< PVDLVL (Bit 0)                                        */
+#define R_SYSTEM_PVD5CMPCR_PVDLVL_Msk           (0x1fUL)       /*!< PVDLVL (Bitfield-Mask: 0x1f)                          */
+/* ========================================================  PVD1CR0  ======================================================== */
+#define R_SYSTEM_PVD1CR0_RN_Pos                 (7UL)          /*!< RN (Bit 7)                                            */
+#define R_SYSTEM_PVD1CR0_RN_Msk                 (0x80UL)       /*!< RN (Bitfield-Mask: 0x01)                              */
+#define R_SYSTEM_PVD1CR0_RI_Pos                 (6UL)          /*!< RI (Bit 6)                                            */
+#define R_SYSTEM_PVD1CR0_RI_Msk                 (0x40UL)       /*!< RI (Bitfield-Mask: 0x01)                              */
+#define R_SYSTEM_PVD1CR0_FSAMP_Pos              (4UL)          /*!< FSAMP (Bit 4)                                         */
+#define R_SYSTEM_PVD1CR0_FSAMP_Msk              (0x30UL)       /*!< FSAMP (Bitfield-Mask: 0x03)                           */
+#define R_SYSTEM_PVD1CR0_CMPE_Pos               (2UL)          /*!< CMPE (Bit 2)                                          */
+#define R_SYSTEM_PVD1CR0_CMPE_Msk               (0x4UL)        /*!< CMPE (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PVD1CR0_DFDIS_Pos              (1UL)          /*!< DFDIS (Bit 1)                                         */
+#define R_SYSTEM_PVD1CR0_DFDIS_Msk              (0x2UL)        /*!< DFDIS (Bitfield-Mask: 0x01)                           */
+#define R_SYSTEM_PVD1CR0_RIE_Pos                (0UL)          /*!< RIE (Bit 0)                                           */
+#define R_SYSTEM_PVD1CR0_RIE_Msk                (0x1UL)        /*!< RIE (Bitfield-Mask: 0x01)                             */
+/* ========================================================  PVD2CR0  ======================================================== */
+#define R_SYSTEM_PVD2CR0_RN_Pos                 (7UL)          /*!< RN (Bit 7)                                            */
+#define R_SYSTEM_PVD2CR0_RN_Msk                 (0x80UL)       /*!< RN (Bitfield-Mask: 0x01)                              */
+#define R_SYSTEM_PVD2CR0_RI_Pos                 (6UL)          /*!< RI (Bit 6)                                            */
+#define R_SYSTEM_PVD2CR0_RI_Msk                 (0x40UL)       /*!< RI (Bitfield-Mask: 0x01)                              */
+#define R_SYSTEM_PVD2CR0_FSAMP_Pos              (4UL)          /*!< FSAMP (Bit 4)                                         */
+#define R_SYSTEM_PVD2CR0_FSAMP_Msk              (0x30UL)       /*!< FSAMP (Bitfield-Mask: 0x03)                           */
+#define R_SYSTEM_PVD2CR0_CMPE_Pos               (2UL)          /*!< CMPE (Bit 2)                                          */
+#define R_SYSTEM_PVD2CR0_CMPE_Msk               (0x4UL)        /*!< CMPE (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PVD2CR0_DFDIS_Pos              (1UL)          /*!< DFDIS (Bit 1)                                         */
+#define R_SYSTEM_PVD2CR0_DFDIS_Msk              (0x2UL)        /*!< DFDIS (Bitfield-Mask: 0x01)                           */
+#define R_SYSTEM_PVD2CR0_RIE_Pos                (0UL)          /*!< RIE (Bit 0)                                           */
+#define R_SYSTEM_PVD2CR0_RIE_Msk                (0x1UL)        /*!< RIE (Bitfield-Mask: 0x01)                             */
+/* ========================================================  PVD4CR0  ======================================================== */
+#define R_SYSTEM_PVD4CR0_FSAMP_Pos              (4UL)          /*!< FSAMP (Bit 4)                                         */
+#define R_SYSTEM_PVD4CR0_FSAMP_Msk              (0x30UL)       /*!< FSAMP (Bitfield-Mask: 0x03)                           */
+#define R_SYSTEM_PVD4CR0_CMPE_Pos               (2UL)          /*!< CMPE (Bit 2)                                          */
+#define R_SYSTEM_PVD4CR0_CMPE_Msk               (0x4UL)        /*!< CMPE (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PVD4CR0_DFDIS_Pos              (1UL)          /*!< DFDIS (Bit 1)                                         */
+#define R_SYSTEM_PVD4CR0_DFDIS_Msk              (0x2UL)        /*!< DFDIS (Bitfield-Mask: 0x01)                           */
+#define R_SYSTEM_PVD4CR0_RE_Pos                 (0UL)          /*!< RE (Bit 0)                                            */
+#define R_SYSTEM_PVD4CR0_RE_Msk                 (0x1UL)        /*!< RE (Bitfield-Mask: 0x01)                              */
+/* ========================================================  PVD5CR0  ======================================================== */
+#define R_SYSTEM_PVD5CR0_FSAMP_Pos              (4UL)          /*!< FSAMP (Bit 4)                                         */
+#define R_SYSTEM_PVD5CR0_FSAMP_Msk              (0x30UL)       /*!< FSAMP (Bitfield-Mask: 0x03)                           */
+#define R_SYSTEM_PVD5CR0_CMPE_Pos               (2UL)          /*!< CMPE (Bit 2)                                          */
+#define R_SYSTEM_PVD5CR0_CMPE_Msk               (0x4UL)        /*!< CMPE (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_PVD5CR0_DFDIS_Pos              (1UL)          /*!< DFDIS (Bit 1)                                         */
+#define R_SYSTEM_PVD5CR0_DFDIS_Msk              (0x2UL)        /*!< DFDIS (Bitfield-Mask: 0x01)                           */
+#define R_SYSTEM_PVD5CR0_RE_Pos                 (0UL)          /*!< RE (Bit 0)                                            */
+#define R_SYSTEM_PVD5CR0_RE_Msk                 (0x1UL)        /*!< RE (Bitfield-Mask: 0x01)                              */
+/* ========================================================  PVD1CR1  ======================================================== */
+#define R_SYSTEM_PVD1CR1_IRQSEL_Pos             (2UL)          /*!< IRQSEL (Bit 2)                                        */
+#define R_SYSTEM_PVD1CR1_IRQSEL_Msk             (0x4UL)        /*!< IRQSEL (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_PVD1CR1_IDTSEL_Pos             (0UL)          /*!< IDTSEL (Bit 0)                                        */
+#define R_SYSTEM_PVD1CR1_IDTSEL_Msk             (0x3UL)        /*!< IDTSEL (Bitfield-Mask: 0x03)                          */
+/* ========================================================  PVD2CR1  ======================================================== */
+#define R_SYSTEM_PVD2CR1_IRQSEL_Pos             (2UL)          /*!< IRQSEL (Bit 2)                                        */
+#define R_SYSTEM_PVD2CR1_IRQSEL_Msk             (0x4UL)        /*!< IRQSEL (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_PVD2CR1_IDTSEL_Pos             (0UL)          /*!< IDTSEL (Bit 0)                                        */
+#define R_SYSTEM_PVD2CR1_IDTSEL_Msk             (0x3UL)        /*!< IDTSEL (Bitfield-Mask: 0x03)                          */
+/* ========================================================  PVD1SR  ========================================================= */
+#define R_SYSTEM_PVD1SR_MON_Pos                 (1UL)          /*!< MON (Bit 1)                                           */
+#define R_SYSTEM_PVD1SR_MON_Msk                 (0x2UL)        /*!< MON (Bitfield-Mask: 0x01)                             */
+#define R_SYSTEM_PVD1SR_DET_Pos                 (0UL)          /*!< DET (Bit 0)                                           */
+#define R_SYSTEM_PVD1SR_DET_Msk                 (0x1UL)        /*!< DET (Bitfield-Mask: 0x01)                             */
+/* ========================================================  PVD2SR  ========================================================= */
+#define R_SYSTEM_PVD2SR_MON_Pos                 (1UL)          /*!< MON (Bit 1)                                           */
+#define R_SYSTEM_PVD2SR_MON_Msk                 (0x2UL)        /*!< MON (Bitfield-Mask: 0x01)                             */
+#define R_SYSTEM_PVD2SR_DET_Pos                 (0UL)          /*!< DET (Bit 0)                                           */
+#define R_SYSTEM_PVD2SR_DET_Msk                 (0x1UL)        /*!< DET (Bitfield-Mask: 0x01)                             */
+/* ========================================================  PVD1FCR  ======================================================== */
+#define R_SYSTEM_PVD1FCR_RHSEL_Pos              (0UL)          /*!< RHSEL (Bit 0)                                         */
+#define R_SYSTEM_PVD1FCR_RHSEL_Msk              (0x1UL)        /*!< RHSEL (Bitfield-Mask: 0x01)                           */
+/* ========================================================  PVD2FCR  ======================================================== */
+#define R_SYSTEM_PVD2FCR_RHSEL_Pos              (0UL)          /*!< RHSEL (Bit 0)                                         */
+#define R_SYSTEM_PVD2FCR_RHSEL_Msk              (0x1UL)        /*!< RHSEL (Bitfield-Mask: 0x01)                           */
+/* ========================================================  PVD4FCR  ======================================================== */
+#define R_SYSTEM_PVD4FCR_RHSEL_Pos              (0UL)          /*!< RHSEL (Bit 0)                                         */
+#define R_SYSTEM_PVD4FCR_RHSEL_Msk              (0x1UL)        /*!< RHSEL (Bitfield-Mask: 0x01)                           */
+/* ========================================================  PVD5FCR  ======================================================== */
+#define R_SYSTEM_PVD5FCR_RHSEL_Pos              (0UL)          /*!< RHSEL (Bit 0)                                         */
+#define R_SYSTEM_PVD5FCR_RHSEL_Msk              (0x1UL)        /*!< RHSEL (Bitfield-Mask: 0x01)                           */
+/* =========================================================  PVDLR  ========================================================= */
+#define R_SYSTEM_PVDLR_LOCK_Pos                 (0UL)          /*!< LOCK (Bit 0)                                          */
+#define R_SYSTEM_PVDLR_LOCK_Msk                 (0x1UL)        /*!< LOCK (Bitfield-Mask: 0x01)                            */
 /* ========================================================  RSTSR1  ========================================================= */
 #define R_SYSTEM_RSTSR1_CMRF_Pos                (14UL)         /*!< CMRF (Bit 14)                                         */
 #define R_SYSTEM_RSTSR1_CMRF_Msk                (0x4000UL)     /*!< CMRF (Bitfield-Mask: 0x01)                            */
@@ -245,159 +262,108 @@
 /* =========================================================  SWRR  ========================================================== */
 #define R_SYSTEM_SWRR_SWRR_Pos                  (0UL)          /*!< SWRR (Bit 0)                                          */
 #define R_SYSTEM_SWRR_SWRR_Msk                  (0xffffUL)     /*!< SWRR (Bitfield-Mask: 0xffff)                          */
-/* ========================================================  PVDSAR  ========================================================= */
-#define R_SYSTEM_PVDSAR_NONSEC1_Pos             (1UL)          /*!< NONSEC1 (Bit 1)                                       */
-#define R_SYSTEM_PVDSAR_NONSEC1_Msk             (0x2UL)        /*!< NONSEC1 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_PVDSAR_NONSEC0_Pos             (0UL)          /*!< NONSEC0 (Bit 0)                                       */
-#define R_SYSTEM_PVDSAR_NONSEC0_Msk             (0x1UL)        /*!< NONSEC0 (Bitfield-Mask: 0x01)                         */
-/* =======================================================  PVD1CMPCR  ======================================================= */
-#define R_SYSTEM_PVD1CMPCR_PVDE_Pos             (7UL)          /*!< PVDE (Bit 7)                                          */
-#define R_SYSTEM_PVD1CMPCR_PVDE_Msk             (0x80UL)       /*!< PVDE (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PVD1CMPCR_PVDLVL_Pos           (0UL)          /*!< PVDLVL (Bit 0)                                        */
-#define R_SYSTEM_PVD1CMPCR_PVDLVL_Msk           (0x1fUL)       /*!< PVDLVL (Bitfield-Mask: 0x1f)                          */
-/* =======================================================  PVD2CMPCR  ======================================================= */
-#define R_SYSTEM_PVD2CMPCR_PVDE_Pos             (7UL)          /*!< PVDE (Bit 7)                                          */
-#define R_SYSTEM_PVD2CMPCR_PVDE_Msk             (0x80UL)       /*!< PVDE (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PVD2CMPCR_PVDLVL_Pos           (0UL)          /*!< PVDLVL (Bit 0)                                        */
-#define R_SYSTEM_PVD2CMPCR_PVDLVL_Msk           (0x1fUL)       /*!< PVDLVL (Bitfield-Mask: 0x1f)                          */
-/* =======================================================  PVD3CMPCR  ======================================================= */
-#define R_SYSTEM_PVD3CMPCR_PVDE_Pos             (7UL)          /*!< PVDE (Bit 7)                                          */
-#define R_SYSTEM_PVD3CMPCR_PVDE_Msk             (0x80UL)       /*!< PVDE (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PVD3CMPCR_PVDLVL_Pos           (0UL)          /*!< PVDLVL (Bit 0)                                        */
-#define R_SYSTEM_PVD3CMPCR_PVDLVL_Msk           (0x1fUL)       /*!< PVDLVL (Bitfield-Mask: 0x1f)                          */
-/* =======================================================  PVD4CMPCR  ======================================================= */
-#define R_SYSTEM_PVD4CMPCR_PVDE_Pos             (7UL)          /*!< PVDE (Bit 7)                                          */
-#define R_SYSTEM_PVD4CMPCR_PVDE_Msk             (0x80UL)       /*!< PVDE (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PVD4CMPCR_PVDLVL_Pos           (0UL)          /*!< PVDLVL (Bit 0)                                        */
-#define R_SYSTEM_PVD4CMPCR_PVDLVL_Msk           (0x1fUL)       /*!< PVDLVL (Bitfield-Mask: 0x1f)                          */
-/* =======================================================  PVD5CMPCR  ======================================================= */
-#define R_SYSTEM_PVD5CMPCR_PVDE_Pos             (7UL)          /*!< PVDE (Bit 7)                                          */
-#define R_SYSTEM_PVD5CMPCR_PVDE_Msk             (0x80UL)       /*!< PVDE (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PVD5CMPCR_PVDLVL_Pos           (0UL)          /*!< PVDLVL (Bit 0)                                        */
-#define R_SYSTEM_PVD5CMPCR_PVDLVL_Msk           (0x1fUL)       /*!< PVDLVL (Bitfield-Mask: 0x1f)                          */
-/* ========================================================  PVD1CR0  ======================================================== */
-#define R_SYSTEM_PVD1CR0_RN_Pos                 (7UL)          /*!< RN (Bit 7)                                            */
-#define R_SYSTEM_PVD1CR0_RN_Msk                 (0x80UL)       /*!< RN (Bitfield-Mask: 0x01)                              */
-#define R_SYSTEM_PVD1CR0_RI_Pos                 (6UL)          /*!< RI (Bit 6)                                            */
-#define R_SYSTEM_PVD1CR0_RI_Msk                 (0x40UL)       /*!< RI (Bitfield-Mask: 0x01)                              */
-#define R_SYSTEM_PVD1CR0_FSAMP_Pos              (4UL)          /*!< FSAMP (Bit 4)                                         */
-#define R_SYSTEM_PVD1CR0_FSAMP_Msk              (0x30UL)       /*!< FSAMP (Bitfield-Mask: 0x03)                           */
-#define R_SYSTEM_PVD1CR0_CMPE_Pos               (2UL)          /*!< CMPE (Bit 2)                                          */
-#define R_SYSTEM_PVD1CR0_CMPE_Msk               (0x4UL)        /*!< CMPE (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PVD1CR0_DFDIS_Pos              (1UL)          /*!< DFDIS (Bit 1)                                         */
-#define R_SYSTEM_PVD1CR0_DFDIS_Msk              (0x2UL)        /*!< DFDIS (Bitfield-Mask: 0x01)                           */
-#define R_SYSTEM_PVD1CR0_RIE_Pos                (0UL)          /*!< RIE (Bit 0)                                           */
-#define R_SYSTEM_PVD1CR0_RIE_Msk                (0x1UL)        /*!< RIE (Bitfield-Mask: 0x01)                             */
-/* ========================================================  PVD2CR0  ======================================================== */
-#define R_SYSTEM_PVD2CR0_RN_Pos                 (7UL)          /*!< RN (Bit 7)                                            */
-#define R_SYSTEM_PVD2CR0_RN_Msk                 (0x80UL)       /*!< RN (Bitfield-Mask: 0x01)                              */
-#define R_SYSTEM_PVD2CR0_RI_Pos                 (6UL)          /*!< RI (Bit 6)                                            */
-#define R_SYSTEM_PVD2CR0_RI_Msk                 (0x40UL)       /*!< RI (Bitfield-Mask: 0x01)                              */
-#define R_SYSTEM_PVD2CR0_FSAMP_Pos              (4UL)          /*!< FSAMP (Bit 4)                                         */
-#define R_SYSTEM_PVD2CR0_FSAMP_Msk              (0x30UL)       /*!< FSAMP (Bitfield-Mask: 0x03)                           */
-#define R_SYSTEM_PVD2CR0_CMPE_Pos               (2UL)          /*!< CMPE (Bit 2)                                          */
-#define R_SYSTEM_PVD2CR0_CMPE_Msk               (0x4UL)        /*!< CMPE (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PVD2CR0_DFDIS_Pos              (1UL)          /*!< DFDIS (Bit 1)                                         */
-#define R_SYSTEM_PVD2CR0_DFDIS_Msk              (0x2UL)        /*!< DFDIS (Bitfield-Mask: 0x01)                           */
-#define R_SYSTEM_PVD2CR0_RIE_Pos                (0UL)          /*!< RIE (Bit 0)                                           */
-#define R_SYSTEM_PVD2CR0_RIE_Msk                (0x1UL)        /*!< RIE (Bitfield-Mask: 0x01)                             */
-/* ========================================================  PVD3CR0  ======================================================== */
-#define R_SYSTEM_PVD3CR0_RN_Pos                 (7UL)          /*!< RN (Bit 7)                                            */
-#define R_SYSTEM_PVD3CR0_RN_Msk                 (0x80UL)       /*!< RN (Bitfield-Mask: 0x01)                              */
-#define R_SYSTEM_PVD3CR0_RI_Pos                 (6UL)          /*!< RI (Bit 6)                                            */
-#define R_SYSTEM_PVD3CR0_RI_Msk                 (0x40UL)       /*!< RI (Bitfield-Mask: 0x01)                              */
-#define R_SYSTEM_PVD3CR0_FSAMP_Pos              (4UL)          /*!< FSAMP (Bit 4)                                         */
-#define R_SYSTEM_PVD3CR0_FSAMP_Msk              (0x30UL)       /*!< FSAMP (Bitfield-Mask: 0x03)                           */
-#define R_SYSTEM_PVD3CR0_CMPE_Pos               (2UL)          /*!< CMPE (Bit 2)                                          */
-#define R_SYSTEM_PVD3CR0_CMPE_Msk               (0x4UL)        /*!< CMPE (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PVD3CR0_DFDIS_Pos              (1UL)          /*!< DFDIS (Bit 1)                                         */
-#define R_SYSTEM_PVD3CR0_DFDIS_Msk              (0x2UL)        /*!< DFDIS (Bitfield-Mask: 0x01)                           */
-#define R_SYSTEM_PVD3CR0_RIE_Pos                (0UL)          /*!< RIE (Bit 0)                                           */
-#define R_SYSTEM_PVD3CR0_RIE_Msk                (0x1UL)        /*!< RIE (Bitfield-Mask: 0x01)                             */
-/* ========================================================  PVD4CR0  ======================================================== */
-#define R_SYSTEM_PVD4CR0_RN_Pos                 (7UL)          /*!< RN (Bit 7)                                            */
-#define R_SYSTEM_PVD4CR0_RN_Msk                 (0x80UL)       /*!< RN (Bitfield-Mask: 0x01)                              */
-#define R_SYSTEM_PVD4CR0_RI_Pos                 (6UL)          /*!< RI (Bit 6)                                            */
-#define R_SYSTEM_PVD4CR0_RI_Msk                 (0x40UL)       /*!< RI (Bitfield-Mask: 0x01)                              */
-#define R_SYSTEM_PVD4CR0_FSAMP_Pos              (4UL)          /*!< FSAMP (Bit 4)                                         */
-#define R_SYSTEM_PVD4CR0_FSAMP_Msk              (0x30UL)       /*!< FSAMP (Bitfield-Mask: 0x03)                           */
-#define R_SYSTEM_PVD4CR0_CMPE_Pos               (2UL)          /*!< CMPE (Bit 2)                                          */
-#define R_SYSTEM_PVD4CR0_CMPE_Msk               (0x4UL)        /*!< CMPE (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PVD4CR0_DFDIS_Pos              (1UL)          /*!< DFDIS (Bit 1)                                         */
-#define R_SYSTEM_PVD4CR0_DFDIS_Msk              (0x2UL)        /*!< DFDIS (Bitfield-Mask: 0x01)                           */
-#define R_SYSTEM_PVD4CR0_RIE_Pos                (0UL)          /*!< RIE (Bit 0)                                           */
-#define R_SYSTEM_PVD4CR0_RIE_Msk                (0x1UL)        /*!< RIE (Bitfield-Mask: 0x01)                             */
-/* ========================================================  PVD5CR0  ======================================================== */
-#define R_SYSTEM_PVD5CR0_RN_Pos                 (7UL)          /*!< RN (Bit 7)                                            */
-#define R_SYSTEM_PVD5CR0_RN_Msk                 (0x80UL)       /*!< RN (Bitfield-Mask: 0x01)                              */
-#define R_SYSTEM_PVD5CR0_RI_Pos                 (6UL)          /*!< RI (Bit 6)                                            */
-#define R_SYSTEM_PVD5CR0_RI_Msk                 (0x40UL)       /*!< RI (Bitfield-Mask: 0x01)                              */
-#define R_SYSTEM_PVD5CR0_FSAMP_Pos              (4UL)          /*!< FSAMP (Bit 4)                                         */
-#define R_SYSTEM_PVD5CR0_FSAMP_Msk              (0x30UL)       /*!< FSAMP (Bitfield-Mask: 0x03)                           */
-#define R_SYSTEM_PVD5CR0_CMPE_Pos               (2UL)          /*!< CMPE (Bit 2)                                          */
-#define R_SYSTEM_PVD5CR0_CMPE_Msk               (0x4UL)        /*!< CMPE (Bitfield-Mask: 0x01)                            */
-#define R_SYSTEM_PVD5CR0_DFDIS_Pos              (1UL)          /*!< DFDIS (Bit 1)                                         */
-#define R_SYSTEM_PVD5CR0_DFDIS_Msk              (0x2UL)        /*!< DFDIS (Bitfield-Mask: 0x01)                           */
-#define R_SYSTEM_PVD5CR0_RIE_Pos                (0UL)          /*!< RIE (Bit 0)                                           */
-#define R_SYSTEM_PVD5CR0_RIE_Msk                (0x1UL)        /*!< RIE (Bitfield-Mask: 0x01)                             */
-/* ========================================================  PVD1CR1  ======================================================== */
-#define R_SYSTEM_PVD1CR1_IRQSEL_Pos             (2UL)          /*!< IRQSEL (Bit 2)                                        */
-#define R_SYSTEM_PVD1CR1_IRQSEL_Msk             (0x4UL)        /*!< IRQSEL (Bitfield-Mask: 0x01)                          */
-#define R_SYSTEM_PVD1CR1_IDTSEL_Pos             (0UL)          /*!< IDTSEL (Bit 0)                                        */
-#define R_SYSTEM_PVD1CR1_IDTSEL_Msk             (0x3UL)        /*!< IDTSEL (Bitfield-Mask: 0x03)                          */
-/* ========================================================  PVD2CR1  ======================================================== */
-#define R_SYSTEM_PVD2CR1_IRQSEL_Pos             (2UL)          /*!< IRQSEL (Bit 2)                                        */
-#define R_SYSTEM_PVD2CR1_IRQSEL_Msk             (0x4UL)        /*!< IRQSEL (Bitfield-Mask: 0x01)                          */
-#define R_SYSTEM_PVD2CR1_IDTSEL_Pos             (0UL)          /*!< IDTSEL (Bit 0)                                        */
-#define R_SYSTEM_PVD2CR1_IDTSEL_Msk             (0x3UL)        /*!< IDTSEL (Bitfield-Mask: 0x03)                          */
-/* ========================================================  PVD3CR1  ======================================================== */
-#define R_SYSTEM_PVD3CR1_IRQSEL_Pos             (2UL)          /*!< IRQSEL (Bit 2)                                        */
-#define R_SYSTEM_PVD3CR1_IRQSEL_Msk             (0x4UL)        /*!< IRQSEL (Bitfield-Mask: 0x01)                          */
-#define R_SYSTEM_PVD3CR1_IDTSEL_Pos             (0UL)          /*!< IDTSEL (Bit 0)                                        */
-#define R_SYSTEM_PVD3CR1_IDTSEL_Msk             (0x3UL)        /*!< IDTSEL (Bitfield-Mask: 0x03)                          */
-/* ========================================================  PVD4CR1  ======================================================== */
-#define R_SYSTEM_PVD4CR1_IRQSEL_Pos             (2UL)          /*!< IRQSEL (Bit 2)                                        */
-#define R_SYSTEM_PVD4CR1_IRQSEL_Msk             (0x4UL)        /*!< IRQSEL (Bitfield-Mask: 0x01)                          */
-#define R_SYSTEM_PVD4CR1_IDTSEL_Pos             (0UL)          /*!< IDTSEL (Bit 0)                                        */
-#define R_SYSTEM_PVD4CR1_IDTSEL_Msk             (0x3UL)        /*!< IDTSEL (Bitfield-Mask: 0x03)                          */
-/* ========================================================  PVD5CR1  ======================================================== */
-#define R_SYSTEM_PVD5CR1_IRQSEL_Pos             (2UL)          /*!< IRQSEL (Bit 2)                                        */
-#define R_SYSTEM_PVD5CR1_IRQSEL_Msk             (0x4UL)        /*!< IRQSEL (Bitfield-Mask: 0x01)                          */
-#define R_SYSTEM_PVD5CR1_IDTSEL_Pos             (0UL)          /*!< IDTSEL (Bit 0)                                        */
-#define R_SYSTEM_PVD5CR1_IDTSEL_Msk             (0x3UL)        /*!< IDTSEL (Bitfield-Mask: 0x03)                          */
-/* ========================================================  PVD1SR  ========================================================= */
-#define R_SYSTEM_PVD1SR_MON_Pos                 (1UL)          /*!< MON (Bit 1)                                           */
-#define R_SYSTEM_PVD1SR_MON_Msk                 (0x2UL)        /*!< MON (Bitfield-Mask: 0x01)                             */
-#define R_SYSTEM_PVD1SR_DET_Pos                 (0UL)          /*!< DET (Bit 0)                                           */
-#define R_SYSTEM_PVD1SR_DET_Msk                 (0x1UL)        /*!< DET (Bitfield-Mask: 0x01)                             */
-/* ========================================================  PVD2SR  ========================================================= */
-#define R_SYSTEM_PVD2SR_MON_Pos                 (1UL)          /*!< MON (Bit 1)                                           */
-#define R_SYSTEM_PVD2SR_MON_Msk                 (0x2UL)        /*!< MON (Bitfield-Mask: 0x01)                             */
-#define R_SYSTEM_PVD2SR_DET_Pos                 (0UL)          /*!< DET (Bit 0)                                           */
-#define R_SYSTEM_PVD2SR_DET_Msk                 (0x1UL)        /*!< DET (Bitfield-Mask: 0x01)                             */
-/* ========================================================  PVD3SR  ========================================================= */
-#define R_SYSTEM_PVD3SR_MON_Pos                 (1UL)          /*!< MON (Bit 1)                                           */
-#define R_SYSTEM_PVD3SR_MON_Msk                 (0x2UL)        /*!< MON (Bitfield-Mask: 0x01)                             */
-#define R_SYSTEM_PVD3SR_DET_Pos                 (0UL)          /*!< DET (Bit 0)                                           */
-#define R_SYSTEM_PVD3SR_DET_Msk                 (0x1UL)        /*!< DET (Bitfield-Mask: 0x01)                             */
-/* ========================================================  PVD1FCR  ======================================================== */
-#define R_SYSTEM_PVD1FCR_RHSEL_Pos              (0UL)          /*!< RHSEL (Bit 0)                                         */
-#define R_SYSTEM_PVD1FCR_RHSEL_Msk              (0x1UL)        /*!< RHSEL (Bitfield-Mask: 0x01)                           */
-/* ========================================================  PVD2FCR  ======================================================== */
-#define R_SYSTEM_PVD2FCR_RHSEL_Pos              (0UL)          /*!< RHSEL (Bit 0)                                         */
-#define R_SYSTEM_PVD2FCR_RHSEL_Msk              (0x1UL)        /*!< RHSEL (Bitfield-Mask: 0x01)                           */
-/* ========================================================  PVD3FCR  ======================================================== */
-#define R_SYSTEM_PVD3FCR_RHSEL_Pos              (0UL)          /*!< RHSEL (Bit 0)                                         */
-#define R_SYSTEM_PVD3FCR_RHSEL_Msk              (0x1UL)        /*!< RHSEL (Bitfield-Mask: 0x01)                           */
-/* ========================================================  PVD4FCR  ======================================================== */
-#define R_SYSTEM_PVD4FCR_RHSEL_Pos              (0UL)          /*!< RHSEL (Bit 0)                                         */
-#define R_SYSTEM_PVD4FCR_RHSEL_Msk              (0x1UL)        /*!< RHSEL (Bitfield-Mask: 0x01)                           */
-/* ========================================================  PVD5FCR  ======================================================== */
-#define R_SYSTEM_PVD5FCR_RHSEL_Pos              (0UL)          /*!< RHSEL (Bit 0)                                         */
-#define R_SYSTEM_PVD5FCR_RHSEL_Msk              (0x1UL)        /*!< RHSEL (Bitfield-Mask: 0x01)                           */
-/* =========================================================  PVDLR  ========================================================= */
-#define R_SYSTEM_PVDLR_LOCK_Pos                 (0UL)          /*!< LOCK (Bit 0)                                          */
-#define R_SYSTEM_PVDLR_LOCK_Msk                 (0x1UL)        /*!< LOCK (Bitfield-Mask: 0x01)                            */
+/* =======================================================  VBATTMCR  ======================================================== */
+#define R_SYSTEM_VBATTMCR_VBATTME_Pos           (0UL)          /*!< VBATTME (Bit 0)                                       */
+#define R_SYSTEM_VBATTMCR_VBATTME_Msk           (0x1UL)        /*!< VBATTME (Bitfield-Mask: 0x01)                         */
+/* =========================================================  BKRCR  ========================================================= */
+#define R_SYSTEM_BKRCR_BKRAE_Pos                (3UL)          /*!< BKRAE (Bit 3)                                         */
+#define R_SYSTEM_BKRCR_BKRAE_Msk                (0x8UL)        /*!< BKRAE (Bitfield-Mask: 0x01)                           */
+/* =======================================================  VBATTCR1  ======================================================== */
+#define R_SYSTEM_VBATTCR1_PSWDIS_Pos            (0UL)          /*!< PSWDIS (Bit 0)                                        */
+#define R_SYSTEM_VBATTCR1_PSWDIS_Msk            (0x1UL)        /*!< PSWDIS (Bitfield-Mask: 0x01)                          */
+/* =======================================================  VBATTCR2  ======================================================== */
+#define R_SYSTEM_VBATTCR2_VDETE_Pos             (4UL)          /*!< VDETE (Bit 4)                                         */
+#define R_SYSTEM_VBATTCR2_VDETE_Msk             (0x10UL)       /*!< VDETE (Bitfield-Mask: 0x01)                           */
+#define R_SYSTEM_VBATTCR2_VDETSEL_Pos           (0UL)          /*!< VDETSEL (Bit 0)                                       */
+#define R_SYSTEM_VBATTCR2_VDETSEL_Msk           (0x7UL)        /*!< VDETSEL (Bitfield-Mask: 0x07)                         */
+/* =========================================================  BKPSR  ========================================================= */
+#define R_SYSTEM_BKPSR_PSMF_Pos                 (5UL)          /*!< PSMF (Bit 5)                                          */
+#define R_SYSTEM_BKPSR_PSMF_Msk                 (0x20UL)       /*!< PSMF (Bitfield-Mask: 0x01)                            */
+#define R_SYSTEM_BKPSR_PDRMF_Pos                (4UL)          /*!< PDRMF (Bit 4)                                         */
+#define R_SYSTEM_BKPSR_PDRMF_Msk                (0x10UL)       /*!< PDRMF (Bitfield-Mask: 0x01)                           */
+#define R_SYSTEM_BKPSR_PDDF_Pos                 (0UL)          /*!< PDDF (Bit 0)                                          */
+#define R_SYSTEM_BKPSR_PDDF_Msk                 (0x1UL)        /*!< PDDF (Bitfield-Mask: 0x01)                            */
+/* ========================================================  TAMPSR  ========================================================= */
+#define R_SYSTEM_TAMPSR_TAMP2F_Pos              (2UL)          /*!< TAMP2F (Bit 2)                                        */
+#define R_SYSTEM_TAMPSR_TAMP2F_Msk              (0x4UL)        /*!< TAMP2F (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_TAMPSR_TAMP1F_Pos              (1UL)          /*!< TAMP1F (Bit 1)                                        */
+#define R_SYSTEM_TAMPSR_TAMP1F_Msk              (0x2UL)        /*!< TAMP1F (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_TAMPSR_TAMP0F_Pos              (0UL)          /*!< TAMP0F (Bit 0)                                        */
+#define R_SYSTEM_TAMPSR_TAMP0F_Msk              (0x1UL)        /*!< TAMP0F (Bitfield-Mask: 0x01)                          */
+/* ========================================================  TAMPCR  ========================================================= */
+#define R_SYSTEM_TAMPCR_TAMP2EE_Pos             (6UL)          /*!< TAMP2EE (Bit 6)                                       */
+#define R_SYSTEM_TAMPCR_TAMP2EE_Msk             (0x40UL)       /*!< TAMP2EE (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_TAMPCR_TAMP1EE_Pos             (5UL)          /*!< TAMP1EE (Bit 5)                                       */
+#define R_SYSTEM_TAMPCR_TAMP1EE_Msk             (0x20UL)       /*!< TAMP1EE (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_TAMPCR_TAMP0EE_Pos             (4UL)          /*!< TAMP0EE (Bit 4)                                       */
+#define R_SYSTEM_TAMPCR_TAMP0EE_Msk             (0x10UL)       /*!< TAMP0EE (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_TAMPCR_TAMP2IE_Pos             (2UL)          /*!< TAMP2IE (Bit 2)                                       */
+#define R_SYSTEM_TAMPCR_TAMP2IE_Msk             (0x4UL)        /*!< TAMP2IE (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_TAMPCR_TAMP1IE_Pos             (1UL)          /*!< TAMP1IE (Bit 1)                                       */
+#define R_SYSTEM_TAMPCR_TAMP1IE_Msk             (0x2UL)        /*!< TAMP1IE (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_TAMPCR_TAMP0IE_Pos             (0UL)          /*!< TAMP0IE (Bit 0)                                       */
+#define R_SYSTEM_TAMPCR_TAMP0IE_Msk             (0x1UL)        /*!< TAMP0IE (Bitfield-Mask: 0x01)                         */
+/* =========================================================  TCECR  ========================================================= */
+#define R_SYSTEM_TCECR_TCE2S_Pos                (2UL)          /*!< TCE2S (Bit 2)                                         */
+#define R_SYSTEM_TCECR_TCE2S_Msk                (0x4UL)        /*!< TCE2S (Bitfield-Mask: 0x01)                           */
+#define R_SYSTEM_TCECR_TCE1S_Pos                (1UL)          /*!< TCE1S (Bit 1)                                         */
+#define R_SYSTEM_TCECR_TCE1S_Msk                (0x2UL)        /*!< TCE1S (Bitfield-Mask: 0x01)                           */
+#define R_SYSTEM_TCECR_TCE0S_Pos                (0UL)          /*!< TCE0S (Bit 0)                                         */
+#define R_SYSTEM_TCECR_TCE0S_Msk                (0x1UL)        /*!< TCE0S (Bitfield-Mask: 0x01)                           */
+/* ========================================================  TAMPCR2  ======================================================== */
+#define R_SYSTEM_TAMPCR2_ZHUKE2_Pos             (2UL)          /*!< ZHUKE2 (Bit 2)                                        */
+#define R_SYSTEM_TAMPCR2_ZHUKE2_Msk             (0x4UL)        /*!< ZHUKE2 (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_TAMPCR2_ZHUKE1_Pos             (1UL)          /*!< ZHUKE1 (Bit 1)                                        */
+#define R_SYSTEM_TAMPCR2_ZHUKE1_Msk             (0x2UL)        /*!< ZHUKE1 (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_TAMPCR2_ZHUKE0_Pos             (0UL)          /*!< ZHUKE0 (Bit 0)                                        */
+#define R_SYSTEM_TAMPCR2_ZHUKE0_Msk             (0x1UL)        /*!< ZHUKE0 (Bitfield-Mask: 0x01)                          */
+/* =======================================================  TAMPICR1  ======================================================== */
+#define R_SYSTEM_TAMPICR1_CH2EN_Pos             (2UL)          /*!< CH2EN (Bit 2)                                         */
+#define R_SYSTEM_TAMPICR1_CH2EN_Msk             (0x4UL)        /*!< CH2EN (Bitfield-Mask: 0x01)                           */
+#define R_SYSTEM_TAMPICR1_CH1EN_Pos             (1UL)          /*!< CH1EN (Bit 1)                                         */
+#define R_SYSTEM_TAMPICR1_CH1EN_Msk             (0x2UL)        /*!< CH1EN (Bitfield-Mask: 0x01)                           */
+#define R_SYSTEM_TAMPICR1_CH0EN_Pos             (0UL)          /*!< CH0EN (Bit 0)                                         */
+#define R_SYSTEM_TAMPICR1_CH0EN_Msk             (0x1UL)        /*!< CH0EN (Bitfield-Mask: 0x01)                           */
+/* =======================================================  TAMPICR2  ======================================================== */
+#define R_SYSTEM_TAMPICR2_CH2TRG_Pos            (6UL)          /*!< CH2TRG (Bit 6)                                        */
+#define R_SYSTEM_TAMPICR2_CH2TRG_Msk            (0x40UL)       /*!< CH2TRG (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_TAMPICR2_CH1TRG_Pos            (5UL)          /*!< CH1TRG (Bit 5)                                        */
+#define R_SYSTEM_TAMPICR2_CH1TRG_Msk            (0x20UL)       /*!< CH1TRG (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_TAMPICR2_CH0TRG_Pos            (4UL)          /*!< CH0TRG (Bit 4)                                        */
+#define R_SYSTEM_TAMPICR2_CH0TRG_Msk            (0x10UL)       /*!< CH0TRG (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_TAMPICR2_CH2NFE_Pos            (2UL)          /*!< CH2NFE (Bit 2)                                        */
+#define R_SYSTEM_TAMPICR2_CH2NFE_Msk            (0x4UL)        /*!< CH2NFE (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_TAMPICR2_CH1NFE_Pos            (1UL)          /*!< CH1NFE (Bit 1)                                        */
+#define R_SYSTEM_TAMPICR2_CH1NFE_Msk            (0x2UL)        /*!< CH1NFE (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_TAMPICR2_CH0NFE_Pos            (0UL)          /*!< CH0NFE (Bit 0)                                        */
+#define R_SYSTEM_TAMPICR2_CH0NFE_Msk            (0x1UL)        /*!< CH0NFE (Bitfield-Mask: 0x01)                          */
+/* ========================================================  TAMPIMR  ======================================================== */
+#define R_SYSTEM_TAMPIMR_CH2LVL_Pos             (2UL)          /*!< CH2LVL (Bit 2)                                        */
+#define R_SYSTEM_TAMPIMR_CH2LVL_Msk             (0x4UL)        /*!< CH2LVL (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_TAMPIMR_CH1LVL_Pos             (1UL)          /*!< CH1LVL (Bit 1)                                        */
+#define R_SYSTEM_TAMPIMR_CH1LVL_Msk             (0x2UL)        /*!< CH1LVL (Bitfield-Mask: 0x01)                          */
+#define R_SYSTEM_TAMPIMR_CH0LVL_Pos             (0UL)          /*!< CH0LVL (Bit 0)                                        */
+#define R_SYSTEM_TAMPIMR_CH0LVL_Msk             (0x1UL)        /*!< CH0LVL (Bitfield-Mask: 0x01)                          */
+/* =======================================================  TAMPICR3  ======================================================== */
+#define R_SYSTEM_TAMPICR3_NFCS_Pos              (0UL)          /*!< NFCS (Bit 0)                                          */
+#define R_SYSTEM_TAMPICR3_NFCS_Msk              (0x7UL)        /*!< NFCS (Bitfield-Mask: 0x07)                            */
+/* ==========================================================  BKR  ========================================================== */
+/* =========================================================  VBSAR  ========================================================= */
+#define R_SYSTEM_VBSAR_SATAMPICR3_Pos           (6UL)          /*!< SATAMPICR3 (Bit 6)                                    */
+#define R_SYSTEM_VBSAR_SATAMPICR3_Msk           (0x40UL)       /*!< SATAMPICR3 (Bitfield-Mask: 0x01)                      */
+#define R_SYSTEM_VBSAR_SATAMPCR2_Pos            (5UL)          /*!< SATAMPCR2 (Bit 5)                                     */
+#define R_SYSTEM_VBSAR_SATAMPCR2_Msk            (0x20UL)       /*!< SATAMPCR2 (Bitfield-Mask: 0x01)                       */
+#define R_SYSTEM_VBSAR_SATAMPD_Pos              (4UL)          /*!< SATAMPD (Bit 4)                                       */
+#define R_SYSTEM_VBSAR_SATAMPD_Msk              (0x10UL)       /*!< SATAMPD (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_VBSAR_SAVBATT_Pos              (3UL)          /*!< SAVBATT (Bit 3)                                       */
+#define R_SYSTEM_VBSAR_SAVBATT_Msk              (0x8UL)        /*!< SAVBATT (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_VBSAR_SATAMPI_Pos              (2UL)          /*!< SATAMPI (Bit 2)                                       */
+#define R_SYSTEM_VBSAR_SATAMPI_Msk              (0x4UL)        /*!< SATAMPI (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_VBSAR_SABKRCR_Pos              (1UL)          /*!< SABKRCR (Bit 1)                                       */
+#define R_SYSTEM_VBSAR_SABKRCR_Msk              (0x2UL)        /*!< SABKRCR (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_VBSAR_SAVBATTMCR_Pos           (0UL)          /*!< SAVBATTMCR (Bit 0)                                    */
+#define R_SYSTEM_VBSAR_SAVBATTMCR_Msk           (0x1UL)        /*!< SAVBATTMCR (Bitfield-Mask: 0x01)                      */
+/* ========================================================  BKRSABR  ======================================================== */
 /* =======================================================  SCKDIVCR  ======================================================== */
 #define R_SYSTEM_SCKDIVCR_MRPCK_Pos             (28UL)         /*!< MRPCK (Bit 28)                                        */
 #define R_SYSTEM_SCKDIVCR_MRPCK_Msk             (0xf0000000UL) /*!< MRPCK (Bitfield-Mask: 0x0f)                           */
@@ -437,6 +403,9 @@
 /* ========================================================  HOCOCR  ========================================================= */
 #define R_SYSTEM_HOCOCR_HCSTP_Pos               (0UL)          /*!< HCSTP (Bit 0)                                         */
 #define R_SYSTEM_HOCOCR_HCSTP_Msk               (0x1UL)        /*!< HCSTP (Bitfield-Mask: 0x01)                           */
+/* ========================================================  HOCOCR2  ======================================================== */
+#define R_SYSTEM_HOCOCR2_HCFRQ0_Pos             (0UL)          /*!< HCFRQ0 (Bit 0)                                        */
+#define R_SYSTEM_HOCOCR2_HCFRQ0_Msk             (0x7UL)        /*!< HCFRQ0 (Bitfield-Mask: 0x07)                          */
 /* ========================================================  MOCOCR  ========================================================= */
 #define R_SYSTEM_MOCOCR_MCSTP_Pos               (0UL)          /*!< MCSTP (Bit 0)                                         */
 #define R_SYSTEM_MOCOCR_MCSTP_Msk               (0x1UL)        /*!< MCSTP (Bitfield-Mask: 0x01)                           */
@@ -754,6 +723,8 @@
 #define R_SYSTEM_LPMSAR_NONSEC18_Msk            (0x40000UL)    /*!< NONSEC18 (Bitfield-Mask: 0x01)                        */
 #define R_SYSTEM_LPMSAR_NONSEC17_Pos            (17UL)         /*!< NONSEC17 (Bit 17)                                     */
 #define R_SYSTEM_LPMSAR_NONSEC17_Msk            (0x20000UL)    /*!< NONSEC17 (Bitfield-Mask: 0x01)                        */
+#define R_SYSTEM_LPMSAR_NONSEC16_Pos            (16UL)         /*!< NONSEC16 (Bit 16)                                     */
+#define R_SYSTEM_LPMSAR_NONSEC16_Msk            (0x10000UL)    /*!< NONSEC16 (Bitfield-Mask: 0x01)                        */
 #define R_SYSTEM_LPMSAR_NONSEC8_Pos             (8UL)          /*!< NONSEC8 (Bit 8)                                       */
 #define R_SYSTEM_LPMSAR_NONSEC8_Msk             (0x100UL)      /*!< NONSEC8 (Bitfield-Mask: 0x01)                         */
 #define R_SYSTEM_LPMSAR_NONSEC4_Pos             (4UL)          /*!< NONSEC4 (Bit 4)                                       */
@@ -762,16 +733,18 @@
 #define R_SYSTEM_LPMSAR_NONSEC2_Msk             (0x4UL)        /*!< NONSEC2 (Bitfield-Mask: 0x01)                         */
 #define R_SYSTEM_LPMSAR_NONSEC1_Pos             (1UL)          /*!< NONSEC1 (Bit 1)                                       */
 #define R_SYSTEM_LPMSAR_NONSEC1_Msk             (0x2UL)        /*!< NONSEC1 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_LPMSAR_NONSEC0_Pos             (0UL)          /*!< NONSEC0 (Bit 0)                                       */
-#define R_SYSTEM_LPMSAR_NONSEC0_Msk             (0x1UL)        /*!< NONSEC0 (Bitfield-Mask: 0x01)                         */
 /* ========================================================  PGCSAR  ========================================================= */
-#define R_SYSTEM_PGCSAR_NONSEC7_Pos             (7UL)          /*!< NONSEC7 (Bit 7)                                       */
-#define R_SYSTEM_PGCSAR_NONSEC7_Msk             (0x80UL)       /*!< NONSEC7 (Bitfield-Mask: 0x01)                         */
 #define R_SYSTEM_PGCSAR_NONSEC6_Pos             (6UL)          /*!< NONSEC6 (Bit 6)                                       */
 #define R_SYSTEM_PGCSAR_NONSEC6_Msk             (0x40UL)       /*!< NONSEC6 (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_PGCSAR_NONSEC5_Pos             (5UL)          /*!< NONSEC5 (Bit 5)                                       */
+#define R_SYSTEM_PGCSAR_NONSEC5_Msk             (0x20UL)       /*!< NONSEC5 (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_PGCSAR_NONSEC3_Pos             (3UL)          /*!< NONSEC3 (Bit 3)                                       */
+#define R_SYSTEM_PGCSAR_NONSEC3_Msk             (0x8UL)        /*!< NONSEC3 (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_PGCSAR_NONSEC0_Pos             (0UL)          /*!< NONSEC0 (Bit 0)                                       */
+#define R_SYSTEM_PGCSAR_NONSEC0_Msk             (0x1UL)        /*!< NONSEC0 (Bitfield-Mask: 0x01)                         */
 /* ========================================================  DPFSAR  ========================================================= */
-#define R_SYSTEM_DPFSAR_DFPSA31_Pos             (31UL)         /*!< DFPSA31 (Bit 31)                                      */
-#define R_SYSTEM_DPFSAR_DFPSA31_Msk             (0x80000000UL) /*!< DFPSA31 (Bitfield-Mask: 0x01)                         */
+#define R_SYSTEM_DPFSAR_DPFSA31_Pos             (31UL)         /*!< DPFSA31 (Bit 31)                                      */
+#define R_SYSTEM_DPFSAR_DPFSA31_Msk             (0x80000000UL) /*!< DPFSA31 (Bitfield-Mask: 0x01)                         */
 #define R_SYSTEM_DPFSAR_DPFSA30_Pos             (30UL)         /*!< DPFSA30 (Bit 30)                                      */
 #define R_SYSTEM_DPFSAR_DPFSA30_Msk             (0x40000000UL) /*!< DPFSA30 (Bitfield-Mask: 0x01)                         */
 #define R_SYSTEM_DPFSAR_DPFSA29_Pos             (29UL)         /*!< DPFSA29 (Bit 29)                                      */
@@ -856,16 +829,8 @@
 #define R_SYSTEM_DPFSAR1_DPFSA0_Pos             (0UL)          /*!< DPFSA0 (Bit 0)                                        */
 #define R_SYSTEM_DPFSAR1_DPFSA0_Msk             (0x1UL)        /*!< DPFSA0 (Bitfield-Mask: 0x01)                          */
 /* ========================================================  RSCSAR  ========================================================= */
-#define R_SYSTEM_RSCSAR_RSCSA25_Pos             (25UL)         /*!< RSCSA25 (Bit 25)                                      */
-#define R_SYSTEM_RSCSAR_RSCSA25_Msk             (0x2000000UL)  /*!< RSCSA25 (Bitfield-Mask: 0x01)                         */
 #define R_SYSTEM_RSCSAR_RSCSA24_Pos             (24UL)         /*!< RSCSA24 (Bit 24)                                      */
 #define R_SYSTEM_RSCSAR_RSCSA24_Msk             (0x1000000UL)  /*!< RSCSA24 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_RSCSAR_RSCSA14_Pos             (14UL)         /*!< RSCSA14 (Bit 14)                                      */
-#define R_SYSTEM_RSCSAR_RSCSA14_Msk             (0x4000UL)     /*!< RSCSA14 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_RSCSAR_RSCSA13_Pos             (13UL)         /*!< RSCSA13 (Bit 13)                                      */
-#define R_SYSTEM_RSCSAR_RSCSA13_Msk             (0x2000UL)     /*!< RSCSA13 (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_RSCSAR_RSCSA12_Pos             (12UL)         /*!< RSCSA12 (Bit 12)                                      */
-#define R_SYSTEM_RSCSAR_RSCSA12_Msk             (0x1000UL)     /*!< RSCSA12 (Bitfield-Mask: 0x01)                         */
 #define R_SYSTEM_RSCSAR_RSCSA11_Pos             (11UL)         /*!< RSCSA11 (Bit 11)                                      */
 #define R_SYSTEM_RSCSAR_RSCSA11_Msk             (0x800UL)      /*!< RSCSA11 (Bitfield-Mask: 0x01)                         */
 #define R_SYSTEM_RSCSAR_RSCSA10_Pos             (10UL)         /*!< RSCSA10 (Bit 10)                                      */
@@ -890,11 +855,18 @@
 #define R_SYSTEM_RSCSAR_RSCSA1_Msk              (0x2UL)        /*!< RSCSA1 (Bitfield-Mask: 0x01)                          */
 #define R_SYSTEM_RSCSAR_RSCSA0_Pos              (0UL)          /*!< RSCSA0 (Bit 0)                                        */
 #define R_SYSTEM_RSCSAR_RSCSA0_Msk              (0x1UL)        /*!< RSCSA0 (Bitfield-Mask: 0x01)                          */
-/* =========================================================  OPCCR  ========================================================= */
-#define R_SYSTEM_OPCCR_OPCMTSF_Pos              (4UL)          /*!< OPCMTSF (Bit 4)                                       */
-#define R_SYSTEM_OPCCR_OPCMTSF_Msk              (0x10UL)       /*!< OPCMTSF (Bitfield-Mask: 0x01)                         */
-#define R_SYSTEM_OPCCR_OPCM_Pos                 (0UL)          /*!< OPCM (Bit 0)                                          */
-#define R_SYSTEM_OPCCR_OPCM_Msk                 (0x3UL)        /*!< OPCM (Bitfield-Mask: 0x03)                            */
+/* =========================================================  PGSCR  ========================================================= */
+#define R_SYSTEM_PGSCR_PGS_Pos                  (0UL)          /*!< PGS (Bit 0)                                           */
+#define R_SYSTEM_PGSCR_PGS_Msk                  (0x1UL)        /*!< PGS (Bitfield-Mask: 0x01)                             */
+/* ========================================================  PSSTCR2  ======================================================== */
+#define R_SYSTEM_PSSTCR2_PSST_Pos               (0UL)          /*!< PSST (Bit 0)                                          */
+#define R_SYSTEM_PSSTCR2_PSST_Msk               (0x1fffUL)     /*!< PSST (Bitfield-Mask: 0x1fff)                          */
+/* ========================================================  PSSTCR4  ======================================================== */
+#define R_SYSTEM_PSSTCR4_PSST_Pos               (0UL)          /*!< PSST (Bit 0)                                          */
+#define R_SYSTEM_PSSTCR4_PSST_Msk               (0x1fffUL)     /*!< PSST (Bitfield-Mask: 0x1fff)                          */
+/* ========================================================  PSSTCR5  ======================================================== */
+#define R_SYSTEM_PSSTCR5_PSST_Pos               (0UL)          /*!< PSST (Bit 0)                                          */
+#define R_SYSTEM_PSSTCR5_PSST_Msk               (0x1fffUL)     /*!< PSST (Bitfield-Mask: 0x1fff)                          */
 /* =======================================================  PDCTRESWM  ======================================================= */
 #define R_SYSTEM_PDCTRESWM_PDPGSF_Pos           (7UL)          /*!< PDPGSF (Bit 7)                                        */
 #define R_SYSTEM_PDCTRESWM_PDPGSF_Msk           (0x80UL)       /*!< PDPGSF (Bitfield-Mask: 0x01)                          */
@@ -938,9 +910,6 @@
 #define R_SYSTEM_SSCR1_SS2LP_Msk                (0xcUL)        /*!< SS2LP (Bitfield-Mask: 0x03)                           */
 #define R_SYSTEM_SSCR1_SS2FR_Pos                (0UL)          /*!< SS2FR (Bit 0)                                         */
 #define R_SYSTEM_SSCR1_SS2FR_Msk                (0x1UL)        /*!< SS2FR (Bitfield-Mask: 0x01)                           */
-/* =========================================================  SSCR2  ========================================================= */
-#define R_SYSTEM_SSCR2_SS2RSF_Pos               (0UL)          /*!< SS2RSF (Bit 0)                                        */
-#define R_SYSTEM_SSCR2_SS2RSF_Msk               (0x1UL)        /*!< SS2RSF (Bitfield-Mask: 0x01)                          */
 /* =========================================================  LPSCR  ========================================================= */
 #define R_SYSTEM_LPSCR_LPMD_Pos                 (0UL)          /*!< LPMD (Bit 0)                                          */
 #define R_SYSTEM_LPSCR_LPMD_Msk                 (0xfUL)        /*!< LPMD (Bitfield-Mask: 0x0f)                            */
@@ -1232,9 +1201,6 @@
 /* =========================================================  SVSCR  ========================================================= */
 #define R_SYSTEM_SVSCR_SVSCM_Pos                (0UL)          /*!< SVSCM (Bit 0)                                         */
 #define R_SYSTEM_SVSCR_SVSCM_Msk                (0x7UL)        /*!< SVSCM (Bitfield-Mask: 0x07)                           */
-/* ========================================================  CPUDSCR  ======================================================== */
-#define R_SYSTEM_CPUDSCR_PGD0_Pos               (0UL)          /*!< PGD0 (Bit 0)                                          */
-#define R_SYSTEM_CPUDSCR_PGD0_Msk               (0x1UL)        /*!< PGD0 (Bitfield-Mask: 0x01)                            */
 /* =========================================================  MWMCR  ========================================================= */
 #define R_SYSTEM_MWMCR_MWM_Pos                  (0UL)          /*!< MWM (Bit 0)                                           */
 #define R_SYSTEM_MWMCR_MWM_Msk                  (0x3UL)        /*!< MWM (Bitfield-Mask: 0x03)                             */
@@ -1250,7 +1216,7 @@
 #define R_SYSTEM_DCCR_DSTBYCON_Msk              (0x1UL)        /*!< DSTBYCON (Bitfield-Mask: 0x01)                        */
 
 /* =========================================================================================================================== */
-/* ================                                         R_MSTP                                         ================ */
+/* ================                                          R_MSTP                                           ================ */
 /* =========================================================================================================================== */
 
 /* ========================================================  MSTPCRA  ======================================================== */
@@ -1375,8 +1341,6 @@
 #define R_MSTP_MSTPCRF_MSTPF13_Msk    (0x2000UL)     /*!< MSTPF13 (Bitfield-Mask: 0x01)                         */
 #define R_MSTP_MSTPCRF_MSTPF12_Pos    (12UL)         /*!< MSTPF12 (Bit 12)                                      */
 #define R_MSTP_MSTPCRF_MSTPF12_Msk    (0x1000UL)     /*!< MSTPF12 (Bitfield-Mask: 0x01)                         */
-#define R_MSTP_MSTPCRF_MSTPF8_Pos     (8UL)          /*!< MSTPF8 (Bit 8)                                        */
-#define R_MSTP_MSTPCRF_MSTPF8_Msk     (0x100UL)      /*!< MSTPF8 (Bitfield-Mask: 0x01)                          */
 #define R_MSTP_MSTPCRF_MSTPF7_Pos     (7UL)          /*!< MSTPF7 (Bit 7)                                        */
 #define R_MSTP_MSTPCRF_MSTPF7_Msk     (0x80UL)       /*!< MSTPF7 (Bitfield-Mask: 0x01)                          */
 #define R_MSTP_MSTPCRF_MSTPF6_Pos     (6UL)          /*!< MSTPF6 (Bit 6)                                        */

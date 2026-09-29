@@ -1,8 +1,9 @@
 /*
-* Copyright (c) 2026 Renesas Electronics Corporation and/or its affiliates
-*
-* SPDX-License-Identifier: BSD-3-Clause
-*/
+ * Copyright (c) 2020-2026 Renesas Electronics Corporation and/or its affiliates
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 #ifndef BSP_MCU_DEVICE_PN_CFG_H_
 #define BSP_MCU_DEVICE_PN_CFG_H_
 #define BSP_MCU_R5K574MCBxAE
@@ -12,4 +13,15 @@
 #define BSP_DATA_FLASH_SIZE_BYTES (49152)
 #define BSP_PACKAGE_LFBGA
 #define BSP_PACKAGE_PINS (320)
+#define BSP_XSPI0_CS0_START_ADDRESS (805306368)
+#define BSP_XSPI0_CS0_SIZE_BYTES (268435456)
+#define BSP_XSPI0_CS1_START_ADDRESS (536870912)
+#define BSP_XSPI0_CS1_SIZE_BYTES (268435456)
+#define BSP_XSPI1_CS0_START_ADDRESS (1342177280)
+#define BSP_XSPI1_CS0_SIZE_BYTES (268435456)
+#define BSP_XSPI1_CS1_START_ADDRESS (1073741824)
+#define BSP_XSPI1_CS1_SIZE_BYTES (268435456)
+#define BSP_FLASH_CODE_FLASH_START_ADDRESS (4293918720)
+#define BSP_MRAM_REGION_CODE_A_START_ADDRESS (4294443008)
+#define BSP_MRAM_REGION_CODE_B_START_ADDRESS (4293918720)
 #endif /* BSP_MCU_DEVICE_PN_CFG_H_ */

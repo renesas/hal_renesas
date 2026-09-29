@@ -23,11 +23,19 @@ typedef struct                         /*!< (@ 0x87411000) R_DOC_B Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint8_t DOPCIE : 1;  /*!< [7..7] Data Operation Circuit Interrput Enable                            */
+            __IOM uint8_t DCSEL  : 3;  /*!< [6..4] Detection Condition Select                                         */
+            __IOM uint8_t DOPSZ  : 1;  /*!< [3..3] Data Operation Size Select                                         */
+            uint8_t              : 1;
+            __IOM uint8_t OMS    : 2;  /*!< [1..0] Operating Mode Select                                              */
+#else
             __IOM uint8_t OMS    : 2;  /*!< [1..0] Operating Mode Select                                              */
             uint8_t              : 1;
             __IOM uint8_t DOPSZ  : 1;  /*!< [3..3] Data Operation Size Select                                         */
             __IOM uint8_t DCSEL  : 3;  /*!< [6..4] Detection Condition Select                                         */
             __IOM uint8_t DOPCIE : 1;  /*!< [7..7] Data Operation Circuit Interrput Enable                            */
+#endif
         } DOCR_b;
     };
     __IM uint8_t  RESERVED;
@@ -39,9 +47,15 @@ typedef struct                         /*!< (@ 0x87411000) R_DOC_B Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint8_t            : 7;
+            __IM uint8_t DOPCF : 1;    /*!< [0..0] Data Operation Result Flag Indicates the result of an
+                                        *   operation.                                                                */
+#else
             __IM uint8_t DOPCF : 1;    /*!< [0..0] Data Operation Result Flag Indicates the result of an
                                         *   operation.                                                                */
             uint8_t : 7;
+#endif
         } DOSR_b;
     };
     __IM uint8_t  RESERVED2;
@@ -53,8 +67,13 @@ typedef struct                         /*!< (@ 0x87411000) R_DOC_B Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint8_t              : 7;
+            __OM uint8_t DOPCFCL : 1;  /*!< [0..0] Data Operation Result Clear                                        */
+#else
             __OM uint8_t DOPCFCL : 1;  /*!< [0..0] Data Operation Result Clear                                        */
             uint8_t              : 7;
+#endif
         } DOSCR_b;
     };
     __IM uint8_t   RESERVED4;

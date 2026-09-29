@@ -489,6 +489,22 @@ typedef enum e_elc_software_event
     ELC_SOFTWARE_EVENT_3,              ///< Software event 3
 } elc_software_event_t;
 
+#define ELC_INTERRUPT_NUM    (4U)
+
+typedef enum e_elc_interrupt
+{
+    ELC_INTERRUPT_1 = 0,
+    ELC_INTERRUPT_2,
+    ELC_INTERRUPT_3,
+    ELC_INTERRUPT_4,
+} elc_interrupt_t;
+
+/***********************************************************************************************************************
+ * Exported global functions (to be accessed by other files)
+ **********************************************************************************************************************/
+
+elc_interrupt_t bsp_elc_interrutp_factor(uint8_t irq);
+
 /** @} (end addtogroup BSP_MCU_RX74N) */
 
 #endif

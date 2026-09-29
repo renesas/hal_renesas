@@ -238,9 +238,15 @@ typedef struct                         /*!< (@ 0x87804000) R_PSCU Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t : 28;
+            __IM uint32_t DLMMON : 4;  /*!< [3..0] Device Lifecycle Management State MonitorIndicate the
+                                        *   DLM status value                                                          */
+#else
             __IM uint32_t DLMMON : 4;  /*!< [3..0] Device Lifecycle Management State MonitorIndicate the
                                         *   DLM status value                                                          */
             uint32_t : 28;
+#endif
         } DLMMON_b;
     };
     __IM uint32_t RESERVED2;

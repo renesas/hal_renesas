@@ -23,8 +23,13 @@ typedef struct                         /*!< (@ 0x8701A800) R_EXDMA Structure    
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint8_t            : 7;
+            __IOM uint8_t DMST : 1;    /*!< [0..0] EXDMAC Module Start                                                */
+#else
             __IOM uint8_t DMST : 1;    /*!< [0..0] EXDMAC Module Start                                                */
             uint8_t            : 7;
+#endif
         } EDMAST_b;
     };
     __IM uint8_t  RESERVED;
@@ -37,10 +42,13 @@ typedef struct                         /*!< (@ 0x8701A800) R_EXDMA Structure    
 
         struct
         {
-            __IOM uint8_t PR   : 1;    /*!< [0..0] Priority Control Select                                            */
-            uint8_t            : 3;
-            __IOM uint8_t ERCH : 1;    /*!< [4..4] Clear Channel Select                                               */
-            uint8_t            : 3;
+#if defined(__BIG) && defined(__GNUC__)
+            uint8_t          : 7;
+            __IOM uint8_t PR : 1;      /*!< [0..0] Priority Control Select                                            */
+#else
+            __IOM uint8_t PR : 1;      /*!< [0..0] Priority Control Select                                            */
+            uint8_t          : 7;
+#endif
         } EDMCTL_b;
     };
     __IM uint8_t  RESERVED3;
@@ -49,10 +57,22 @@ typedef struct                         /*!< (@ 0x8701A800) R_EXDMA Structure    
 
     union
     {
-        __IOM uint32_t EDMECHR;         /*!< (@ 0x00000040) EXDMAC Error Channel Register                              */
+        __IOM uint32_t EDMECHR;        /*!< (@ 0x00000040) EXDMAC Error Channel Register                              */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t              : 15;
+            __IOM uint32_t DMESTA : 1;  /*!< [16..16] EXDMAC Error Status                                                */
+            uint32_t              : 3;
+            __IM uint32_t DMERRW  : 1;  /*!< [12..12] EXDMAC Error Read/Write Attribute Indicate the read/write
+                                         *   attribute of the error access                                             */
+            uint32_t               : 3;
+            __IM uint32_t DMECHSAM : 1; /*!< [8..8] EXDMAC Error channel SA Monitor                                      */
+            uint32_t               : 4;
+            __IM uint32_t DMECH    : 4; /*!< [3..0] EXDMAC Error channel Indicates the channel number causing
+                                         *   the error                                                                 */
+#else
             __IM uint32_t DMECH : 4;    /*!< [3..0] EXDMAC Error channel Indicates the channel number causing
                                          *   the error                                                                 */
             uint32_t               : 4;
@@ -63,8 +83,9 @@ typedef struct                         /*!< (@ 0x8701A800) R_EXDMA Structure    
             uint32_t              : 3;
             __IOM uint32_t DMESTA : 1;  /*!< [16..16] EXDMAC Error Status                                                */
             uint32_t              : 15;
+#endif
         } EDMECHR_b;
     };
-} R_EXDMA_Type;                         /*!< Size = 68 (0x44)                                                          */
+} R_EXDMA_Type;                        /*!< Size = 68 (0x44)                                                          */
 
 #endif /* R_EXDMA_REG_H */

@@ -27,21 +27,25 @@ FSP_HEADER
  #define BSP_ICU_IRQ_HANDLER(num, isr)                                                            \
     /* Push All register. */                                                                      \
     __asm volatile ("pushm  r1-r15                          \n"                                   \
-                    /* uint32_t previous_isr_number = g_current_isr_number; */                    \
+                                       /* uint32_t previous_isr_number = g_current_isr_number; */ \
                     "mov.l	%0, r7                          \n"                                   \
                     "mov.l	[r7], r10                       \n"                                   \
-                    /* g_current_isr_number = num; */                                             \
-                    "mov.l	%2 , [r7]                       \n"                                   \
-                    /* isr() */                                                                   \
-                    "mov.l	%1, r8                          \n"                                   \
+                                       /* g_current_isr_number = num; */                          \
+                    "mov.l	%1, [r7]                        \n"                                   \
+                                       /* Enable Nested interrupt. */                             \
+                    "setpsw i                               \n"                                   \
+                                       /* isr() */                                                \
+                    "mov.l	%2, r8                          \n"                                   \
                     "jsr    r8                              \n"                                   \
-                    /* g_current_isr_number = previous_isr_number; */                             \
+                                       /* g_current_isr_number = previous_isr_number; */          \
                     "mov.l	r10, [r7]                       \n"                                   \
-                    /* Pop All register. */                                                       \
-                    "popm   r1-r15                          \n":                                  \
+                                       /* Pop All register. */                                    \
+                    "popm   r1-r15                          \n"                                   \
+                                       /* Return from isr. */                                     \
+                    "rte" :                                                                       \
                     : "i" (&g_current_isr_number),                                                \
-                    "i" (&isr),                                                                   \
-                    "r" (num));
+                    "i" (num),                                                                    \
+                    "i" (&isr));                                                                  \
 
 #endif
 
@@ -174,7 +178,7 @@ __STATIC_INLINE uint32_t R_BSP_GetCurrentIpl (void)
     __GET_PSW(current_psw);
 
     /* Return IPL value. */
-    return (current_psw >> BSP_CPU_PSW_IPL_OFFSET) & 0xF;
+    return (current_psw >> BSP_CPU_PSW_IPL_OFFSET) & BSP_FEATURE_PSW_IPL_MASK;
 }
 
 /*******************************************************************************************************************//**
@@ -191,9 +195,9 @@ __STATIC_INLINE void R_BSP_SetIpl (uint32_t interrupt_mask_level)
     /* Get PSW register value. */
     __GET_PSW(current_psw);
 
-    current_psw = current_psw & ~((uint32_t) 0xF << BSP_CPU_PSW_IPL_OFFSET);
+    current_psw = current_psw & ~((uint32_t) BSP_FEATURE_PSW_IPL_MASK << BSP_CPU_PSW_IPL_OFFSET);
 
-    current_psw = current_psw | ((interrupt_mask_level & 0xF) << BSP_CPU_PSW_IPL_OFFSET);
+    current_psw = current_psw | ((interrupt_mask_level & BSP_FEATURE_PSW_IPL_MASK) << BSP_CPU_PSW_IPL_OFFSET);
 
     /* Set the variable to PSW. */
     __SET_PSW(current_psw);

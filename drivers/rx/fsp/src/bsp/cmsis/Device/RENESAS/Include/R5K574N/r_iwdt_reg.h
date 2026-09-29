@@ -26,6 +26,15 @@ typedef struct                         /*!< (@ 0x87802200) R_IWDT Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint16_t            : 2;
+            __IOM uint16_t RPSS : 2;   /*!< [13..12] Window Start Position Select                                     */
+            uint16_t            : 2;
+            __IOM uint16_t RPES : 2;   /*!< [9..8] Window End Position Select                                         */
+            __IOM uint16_t CKS  : 4;   /*!< [7..4] Clock Division Ratio Select                                        */
+            uint16_t            : 2;
+            __IOM uint16_t TOPS : 2;   /*!< [1..0] Timeout Period Select                                              */
+#else
             __IOM uint16_t TOPS : 2;   /*!< [1..0] Timeout Period Select                                              */
             uint16_t            : 2;
             __IOM uint16_t CKS  : 4;   /*!< [7..4] Clock Division Ratio Select                                        */
@@ -33,18 +42,25 @@ typedef struct                         /*!< (@ 0x87802200) R_IWDT Structure     
             uint16_t            : 2;
             __IOM uint16_t RPSS : 2;   /*!< [13..12] Window Start Position Select                                     */
             uint16_t            : 2;
+#endif
         } IWDTCR_b;
     };
 
     union
     {
-        __IOM uint16_t IWDTSR;          /*!< (@ 0x00000004) IWDT Status Register                                       */
+        __IOM uint16_t IWDTSR;         /*!< (@ 0x00000004) IWDT Status Register                                       */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint16_t REFEF  : 1;  /*!< [15..15] Refresh Error Flag                                               */
+            __IOM uint16_t UNDFF  : 1;  /*!< [14..14] Underflow Flag                                                   */
+            __IM uint16_t  CNTVAL : 14; /*!< [13..0] Counter Value                                                     */
+#else
             __IM uint16_t  CNTVAL : 14; /*!< [13..0] Counter Value                                                     */
             __IOM uint16_t UNDFF  : 1;  /*!< [14..14] Underflow Flag                                                   */
             __IOM uint16_t REFEF  : 1;  /*!< [15..15] Refresh Error Flag                                               */
+#endif
         } IWDTSR_b;
     };
 
@@ -54,8 +70,13 @@ typedef struct                         /*!< (@ 0x87802200) R_IWDT Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint8_t RSTIRQS : 1; /*!< [7..7] Reset Interrupt Request Select                                     */
+            uint8_t               : 7;
+#else
             uint8_t               : 7;
             __IOM uint8_t RSTIRQS : 1; /*!< [7..7] Reset Interrupt Request Select                                     */
+#endif
         } IWDTRCR_b;
     };
     __IM uint8_t RESERVED1;
@@ -66,8 +87,13 @@ typedef struct                         /*!< (@ 0x87802200) R_IWDT Structure     
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint8_t SLCSTP : 1;  /*!< [7..7] Sleep Mode Count Stop Control                                      */
+            uint8_t              : 7;
+#else
             uint8_t              : 7;
             __IOM uint8_t SLCSTP : 1;  /*!< [7..7] Sleep Mode Count Stop Control                                      */
+#endif
         } IWDTCSTPR_b;
     };
     __IM uint8_t  RESERVED2;

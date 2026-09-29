@@ -85,18 +85,22 @@
 #define SCI_B_UART_FCR_RESET_TX_RX             (0x00808000U)
 
 /* DTC Configuration for Receive operation */
-#define SCI_B_UART_DTC_RX_TRANSFER_SETTINGS    (((uint32_t) TRANSFER_MODE_NORMAL << TRANSFER_SETTINGS_MODE_BITS) |         \
-                                                ((uint32_t) TRANSFER_SIZE_1_BYTE << TRANSFER_SETTINGS_SIZE_BITS) |         \
-                                                ((uint32_t) TRANSFER_ADDR_MODE_FIXED << TRANSFER_SETTINGS_SRC_ADDR_BITS) | \
-                                                ((uint32_t) TRANSFER_IRQ_END << TRANSFER_SETTINGS_IRQ_BITS) |              \
-                                                ((uint32_t) TRANSFER_ADDR_MODE_INCREMENTED << TRANSFER_SETTINGS_DEST_ADDR_BITS))
+#define SCI_B_UART_DTC_RX_TRANSFER_SETTINGS    (((uint32_t) TRANSFER_MODE_NORMAL << TRANSFER_SETTINGS_MODE_BITS) | \
+                                                ((uint32_t) TRANSFER_SIZE_1_BYTE << TRANSFER_SETTINGS_SIZE_BITS) | \
+                                                ((uint32_t) TRANSFER_ADDR_MODE_FIXED <<                            \
+                                                 TRANSFER_SETTINGS_SRC_ADDR_BITS) |                                \
+                                                ((uint32_t) TRANSFER_IRQ_END << TRANSFER_SETTINGS_IRQ_BITS) |      \
+                                                ((uint32_t) TRANSFER_ADDR_MODE_INCREMENTED <<                      \
+                                                 TRANSFER_SETTINGS_DEST_ADDR_BITS))
 
 /* DTC Configuration for Transmit operation */
-#define SCI_B_UART_DTC_TX_TRANSFER_SETTINGS    (((uint32_t) TRANSFER_MODE_NORMAL << TRANSFER_SETTINGS_MODE_BITS) |               \
-                                                ((uint32_t) TRANSFER_SIZE_1_BYTE << TRANSFER_SETTINGS_SIZE_BITS) |               \
-                                                ((uint32_t) TRANSFER_ADDR_MODE_INCREMENTED << TRANSFER_SETTINGS_SRC_ADDR_BITS) | \
-                                                ((uint32_t) TRANSFER_IRQ_END << TRANSFER_SETTINGS_IRQ_BITS) |                    \
-                                                ((uint32_t) TRANSFER_ADDR_MODE_FIXED << TRANSFER_SETTINGS_DEST_ADDR_BITS))
+#define SCI_B_UART_DTC_TX_TRANSFER_SETTINGS    (((uint32_t) TRANSFER_MODE_NORMAL << TRANSFER_SETTINGS_MODE_BITS) | \
+                                                ((uint32_t) TRANSFER_SIZE_1_BYTE << TRANSFER_SETTINGS_SIZE_BITS) | \
+                                                ((uint32_t) TRANSFER_ADDR_MODE_INCREMENTED <<                      \
+                                                 TRANSFER_SETTINGS_SRC_ADDR_BITS) |                                \
+                                                ((uint32_t) TRANSFER_IRQ_END << TRANSFER_SETTINGS_IRQ_BITS) |      \
+                                                ((uint32_t) TRANSFER_ADDR_MODE_FIXED <<                            \
+                                                 TRANSFER_SETTINGS_DEST_ADDR_BITS))
 
 /* Flow Control pin active state */
 #ifndef SCI_B_UART_FLOW_CONTROL_ACTIVE
@@ -191,45 +195,45 @@ void sci_b_uart_tei_isr(void);
 /* RSCI base address */
 static const uint32_t volatile * p_rsci_base_address[BSP_FEATURE_SCI_MAX_CHANNEL] =
 {
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 0))
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 0))
     [0] = (uint32_t *) R_SCI_B0_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 1))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 1))
     [1] = (uint32_t *) R_SCI_B1_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 2))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 2))
     [2] = (uint32_t *) R_SCI_B2_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 3))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 3))
     [3] = (uint32_t *) R_SCI_B3_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 4))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 4))
     [4] = (uint32_t *) R_SCI_B4_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 5))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 5))
     [5] = (uint32_t *) R_SCI_B5_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 6))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 6))
     [6] = (uint32_t *) R_SCI_B6_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 7))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 7))
     [7] = (uint32_t *) R_SCI_B7_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 8))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 8))
     [8] = (uint32_t *) R_SCI_B8_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 9))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 9))
     [9] = (uint32_t *) R_SCI_B9_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 10))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 10))
     [10] = (uint32_t *) R_SCI_B10_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 11))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 11))
     [11] = (uint32_t *) R_SCI_B11_BASE,
-#endif
-#if (BSP_FEATURE_SCI_CHANNELS & (1 << 12))
+ #endif
+ #if (BSP_FEATURE_SCI_CHANNELS & (1 << 12))
     [12] = (uint32_t *) R_SCI_B12_BASE,
-#endif
+ #endif
 };
 #endif
 
@@ -741,7 +745,7 @@ fsp_err_t R_SCI_B_UART_BaudSet (uart_ctrl_t * const p_api_ctrl, void const * con
     p_ctrl->p_tx_src = NULL;
 
     /* Apply new baud rate register settings. */
-    p_ctrl->p_reg->SCR2 = ((sci_b_baud_setting_t *) p_baud_setting)->baudrate_bits;
+    p_ctrl->p_reg->SCR2 = ((sci_b_baud_setting_t *) p_baud_setting)->baudrate_bits_u.baudrate_bits;
 
     /* Restore all settings except transmit interrupts. */
     p_ctrl->p_reg->SCR0 = preserved_scr0;
@@ -971,9 +975,9 @@ fsp_err_t R_SCI_B_UART_BaudCalculate (uint32_t                     baudrate,
     FSP_ERROR_RETURN((0U != baudrate), FSP_ERR_INVALID_ARGUMENT);
 #endif
 
-    p_baud_setting->baudrate_bits_b.brr  = SCI_B_UART_BRR_MAX;
-    p_baud_setting->baudrate_bits_b.brme = 0U;
-    p_baud_setting->baudrate_bits_b.mddr = SCI_B_UART_MDDR_MIN;
+    p_baud_setting->baudrate_bits_u.baudrate_bits_b.brr  = SCI_B_UART_BRR_MAX;
+    p_baud_setting->baudrate_bits_u.baudrate_bits_b.brme = 0U;
+    p_baud_setting->baudrate_bits_u.baudrate_bits_b.mddr = SCI_B_UART_MDDR_MIN;
 
     /* Find the best BRR (bit rate register) value.
      *  In table g_async_baud, divisor values are stored for BGDM, ABCS, ABCSE and N values.  Each set of divisors
@@ -1075,19 +1079,19 @@ fsp_err_t R_SCI_B_UART_BaudCalculate (uint32_t                     baudrate,
                      */
                     if (bit_err < hit_bit_err)
                     {
-                        p_baud_setting->baudrate_bits_b.bgdm  = g_async_baud[i].bgdm;
-                        p_baud_setting->baudrate_bits_b.abcs  = g_async_baud[i].abcs;
-                        p_baud_setting->baudrate_bits_b.abcse = g_async_baud[i].abcse;
-                        p_baud_setting->baudrate_bits_b.cks   = g_async_baud[i].cks;
-                        p_baud_setting->baudrate_bits_b.brr   = (uint8_t) temp_brr;
+                        p_baud_setting->baudrate_bits_u.baudrate_bits_b.bgdm  = g_async_baud[i].bgdm;
+                        p_baud_setting->baudrate_bits_u.baudrate_bits_b.abcs  = g_async_baud[i].abcs;
+                        p_baud_setting->baudrate_bits_u.baudrate_bits_b.abcse = g_async_baud[i].abcse;
+                        p_baud_setting->baudrate_bits_u.baudrate_bits_b.cks   = g_async_baud[i].cks;
+                        p_baud_setting->baudrate_bits_u.baudrate_bits_b.brr   = (uint8_t) temp_brr;
                         hit_bit_err = bit_err;
                         hit_mddr    = mddr;
                     }
 
                     if (bitrate_modulation)
                     {
-                        p_baud_setting->baudrate_bits_b.brme = 1U;
-                        p_baud_setting->baudrate_bits_b.mddr = hit_mddr;
+                        p_baud_setting->baudrate_bits_u.baudrate_bits_b.brme = 1U;
+                        p_baud_setting->baudrate_bits_u.baudrate_bits_b.mddr = hit_mddr;
                     }
                     else
                     {
@@ -1199,11 +1203,11 @@ static fsp_err_t r_sci_b_uart_transfer_configure (sci_b_uart_instance_ctrl_t * c
 
     transfer_info_t * p_info = p_transfer->p_cfg->p_info;
 
-    p_info->transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE;
+    p_info->transfer_settings_u.transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE;
 
     if (UART_DATA_BITS_9 == p_ctrl->p_cfg->data_bits)
     {
-        p_info->transfer_settings_word_b.size = TRANSFER_SIZE_2_BYTE;
+        p_info->transfer_settings_u.transfer_settings_word_b.size = TRANSFER_SIZE_2_BYTE;
     }
 
     /* Casting for compatibility with 7 or 8 bit mode. */
@@ -1243,7 +1247,7 @@ static fsp_err_t r_sci_b_uart_transfer_open (sci_b_uart_instance_ctrl_t * const 
     {
         transfer_info_t * p_info = p_cfg->p_transfer_rx->p_cfg->p_info;
 
-        p_info->transfer_settings_word = SCI_B_UART_DTC_RX_TRANSFER_SETTINGS;
+        p_info->transfer_settings_u.transfer_settings_word = SCI_B_UART_DTC_RX_TRANSFER_SETTINGS;
 
         err =
             r_sci_b_uart_transfer_configure(p_ctrl, p_cfg->p_transfer_rx, (uint32_t *) &p_info->p_src,
@@ -1258,7 +1262,7 @@ static fsp_err_t r_sci_b_uart_transfer_open (sci_b_uart_instance_ctrl_t * const 
     {
         transfer_info_t * p_info = p_cfg->p_transfer_tx->p_cfg->p_info;
 
-        p_info->transfer_settings_word = SCI_B_UART_DTC_TX_TRANSFER_SETTINGS;
+        p_info->transfer_settings_u.transfer_settings_word = SCI_B_UART_DTC_TX_TRANSFER_SETTINGS;
 
         err = r_sci_b_uart_transfer_configure(p_ctrl,
                                               p_cfg->p_transfer_tx,
@@ -1321,7 +1325,7 @@ static void r_sci_b_uart_config_set (sci_b_uart_instance_ctrl_t * const p_ctrl, 
     else
     {
         /* Set the baud rate settings for the internal baud rate generator. */
-        scr2 |= p_baud_setting->baudrate_bits;
+        scr2 |= p_baud_setting->baudrate_bits_u.baudrate_bits;
     }
 
     p_ctrl->p_reg->SCR2 = scr2;
@@ -1692,7 +1696,15 @@ void sci_b_uart_rxi_isr (void)
             }
             else
             {
+ #if defined(__BIG)
+
+                /* Point to LSB of data in Big Endian */
+                memcpy((void *) p_ctrl->p_rx_dest,
+                       (void const *) ((uint8_t *) &data + (sizeof(uint32_t) - p_ctrl->data_bytes)),
+                       (size_t) p_ctrl->data_bytes);
+ #else
                 memcpy((void *) p_ctrl->p_rx_dest, (void const *) &data, (size_t) p_ctrl->data_bytes);
+ #endif
                 p_ctrl->p_rx_dest     += p_ctrl->data_bytes;
                 p_ctrl->rx_dest_bytes -= p_ctrl->data_bytes;
 

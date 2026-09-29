@@ -17,6 +17,9 @@
 /***********************************************************************************************************************
  * Includes   <System Includes> , "Project Includes"
  **********************************************************************************************************************/
+#include "../all/endian/bsp_transfer_endian_override.h"
+#include "../all/endian/bsp_sdmmc_endian_override.h"
+#include "../all/endian/bsp_i3c_endian_override.h"
 
 /***********************************************************************************************************************
  * Macro definitions
@@ -296,7 +299,7 @@ typedef struct st_cgc_divider_cfg
             cgc_sys_clock_div_t fclk_div  : 4; ///< Divider value for FCLK
 #endif
         } sckdivcr_b;
-    };
+    } sckdivcr_u;
 
     union
     {
@@ -316,7 +319,7 @@ typedef struct st_cgc_divider_cfg
             uint32_t                       : 16; // Padding to align 32bits
 #endif
         } sckdivcr2_b;
-    };
+    } sckdivcr2_u;
 } cgc_divider_cfg_t;
 
 typedef enum e_poeg_state
@@ -347,9 +350,9 @@ typedef enum e_poeg_trigger
 } poeg_trigger_t;
 typedef enum e_dac_b_output
 {
-    DAC_B_OUTPUT_EXTERNAL = 0,                ///< DAOUTDIS[1:0] = 00
-    DAC_B_OUTPUT_INTERNAL = 2,                ///< DAOUTDIS[1:0] = 10
-    DAC_B_OUTPUT_BOTH     = 3,                ///< DAOUTDIS[1:0] = 11
+    DAC_B_OUTPUT_EXTERNAL = 0,                ///< DAOUTDIS = 0, DAOUTEN = 0
+    DAC_B_OUTPUT_INTERNAL = 2,                ///< DAOUTDIS = 1, DAOUTEN = 0
+    DAC_B_OUTPUT_BOTH     = 3,                ///< DAOUTDIS = 1, DAOUTEN = 1
 } dac_b_output_t;
 
 /** The thresholds supported by each MCU are in the MCU User's Manual as well as

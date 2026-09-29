@@ -23,8 +23,13 @@ typedef struct                         /*!< (@ 0x87802400) R_CAC Structure      
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint8_t            : 7;
+            __IOM uint8_t CFME : 1;    /*!< [0..0] Clock Frequency Measurement Enable                                 */
+#else
             __IOM uint8_t CFME : 1;    /*!< [0..0] Clock Frequency Measurement Enable                                 */
             uint8_t            : 7;
+#endif
         } CACR0_b;
     };
 
@@ -34,10 +39,17 @@ typedef struct                         /*!< (@ 0x87802400) R_CAC Structure      
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint8_t EDGES   : 2; /*!< [7..6] Valid Edge Select                                                  */
+            __IOM uint8_t TCSS    : 2; /*!< [5..4] Timer Count Clock Source Select                                    */
+            __IOM uint8_t FMCS    : 3; /*!< [3..1] Measurement Target Clock Select                                    */
+            __IOM uint8_t CACREFE : 1; /*!< [0..0] CACREF Pin Input Enable                                            */
+#else
             __IOM uint8_t CACREFE : 1; /*!< [0..0] CACREF Pin Input Enable                                            */
             __IOM uint8_t FMCS    : 3; /*!< [3..1] Measurement Target Clock Select                                    */
             __IOM uint8_t TCSS    : 2; /*!< [5..4] Timer Count Clock Source Select                                    */
             __IOM uint8_t EDGES   : 2; /*!< [7..6] Valid Edge Select                                                  */
+#endif
         } CACR1_b;
     };
 
@@ -47,11 +59,19 @@ typedef struct                         /*!< (@ 0x87802400) R_CAC Structure      
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint8_t DFS  : 2;    /*!< [7..6] Digital Filter Select                                              */
+            __IOM uint8_t RCDS : 2;    /*!< [5..4] Measurement Reference Clock Frequency Division Ratio
+                                        *   Select                                                                    */
+            __IOM uint8_t RSCS : 3;    /*!< [3..1] Measurement Reference Clock Select                                 */
+            __IOM uint8_t RPS  : 1;    /*!< [0..0] Reference Signal Select                                            */
+#else
             __IOM uint8_t RPS  : 1;    /*!< [0..0] Reference Signal Select                                            */
             __IOM uint8_t RSCS : 3;    /*!< [3..1] Measurement Reference Clock Select                                 */
             __IOM uint8_t RCDS : 2;    /*!< [5..4] Measurement Reference Clock Frequency Division Ratio
                                         *   Select                                                                    */
             __IOM uint8_t DFS : 2;     /*!< [7..6] Digital Filter Select                                              */
+#endif
         } CACR2_b;
     };
 
@@ -61,6 +81,16 @@ typedef struct                         /*!< (@ 0x87802400) R_CAC Structure      
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint8_t               : 1;
+            __IOM uint8_t OVFFCL  : 1; /*!< [6..6] OVFF Clear                                                         */
+            __IOM uint8_t MENDFCL : 1; /*!< [5..5] MENDF Clear                                                        */
+            __IOM uint8_t FERRFCL : 1; /*!< [4..4] FERRF Clear                                                        */
+            uint8_t               : 1;
+            __IOM uint8_t OVFIE   : 1; /*!< [2..2] Overflow Interrupt Request Enable                                  */
+            __IOM uint8_t MENDIE  : 1; /*!< [1..1] Measurement End Interrupt Request Enable                           */
+            __IOM uint8_t FERRIE  : 1; /*!< [0..0] Frequency Error Interrupt Request Enable                           */
+#else
             __IOM uint8_t FERRIE  : 1; /*!< [0..0] Frequency Error Interrupt Request Enable                           */
             __IOM uint8_t MENDIE  : 1; /*!< [1..1] Measurement End Interrupt Request Enable                           */
             __IOM uint8_t OVFIE   : 1; /*!< [2..2] Overflow Interrupt Request Enable                                  */
@@ -69,6 +99,7 @@ typedef struct                         /*!< (@ 0x87802400) R_CAC Structure      
             __IOM uint8_t MENDFCL : 1; /*!< [5..5] MENDF Clear                                                        */
             __IOM uint8_t OVFFCL  : 1; /*!< [6..6] OVFF Clear                                                         */
             uint8_t               : 1;
+#endif
         } CAICR_b;
     };
 
@@ -78,10 +109,17 @@ typedef struct                         /*!< (@ 0x87802400) R_CAC Structure      
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint8_t            : 5;
+            __IM uint8_t OVFF  : 1;    /*!< [2..2] Overflow Flag                                                      */
+            __IM uint8_t MENDF : 1;    /*!< [1..1] Measurement End Flag                                               */
+            __IM uint8_t FERRF : 1;    /*!< [0..0] Frequency Error Flag                                               */
+#else
             __IM uint8_t FERRF : 1;    /*!< [0..0] Frequency Error Flag                                               */
             __IM uint8_t MENDF : 1;    /*!< [1..1] Measurement End Flag                                               */
             __IM uint8_t OVFF  : 1;    /*!< [2..2] Overflow Flag                                                      */
             uint8_t            : 5;
+#endif
         } CASTR_b;
     };
     __IM uint8_t   RESERVED;

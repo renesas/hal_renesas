@@ -1,13 +1,12 @@
 /*
- * Copyright (c) 2020 - 2025 Renesas Electronics Corporation and/or its
- * affiliates
+ * Copyright (c) 2020-2026 Renesas Electronics Corporation and/or its affiliates
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+#include <zephyr/autoconf.h>
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/clock_control/renesas_rx_cgc.h>
-#include <zephyr/autoconf.h>
 
 #ifndef BSP_CLOCK_CFG_H_
 #define BSP_CLOCK_CFG_H_
@@ -66,7 +65,8 @@
 #define BSP_CFG_PLL2_MUL BSP_CLOCKS_PLL_MUL(0, 0)
 #endif
 
-#define BSP_CFG_PLL2_FREQUENCY_HZ (0) /* PLL2 0Hz */
+#define BSP_CFG_PLL2_FREQUENCY_HZ                                              \
+  (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2), freq, 0))
 #define BSP_CFG_PL2ODIVP RX_CGC_CLK_DIV(DT_NODELABEL(pll2p), div, 1)
 #define BSP_CFG_PLL2P_FREQUENCY_HZ                                             \
   (RX_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(pll2p), freq, 0))
@@ -112,10 +112,10 @@
 #define BSP_CFG_ETHPHYCLK_SOURCE                                               \
   RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(ethphyclk)))
 #define BSP_CFG_ESCCLK_SOURCE                                                  \
-  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(esccclk)))
+  RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(escclk)))
 #define BSP_CFG_DSMIFCLK_SOURCE                                                \
   RX_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(dsmifclk)))
-
+#define BSP_CFG_RTCSCLK_ENABLE DT_NODE_HAS_STATUS(DT_NODELABEL(rtcsclk), okay)
 #define BSP_CFG_CPUCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(cpuclk), div, 1)
 #define BSP_CFG_MRICLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(mriclk), div, 2)
 #define BSP_CFG_ICLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(iclk), div, 2)
@@ -137,7 +137,7 @@
 #define BSP_CFG_CANFDCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(canfdclk), div, 10)
 #define BSP_CFG_GPTCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(gptclk), div, 4)
 #define BSP_CFG_I3CCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(i3cclk), div, 5)
-#define BSP_PRV_UCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(uclk), div, 5)
+#define BSP_CFG_UCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(uclk), div, 5)
 #define BSP_CFG_USB60CLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(usb60clk), div, 5)
 #define BSP_CFG_OCTA_DIV RX_CGC_CLK_DIV(DT_NODELABEL(octaspiclk), div, 4)
 #define BSP_CFG_ADCCLK_DIV RX_CGC_CLK_DIV(DT_NODELABEL(adcclk), div, 4)

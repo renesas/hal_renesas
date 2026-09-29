@@ -233,7 +233,7 @@ typedef struct st_transfer_info
         } transfer_settings_word_b;
 
         uint32_t transfer_settings_word;
-    };
+    } transfer_settings_u;
 
     void const * volatile p_src;       ///< Source pointer
     void * volatile       p_dest;      ///< Destination pointer

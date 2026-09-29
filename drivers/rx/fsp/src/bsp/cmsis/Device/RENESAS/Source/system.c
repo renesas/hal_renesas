@@ -14,54 +14,28 @@
  **********************************************************************************************************************/
 #include <string.h>
 #include "bsp_api.h"
-#if BSP_CFG_DCACHE_ENABLED
- #include "bsp_cache.h"
-#endif
 
 /***********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-#if BSP_CFG_DCACHE_ENABLED
- #define BSP_PRV_MPU_PAGE_SIZE       (0x20) // MPU page size
- #define BSP_PRV_RSPAGE_DCA          (0x3)  // Enable D-Cache, write-back method
- #define BSP_PRV_RSPAGE_ICA          (0x4)  // Enable I-Cache
- #define BSP_PRV_REPAGE_V            (0x1)  // Enable area
- #define BSP_PRV_REPAGE_UAC          (0xE)  // r, w, x permitted
+#if BSP_CFG_DCACHE_ENABLED || BSP_CFG_ICACHE_ENABLED
+ #define BSP_PRV_MPU_PAGE_SIZE      (0x20) // MPU page size
+ #define BSP_PRV_RSPAGE_DCA         (0x3)  // Enable D-Cache, write-back method
+ #define BSP_PRV_RSPAGE_ICA         (0x4)  // Enable I-Cache
+ #define BSP_PRV_REPAGE_V           (0x1)  // Enable area
+ #define BSP_PRV_REPAGE_UAC         (0xE)  // r, w, x permitted
 
- #ifdef BSP_PARTITION_SDRAM_CPU0_S_START
-  #define BSP_PRV_SDRAM_START        (BSP_PARTITION_SDRAM_CPU0_S_START)
-  #define BSP_PRV_SDRAM_END          (BSP_PARTITION_SDRAM_CPU0_S_START + BSP_PARTITION_SDRAM_CPU0_S_SIZE)
- #else
-  #define BSP_PRV_SDRAM_START        (BSP_FEATURE_SDRAM_START_ADDRESS)
-  #define BSP_PRV_SDRAM_END          (BSP_FEATURE_SDRAM_START_ADDRESS + BSP_FEATURE_SDRAM_SIZE)
- #endif
-
- #ifdef BSP_PARTITION_XSPI1_CS1_CPU0_S_START
-  #define BSP_PRV_XSPI1_CS1_START    (BSP_PARTITION_XSPI1_CS1_CPU0_S_START)
-  #define BSP_PRV_XSPI1_CS1_END      (BSP_PARTITION_XSPI1_CS1_CPU0_S_START + BSP_PARTITION_XSPI1_CS1_CPU0_S_SIZE)
- #else
-  #define BSP_PRV_XSPI1_CS1_START    (BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_1_START_ADDRESS)
-  #define BSP_PRV_XSPI1_CS1_END      (BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_1_START_ADDRESS + \
-                                      BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_1_SIZE)
- #endif
-
- #ifdef BSP_PARTITION_XSPI1_CS0_CPU0_S_START
-  #define BSP_PRV_XSPI1_CS0_START    (BSP_PARTITION_XSPI1_CS0_CPU0_S_START)
-  #define BSP_PRV_XSPI1_CS0_END      (BSP_PARTITION_XSPI1_CS0_CPU0_S_START + BSP_PARTITION_XSPI1_CS0_CPU0_S_SIZE)
- #else
-  #define BSP_PRV_XSPI1_CS0_START    (BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_0_START_ADDRESS)
-  #define BSP_PRV_XSPI1_CS0_END      (BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_0_START_ADDRESS + \
-                                      BSP_FEATURE_XSPI_CONTROLLER_UNIT_1_DEVICE_0_SIZE)
- #endif
-
- #ifdef BSP_PARTITION_RAM_CPU0_S_START
-  #define BSP_PRV_RAM_START          (BSP_PARTITION_RAM_CPU0_S_START)
-  #define BSP_PRV_RAM_END            (BSP_PARTITION_RAM_CPU0_S_START + BSP_PARTITION_RAM_CPU0_S_SIZE)
- #else
-  #define BSP_PRV_RAM_START          (BSP_FEATURE_RAM_START_ADDRESS)
-  #define BSP_PRV_RAM_END            (BSP_FEATURE_RAM_START_ADDRESS + BSP_FEATURE_RAM_START_SIZE)
+/* The RX74M/RX74N MPU has RPAGE[8]. */
+ #if BSP_MCU_GROUP_RX74M || BSP_MCU_GROUP_RX74N
+  #define BSP_PRV_MPU_MAX_SLOTS     (8U)
+ #elif BSP_MCU_GROUP_RX74T
+  #define BSP_PRV_MPU_MAX_SLOTS     (2U)
  #endif
 #endif
+
+#define BSP_PRV_PRCR_KEY            (0xA500U)
+#define BSP_PRV_PRCR_PRC1_UNLOCK    ((BSP_PRV_PRCR_KEY) | 0x2U)
+#define BSP_PRV_PRCR_LOCK           ((BSP_PRV_PRCR_KEY) | 0x0U)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -97,10 +71,22 @@ extern uint32_t __StackTop;
 #endif
 
 /* Initialize static constructors */
-extern void (* __init_array_start[])(void);
-extern void (* __init_array_end[])(void);
+#if defined(__GNUC__)
 
+extern void (* __init_array_start[])(void);
+
+extern void (* __init_array_end[])(void);
+#elif defined(__ICCRX__)
+extern void __call_ctors(void const *, void const *);
+
+ #pragma section = "SHT$$PREINIT_ARRAY" const
+ #pragma section = "SHT$$INIT_ARRAY" const
+#endif
+
+#if BSP_PZ_SECURE_BUILD
 extern void R_BSP_SecurityInit(void);
+
+#endif
 
 /***********************************************************************************************************************
  * Private global variables and functions
@@ -113,7 +99,7 @@ static void bsp_init_uninitialized_vars(void);
 
 #endif
 
-#if BSP_CFG_DCACHE_ENABLED
+#if BSP_CFG_DCACHE_ENABLED || BSP_CFG_ICACHE_ENABLED
 static void bsp_init_mpu(void);
 
 #endif
@@ -190,8 +176,26 @@ void SystemInit (void)
     /* Call pre clock initialization hook. */
     R_BSP_WarmStart(BSP_WARM_START_RESET);
 
+#if !BSP_PZ_CFG_SKIP_INIT
+
     /* Configure system clocks. */
     bsp_clock_init();
+#endif
+
+#if BSP_FEATURE_IOPORT_HAS_LVOCR
+ #if !BSP_PZ_NONSECURE_BUILD
+
+    /* Unlock LVOCR register. */
+    R_SYSTEM->PRCR_S = (uint16_t) BSP_PRV_PRCR_PRC1_UNLOCK;
+
+    /* Set LVOCR according to BSP configuration.
+     * Configure prior to warm start post clock. */
+    R_SYSTEM->LVOCR = ((BSP_CFG_IOPORT_VOLTAGE_MODE_VCC << R_SYSTEM_LVOCR_LVO0E_Pos) & R_SYSTEM_LVOCR_LVO0E_Msk);
+
+    /* Lock LVOCR register. */
+    R_SYSTEM->PRCR_S = (uint16_t) BSP_PRV_PRCR_LOCK;
+ #endif
+#endif
 
     /* Call post clock initialization hook. */
     R_BSP_WarmStart(BSP_WARM_START_POST_CLOCK);
@@ -201,25 +205,72 @@ void SystemInit (void)
     /* Initialize data placed in internal memories. */
     SystemRuntimeInit(0);
 #endif
+#if BSP_PZ_NONSECURE_BUILD
+
+    /* Register the Non-Secure SystemCoreClock address via SSC. */
+    r_bsp_ns_system_core_clock_init();
+#else
 
     /* Initialize SystemCoreClock variable. */
     SystemCoreClockUpdate();
+#endif
 
-#if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_VBTICTLR
+#if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_TAMPICR1
+
+    /* For PZ project, it should be called by the secure application, whether RTC module is to be configured as secure or not. */
+ #if !BSP_PZ_NONSECURE_BUILD
 
     /* Perform RTC reset sequence to avoid unintended operation. */
     R_BSP_Init_RTC();
+ #endif
 #endif
 
 #if !BSP_CFG_PFS_PROTECT && defined(R_PMISC)
-    R_PMISC->PWPRS = 0;                              ///< Clear BOWI bit - writing to PFSWE bit enabled
-    R_PMISC->PWPRS = 1U << BSP_IO_PWPR_PFSWE_OFFSET; ///< Set PFSWE bit - writing to PFS register enabled
+ #if !BSP_PZ_NONSECURE_BUILD
+    R_PMISC->PWPR_S = 0;                               ///< Clear BOWI bit - writing to PFSWE bit enabled
+    R_PMISC->PWPR_S = 1U << BSP_IO_PWPR_PFSWE_OFFSET;  ///< Set PFSWE bit - writing to PFS register enabled
+ #else
+    R_PMISC->PWPR_NS = 0;                              ///< Clear BOWI bit - writing to PFSWE bit enabled
+    R_PMISC->PWPR_NS = 1U << BSP_IO_PWPR_PFSWE_OFFSET; ///< Set PFSWE bit - writing to PFS register enabled
+ #endif
 #endif
 
-#if BSP_CFG_DCACHE_ENABLED
+#if BSP_PZ_SECURE_BUILD
 
-    /* Initialize MPU */
+    /* Initialize security features. */
+    R_BSP_SecurityInit();
+#else
+ #if  FSP_PRIV_PZ_USE_SECURE_REGS
+
+    /* Initialize peripherals to secure mode for flat projects */
+    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_SAR);
+    R_PSCU->PSARB = 0U;
+    FSP_HARDWARE_REGISTER_WAIT(R_PSCU->PSARB, 0U);
+    R_PSCU->PSARC = 0U;
+    FSP_HARDWARE_REGISTER_WAIT(R_PSCU->PSARC, 0U);
+    R_PSCU->PSARD = 0U;
+    FSP_HARDWARE_REGISTER_WAIT(R_PSCU->PSARD, 0U);
+    R_PSCU->PSARE = 0U;
+    FSP_HARDWARE_REGISTER_WAIT(R_PSCU->PSARE, 0U);
+    R_PSCU->PSARF = 0U;
+    FSP_HARDWARE_REGISTER_WAIT(R_PSCU->PSARF, 0U);
+    R_PSCU->MSSAR = 0U;
+    FSP_HARDWARE_REGISTER_WAIT(R_PSCU->MSSAR, 0U);
+    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_SAR);
+ #endif
+#endif
+
+#if BSP_CFG_DCACHE_ENABLED || BSP_CFG_ICACHE_ENABLED
+
+    /* Initialize MPU. The RX MPU declares the cacheable ranges. */
     bsp_init_mpu();
+#endif
+
+#if ((BSP_PZ_SECURE_BUILD && (0 == (BSP_PZ_CFG_CACHESAR & R_CPSCU_CACHESAR_CACHESA_Msk))) ||   \
+    (BSP_PZ_NONSECURE_BUILD && (0 != (BSP_PZ_CFG_CACHESAR & R_CPSCU_CACHESAR_CACHESA_Msk))) || \
+    (!BSP_PZ_SECURE_BUILD && !BSP_PZ_NONSECURE_BUILD))
+
+ #if BSP_CFG_ICACHE_ENABLED
 
     /* Invalidate I-Cache */
     R_CACHE->IFCACTL = (uint32_t) ((R_CACHE->IFCACTL & ~R_CACHE_IFCACTL_FL_Msk) | (1U << R_CACHE_IFCACTL_FL_Pos));
@@ -229,15 +280,24 @@ void SystemInit (void)
 
     /* Enable I-Cache. */
     R_CACHE->IFCACTL = (uint32_t) ((R_CACHE->IFCACTL & ~R_CACHE_IFCACTL_EN_Msk) | (1U << R_CACHE_IFCACTL_EN_Pos));
+ #endif
+
+ #if BSP_CFG_DCACHE_ENABLED
 
     /* Invalidate D-Cache */
     R_BSP_CacheInvalidate();
 
     /* Enable D-Cache. */
     R_BSP_CacheEnable();
+ #endif
 #endif
 
-#if BSP_FEATURE_BSP_HAS_ESWM_DOMAIN
+#if !BSP_PZ_NONSECURE_BUILD
+ #if BSP_FEATURE_BSP_HAS_ESWM_DOMAIN
+  #if ((BSP_PZ_SECURE_BUILD && (0 == (BSP_PZ_CFG_PGCSAR & R_SYSTEM_PGCSAR_NONSEC6_Msk))) || \
+    (BSP_PZ_NONSECURE_BUILD && (0 != (BSP_PZ_CFG_PGCSAR & R_SYSTEM_PGCSAR_NONSEC6_Msk))) || \
+    (!BSP_PZ_SECURE_BUILD && !BSP_PZ_NONSECURE_BUILD))
+
     FSP_HARDWARE_REGISTER_WAIT(R_SYSTEM->PDCTRESWM_b.PDCSF, 0);
 
     if (1 == R_SYSTEM->PDCTRESWM_b.PDPGSF)
@@ -254,11 +314,12 @@ void SystemInit (void)
             0);
         R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_OM_LPC_BATT_SWR);
     }
-#endif
+  #endif
+ #endif
 
     /* Call Post C runtime initialization hook. */
     R_BSP_WarmStart(BSP_WARM_START_POST_C);
-
+#endif
 #if BSP_CFG_C_RUNTIME_INIT
 
     /* Initialize data placed in external memories. */
@@ -266,14 +327,24 @@ void SystemInit (void)
 #endif
 
     /* Initialize static constructors */
+#if defined(__GNUC__)
+    int32_t count = __init_array_end - __init_array_start;
+    for (int32_t i = 0; i < count; i++)
+    {
+        if ((NULL != __init_array_start[i]) &&
+            (((void (*)(void))UINTPTR_MAX) != __init_array_start[i])) // NOLINT(readability-magic-numbers)
+        {
+            __init_array_start[i]();
+        }
+    }
 
-    /*
-     * int32_t count = __init_array_end - __init_array_start;
-     * for (int32_t i = 0; i < count; i++)
-     * {
-     *  __init_array_start[i]();
-     * }
-     *//* Initialize ICU events that will be used to trigger ICU interrupts. */
+#elif defined(__ICCRX__)
+    void const * pibase = __section_begin("SHT$$PREINIT_ARRAY");
+    void const * ilimit = __section_end("SHT$$INIT_ARRAY");
+    __call_ctors(pibase, ilimit);
+#endif
+
+    /* Initialize ICU events that will be used to trigger ICU interrupts. */
     bsp_irq_cfg();
 
     /* Call any BSP specific code. No arguments are needed so NULL is sent. */
@@ -339,57 +410,42 @@ static void bsp_init_uninitialized_vars (void)
 
 #endif
 
-#if BSP_CFG_DCACHE_ENABLED
+#if BSP_CFG_DCACHE_ENABLED || BSP_CFG_ICACHE_ENABLED
 
 /*******************************************************************************************************************//**
  * Initialize MPU.
+ *
+ * Programs the RX MPU RPAGE table with the cacheable regions enumerated in g_init_info.p_cacheable_list[]. The
+ * linker emits the __<region>_cacheable$$ symbols from section usage. Zero-size ranges are skipped automatically.
+ * Nocache carve-outs are placed at the end of each region by the linker so the cacheable range is a single
+ * contiguous prefix.
  **********************************************************************************************************************/
 static void bsp_init_mpu (void)
 {
-    /* Configure the cache area. */
-    /* Set the cacheable region within SDRAM */
-    R_MPU->RPAGE[0].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA | (BSP_PRV_SDRAM_START & R_MPU_RPAGE_ST_RSPN_Msk);
-    R_MPU->RPAGE[0].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC |
-                         (((uintptr_t) g_init_info.p_nocache_list[0].p_base & R_MPU_RPAGE_EN_REPN_Msk) -
-                          BSP_PRV_MPU_PAGE_SIZE);
+    uint8_t slot = 0U;
 
-    R_MPU->RPAGE[1].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA |
-                         (((uintptr_t) g_init_info.p_nocache_list[0].p_limit & R_MPU_RPAGE_ST_RSPN_Msk) +
-                          BSP_PRV_MPU_PAGE_SIZE);
-    R_MPU->RPAGE[1].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC | (BSP_PRV_SDRAM_END & R_MPU_RPAGE_EN_REPN_Msk);
+    for (uint32_t i = 0; i < g_init_info.cacheable_count; i++)
+    {
+        uintptr_t base  = (uintptr_t) g_init_info.p_cacheable_list[i].p_base;
+        uintptr_t limit = (uintptr_t) g_init_info.p_cacheable_list[i].p_limit;
 
-    /* Set the cacheable region within XSPI1_CS1 */
-    R_MPU->RPAGE[2].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA | (BSP_PRV_XSPI1_CS1_START & R_MPU_RPAGE_ST_RSPN_Msk);
-    R_MPU->RPAGE[2].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC |
-                         (((uintptr_t) g_init_info.p_nocache_list[1].p_base & R_MPU_RPAGE_EN_REPN_Msk) -
-                          BSP_PRV_MPU_PAGE_SIZE);
+        /* Skip zero-size entries (e.g. a region whose nocache carve-out ended up covering the whole area). */
+        if ((base >= limit) || (slot >= BSP_PRV_MPU_MAX_SLOTS))
+        {
+            continue;
+        }
 
-    R_MPU->RPAGE[3].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA |
-                         (((uintptr_t) g_init_info.p_nocache_list[1].p_limit & R_MPU_RPAGE_ST_RSPN_Msk) +
-                          BSP_PRV_MPU_PAGE_SIZE);
-    R_MPU->RPAGE[3].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC | (BSP_PRV_XSPI1_CS1_END & R_MPU_RPAGE_EN_REPN_Msk);
-
-    /* Set the cacheable region within XSPI1_CS0 */
-    R_MPU->RPAGE[4].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA | (BSP_PRV_XSPI1_CS0_START & R_MPU_RPAGE_ST_RSPN_Msk);
-    R_MPU->RPAGE[4].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC |
-                         (((uintptr_t) g_init_info.p_nocache_list[2].p_base & R_MPU_RPAGE_EN_REPN_Msk) -
-                          BSP_PRV_MPU_PAGE_SIZE);
-
-    R_MPU->RPAGE[5].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA |
-                         (((uintptr_t) g_init_info.p_nocache_list[2].p_limit & R_MPU_RPAGE_ST_RSPN_Msk) +
-                          BSP_PRV_MPU_PAGE_SIZE);
-    R_MPU->RPAGE[5].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC | (BSP_PRV_XSPI1_CS0_END & R_MPU_RPAGE_EN_REPN_Msk);
-
-    /* Set the cacheable region within Internal RAM */
-    R_MPU->RPAGE[6].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA | (BSP_PRV_RAM_START & R_MPU_RPAGE_ST_RSPN_Msk);
-    R_MPU->RPAGE[6].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC |
-                         (((uintptr_t) g_init_info.p_nocache_list[3].p_base & R_MPU_RPAGE_EN_REPN_Msk) -
-                          BSP_PRV_MPU_PAGE_SIZE);
-
-    R_MPU->RPAGE[7].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA |
-                         (((uintptr_t) g_init_info.p_nocache_list[3].p_limit & R_MPU_RPAGE_ST_RSPN_Msk) +
-                          BSP_PRV_MPU_PAGE_SIZE);
-    R_MPU->RPAGE[7].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC | (BSP_PRV_RAM_END & R_MPU_RPAGE_EN_REPN_Msk);
+ #if BSP_CFG_DCACHE_ENABLED && BSP_CFG_ICACHE_ENABLED
+        R_MPU->RPAGE[slot].ST = BSP_PRV_RSPAGE_ICA | BSP_PRV_RSPAGE_DCA | (base & R_MPU_RPAGE_ST_RSPN_Msk);
+ #elif BSP_CFG_DCACHE_ENABLED
+        R_MPU->RPAGE[slot].ST = BSP_PRV_RSPAGE_DCA | (base & R_MPU_RPAGE_ST_RSPN_Msk);
+ #else
+        R_MPU->RPAGE[slot].ST = BSP_PRV_RSPAGE_ICA | (base & R_MPU_RPAGE_ST_RSPN_Msk);
+ #endif
+        R_MPU->RPAGE[slot].EN = BSP_PRV_REPAGE_V | BSP_PRV_REPAGE_UAC |
+                                ((limit - BSP_PRV_MPU_PAGE_SIZE) & R_MPU_RPAGE_EN_REPN_Msk);
+        slot++;
+    }
 
     /* Enable memory protection. */
     R_MPU->MPEN = 1;

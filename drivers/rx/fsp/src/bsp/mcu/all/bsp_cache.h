@@ -22,6 +22,12 @@ FSP_HEADER
 #define BSP_PRV_DCACHE_CLEAN        (1ul)
 #define BSP_PRV_DCACHE_CLEAN_INV    (2ul)
 
+/* Function-like macro used to wait for a condition to be met, most often used to wait for hardware register updates.
+ * This macro can be redefined to add a timeout if necessary. */
+#ifndef FSP_HARDWARE_REGISTER_WAIT
+ #define FSP_HARDWARE_REGISTER_WAIT(reg, required_value)    while (reg != required_value) { /* Wait. */}
+#endif
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -53,27 +59,37 @@ __STATIC_INLINE void bsp_cache_operate_all (uint8_t operate)
     switch (operate)
     {
         case BSP_PRV_DCACHE_INV:
+        {
             /* Flush the cache. */
-            R_CACHE->OACACTL = (uint32_t) ((R_CACHE->OACACTL & ~R_CACHE_OACACTL_FL_Msk) | (1U << R_CACHE_OACACTL_FL_Pos));
+            R_CACHE->OACACTL =
+                (uint32_t) ((R_CACHE->OACACTL & ~R_CACHE_OACACTL_FL_Msk) | (1U << R_CACHE_OACACTL_FL_Pos));
 
             /* Wait for the cache to flush. */
             FSP_HARDWARE_REGISTER_WAIT(R_CACHE->OACAFCT_b.FL, 0U);
             break;
+        }
+
         case BSP_PRV_DCACHE_CLEAN:
+        {
             /* Clean the cache. */
-            R_CACHE->OACACTL = (uint32_t) ((R_CACHE->OACACTL & ~R_CACHE_OACACTL_WB_Msk) | (1U << R_CACHE_OACACTL_WB_Pos));
+            R_CACHE->OACACTL =
+                (uint32_t) ((R_CACHE->OACACTL & ~R_CACHE_OACACTL_WB_Msk) | (1U << R_CACHE_OACACTL_WB_Pos));
 
             /* Wait for the cache to clean. */
             FSP_HARDWARE_REGISTER_WAIT(R_CACHE->OACAFCT_b.WB, 0U);
             break;
+        }
+
         case BSP_PRV_DCACHE_CLEAN_INV:
+        {
             /* Clean and flush the cache. */
-            R_CACHE->OACACTL = (uint32_t) ((R_CACHE->OACACTL & ~(R_CACHE_OACACTL_WB_Msk | R_CACHE_OACACTL_FL_Msk)) 
-                                            | (1U << R_CACHE_OACACTL_WB_Pos) | (1U << R_CACHE_OACACTL_FL_Pos));
+            R_CACHE->OACACTL = (uint32_t) ((R_CACHE->OACACTL & ~(R_CACHE_OACACTL_WB_Msk | R_CACHE_OACACTL_FL_Msk)) |
+                                           (1U << R_CACHE_OACACTL_WB_Pos) | (1U << R_CACHE_OACACTL_FL_Pos));
 
             /* Wait for the cache to clean and flush. */
             FSP_HARDWARE_REGISTER_WAIT(R_CACHE->OACAFCT, 0U);
             break;
+        }
     }
 }
 

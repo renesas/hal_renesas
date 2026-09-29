@@ -389,6 +389,7 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_ADC_CCMPUM5             = (0x337),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_ADC_CCMPUM6             = (0x338),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_ADC_CCMPUM7             = (0x339),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
+    ICU_EVENT_RSIP_TADI               = (0x34F),     // Selectable interrupt (SLIXR128-143 or SLIR144-255)
     ICU_EVENT_ICU_IRQ16               = (0x3FF),     // Selectable interrupt (SLIXR128)
     ICU_EVENT_ICU_IRQ17               = (0x3FF),     // Selectable interrupt (SLIXR129)
     ICU_EVENT_ICU_IRQ18               = (0x3FF),     // Selectable interrupt (SLIXR130)
@@ -734,7 +735,6 @@ typedef enum e_icu_event_rx74m
     ICU_EVENT_GROUP_ETHER_PTPSI0         = (0x056C), // gPTP Status Interrupt 0
     ICU_EVENT_GROUP_ETHER_PTPSI1         = (0x066C), // gPTP Status Interrupt 1
     ICU_EVENT_GROUP_ETHER_FWSI           = (0x076C), // MFWD status interrupt
-    ICU_EVENT_GROUP_ETHER_SWSI           = (0x086C), // ESWM status interrupt
     ICU_EVENT_GROUP_ETHER_CAMI           = (0x096C), // COMA status interrupt
     ICU_EVENT_GROUP_ETHER_EASI0          = (0x0A6C), // ETHA0 status interrupt
     ICU_EVENT_GROUP_ETHER_EASI1          = (0x0B6C), // ETHA1 status interrupt

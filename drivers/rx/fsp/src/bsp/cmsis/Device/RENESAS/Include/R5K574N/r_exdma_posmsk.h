@@ -15,8 +15,6 @@
 #define R_EXDMA_EDMAST_DMST_Pos         (0UL)       /*!< DMST (Bit 0)                                          */
 #define R_EXDMA_EDMAST_DMST_Msk         (0x1UL)     /*!< DMST (Bitfield-Mask: 0x01)                            */
 /* ========================================================  EDMCTL  ========================================================= */
-#define R_EXDMA_EDMCTL_ERCH_Pos         (4UL)       /*!< ERCH (Bit 4)                                          */
-#define R_EXDMA_EDMCTL_ERCH_Msk         (0x10UL)    /*!< ERCH (Bitfield-Mask: 0x01)                            */
 #define R_EXDMA_EDMCTL_PR_Pos           (0UL)       /*!< PR (Bit 0)                                            */
 #define R_EXDMA_EDMCTL_PR_Msk           (0x1UL)     /*!< PR (Bitfield-Mask: 0x01)                              */
 /* ========================================================  EDMECHR  ======================================================== */

@@ -12,6 +12,9 @@
  **********************************************************************************************************************/
 #include "bsp_clock_cfg.h"
 #include "bsp_api.h"
+#if BSP_PZ_SECURE_BUILD
+ #include "bsp_pz_api.h"
+#endif
 
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
@@ -75,6 +78,7 @@ FSP_HEADER
     (3U != BSP_FEATURE_CGC_PLLCCR_TYPE) &&                      \
     (4U != BSP_FEATURE_CGC_PLLCCR_TYPE) &&                      \
     (5U != BSP_FEATURE_CGC_PLLCCR_TYPE) &&                      \
+    (6U != BSP_FEATURE_CGC_PLLCCR_TYPE) &&                      \
     !BSP_CLOCK_CFG_MAIN_OSC_POPULATED)
  #define BSP_PRV_PLL_SUPPORTED           (1)
  #if BSP_FEATURE_CGC_HAS_PLL2
@@ -405,7 +409,7 @@ FSP_HEADER
  #define BSP_PRV_FLL_STABILIZATION_TIME_US     (0)
 #endif
 
-#if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_VBTICTLR
+#if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_TAMPICR1
  #define BSP_PRV_RTC_RESET_DELAY_US            (202)
 #endif
 
@@ -1589,7 +1593,7 @@ void bsp_prv_prepare_pll(uint32_t clock, uint32_t const * const p_pll_hz);
 void bsp_prv_clock_set(uint32_t clock, uint32_t sckdivcr, uint16_t sckdivcr2);
 
 /* RTC Initialization */
-#if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_VBTICTLR
+#if BSP_FEATURE_RTC_IS_AVAILABLE || BSP_FEATURE_RTC_HAS_TCEN || BSP_FEATURE_SYSC_HAS_TAMPICR1
 void R_BSP_Init_RTC(void);
 
 #endif
@@ -1603,6 +1607,14 @@ void bsp_prv_set_pfb(void);
 #if BSP_CFG_SLEEP_MODE_DELAY_ENABLE || BSP_CFG_RTOS_SLEEP_MODE_DELAY_ENABLE
 bool bsp_prv_clock_prepare_pre_sleep(void);
 void bsp_prv_clock_prepare_post_sleep(bool cpuclk_slowed);
+
+#endif
+
+#if BSP_PZ_SECURE_BUILD
+bsp_ssc_err_t R_BSP_SystemCoreClockSet(intptr_t p_system_core_clock, intptr_t arg1, intptr_t arg2, intptr_t arg3);
+
+#elif BSP_PZ_NONSECURE_BUILD
+void r_bsp_ns_system_core_clock_init(void);
 
 #endif
 

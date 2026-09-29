@@ -23,10 +23,17 @@ typedef struct                         /*!< (@ 0x87410000) R_CRC Structure      
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint8_t DORCLR : 1;  /*!< [7..7] CRCDOR Register Clear                                              */
+            __IOM uint8_t LMS    : 1;  /*!< [6..6] CRC Calculation Switching                                          */
+            uint8_t              : 3;
+            __IOM uint8_t GPS    : 3;  /*!< [2..0] CRC Generating Polynomial Switching                                */
+#else
             __IOM uint8_t GPS    : 3;  /*!< [2..0] CRC Generating Polynomial Switching                                */
             uint8_t              : 3;
             __IOM uint8_t LMS    : 1;  /*!< [6..6] CRC Calculation Switching                                          */
             __IOM uint8_t DORCLR : 1;  /*!< [7..7] CRCDOR Register Clear                                              */
+#endif
         } CRCCR_b;
     };
     __IM uint8_t  RESERVED;

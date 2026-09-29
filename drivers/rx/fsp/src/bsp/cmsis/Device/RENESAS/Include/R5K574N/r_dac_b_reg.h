@@ -22,17 +22,29 @@ typedef struct                         /*!< (@ 0x87833000) R_DAC_B0 Structure   
 
     union
     {
-        __IOM uint32_t DACR0;            /*!< (@ 0x00000004) D/A Control Register 0                                     */
+        __IOM uint32_t DACR0;          /*!< (@ 0x00000004) D/A Control Register 0                                     */
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t DAOUTDIS : 1; /*!< [31..31] DAn Pin Output Disable                                           */
+            __IOM uint32_t DAOUTEN  : 1; /*!< [30..30] DAn Pin Output Enable                                            */
+            uint32_t                : 1;
+            __IOM uint32_t DAOE     : 1; /*!< [28..28] D/A Output Enable                                                */
+            uint32_t                : 12;
+            __IOM uint32_t DAE      : 1; /*!< [15..15] DA Batch Conversion Control                                      */
+            uint32_t                : 14;
+            __IOM uint32_t DACEN    : 1; /*!< [0..0] DA Conversion Enable                                               */
+#else
             __IOM uint32_t DACEN    : 1; /*!< [0..0] DA Conversion Enable                                               */
             uint32_t                : 14;
             __IOM uint32_t DAE      : 1; /*!< [15..15] DA Batch Conversion Control                                      */
             uint32_t                : 12;
             __IOM uint32_t DAOE     : 1; /*!< [28..28] D/A Output Enable                                                */
             uint32_t                : 1;
-            __IOM uint32_t DAOUTDIS : 2; /*!< [31..30] D/A Output Selection                                             */
+            __IOM uint32_t DAOUTEN  : 1; /*!< [30..30] DAn Pin Output Enable                                            */
+            __IOM uint32_t DAOUTDIS : 1; /*!< [31..31] DAn Pin Output Disable                                           */
+#endif
         } DACR0_b;
     };
 
@@ -42,9 +54,15 @@ typedef struct                         /*!< (@ 0x87833000) R_DAC_B0 Structure   
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t             : 15;
+            __IOM uint32_t DPSEL : 1;  /*!< [16..16] Format Select                                                    */
+            uint32_t             : 16;
+#else
             uint32_t             : 16;
             __IOM uint32_t DPSEL : 1;  /*!< [16..16] Format Select                                                    */
             uint32_t             : 15;
+#endif
         } DACR1_b;
     };
 
@@ -54,10 +72,17 @@ typedef struct                         /*!< (@ 0x87833000) R_DAC_B0 Structure   
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            __IOM uint32_t DAAMP  : 1; /*!< [31..31] Amplifier Control                                                */
+            uint32_t              : 22;
+            __IOM uint32_t OFSSEL : 1; /*!< [8..8] DAC-HM Operating Voltage Mode Selection                            */
+            uint32_t              : 8;
+#else
             uint32_t              : 8;
             __IOM uint32_t OFSSEL : 1; /*!< [8..8] DAC-HM Operating Voltage Mode Selection                            */
             uint32_t              : 22;
             __IOM uint32_t DAAMP  : 1; /*!< [31..31] Amplifier Control                                                */
+#endif
         } DACR2_b;
     };
 } R_DAC_B0_Type;                       /*!< Size = 16 (0x10)                                                          */

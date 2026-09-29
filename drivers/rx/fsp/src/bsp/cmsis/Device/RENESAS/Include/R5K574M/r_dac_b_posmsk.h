@@ -13,8 +13,10 @@
 
 /* =========================================================  DADR  ========================================================== */
 /* =========================================================  DACR0  ========================================================= */
-#define R_DAC_B0_DACR0_DAOUTDIS_Pos    (30UL)         /*!< DAOUTDIS (Bit 30)                                     */
-#define R_DAC_B0_DACR0_DAOUTDIS_Msk    (0xc0000000UL) /*!< DAOUTDIS (Bitfield-Mask: 0x03)                        */
+#define R_DAC_B0_DACR0_DAOUTDIS_Pos    (31UL)         /*!< DAOUTDIS (Bit 31)                                     */
+#define R_DAC_B0_DACR0_DAOUTDIS_Msk    (0x80000000UL) /*!< DAOUTDIS (Bitfield-Mask: 0x01)                        */
+#define R_DAC_B0_DACR0_DAOUTEN_Pos     (30UL)         /*!< DAOUTEN (Bit 30)                                      */
+#define R_DAC_B0_DACR0_DAOUTEN_Msk     (0x40000000UL) /*!< DAOUTEN (Bitfield-Mask: 0x01)                         */
 #define R_DAC_B0_DACR0_DAOE_Pos        (28UL)         /*!< DAOE (Bit 28)                                         */
 #define R_DAC_B0_DACR0_DAOE_Msk        (0x10000000UL) /*!< DAOE (Bitfield-Mask: 0x01)                            */
 #define R_DAC_B0_DACR0_DAE_Pos         (15UL)         /*!< DAE (Bit 15)                                          */

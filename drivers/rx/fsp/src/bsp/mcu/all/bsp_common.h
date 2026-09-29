@@ -26,8 +26,14 @@
 
 /* BSP module includes */
 #include "../../src/bsp/mcu/all/bsp_sdram.h"
+#if BSP_CFG_DCACHE_ENABLED
+ #include "../../src/bsp/mcu/all/bsp_cache.h"
+#endif
 
 #include "bsp_cfg.h"
+
+/* BSP module includes */
+#include "../../src/bsp/mcu/all/bsp_tfu.h"
 
 /** Common macro for FSP header files. There is also a corresponding FSP_FOOTER macro at the end of this file. */
 FSP_HEADER
@@ -175,6 +181,13 @@ FSP_HEADER
 
 /* Private definition used in bsp_clocks and R_FSP_SystemClockHzGet. Each bitfield in SCKDIVCR is up to 4 bits wide. */
 #define FSP_PRV_SCKDIVCR_DIV_MASK               (0xFU)
+
+/* Use the secure registers for secure projects and flat projects. */
+#if ((!BSP_PZ_NONSECURE_BUILD) && BSP_FEATURE_PZ_HAS_PROTECTZONE)
+ #define FSP_PRIV_PZ_USE_SECURE_REGS            (1)
+#else
+ #define FSP_PRIV_PZ_USE_SECURE_REGS            (0)
+#endif
 
 /* Put certain BSP variables in uninitialized RAM when initializing BSP early. */
 #if BSP_CFG_EARLY_INIT

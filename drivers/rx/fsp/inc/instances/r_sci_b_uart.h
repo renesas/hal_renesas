@@ -142,6 +142,20 @@ typedef struct st_sci_b_baud_setting_t
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t mddr  : 8;        ///< Modulation Duty Register setting
+            uint32_t       : 2;
+            uint32_t cks   : 2;        ///< CKS  value to get divisor (CKS = N)
+            uint32_t       : 3;
+            uint32_t brme  : 1;        ///< Bit Rate Modulation Enable
+            uint32_t brr   : 8;        ///< Bit Rate Register setting
+            uint32_t       : 1;
+            uint32_t abcse : 1;        ///< Asynchronous Mode Extended Base Clock Select 1
+            uint32_t abcs  : 1;        ///< Asynchronous Mode Base Clock Select
+            uint32_t bgdm  : 1;        ///< Baud Rate Generator Double-Speed Mode Select
+            uint32_t       : 1;
+            uint32_t       : 3;
+#else
             uint32_t       : 3;
             uint32_t       : 1;
             uint32_t bgdm  : 1;        ///< Baud Rate Generator Double-Speed Mode Select
@@ -154,8 +168,9 @@ typedef struct st_sci_b_baud_setting_t
             uint32_t cks   : 2;        ///< CKS  value to get divisor (CKS = N)
             uint32_t       : 2;
             uint32_t mddr  : 8;        ///< Modulation Duty Register setting
+#endif
         } baudrate_bits_b;
-    };
+    } baudrate_bits_u;
 } sci_b_baud_setting_t;
 
 /** Configuration settings for controlling the DE signal for RS-485. */

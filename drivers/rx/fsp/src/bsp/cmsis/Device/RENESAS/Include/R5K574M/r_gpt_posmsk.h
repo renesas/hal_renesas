@@ -276,8 +276,8 @@
 /* =========================================================  GTCSR  ========================================================= */
 #define R_GPT0_GTCSR_CCLR_Pos          (31UL)         /*!< CCLR (Bit 31)                                         */
 #define R_GPT0_GTCSR_CCLR_Msk          (0x80000000UL) /*!< CCLR (Bitfield-Mask: 0x01)                            */
-#define R_GPT0_GTCSR_CSCMSC_Pos        (26UL)         /*!< CSCMSC (Bit 26)                                       */
-#define R_GPT0_GTCSR_CSCMSC_Msk        (0x4000000UL)  /*!< CSCMSC (Bitfield-Mask: 0x01)                          */
+#define R_GPT0_GTCSR_CSCMSC_Pos        (24UL)         /*!< CSCMSC (Bit 24)                                       */
+#define R_GPT0_GTCSR_CSCMSC_Msk        (0x7000000UL)  /*!< CSCMSC (Bitfield-Mask: 0x07)                          */
 #define R_GPT0_GTCSR_CSELCH_Pos        (23UL)         /*!< CSELCH (Bit 23)                                       */
 #define R_GPT0_GTCSR_CSELCH_Msk        (0x800000UL)   /*!< CSELCH (Bitfield-Mask: 0x01)                          */
 #define R_GPT0_GTCSR_CSELCG_Pos        (22UL)         /*!< CSELCG (Bit 22)                                       */
@@ -780,57 +780,57 @@
 #define R_GPT0_GTADSMR_ADSMS0_Pos      (0UL)          /*!< ADSMS0 (Bit 0)                                        */
 #define R_GPT0_GTADSMR_ADSMS0_Msk      (0x3UL)        /*!< ADSMS0 (Bitfield-Mask: 0x03)                          */
 /* ========================================================  GTEITC  ========================================================= */
-#define R_GPT0_GTEITC_EITCNT2_Pos      (31UL)         /*!< EITCNT2 (Bit 31)                                      */
-#define R_GPT0_GTEITC_EITCNT2_Msk      (0x80000000UL) /*!< EITCNT2 (Bitfield-Mask: 0x01)                         */
-#define R_GPT0_GTEITC_EITCNT2IV_Pos    (27UL)         /*!< EITCNT2IV (Bit 27)                                    */
-#define R_GPT0_GTEITC_EITCNT2IV_Msk    (0x8000000UL)  /*!< EITCNT2IV (Bitfield-Mask: 0x01)                       */
-#define R_GPT0_GTEITC_EIVTT2_Pos       (23UL)         /*!< EIVTT2 (Bit 23)                                       */
-#define R_GPT0_GTEITC_EIVTT2_Msk       (0x800000UL)   /*!< EIVTT2 (Bitfield-Mask: 0x01)                          */
-#define R_GPT0_GTEITC_EIVTC2_Pos       (17UL)         /*!< EIVTC2 (Bit 17)                                       */
-#define R_GPT0_GTEITC_EIVTC2_Msk       (0x20000UL)    /*!< EIVTC2 (Bitfield-Mask: 0x01)                          */
-#define R_GPT0_GTEITC_EITCNT1_Pos      (15UL)         /*!< EITCNT1 (Bit 15)                                      */
-#define R_GPT0_GTEITC_EITCNT1_Msk      (0x8000UL)     /*!< EITCNT1 (Bitfield-Mask: 0x01)                         */
-#define R_GPT0_GTEITC_EIVTT1_Pos       (7UL)          /*!< EIVTT1 (Bit 7)                                        */
-#define R_GPT0_GTEITC_EIVTT1_Msk       (0x80UL)       /*!< EIVTT1 (Bitfield-Mask: 0x01)                          */
-#define R_GPT0_GTEITC_EIVTC1_Pos       (1UL)          /*!< EIVTC1 (Bit 1)                                        */
-#define R_GPT0_GTEITC_EIVTC1_Msk       (0x2UL)        /*!< EIVTC1 (Bitfield-Mask: 0x01)                          */
+#define R_GPT0_GTEITC_EITCNT2_Pos      (28UL)         /*!< EITCNT2 (Bit 28)                                      */
+#define R_GPT0_GTEITC_EITCNT2_Msk      (0xf0000000UL) /*!< EITCNT2 (Bitfield-Mask: 0x0f)                         */
+#define R_GPT0_GTEITC_EITCNT2IV_Pos    (24UL)         /*!< EITCNT2IV (Bit 24)                                    */
+#define R_GPT0_GTEITC_EITCNT2IV_Msk    (0xf000000UL)  /*!< EITCNT2IV (Bitfield-Mask: 0x0f)                       */
+#define R_GPT0_GTEITC_EIVTT2_Pos       (20UL)         /*!< EIVTT2 (Bit 20)                                       */
+#define R_GPT0_GTEITC_EIVTT2_Msk       (0xf00000UL)   /*!< EIVTT2 (Bitfield-Mask: 0x0f)                          */
+#define R_GPT0_GTEITC_EIVTC2_Pos       (16UL)         /*!< EIVTC2 (Bit 16)                                       */
+#define R_GPT0_GTEITC_EIVTC2_Msk       (0x30000UL)    /*!< EIVTC2 (Bitfield-Mask: 0x03)                          */
+#define R_GPT0_GTEITC_EITCNT1_Pos      (12UL)         /*!< EITCNT1 (Bit 12)                                      */
+#define R_GPT0_GTEITC_EITCNT1_Msk      (0xf000UL)     /*!< EITCNT1 (Bitfield-Mask: 0x0f)                         */
+#define R_GPT0_GTEITC_EIVTT1_Pos       (4UL)          /*!< EIVTT1 (Bit 4)                                        */
+#define R_GPT0_GTEITC_EIVTT1_Msk       (0xf0UL)       /*!< EIVTT1 (Bitfield-Mask: 0x0f)                          */
+#define R_GPT0_GTEITC_EIVTC1_Pos       (0UL)          /*!< EIVTC1 (Bit 0)                                        */
+#define R_GPT0_GTEITC_EIVTC1_Msk       (0x3UL)        /*!< EIVTC1 (Bitfield-Mask: 0x03)                          */
 /* =======================================================  GTEITLI1  ======================================================== */
-#define R_GPT0_GTEITLI1_EITLU_Pos      (30UL)         /*!< EITLU (Bit 30)                                        */
-#define R_GPT0_GTEITLI1_EITLU_Msk      (0x40000000UL) /*!< EITLU (Bitfield-Mask: 0x01)                           */
-#define R_GPT0_GTEITLI1_EITLV_Pos      (26UL)         /*!< EITLV (Bit 26)                                        */
-#define R_GPT0_GTEITLI1_EITLV_Msk      (0x4000000UL)  /*!< EITLV (Bitfield-Mask: 0x01)                           */
-#define R_GPT0_GTEITLI1_EITLF_Pos      (22UL)         /*!< EITLF (Bit 22)                                        */
-#define R_GPT0_GTEITLI1_EITLF_Msk      (0x400000UL)   /*!< EITLF (Bitfield-Mask: 0x01)                           */
-#define R_GPT0_GTEITLI1_EITLE_Pos      (18UL)         /*!< EITLE (Bit 18)                                        */
-#define R_GPT0_GTEITLI1_EITLE_Msk      (0x40000UL)    /*!< EITLE (Bitfield-Mask: 0x01)                           */
-#define R_GPT0_GTEITLI1_EITLD_Pos      (14UL)         /*!< EITLD (Bit 14)                                        */
-#define R_GPT0_GTEITLI1_EITLD_Msk      (0x4000UL)     /*!< EITLD (Bitfield-Mask: 0x01)                           */
-#define R_GPT0_GTEITLI1_EITLC_Pos      (10UL)         /*!< EITLC (Bit 10)                                        */
-#define R_GPT0_GTEITLI1_EITLC_Msk      (0x400UL)      /*!< EITLC (Bitfield-Mask: 0x01)                           */
-#define R_GPT0_GTEITLI1_EITLB_Pos      (6UL)          /*!< EITLB (Bit 6)                                         */
-#define R_GPT0_GTEITLI1_EITLB_Msk      (0x40UL)       /*!< EITLB (Bitfield-Mask: 0x01)                           */
-#define R_GPT0_GTEITLI1_EITLA_Pos      (2UL)          /*!< EITLA (Bit 2)                                         */
-#define R_GPT0_GTEITLI1_EITLA_Msk      (0x4UL)        /*!< EITLA (Bitfield-Mask: 0x01)                           */
+#define R_GPT0_GTEITLI1_EITLU_Pos      (28UL)         /*!< EITLU (Bit 28)                                        */
+#define R_GPT0_GTEITLI1_EITLU_Msk      (0x70000000UL) /*!< EITLU (Bitfield-Mask: 0x07)                           */
+#define R_GPT0_GTEITLI1_EITLV_Pos      (24UL)         /*!< EITLV (Bit 24)                                        */
+#define R_GPT0_GTEITLI1_EITLV_Msk      (0x7000000UL)  /*!< EITLV (Bitfield-Mask: 0x07)                           */
+#define R_GPT0_GTEITLI1_EITLF_Pos      (20UL)         /*!< EITLF (Bit 20)                                        */
+#define R_GPT0_GTEITLI1_EITLF_Msk      (0x700000UL)   /*!< EITLF (Bitfield-Mask: 0x07)                           */
+#define R_GPT0_GTEITLI1_EITLE_Pos      (16UL)         /*!< EITLE (Bit 16)                                        */
+#define R_GPT0_GTEITLI1_EITLE_Msk      (0x70000UL)    /*!< EITLE (Bitfield-Mask: 0x07)                           */
+#define R_GPT0_GTEITLI1_EITLD_Pos      (12UL)         /*!< EITLD (Bit 12)                                        */
+#define R_GPT0_GTEITLI1_EITLD_Msk      (0x7000UL)     /*!< EITLD (Bitfield-Mask: 0x07)                           */
+#define R_GPT0_GTEITLI1_EITLC_Pos      (8UL)          /*!< EITLC (Bit 8)                                         */
+#define R_GPT0_GTEITLI1_EITLC_Msk      (0x700UL)      /*!< EITLC (Bitfield-Mask: 0x07)                           */
+#define R_GPT0_GTEITLI1_EITLB_Pos      (4UL)          /*!< EITLB (Bit 4)                                         */
+#define R_GPT0_GTEITLI1_EITLB_Msk      (0x70UL)       /*!< EITLB (Bitfield-Mask: 0x07)                           */
+#define R_GPT0_GTEITLI1_EITLA_Pos      (0UL)          /*!< EITLA (Bit 0)                                         */
+#define R_GPT0_GTEITLI1_EITLA_Msk      (0x7UL)        /*!< EITLA (Bitfield-Mask: 0x07)                           */
 /* =======================================================  GTEITLI2  ======================================================== */
-#define R_GPT0_GTEITLI2_EADTBL_Pos     (6UL)          /*!< EADTBL (Bit 6)                                        */
-#define R_GPT0_GTEITLI2_EADTBL_Msk     (0x40UL)       /*!< EADTBL (Bitfield-Mask: 0x01)                          */
-#define R_GPT0_GTEITLI2_EADTAL_Pos     (2UL)          /*!< EADTAL (Bit 2)                                        */
-#define R_GPT0_GTEITLI2_EADTAL_Msk     (0x4UL)        /*!< EADTAL (Bitfield-Mask: 0x01)                          */
+#define R_GPT0_GTEITLI2_EADTBL_Pos     (4UL)          /*!< EADTBL (Bit 4)                                        */
+#define R_GPT0_GTEITLI2_EADTBL_Msk     (0x70UL)       /*!< EADTBL (Bitfield-Mask: 0x07)                          */
+#define R_GPT0_GTEITLI2_EADTAL_Pos     (0UL)          /*!< EADTAL (Bit 0)                                        */
+#define R_GPT0_GTEITLI2_EADTAL_Msk     (0x7UL)        /*!< EADTAL (Bitfield-Mask: 0x07)                          */
 /* ========================================================  GTEITLB  ======================================================== */
-#define R_GPT0_GTEITLB_EBTLDVD_Pos     (30UL)         /*!< EBTLDVD (Bit 30)                                      */
-#define R_GPT0_GTEITLB_EBTLDVD_Msk     (0x40000000UL) /*!< EBTLDVD (Bitfield-Mask: 0x01)                         */
-#define R_GPT0_GTEITLB_EBTLDVU_Pos     (26UL)         /*!< EBTLDVU (Bit 26)                                      */
-#define R_GPT0_GTEITLB_EBTLDVU_Msk     (0x4000000UL)  /*!< EBTLDVU (Bitfield-Mask: 0x01)                         */
-#define R_GPT0_GTEITLB_EBTLADB_Pos     (22UL)         /*!< EBTLADB (Bit 22)                                      */
-#define R_GPT0_GTEITLB_EBTLADB_Msk     (0x400000UL)   /*!< EBTLADB (Bitfield-Mask: 0x01)                         */
-#define R_GPT0_GTEITLB_EBTLADA_Pos     (18UL)         /*!< EBTLADA (Bit 18)                                      */
-#define R_GPT0_GTEITLB_EBTLADA_Msk     (0x40000UL)    /*!< EBTLADA (Bitfield-Mask: 0x01)                         */
-#define R_GPT0_GTEITLB_EBTLPR_Pos      (10UL)         /*!< EBTLPR (Bit 10)                                       */
-#define R_GPT0_GTEITLB_EBTLPR_Msk      (0x400UL)      /*!< EBTLPR (Bitfield-Mask: 0x01)                          */
-#define R_GPT0_GTEITLB_EBTLCB_Pos      (6UL)          /*!< EBTLCB (Bit 6)                                        */
-#define R_GPT0_GTEITLB_EBTLCB_Msk      (0x40UL)       /*!< EBTLCB (Bitfield-Mask: 0x01)                          */
-#define R_GPT0_GTEITLB_EBTLCA_Pos      (2UL)          /*!< EBTLCA (Bit 2)                                        */
-#define R_GPT0_GTEITLB_EBTLCA_Msk      (0x4UL)        /*!< EBTLCA (Bitfield-Mask: 0x01)                          */
+#define R_GPT0_GTEITLB_EBTLDVD_Pos     (28UL)         /*!< EBTLDVD (Bit 28)                                      */
+#define R_GPT0_GTEITLB_EBTLDVD_Msk     (0x70000000UL) /*!< EBTLDVD (Bitfield-Mask: 0x07)                         */
+#define R_GPT0_GTEITLB_EBTLDVU_Pos     (24UL)         /*!< EBTLDVU (Bit 24)                                      */
+#define R_GPT0_GTEITLB_EBTLDVU_Msk     (0x7000000UL)  /*!< EBTLDVU (Bitfield-Mask: 0x07)                         */
+#define R_GPT0_GTEITLB_EBTLADB_Pos     (20UL)         /*!< EBTLADB (Bit 20)                                      */
+#define R_GPT0_GTEITLB_EBTLADB_Msk     (0x700000UL)   /*!< EBTLADB (Bitfield-Mask: 0x07)                         */
+#define R_GPT0_GTEITLB_EBTLADA_Pos     (16UL)         /*!< EBTLADA (Bit 16)                                      */
+#define R_GPT0_GTEITLB_EBTLADA_Msk     (0x70000UL)    /*!< EBTLADA (Bitfield-Mask: 0x07)                         */
+#define R_GPT0_GTEITLB_EBTLPR_Pos      (8UL)          /*!< EBTLPR (Bit 8)                                         */
+#define R_GPT0_GTEITLB_EBTLPR_Msk      (0x700UL)      /*!< EBTLPR (Bitfield-Mask: 0x07)                          */
+#define R_GPT0_GTEITLB_EBTLCB_Pos      (4UL)          /*!< EBTLCB (Bit 4)                                        */
+#define R_GPT0_GTEITLB_EBTLCB_Msk      (0x70UL)       /*!< EBTLCB (Bitfield-Mask: 0x07)                          */
+#define R_GPT0_GTEITLB_EBTLCA_Pos      (0UL)          /*!< EBTLCA (Bit 0)                                        */
+#define R_GPT0_GTEITLB_EBTLCA_Msk      (0x7UL)        /*!< EBTLCA (Bitfield-Mask: 0x07)                          */
 /* ========================================================  GTICLF  ========================================================= */
 #define R_GPT0_GTICLF_ICLFSELD_Pos     (20UL)         /*!< ICLFSELD (Bit 20)                                     */
 #define R_GPT0_GTICLF_ICLFSELD_Msk     (0x3f00000UL)  /*!< ICLFSELD (Bitfield-Mask: 0x3f)                        */
@@ -956,10 +956,10 @@
 #define R_GPT0_GTBER2_CMTADB_Msk       (0x4000UL)     /*!< CMTADB (Bitfield-Mask: 0x01)                          */
 #define R_GPT0_GTBER2_CMTADA_Pos       (13UL)         /*!< CMTADA (Bit 13)                                       */
 #define R_GPT0_GTBER2_CMTADA_Msk       (0x2000UL)     /*!< CMTADA (Bitfield-Mask: 0x01)                          */
-#define R_GPT0_GTBER2_CMTCB_Pos        (11UL)         /*!< CMTCB (Bit 11)                                        */
-#define R_GPT0_GTBER2_CMTCB_Msk        (0x800UL)      /*!< CMTCB (Bitfield-Mask: 0x01)                           */
-#define R_GPT0_GTBER2_CMTCA_Pos        (9UL)          /*!< CMTCA (Bit 9)                                         */
-#define R_GPT0_GTBER2_CMTCA_Msk        (0x200UL)      /*!< CMTCA (Bitfield-Mask: 0x01)                           */
+#define R_GPT0_GTBER2_CMTCB_Pos        (10UL)         /*!< CMTCB (Bit 10)                                        */
+#define R_GPT0_GTBER2_CMTCB_Msk        (0xc00UL)      /*!< CMTCB (Bitfield-Mask: 0x03)                           */
+#define R_GPT0_GTBER2_CMTCA_Pos        (8UL)          /*!< CMTCA (Bit 8)                                         */
+#define R_GPT0_GTBER2_CMTCA_Msk        (0x300UL)      /*!< CMTCA (Bitfield-Mask: 0x03)                           */
 #define R_GPT0_GTBER2_CCTDV_Pos        (5UL)          /*!< CCTDV (Bit 5)                                         */
 #define R_GPT0_GTBER2_CCTDV_Msk        (0x20UL)       /*!< CCTDV (Bitfield-Mask: 0x01)                           */
 #define R_GPT0_GTBER2_CCTADB_Pos       (4UL)          /*!< CCTADB (Bit 4)                                        */
@@ -973,8 +973,8 @@
 #define R_GPT0_GTBER2_CCTCA_Pos        (0UL)          /*!< CCTCA (Bit 0)                                         */
 #define R_GPT0_GTBER2_CCTCA_Msk        (0x1UL)        /*!< CCTCA (Bitfield-Mask: 0x01)                           */
 /* ========================================================  GTICCR  ========================================================= */
-#define R_GPT0_GTICCR_ICBGRP_Pos       (31UL)         /*!< ICBGRP (Bit 31)                                       */
-#define R_GPT0_GTICCR_ICBGRP_Msk       (0x80000000UL) /*!< ICBGRP (Bitfield-Mask: 0x01)                          */
+#define R_GPT0_GTICCR_ICBGRP_Pos       (30UL)         /*!< ICBGRP (Bit 30)                                       */
+#define R_GPT0_GTICCR_ICBGRP_Msk       (0xc0000000UL) /*!< ICBGRP (Bitfield-Mask: 0x03)                          */
 #define R_GPT0_GTICCR_ICBCLK_Pos       (24UL)         /*!< ICBCLK (Bit 24)                                       */
 #define R_GPT0_GTICCR_ICBCLK_Msk       (0x1000000UL)  /*!< ICBCLK (Bitfield-Mask: 0x01)                          */
 #define R_GPT0_GTICCR_ICBFPU_Pos       (23UL)         /*!< ICBFPU (Bit 23)                                       */
@@ -993,8 +993,8 @@
 #define R_GPT0_GTICCR_ICBFB_Msk        (0x20000UL)    /*!< ICBFB (Bitfield-Mask: 0x01)                           */
 #define R_GPT0_GTICCR_ICBFA_Pos        (16UL)         /*!< ICBFA (Bit 16)                                        */
 #define R_GPT0_GTICCR_ICBFA_Msk        (0x10000UL)    /*!< ICBFA (Bitfield-Mask: 0x01)                           */
-#define R_GPT0_GTICCR_ICAGRP_Pos       (15UL)         /*!< ICAGRP (Bit 15)                                       */
-#define R_GPT0_GTICCR_ICAGRP_Msk       (0x8000UL)     /*!< ICAGRP (Bitfield-Mask: 0x01)                          */
+#define R_GPT0_GTICCR_ICAGRP_Pos       (14UL)         /*!< ICAGRP (Bit 14)                                       */
+#define R_GPT0_GTICCR_ICAGRP_Msk       (0xc000UL)     /*!< ICAGRP (Bitfield-Mask: 0x03)                          */
 #define R_GPT0_GTICCR_ICACLK_Pos       (8UL)          /*!< ICACLK (Bit 8)                                        */
 #define R_GPT0_GTICCR_ICACLK_Msk       (0x100UL)      /*!< ICACLK (Bitfield-Mask: 0x01)                          */
 #define R_GPT0_GTICCR_ICAFPU_Pos       (7UL)          /*!< ICAFPU (Bit 7)                                        */
@@ -1013,9 +1013,9 @@
 #define R_GPT0_GTICCR_ICAFB_Msk        (0x2UL)        /*!< ICAFB (Bitfield-Mask: 0x01)                           */
 #define R_GPT0_GTICCR_ICAFA_Pos        (0UL)          /*!< ICAFA (Bit 0)                                         */
 #define R_GPT0_GTICCR_ICAFA_Msk        (0x1UL)        /*!< ICAFA (Bitfield-Mask: 0x01)                           */
-/* ========================================================  GTSYSGC  ======================================================== */
-#define R_GPT0_GTSYSGC_SYST_Pos        (16UL)         /*!< SYST (Bit 16)                                         */
-#define R_GPT0_GTSYSGC_SYST_Msk        (0x10000UL)    /*!< SYST (Bitfield-Mask: 0x01)                            */
+/* ========================================================  GTSYNCFCR  ====================================================== */
+#define R_GPT0_GTSYNCFCR_SYST_Pos      (16UL)         /*!< SYST (Bit 16)                                         */
+#define R_GPT0_GTSYNCFCR_SYST_Msk      (0x10000UL)    /*!< SYST (Bitfield-Mask: 0x01)                            */
 
 /* =========================================================================================================================== */
 /* ================                                          R_GPT4                                           ================ */
@@ -1240,8 +1240,8 @@
 #define R_GPT4_GTCSR_CCLR_Msk          (0x80000000UL) /*!< CCLR (Bitfield-Mask: 0x01)                            */
 #define R_GPT4_GTCSR_CP1CCE_Pos        (27UL)         /*!< CP1CCE (Bit 27)                                       */
 #define R_GPT4_GTCSR_CP1CCE_Msk        (0x8000000UL)  /*!< CP1CCE (Bitfield-Mask: 0x01)                          */
-#define R_GPT4_GTCSR_CSCMSC_Pos        (26UL)         /*!< CSCMSC (Bit 26)                                       */
-#define R_GPT4_GTCSR_CSCMSC_Msk        (0x4000000UL)  /*!< CSCMSC (Bitfield-Mask: 0x01)                          */
+#define R_GPT4_GTCSR_CSCMSC_Pos        (24UL)         /*!< CSCMSC (Bit 24)                                       */
+#define R_GPT4_GTCSR_CSCMSC_Msk        (0x7000000UL)  /*!< CSCMSC (Bitfield-Mask: 0x07)                          */
 #define R_GPT4_GTCSR_CSELCH_Pos        (23UL)         /*!< CSELCH (Bit 23)                                       */
 #define R_GPT4_GTCSR_CSELCH_Msk        (0x800000UL)   /*!< CSELCH (Bitfield-Mask: 0x01)                          */
 #define R_GPT4_GTCSR_CSELCG_Pos        (22UL)         /*!< CSELCG (Bit 22)                                       */
@@ -1502,7 +1502,7 @@
 #define R_GPT4_GTCR_TPCS_Pos           (23UL)         /*!< TPCS (Bit 23)                                         */
 #define R_GPT4_GTCR_TPCS_Msk           (0x7800000UL)  /*!< TPCS (Bitfield-Mask: 0x0f)                            */
 #define R_GPT4_GTCR_MD_Pos             (16UL)         /*!< MD (Bit 16)                                           */
-#define R_GPT4_GTCR_MD_Msk             (0xf0000UL)    /*!< MD (Bitfield-Mask: 0x0f)                              */
+#define R_GPT4_GTCR_MD_Msk             (0x70000UL)    /*!< MD (Bitfield-Mask: 0x07)                              */
 #define R_GPT4_GTCR_SSCEN_Pos          (15UL)         /*!< SSCEN (Bit 15)                                        */
 #define R_GPT4_GTCR_SSCEN_Msk          (0x8000UL)     /*!< SSCEN (Bitfield-Mask: 0x01)                           */
 #define R_GPT4_GTCR_SSCGRP_Pos         (10UL)         /*!< SSCGRP (Bit 10)                                       */
@@ -1750,57 +1750,57 @@
 #define R_GPT4_GTADSMR_ADSMS0_Pos          (0UL)          /*!< ADSMS0 (Bit 0)                                        */
 #define R_GPT4_GTADSMR_ADSMS0_Msk          (0x3UL)        /*!< ADSMS0 (Bitfield-Mask: 0x03)                          */
 /* ========================================================  GTEITC  ========================================================= */
-#define R_GPT4_GTEITC_EITCNT2_Pos          (31UL)         /*!< EITCNT2 (Bit 31)                                      */
-#define R_GPT4_GTEITC_EITCNT2_Msk          (0x80000000UL) /*!< EITCNT2 (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTEITC_EITCNT2IV_Pos        (27UL)         /*!< EITCNT2IV (Bit 27)                                    */
-#define R_GPT4_GTEITC_EITCNT2IV_Msk        (0x8000000UL)  /*!< EITCNT2IV (Bitfield-Mask: 0x01)                       */
-#define R_GPT4_GTEITC_EIVTT2_Pos           (23UL)         /*!< EIVTT2 (Bit 23)                                       */
-#define R_GPT4_GTEITC_EIVTT2_Msk           (0x800000UL)   /*!< EIVTT2 (Bitfield-Mask: 0x01)                          */
-#define R_GPT4_GTEITC_EIVTC2_Pos           (17UL)         /*!< EIVTC2 (Bit 17)                                       */
-#define R_GPT4_GTEITC_EIVTC2_Msk           (0x20000UL)    /*!< EIVTC2 (Bitfield-Mask: 0x01)                          */
-#define R_GPT4_GTEITC_EITCNT1_Pos          (15UL)         /*!< EITCNT1 (Bit 15)                                      */
-#define R_GPT4_GTEITC_EITCNT1_Msk          (0x8000UL)     /*!< EITCNT1 (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTEITC_EIVTT1_Pos           (7UL)          /*!< EIVTT1 (Bit 7)                                        */
-#define R_GPT4_GTEITC_EIVTT1_Msk           (0x80UL)       /*!< EIVTT1 (Bitfield-Mask: 0x01)                          */
-#define R_GPT4_GTEITC_EIVTC1_Pos           (1UL)          /*!< EIVTC1 (Bit 1)                                        */
-#define R_GPT4_GTEITC_EIVTC1_Msk           (0x2UL)        /*!< EIVTC1 (Bitfield-Mask: 0x01)                          */
+#define R_GPT4_GTEITC_EITCNT2_Pos          (28UL)         /*!< EITCNT2 (Bit 28)                                      */
+#define R_GPT4_GTEITC_EITCNT2_Msk          (0xf0000000UL) /*!< EITCNT2 (Bitfield-Mask: 0x0f)                         */
+#define R_GPT4_GTEITC_EITCNT2IV_Pos        (24UL)         /*!< EITCNT2IV (Bit 24)                                    */
+#define R_GPT4_GTEITC_EITCNT2IV_Msk        (0xf000000UL)  /*!< EITCNT2IV (Bitfield-Mask: 0x0f)                       */
+#define R_GPT4_GTEITC_EIVTT2_Pos           (20UL)         /*!< EIVTT2 (Bit 20)                                       */
+#define R_GPT4_GTEITC_EIVTT2_Msk           (0xf00000UL)   /*!< EIVTT2 (Bitfield-Mask: 0x0f)                          */
+#define R_GPT4_GTEITC_EIVTC2_Pos           (16UL)         /*!< EIVTC2 (Bit 16)                                       */
+#define R_GPT4_GTEITC_EIVTC2_Msk           (0x30000UL)    /*!< EIVTC2 (Bitfield-Mask: 0x03)                          */
+#define R_GPT4_GTEITC_EITCNT1_Pos          (12UL)         /*!< EITCNT1 (Bit 12)                                      */
+#define R_GPT4_GTEITC_EITCNT1_Msk          (0xf000UL)     /*!< EITCNT1 (Bitfield-Mask: 0x0f)                         */
+#define R_GPT4_GTEITC_EIVTT1_Pos           (4UL)          /*!< EIVTT1 (Bit 4)                                        */
+#define R_GPT4_GTEITC_EIVTT1_Msk           (0xf0UL)       /*!< EIVTT1 (Bitfield-Mask: 0x0f)                          */
+#define R_GPT4_GTEITC_EIVTC1_Pos           (0UL)          /*!< EIVTC1 (Bit 0)                                        */
+#define R_GPT4_GTEITC_EIVTC1_Msk           (0x3UL)        /*!< EIVTC1 (Bitfield-Mask: 0x03)                          */
 /* =======================================================  GTEITLI1  ======================================================== */
-#define R_GPT4_GTEITLI1_EITLU_Pos          (30UL)         /*!< EITLU (Bit 30)                                        */
-#define R_GPT4_GTEITLI1_EITLU_Msk          (0x40000000UL) /*!< EITLU (Bitfield-Mask: 0x01)                           */
-#define R_GPT4_GTEITLI1_EITLV_Pos          (26UL)         /*!< EITLV (Bit 26)                                        */
-#define R_GPT4_GTEITLI1_EITLV_Msk          (0x4000000UL)  /*!< EITLV (Bitfield-Mask: 0x01)                           */
-#define R_GPT4_GTEITLI1_EITLF_Pos          (22UL)         /*!< EITLF (Bit 22)                                        */
-#define R_GPT4_GTEITLI1_EITLF_Msk          (0x400000UL)   /*!< EITLF (Bitfield-Mask: 0x01)                           */
-#define R_GPT4_GTEITLI1_EITLE_Pos          (18UL)         /*!< EITLE (Bit 18)                                        */
-#define R_GPT4_GTEITLI1_EITLE_Msk          (0x40000UL)    /*!< EITLE (Bitfield-Mask: 0x01)                           */
-#define R_GPT4_GTEITLI1_EITLD_Pos          (14UL)         /*!< EITLD (Bit 14)                                        */
-#define R_GPT4_GTEITLI1_EITLD_Msk          (0x4000UL)     /*!< EITLD (Bitfield-Mask: 0x01)                           */
-#define R_GPT4_GTEITLI1_EITLC_Pos          (10UL)         /*!< EITLC (Bit 10)                                        */
-#define R_GPT4_GTEITLI1_EITLC_Msk          (0x400UL)      /*!< EITLC (Bitfield-Mask: 0x01)                           */
-#define R_GPT4_GTEITLI1_EITLB_Pos          (6UL)          /*!< EITLB (Bit 6)                                         */
-#define R_GPT4_GTEITLI1_EITLB_Msk          (0x40UL)       /*!< EITLB (Bitfield-Mask: 0x01)                           */
-#define R_GPT4_GTEITLI1_EITLA_Pos          (2UL)          /*!< EITLA (Bit 2)                                         */
-#define R_GPT4_GTEITLI1_EITLA_Msk          (0x4UL)        /*!< EITLA (Bitfield-Mask: 0x01)                           */
+#define R_GPT4_GTEITLI1_EITLU_Pos          (28UL)         /*!< EITLU (Bit 28)                                        */
+#define R_GPT4_GTEITLI1_EITLU_Msk          (0x70000000UL) /*!< EITLU (Bitfield-Mask: 0x07)                           */
+#define R_GPT4_GTEITLI1_EITLV_Pos          (24UL)         /*!< EITLV (Bit 24)                                        */
+#define R_GPT4_GTEITLI1_EITLV_Msk          (0x7000000UL)  /*!< EITLV (Bitfield-Mask: 0x07)                           */
+#define R_GPT4_GTEITLI1_EITLF_Pos          (20UL)         /*!< EITLF (Bit 20)                                        */
+#define R_GPT4_GTEITLI1_EITLF_Msk          (0x700000UL)   /*!< EITLF (Bitfield-Mask: 0x07)                           */
+#define R_GPT4_GTEITLI1_EITLE_Pos          (16UL)         /*!< EITLE (Bit 16)                                        */
+#define R_GPT4_GTEITLI1_EITLE_Msk          (0x70000UL)    /*!< EITLE (Bitfield-Mask: 0x07)                           */
+#define R_GPT4_GTEITLI1_EITLD_Pos          (12UL)         /*!< EITLD (Bit 12)                                        */
+#define R_GPT4_GTEITLI1_EITLD_Msk          (0x7000UL)     /*!< EITLD (Bitfield-Mask: 0x07)                           */
+#define R_GPT4_GTEITLI1_EITLC_Pos          (8UL)          /*!< EITLC (Bit 8)                                         */
+#define R_GPT4_GTEITLI1_EITLC_Msk          (0x700UL)      /*!< EITLC (Bitfield-Mask: 0x07)                           */
+#define R_GPT4_GTEITLI1_EITLB_Pos          (4UL)          /*!< EITLB (Bit 4)                                         */
+#define R_GPT4_GTEITLI1_EITLB_Msk          (0x70UL)       /*!< EITLB (Bitfield-Mask: 0x07)                           */
+#define R_GPT4_GTEITLI1_EITLA_Pos          (0UL)          /*!< EITLA (Bit 0)                                         */
+#define R_GPT4_GTEITLI1_EITLA_Msk          (0x7UL)        /*!< EITLA (Bitfield-Mask: 0x07)                           */
 /* =======================================================  GTEITLI2  ======================================================== */
-#define R_GPT4_GTEITLI2_EADTBL_Pos         (6UL)          /*!< EADTBL (Bit 6)                                        */
-#define R_GPT4_GTEITLI2_EADTBL_Msk         (0x40UL)       /*!< EADTBL (Bitfield-Mask: 0x01)                          */
-#define R_GPT4_GTEITLI2_EADTAL_Pos         (2UL)          /*!< EADTAL (Bit 2)                                        */
-#define R_GPT4_GTEITLI2_EADTAL_Msk         (0x4UL)        /*!< EADTAL (Bitfield-Mask: 0x01)                          */
+#define R_GPT4_GTEITLI2_EADTBL_Pos         (4UL)          /*!< EADTBL (Bit 4)                                        */
+#define R_GPT4_GTEITLI2_EADTBL_Msk         (0x70UL)       /*!< EADTBL (Bitfield-Mask: 0x07)                          */
+#define R_GPT4_GTEITLI2_EADTAL_Pos         (0UL)          /*!< EADTAL (Bit 0)                                        */
+#define R_GPT4_GTEITLI2_EADTAL_Msk         (0x7UL)        /*!< EADTAL (Bitfield-Mask: 0x07)                          */
 /* ========================================================  GTEITLB  ======================================================== */
-#define R_GPT4_GTEITLB_EBTLDVD_Pos         (30UL)         /*!< EBTLDVD (Bit 30)                                      */
-#define R_GPT4_GTEITLB_EBTLDVD_Msk         (0x40000000UL) /*!< EBTLDVD (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTEITLB_EBTLDVU_Pos         (26UL)         /*!< EBTLDVU (Bit 26)                                      */
-#define R_GPT4_GTEITLB_EBTLDVU_Msk         (0x4000000UL)  /*!< EBTLDVU (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTEITLB_EBTLADB_Pos         (22UL)         /*!< EBTLADB (Bit 22)                                      */
-#define R_GPT4_GTEITLB_EBTLADB_Msk         (0x400000UL)   /*!< EBTLADB (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTEITLB_EBTLADA_Pos         (18UL)         /*!< EBTLADA (Bit 18)                                      */
-#define R_GPT4_GTEITLB_EBTLADA_Msk         (0x40000UL)    /*!< EBTLADA (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTEITLB_EBTLPR_Pos          (10UL)         /*!< EBTLPR (Bit 10)                                       */
-#define R_GPT4_GTEITLB_EBTLPR_Msk          (0x400UL)      /*!< EBTLPR (Bitfield-Mask: 0x01)                          */
-#define R_GPT4_GTEITLB_EBTLCB_Pos          (6UL)          /*!< EBTLCB (Bit 6)                                        */
-#define R_GPT4_GTEITLB_EBTLCB_Msk          (0x40UL)       /*!< EBTLCB (Bitfield-Mask: 0x01)                          */
-#define R_GPT4_GTEITLB_EBTLCA_Pos          (2UL)          /*!< EBTLCA (Bit 2)                                        */
-#define R_GPT4_GTEITLB_EBTLCA_Msk          (0x4UL)        /*!< EBTLCA (Bitfield-Mask: 0x01)                          */
+#define R_GPT4_GTEITLB_EBTLDVD_Pos         (28UL)         /*!< EBTLDVD (Bit 28)                                      */
+#define R_GPT4_GTEITLB_EBTLDVD_Msk         (0x70000000UL) /*!< EBTLDVD (Bitfield-Mask: 0x07)                         */
+#define R_GPT4_GTEITLB_EBTLDVU_Pos         (24UL)         /*!< EBTLDVU (Bit 24)                                      */
+#define R_GPT4_GTEITLB_EBTLDVU_Msk         (0x7000000UL)  /*!< EBTLDVU (Bitfield-Mask: 0x07)                         */
+#define R_GPT4_GTEITLB_EBTLADB_Pos         (20UL)         /*!< EBTLADB (Bit 20)                                      */
+#define R_GPT4_GTEITLB_EBTLADB_Msk         (0x700000UL)   /*!< EBTLADB (Bitfield-Mask: 0x07)                         */
+#define R_GPT4_GTEITLB_EBTLADA_Pos         (16UL)         /*!< EBTLADA (Bit 16)                                      */
+#define R_GPT4_GTEITLB_EBTLADA_Msk         (0x70000UL)    /*!< EBTLADA (Bitfield-Mask: 0x07)                         */
+#define R_GPT4_GTEITLB_EBTLPR_Pos          (8UL)          /*!< EBTLPR (Bit 8)                                        */
+#define R_GPT4_GTEITLB_EBTLPR_Msk          (0x700UL)      /*!< EBTLPR (Bitfield-Mask: 0x07)                          */
+#define R_GPT4_GTEITLB_EBTLCB_Pos          (4UL)          /*!< EBTLCB (Bit 4)                                        */
+#define R_GPT4_GTEITLB_EBTLCB_Msk          (0x70UL)       /*!< EBTLCB (Bitfield-Mask: 0x07)                          */
+#define R_GPT4_GTEITLB_EBTLCA_Pos          (0UL)          /*!< EBTLCA (Bit 0)                                        */
+#define R_GPT4_GTEITLB_EBTLCA_Msk          (0x7UL)        /*!< EBTLCA (Bitfield-Mask: 0x07)                          */
 /* ========================================================  GTICLF  ========================================================= */
 #define R_GPT4_GTICLF_ICLFSELD_Pos         (20UL)         /*!< ICLFSELD (Bit 20)                                     */
 #define R_GPT4_GTICLF_ICLFSELD_Msk         (0x3f00000UL)  /*!< ICLFSELD (Bitfield-Mask: 0x3f)                        */
@@ -1818,31 +1818,31 @@
 #define R_GPT4_GTPC_PCEN_Pos               (0UL)          /*!< PCEN (Bit 0)                                          */
 #define R_GPT4_GTPC_PCEN_Msk               (0x1UL)        /*!< PCEN (Bitfield-Mask: 0x01)                            */
 /* =======================================================  GTADCMSC  ======================================================== */
-#define R_GPT4_GTADCMSC_ADCMSCNT2_Pos      (31UL)         /*!< ADCMSCNT2 (Bit 31)                                    */
-#define R_GPT4_GTADCMSC_ADCMSCNT2_Msk      (0x80000000UL) /*!< ADCMSCNT2 (Bitfield-Mask: 0x01)                       */
-#define R_GPT4_GTADCMSC_ADCMSCNT2IV_Pos    (27UL)         /*!< ADCMSCNT2IV (Bit 27)                                  */
-#define R_GPT4_GTADCMSC_ADCMSCNT2IV_Msk    (0x8000000UL)  /*!< ADCMSCNT2IV (Bitfield-Mask: 0x01)                     */
-#define R_GPT4_GTADCMSC_ADCMST2_Pos        (23UL)         /*!< ADCMST2 (Bit 23)                                      */
-#define R_GPT4_GTADCMSC_ADCMST2_Msk        (0x800000UL)   /*!< ADCMST2 (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTADCMSC_ADCMSC2_Pos        (17UL)         /*!< ADCMSC2 (Bit 17)                                      */
-#define R_GPT4_GTADCMSC_ADCMSC2_Msk        (0x20000UL)    /*!< ADCMSC2 (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTADCMSC_ADCMSCNT1_Pos      (15UL)         /*!< ADCMSCNT1 (Bit 15)                                    */
-#define R_GPT4_GTADCMSC_ADCMSCNT1_Msk      (0x8000UL)     /*!< ADCMSCNT1 (Bitfield-Mask: 0x01)                       */
-#define R_GPT4_GTADCMSC_ADCMSCNT1IV_Pos    (11UL)         /*!< ADCMSCNT1IV (Bit 11)                                  */
-#define R_GPT4_GTADCMSC_ADCMSCNT1IV_Msk    (0x800UL)      /*!< ADCMSCNT1IV (Bitfield-Mask: 0x01)                     */
-#define R_GPT4_GTADCMSC_ADCMST1_Pos        (7UL)          /*!< ADCMST1 (Bit 7)                                       */
-#define R_GPT4_GTADCMSC_ADCMST1_Msk        (0x80UL)       /*!< ADCMST1 (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTADCMSC_ADCMSC1_Pos        (1UL)          /*!< ADCMSC1 (Bit 1)                                       */
-#define R_GPT4_GTADCMSC_ADCMSC1_Msk        (0x2UL)        /*!< ADCMSC1 (Bitfield-Mask: 0x01)                         */
+#define R_GPT4_GTADCMSC_ADCMSCNT2_Pos      (28UL)         /*!< ADCMSCNT2 (Bit 28)                                    */
+#define R_GPT4_GTADCMSC_ADCMSCNT2_Msk      (0xf0000000UL) /*!< ADCMSCNT2 (Bitfield-Mask: 0x0f)                       */
+#define R_GPT4_GTADCMSC_ADCMSCNT2IV_Pos    (24UL)         /*!< ADCMSCNT2IV (Bit 24)                                  */
+#define R_GPT4_GTADCMSC_ADCMSCNT2IV_Msk    (0xf000000UL)  /*!< ADCMSCNT2IV (Bitfield-Mask: 0x0f)                     */
+#define R_GPT4_GTADCMSC_ADCMST2_Pos        (20UL)         /*!< ADCMST2 (Bit 20)                                      */
+#define R_GPT4_GTADCMSC_ADCMST2_Msk        (0xf00000UL)   /*!< ADCMST2 (Bitfield-Mask: 0x0f)                         */
+#define R_GPT4_GTADCMSC_ADCMSC2_Pos        (16UL)         /*!< ADCMSC2 (Bit 16)                                      */
+#define R_GPT4_GTADCMSC_ADCMSC2_Msk        (0x30000UL)    /*!< ADCMSC2 (Bitfield-Mask: 0x03)                         */
+#define R_GPT4_GTADCMSC_ADCMSCNT1_Pos      (12UL)         /*!< ADCMSCNT1 (Bit 12)                                    */
+#define R_GPT4_GTADCMSC_ADCMSCNT1_Msk      (0xf000UL)     /*!< ADCMSCNT1 (Bitfield-Mask: 0x0f)                       */
+#define R_GPT4_GTADCMSC_ADCMSCNT1IV_Pos    (8UL)          /*!< ADCMSCNT1IV (Bit 8)                                   */
+#define R_GPT4_GTADCMSC_ADCMSCNT1IV_Msk    (0xf00UL)      /*!< ADCMSCNT1IV (Bitfield-Mask: 0x0f)                     */
+#define R_GPT4_GTADCMSC_ADCMST1_Pos        (4UL)          /*!< ADCMST1 (Bit 4)                                       */
+#define R_GPT4_GTADCMSC_ADCMST1_Msk        (0xf0UL)       /*!< ADCMST1 (Bitfield-Mask: 0x0f)                         */
+#define R_GPT4_GTADCMSC_ADCMSC1_Pos        (0UL)          /*!< ADCMSC1 (Bit 0)                                       */
+#define R_GPT4_GTADCMSC_ADCMSC1_Msk        (0x3UL)        /*!< ADCMSC1 (Bitfield-Mask: 0x03)                         */
 /* =======================================================  GTADCMSS  ======================================================== */
-#define R_GPT4_GTADCMSS_ADCMBSB_Pos        (22UL)         /*!< ADCMBSB (Bit 22)                                      */
-#define R_GPT4_GTADCMSS_ADCMBSB_Msk        (0x400000UL)   /*!< ADCMBSB (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTADCMSS_ADCMBSA_Pos        (18UL)         /*!< ADCMBSA (Bit 18)                                      */
-#define R_GPT4_GTADCMSS_ADCMBSA_Msk        (0x40000UL)    /*!< ADCMBSA (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTADCMSS_ADCMSBL_Pos        (6UL)          /*!< ADCMSBL (Bit 6)                                       */
-#define R_GPT4_GTADCMSS_ADCMSBL_Msk        (0x40UL)       /*!< ADCMSBL (Bitfield-Mask: 0x01)                         */
-#define R_GPT4_GTADCMSS_ADCMSAL_Pos        (2UL)          /*!< ADCMSAL (Bit 2)                                       */
-#define R_GPT4_GTADCMSS_ADCMSAL_Msk        (0x4UL)        /*!< ADCMSAL (Bitfield-Mask: 0x01)                         */
+#define R_GPT4_GTADCMSS_ADCMBSB_Pos        (20UL)         /*!< ADCMBSB (Bit 20)                                      */
+#define R_GPT4_GTADCMSS_ADCMBSB_Msk        (0x700000UL)   /*!< ADCMBSB (Bitfield-Mask: 0x07)                         */
+#define R_GPT4_GTADCMSS_ADCMBSA_Pos        (16UL)         /*!< ADCMBSA (Bit 16)                                      */
+#define R_GPT4_GTADCMSS_ADCMBSA_Msk        (0x70000UL)    /*!< ADCMBSA (Bitfield-Mask: 0x07)                         */
+#define R_GPT4_GTADCMSS_ADCMSBL_Pos        (4UL)          /*!< ADCMSBL (Bit 4)                                       */
+#define R_GPT4_GTADCMSS_ADCMSBL_Msk        (0x70UL)       /*!< ADCMSBL (Bitfield-Mask: 0x07)                         */
+#define R_GPT4_GTADCMSS_ADCMSAL_Pos        (0UL)          /*!< ADCMSAL (Bit 0)                                       */
+#define R_GPT4_GTADCMSS_ADCMSAL_Msk        (0x7UL)        /*!< ADCMSAL (Bitfield-Mask: 0x07)                         */
 /* ========================================================  GTSECSR  ======================================================== */
 #define R_GPT4_GTSECSR_SECSEL15_Pos        (15UL)         /*!< SECSEL15 (Bit 15)                                     */
 #define R_GPT4_GTSECSR_SECSEL15_Msk        (0x8000UL)     /*!< SECSEL15 (Bitfield-Mask: 0x01)                        */
@@ -1938,10 +1938,10 @@
 #define R_GPT4_GTSWOS_GTSWOS_Pos           (0UL)          /*!< GTSWOS (Bit 0)                                        */
 #define R_GPT4_GTSWOS_GTSWOS_Msk           (0xffffffffUL) /*!< GTSWOS (Bitfield-Mask: 0xffffffff)                    */
 /* ========================================================  GTBER2  ========================================================= */
-#define R_GPT4_GTBER2_OLTTB_Pos            (29UL)         /*!< OLTTB (Bit 29)                                        */
-#define R_GPT4_GTBER2_OLTTB_Msk            (0x20000000UL) /*!< OLTTB (Bitfield-Mask: 0x01)                           */
-#define R_GPT4_GTBER2_OLTTA_Pos            (27UL)         /*!< OLTTA (Bit 27)                                        */
-#define R_GPT4_GTBER2_OLTTA_Msk            (0x8000000UL)  /*!< OLTTA (Bitfield-Mask: 0x01)                           */
+#define R_GPT4_GTBER2_OLTTB_Pos            (28UL)         /*!< OLTTB (Bit 28)                                        */
+#define R_GPT4_GTBER2_OLTTB_Msk            (0x30000000UL) /*!< OLTTB (Bitfield-Mask: 0x03)                           */
+#define R_GPT4_GTBER2_OLTTA_Pos            (26UL)         /*!< OLTTA (Bit 26)                                        */
+#define R_GPT4_GTBER2_OLTTA_Msk            (0xc000000UL)  /*!< OLTTA (Bitfield-Mask: 0x03)                           */
 #define R_GPT4_GTBER2_CPBTD_Pos            (25UL)         /*!< CPBTD (Bit 25)                                        */
 #define R_GPT4_GTBER2_CPBTD_Msk            (0x2000000UL)  /*!< CPBTD (Bitfield-Mask: 0x01)                           */
 #define R_GPT4_GTBER2_CP3DB_Pos            (24UL)         /*!< CP3DB (Bit 24)                                        */
@@ -1962,10 +1962,10 @@
 #define R_GPT4_GTBER2_CMTADB_Msk           (0x4000UL)     /*!< CMTADB (Bitfield-Mask: 0x01)                          */
 #define R_GPT4_GTBER2_CMTADA_Pos           (13UL)         /*!< CMTADA (Bit 13)                                       */
 #define R_GPT4_GTBER2_CMTADA_Msk           (0x2000UL)     /*!< CMTADA (Bitfield-Mask: 0x01)                          */
-#define R_GPT4_GTBER2_CMTCB_Pos            (11UL)         /*!< CMTCB (Bit 11)                                        */
-#define R_GPT4_GTBER2_CMTCB_Msk            (0x800UL)      /*!< CMTCB (Bitfield-Mask: 0x01)                           */
-#define R_GPT4_GTBER2_CMTCA_Pos            (9UL)          /*!< CMTCA (Bit 9)                                         */
-#define R_GPT4_GTBER2_CMTCA_Msk            (0x200UL)      /*!< CMTCA (Bitfield-Mask: 0x01)                           */
+#define R_GPT4_GTBER2_CMTCB_Pos            (10UL)         /*!< CMTCB (Bit 10)                                        */
+#define R_GPT4_GTBER2_CMTCB_Msk            (0xc00UL)      /*!< CMTCB (Bitfield-Mask: 0x03)                           */
+#define R_GPT4_GTBER2_CMTCA_Pos            (8UL)          /*!< CMTCA (Bit 8)                                         */
+#define R_GPT4_GTBER2_CMTCA_Msk            (0x300UL)      /*!< CMTCA (Bitfield-Mask: 0x03)                           */
 #define R_GPT4_GTBER2_CCTDV_Pos            (5UL)          /*!< CCTDV (Bit 5)                                         */
 #define R_GPT4_GTBER2_CCTDV_Msk            (0x20UL)       /*!< CCTDV (Bitfield-Mask: 0x01)                           */
 #define R_GPT4_GTBER2_CCTADB_Pos           (4UL)          /*!< CCTADB (Bit 4)                                        */
@@ -1979,13 +1979,13 @@
 #define R_GPT4_GTBER2_CCTCA_Pos            (0UL)          /*!< CCTCA (Bit 0)                                         */
 #define R_GPT4_GTBER2_CCTCA_Msk            (0x1UL)        /*!< CCTCA (Bitfield-Mask: 0x01)                           */
 /* ========================================================  GTOLBR  ========================================================= */
-#define R_GPT4_GTOLBR_GTIOBB_Pos           (20UL)         /*!< GTIOBB (Bit 20)                                       */
-#define R_GPT4_GTOLBR_GTIOBB_Msk           (0x100000UL)   /*!< GTIOBB (Bitfield-Mask: 0x01)                          */
-#define R_GPT4_GTOLBR_GTIOAB_Pos           (4UL)          /*!< GTIOAB (Bit 4)                                        */
-#define R_GPT4_GTOLBR_GTIOAB_Msk           (0x10UL)       /*!< GTIOAB (Bitfield-Mask: 0x01)                          */
+#define R_GPT4_GTOLBR_GTIOBB_Pos           (16UL)         /*!< GTIOBB (Bit 16)                                       */
+#define R_GPT4_GTOLBR_GTIOBB_Msk           (0x1f0000UL)   /*!< GTIOBB (Bitfield-Mask: 0x1f)                          */
+#define R_GPT4_GTOLBR_GTIOAB_Pos           (0UL)          /*!< GTIOAB (Bit 0)                                        */
+#define R_GPT4_GTOLBR_GTIOAB_Msk           (0x1fUL)       /*!< GTIOAB (Bitfield-Mask: 0x1f)                          */
 /* ========================================================  GTICCR  ========================================================= */
-#define R_GPT4_GTICCR_ICBGRP_Pos           (31UL)         /*!< ICBGRP (Bit 31)                                       */
-#define R_GPT4_GTICCR_ICBGRP_Msk           (0x80000000UL) /*!< ICBGRP (Bitfield-Mask: 0x01)                          */
+#define R_GPT4_GTICCR_ICBGRP_Pos           (30UL)         /*!< ICBGRP (Bit 30)                                       */
+#define R_GPT4_GTICCR_ICBGRP_Msk           (0xc0000000UL) /*!< ICBGRP (Bitfield-Mask: 0x03)                          */
 #define R_GPT4_GTICCR_ICBCLK_Pos           (24UL)         /*!< ICBCLK (Bit 24)                                       */
 #define R_GPT4_GTICCR_ICBCLK_Msk           (0x1000000UL)  /*!< ICBCLK (Bitfield-Mask: 0x01)                          */
 #define R_GPT4_GTICCR_ICBFPU_Pos           (23UL)         /*!< ICBFPU (Bit 23)                                       */
@@ -2004,8 +2004,8 @@
 #define R_GPT4_GTICCR_ICBFB_Msk            (0x20000UL)    /*!< ICBFB (Bitfield-Mask: 0x01)                           */
 #define R_GPT4_GTICCR_ICBFA_Pos            (16UL)         /*!< ICBFA (Bit 16)                                        */
 #define R_GPT4_GTICCR_ICBFA_Msk            (0x10000UL)    /*!< ICBFA (Bitfield-Mask: 0x01)                           */
-#define R_GPT4_GTICCR_ICAGRP_Pos           (15UL)         /*!< ICAGRP (Bit 15)                                       */
-#define R_GPT4_GTICCR_ICAGRP_Msk           (0x8000UL)     /*!< ICAGRP (Bitfield-Mask: 0x01)                          */
+#define R_GPT4_GTICCR_ICAGRP_Pos           (14UL)         /*!< ICAGRP (Bit 14)                                       */
+#define R_GPT4_GTICCR_ICAGRP_Msk           (0xc000UL)     /*!< ICAGRP (Bitfield-Mask: 0x03)                          */
 #define R_GPT4_GTICCR_ICACLK_Pos           (8UL)          /*!< ICACLK (Bit 8)                                        */
 #define R_GPT4_GTICCR_ICACLK_Msk           (0x100UL)      /*!< ICACLK (Bitfield-Mask: 0x01)                          */
 #define R_GPT4_GTICCR_ICAFPU_Pos           (7UL)          /*!< ICAFPU (Bit 7)                                        */
@@ -2024,9 +2024,9 @@
 #define R_GPT4_GTICCR_ICAFB_Msk            (0x2UL)        /*!< ICAFB (Bitfield-Mask: 0x01)                           */
 #define R_GPT4_GTICCR_ICAFA_Pos            (0UL)          /*!< ICAFA (Bit 0)                                         */
 #define R_GPT4_GTICCR_ICAFA_Msk            (0x1UL)        /*!< ICAFA (Bitfield-Mask: 0x01)                           */
-/* ========================================================  GTSYSGC  ======================================================== */
-#define R_GPT4_GTSYSGC_SYST_Pos            (16UL)         /*!< SYST (Bit 16)                                         */
-#define R_GPT4_GTSYSGC_SYST_Msk            (0x10000UL)    /*!< SYST (Bitfield-Mask: 0x01)                            */
+/* ========================================================  GTSYNCFCR  ====================================================== */
+#define R_GPT4_GTSYNCFCR_SYST_Pos          (16UL)         /*!< SYST (Bit 16)                                         */
+#define R_GPT4_GTSYNCFCR_SYST_Msk          (0x10000UL)    /*!< SYST (Bitfield-Mask: 0x01)                            */
 
 /* =========================================================================================================================== */
 /* ================                                          R_GPT15                                          ================ */
@@ -2249,8 +2249,8 @@
 /* =========================================================  GTCSR  ========================================================= */
 #define R_GPT15_GTCSR_CCLR_Pos          (31UL)         /*!< CCLR (Bit 31)                                         */
 #define R_GPT15_GTCSR_CCLR_Msk          (0x80000000UL) /*!< CCLR (Bitfield-Mask: 0x01)                            */
-#define R_GPT15_GTCSR_CSCMSC_Pos        (26UL)         /*!< CSCMSC (Bit 26)                                       */
-#define R_GPT15_GTCSR_CSCMSC_Msk        (0x4000000UL)  /*!< CSCMSC (Bitfield-Mask: 0x01)                          */
+#define R_GPT15_GTCSR_CSCMSC_Pos        (24UL)         /*!< CSCMSC (Bit 24)                                       */
+#define R_GPT15_GTCSR_CSCMSC_Msk        (0x7000000UL)  /*!< CSCMSC (Bitfield-Mask: 0x07)                          */
 #define R_GPT15_GTCSR_CSELCH_Pos        (23UL)         /*!< CSELCH (Bit 23)                                       */
 #define R_GPT15_GTCSR_CSELCH_Msk        (0x800000UL)   /*!< CSELCH (Bitfield-Mask: 0x01)                          */
 #define R_GPT15_GTCSR_CSELCG_Pos        (22UL)         /*!< CSELCG (Bit 22)                                       */
@@ -2753,57 +2753,57 @@
 #define R_GPT15_GTADSMR_ADSMS0_Pos      (0UL)          /*!< ADSMS0 (Bit 0)                                        */
 #define R_GPT15_GTADSMR_ADSMS0_Msk      (0x3UL)        /*!< ADSMS0 (Bitfield-Mask: 0x03)                          */
 /* ========================================================  GTEITC  ========================================================= */
-#define R_GPT15_GTEITC_EITCNT2_Pos      (31UL)         /*!< EITCNT2 (Bit 31)                                      */
-#define R_GPT15_GTEITC_EITCNT2_Msk      (0x80000000UL) /*!< EITCNT2 (Bitfield-Mask: 0x01)                         */
-#define R_GPT15_GTEITC_EITCNT2IV_Pos    (27UL)         /*!< EITCNT2IV (Bit 27)                                    */
-#define R_GPT15_GTEITC_EITCNT2IV_Msk    (0x8000000UL)  /*!< EITCNT2IV (Bitfield-Mask: 0x01)                       */
-#define R_GPT15_GTEITC_EIVTT2_Pos       (23UL)         /*!< EIVTT2 (Bit 23)                                       */
-#define R_GPT15_GTEITC_EIVTT2_Msk       (0x800000UL)   /*!< EIVTT2 (Bitfield-Mask: 0x01)                          */
-#define R_GPT15_GTEITC_EIVTC2_Pos       (17UL)         /*!< EIVTC2 (Bit 17)                                       */
-#define R_GPT15_GTEITC_EIVTC2_Msk       (0x20000UL)    /*!< EIVTC2 (Bitfield-Mask: 0x01)                          */
-#define R_GPT15_GTEITC_EITCNT1_Pos      (15UL)         /*!< EITCNT1 (Bit 15)                                      */
-#define R_GPT15_GTEITC_EITCNT1_Msk      (0x8000UL)     /*!< EITCNT1 (Bitfield-Mask: 0x01)                         */
-#define R_GPT15_GTEITC_EIVTT1_Pos       (7UL)          /*!< EIVTT1 (Bit 7)                                        */
-#define R_GPT15_GTEITC_EIVTT1_Msk       (0x80UL)       /*!< EIVTT1 (Bitfield-Mask: 0x01)                          */
-#define R_GPT15_GTEITC_EIVTC1_Pos       (1UL)          /*!< EIVTC1 (Bit 1)                                        */
-#define R_GPT15_GTEITC_EIVTC1_Msk       (0x2UL)        /*!< EIVTC1 (Bitfield-Mask: 0x01)                          */
+#define R_GPT15_GTEITC_EITCNT2_Pos      (28UL)         /*!< EITCNT2 (Bit 28)                                      */
+#define R_GPT15_GTEITC_EITCNT2_Msk      (0xf0000000UL) /*!< EITCNT2 (Bitfield-Mask: 0x0f)                         */
+#define R_GPT15_GTEITC_EITCNT2IV_Pos    (24UL)         /*!< EITCNT2IV (Bit 24)                                    */
+#define R_GPT15_GTEITC_EITCNT2IV_Msk    (0xf000000UL)  /*!< EITCNT2IV (Bitfield-Mask: 0x0f)                       */
+#define R_GPT15_GTEITC_EIVTT2_Pos       (20UL)         /*!< EIVTT2 (Bit 20)                                       */
+#define R_GPT15_GTEITC_EIVTT2_Msk       (0xf00000UL)   /*!< EIVTT2 (Bitfield-Mask: 0x0f)                          */
+#define R_GPT15_GTEITC_EIVTC2_Pos       (16UL)         /*!< EIVTC2 (Bit 16)                                       */
+#define R_GPT15_GTEITC_EIVTC2_Msk       (0x30000UL)    /*!< EIVTC2 (Bitfield-Mask: 0x03)                          */
+#define R_GPT15_GTEITC_EITCNT1_Pos      (12UL)         /*!< EITCNT1 (Bit 12)                                      */
+#define R_GPT15_GTEITC_EITCNT1_Msk      (0xf000UL)     /*!< EITCNT1 (Bitfield-Mask: 0x0f)                         */
+#define R_GPT15_GTEITC_EIVTT1_Pos       (4UL)          /*!< EIVTT1 (Bit 4)                                        */
+#define R_GPT15_GTEITC_EIVTT1_Msk       (0xf0UL)       /*!< EIVTT1 (Bitfield-Mask: 0x0f)                          */
+#define R_GPT15_GTEITC_EIVTC1_Pos       (0UL)          /*!< EIVTC1 (Bit 0)                                        */
+#define R_GPT15_GTEITC_EIVTC1_Msk       (0x3UL)        /*!< EIVTC1 (Bitfield-Mask: 0x03)                          */
 /* =======================================================  GTEITLI1  ======================================================== */
-#define R_GPT15_GTEITLI1_EITLU_Pos      (30UL)         /*!< EITLU (Bit 30)                                        */
-#define R_GPT15_GTEITLI1_EITLU_Msk      (0x40000000UL) /*!< EITLU (Bitfield-Mask: 0x01)                           */
-#define R_GPT15_GTEITLI1_EITLV_Pos      (26UL)         /*!< EITLV (Bit 26)                                        */
-#define R_GPT15_GTEITLI1_EITLV_Msk      (0x4000000UL)  /*!< EITLV (Bitfield-Mask: 0x01)                           */
-#define R_GPT15_GTEITLI1_EITLF_Pos      (22UL)         /*!< EITLF (Bit 22)                                        */
-#define R_GPT15_GTEITLI1_EITLF_Msk      (0x400000UL)   /*!< EITLF (Bitfield-Mask: 0x01)                           */
-#define R_GPT15_GTEITLI1_EITLE_Pos      (18UL)         /*!< EITLE (Bit 18)                                        */
-#define R_GPT15_GTEITLI1_EITLE_Msk      (0x40000UL)    /*!< EITLE (Bitfield-Mask: 0x01)                           */
-#define R_GPT15_GTEITLI1_EITLD_Pos      (14UL)         /*!< EITLD (Bit 14)                                        */
-#define R_GPT15_GTEITLI1_EITLD_Msk      (0x4000UL)     /*!< EITLD (Bitfield-Mask: 0x01)                           */
-#define R_GPT15_GTEITLI1_EITLC_Pos      (10UL)         /*!< EITLC (Bit 10)                                        */
-#define R_GPT15_GTEITLI1_EITLC_Msk      (0x400UL)      /*!< EITLC (Bitfield-Mask: 0x01)                           */
-#define R_GPT15_GTEITLI1_EITLB_Pos      (6UL)          /*!< EITLB (Bit 6)                                         */
-#define R_GPT15_GTEITLI1_EITLB_Msk      (0x40UL)       /*!< EITLB (Bitfield-Mask: 0x01)                           */
-#define R_GPT15_GTEITLI1_EITLA_Pos      (2UL)          /*!< EITLA (Bit 2)                                         */
-#define R_GPT15_GTEITLI1_EITLA_Msk      (0x4UL)        /*!< EITLA (Bitfield-Mask: 0x01)                           */
+#define R_GPT15_GTEITLI1_EITLU_Pos      (28UL)         /*!< EITLU (Bit 28)                                        */
+#define R_GPT15_GTEITLI1_EITLU_Msk      (0x70000000UL) /*!< EITLU (Bitfield-Mask: 0x07)                           */
+#define R_GPT15_GTEITLI1_EITLV_Pos      (24UL)         /*!< EITLV (Bit 24)                                        */
+#define R_GPT15_GTEITLI1_EITLV_Msk      (0x7000000UL)  /*!< EITLV (Bitfield-Mask: 0x07)                           */
+#define R_GPT15_GTEITLI1_EITLF_Pos      (20UL)         /*!< EITLF (Bit 20)                                        */
+#define R_GPT15_GTEITLI1_EITLF_Msk      (0x700000UL)   /*!< EITLF (Bitfield-Mask: 0x07)                           */
+#define R_GPT15_GTEITLI1_EITLE_Pos      (16UL)         /*!< EITLE (Bit 16)                                        */
+#define R_GPT15_GTEITLI1_EITLE_Msk      (0x70000UL)    /*!< EITLE (Bitfield-Mask: 0x07)                           */
+#define R_GPT15_GTEITLI1_EITLD_Pos      (12UL)         /*!< EITLD (Bit 12)                                        */
+#define R_GPT15_GTEITLI1_EITLD_Msk      (0x7000UL)     /*!< EITLD (Bitfield-Mask: 0x07)                           */
+#define R_GPT15_GTEITLI1_EITLC_Pos      (8UL)          /*!< EITLC (Bit 8)                                         */
+#define R_GPT15_GTEITLI1_EITLC_Msk      (0x700UL)      /*!< EITLC (Bitfield-Mask: 0x07)                           */
+#define R_GPT15_GTEITLI1_EITLB_Pos      (4UL)          /*!< EITLB (Bit 4)                                         */
+#define R_GPT15_GTEITLI1_EITLB_Msk      (0x70UL)       /*!< EITLB (Bitfield-Mask: 0x07)                           */
+#define R_GPT15_GTEITLI1_EITLA_Pos      (0UL)          /*!< EITLA (Bit 0)                                         */
+#define R_GPT15_GTEITLI1_EITLA_Msk      (0x7UL)        /*!< EITLA (Bitfield-Mask: 0x07)                           */
 /* =======================================================  GTEITLI2  ======================================================== */
-#define R_GPT15_GTEITLI2_EADTBL_Pos     (6UL)          /*!< EADTBL (Bit 6)                                        */
-#define R_GPT15_GTEITLI2_EADTBL_Msk     (0x40UL)       /*!< EADTBL (Bitfield-Mask: 0x01)                          */
-#define R_GPT15_GTEITLI2_EADTAL_Pos     (2UL)          /*!< EADTAL (Bit 2)                                        */
-#define R_GPT15_GTEITLI2_EADTAL_Msk     (0x4UL)        /*!< EADTAL (Bitfield-Mask: 0x01)                          */
+#define R_GPT15_GTEITLI2_EADTBL_Pos     (4UL)          /*!< EADTBL (Bit 4)                                        */
+#define R_GPT15_GTEITLI2_EADTBL_Msk     (0x70UL)       /*!< EADTBL (Bitfield-Mask: 0x07)                          */
+#define R_GPT15_GTEITLI2_EADTAL_Pos     (0UL)          /*!< EADTAL (Bit 0)                                        */
+#define R_GPT15_GTEITLI2_EADTAL_Msk     (0x7UL)        /*!< EADTAL (Bitfield-Mask: 0x07)                          */
 /* ========================================================  GTEITLB  ======================================================== */
-#define R_GPT15_GTEITLB_EBTLDVD_Pos     (30UL)         /*!< EBTLDVD (Bit 30)                                      */
-#define R_GPT15_GTEITLB_EBTLDVD_Msk     (0x40000000UL) /*!< EBTLDVD (Bitfield-Mask: 0x01)                         */
-#define R_GPT15_GTEITLB_EBTLDVU_Pos     (26UL)         /*!< EBTLDVU (Bit 26)                                      */
-#define R_GPT15_GTEITLB_EBTLDVU_Msk     (0x4000000UL)  /*!< EBTLDVU (Bitfield-Mask: 0x01)                         */
-#define R_GPT15_GTEITLB_EBTLADB_Pos     (22UL)         /*!< EBTLADB (Bit 22)                                      */
-#define R_GPT15_GTEITLB_EBTLADB_Msk     (0x400000UL)   /*!< EBTLADB (Bitfield-Mask: 0x01)                         */
-#define R_GPT15_GTEITLB_EBTLADA_Pos     (18UL)         /*!< EBTLADA (Bit 18)                                      */
-#define R_GPT15_GTEITLB_EBTLADA_Msk     (0x40000UL)    /*!< EBTLADA (Bitfield-Mask: 0x01)                         */
-#define R_GPT15_GTEITLB_EBTLPR_Pos      (10UL)         /*!< EBTLPR (Bit 10)                                       */
-#define R_GPT15_GTEITLB_EBTLPR_Msk      (0x400UL)      /*!< EBTLPR (Bitfield-Mask: 0x01)                          */
-#define R_GPT15_GTEITLB_EBTLCB_Pos      (6UL)          /*!< EBTLCB (Bit 6)                                        */
-#define R_GPT15_GTEITLB_EBTLCB_Msk      (0x40UL)       /*!< EBTLCB (Bitfield-Mask: 0x01)                          */
-#define R_GPT15_GTEITLB_EBTLCA_Pos      (2UL)          /*!< EBTLCA (Bit 2)                                        */
-#define R_GPT15_GTEITLB_EBTLCA_Msk      (0x4UL)        /*!< EBTLCA (Bitfield-Mask: 0x01)                          */
+#define R_GPT15_GTEITLB_EBTLDVD_Pos     (28UL)         /*!< EBTLDVD (Bit 28)                                      */
+#define R_GPT15_GTEITLB_EBTLDVD_Msk     (0x70000000UL) /*!< EBTLDVD (Bitfield-Mask: 0x07)                         */
+#define R_GPT15_GTEITLB_EBTLDVU_Pos     (24UL)         /*!< EBTLDVU (Bit 24)                                      */
+#define R_GPT15_GTEITLB_EBTLDVU_Msk     (0x7000000UL)  /*!< EBTLDVU (Bitfield-Mask: 0x07)                         */
+#define R_GPT15_GTEITLB_EBTLADB_Pos     (20UL)         /*!< EBTLADB (Bit 20)                                      */
+#define R_GPT15_GTEITLB_EBTLADB_Msk     (0x700000UL)   /*!< EBTLADB (Bitfield-Mask: 0x07)                         */
+#define R_GPT15_GTEITLB_EBTLADA_Pos     (16UL)         /*!< EBTLADA (Bit 16)                                      */
+#define R_GPT15_GTEITLB_EBTLADA_Msk     (0x70000UL)    /*!< EBTLADA (Bitfield-Mask: 0x07)                         */
+#define R_GPT15_GTEITLB_EBTLPR_Pos      (8UL)          /*!< EBTLPR (Bit 8)                                        */
+#define R_GPT15_GTEITLB_EBTLPR_Msk      (0x700UL)      /*!< EBTLPR (Bitfield-Mask: 0x07)                          */
+#define R_GPT15_GTEITLB_EBTLCB_Pos      (4UL)          /*!< EBTLCB (Bit 4)                                        */
+#define R_GPT15_GTEITLB_EBTLCB_Msk      (0x70UL)       /*!< EBTLCB (Bitfield-Mask: 0x07)                          */
+#define R_GPT15_GTEITLB_EBTLCA_Pos      (0UL)          /*!< EBTLCA (Bit 0)                                        */
+#define R_GPT15_GTEITLB_EBTLCA_Msk      (0x7UL)        /*!< EBTLCA (Bitfield-Mask: 0x07)                          */
 /* ========================================================  GTICLF  ========================================================= */
 #define R_GPT15_GTICLF_ICLFSELD_Pos     (20UL)         /*!< ICLFSELD (Bit 20)                                     */
 #define R_GPT15_GTICLF_ICLFSELD_Msk     (0x3f00000UL)  /*!< ICLFSELD (Bitfield-Mask: 0x3f)                        */
@@ -2931,10 +2931,10 @@
 #define R_GPT15_GTBER2_CMTADB_Msk       (0x4000UL)     /*!< CMTADB (Bitfield-Mask: 0x01)                          */
 #define R_GPT15_GTBER2_CMTADA_Pos       (13UL)         /*!< CMTADA (Bit 13)                                       */
 #define R_GPT15_GTBER2_CMTADA_Msk       (0x2000UL)     /*!< CMTADA (Bitfield-Mask: 0x01)                          */
-#define R_GPT15_GTBER2_CMTCB_Pos        (11UL)         /*!< CMTCB (Bit 11)                                        */
-#define R_GPT15_GTBER2_CMTCB_Msk        (0x800UL)      /*!< CMTCB (Bitfield-Mask: 0x01)                           */
-#define R_GPT15_GTBER2_CMTCA_Pos        (9UL)          /*!< CMTCA (Bit 9)                                         */
-#define R_GPT15_GTBER2_CMTCA_Msk        (0x200UL)      /*!< CMTCA (Bitfield-Mask: 0x01)                           */
+#define R_GPT15_GTBER2_CMTCB_Pos        (10UL)         /*!< CMTCB (Bit 10)                                        */
+#define R_GPT15_GTBER2_CMTCB_Msk        (0xc00UL)      /*!< CMTCB (Bitfield-Mask: 0x03)                           */
+#define R_GPT15_GTBER2_CMTCA_Pos        (8UL)          /*!< CMTCA (Bit 8)                                         */
+#define R_GPT15_GTBER2_CMTCA_Msk        (0x300UL)      /*!< CMTCA (Bitfield-Mask: 0x03)                           */
 #define R_GPT15_GTBER2_CCTDV_Pos        (5UL)          /*!< CCTDV (Bit 5)                                         */
 #define R_GPT15_GTBER2_CCTDV_Msk        (0x20UL)       /*!< CCTDV (Bitfield-Mask: 0x01)                           */
 #define R_GPT15_GTBER2_CCTADB_Pos       (4UL)          /*!< CCTADB (Bit 4)                                        */
@@ -2948,8 +2948,8 @@
 #define R_GPT15_GTBER2_CCTCA_Pos        (0UL)          /*!< CCTCA (Bit 0)                                         */
 #define R_GPT15_GTBER2_CCTCA_Msk        (0x1UL)        /*!< CCTCA (Bitfield-Mask: 0x01)                           */
 /* ========================================================  GTICCR  ========================================================= */
-#define R_GPT15_GTICCR_ICBGRP_Pos       (31UL)         /*!< ICBGRP (Bit 31)                                       */
-#define R_GPT15_GTICCR_ICBGRP_Msk       (0x80000000UL) /*!< ICBGRP (Bitfield-Mask: 0x01)                          */
+#define R_GPT15_GTICCR_ICBGRP_Pos       (30UL)         /*!< ICBGRP (Bit 30)                                       */
+#define R_GPT15_GTICCR_ICBGRP_Msk       (0xc0000000UL) /*!< ICBGRP (Bitfield-Mask: 0x03)                          */
 #define R_GPT15_GTICCR_ICBCLK_Pos       (24UL)         /*!< ICBCLK (Bit 24)                                       */
 #define R_GPT15_GTICCR_ICBCLK_Msk       (0x1000000UL)  /*!< ICBCLK (Bitfield-Mask: 0x01)                          */
 #define R_GPT15_GTICCR_ICBFPU_Pos       (23UL)         /*!< ICBFPU (Bit 23)                                       */
@@ -2968,8 +2968,8 @@
 #define R_GPT15_GTICCR_ICBFB_Msk        (0x20000UL)    /*!< ICBFB (Bitfield-Mask: 0x01)                           */
 #define R_GPT15_GTICCR_ICBFA_Pos        (16UL)         /*!< ICBFA (Bit 16)                                        */
 #define R_GPT15_GTICCR_ICBFA_Msk        (0x10000UL)    /*!< ICBFA (Bitfield-Mask: 0x01)                           */
-#define R_GPT15_GTICCR_ICAGRP_Pos       (15UL)         /*!< ICAGRP (Bit 15)                                       */
-#define R_GPT15_GTICCR_ICAGRP_Msk       (0x8000UL)     /*!< ICAGRP (Bitfield-Mask: 0x01)                          */
+#define R_GPT15_GTICCR_ICAGRP_Pos       (14UL)         /*!< ICAGRP (Bit 14)                                       */
+#define R_GPT15_GTICCR_ICAGRP_Msk       (0xc000UL)     /*!< ICAGRP (Bitfield-Mask: 0x03)                          */
 #define R_GPT15_GTICCR_ICACLK_Pos       (8UL)          /*!< ICACLK (Bit 8)                                        */
 #define R_GPT15_GTICCR_ICACLK_Msk       (0x100UL)      /*!< ICACLK (Bitfield-Mask: 0x01)                          */
 #define R_GPT15_GTICCR_ICAFPU_Pos       (7UL)          /*!< ICAFPU (Bit 7)                                        */
@@ -2988,9 +2988,9 @@
 #define R_GPT15_GTICCR_ICAFB_Msk        (0x2UL)        /*!< ICAFB (Bitfield-Mask: 0x01)                           */
 #define R_GPT15_GTICCR_ICAFA_Pos        (0UL)          /*!< ICAFA (Bit 0)                                         */
 #define R_GPT15_GTICCR_ICAFA_Msk        (0x1UL)        /*!< ICAFA (Bitfield-Mask: 0x01)                           */
-/* ========================================================  GTSYSGC  ======================================================== */
-#define R_GPT15_GTSYSGC_SYSG_Pos        (1UL)          /*!< SYSG (Bit 1)                                          */
-#define R_GPT15_GTSYSGC_SYSG_Msk        (0x2UL)        /*!< SYSG (Bitfield-Mask: 0x01)                            */
+/* ========================================================  GTSYNCSCR  ====================================================== */
+#define R_GPT15_GTSYNCSCR_SYSG_Pos      (0UL)          /*!< SYSG  (Bit 0)                                         */
+#define R_GPT15_GTSYNCSCR_SYSG_Msk      (0x3UL)        /*!< SYSG  (Bitfield-Mask: 0x03)                           */
 
 /* =========================================================================================================================== */
 /* ================                                          HRREAR                                           ================ */
