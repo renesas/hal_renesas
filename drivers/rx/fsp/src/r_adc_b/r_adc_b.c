@@ -45,7 +45,6 @@
 #define R_ADC_B_ADGSPCR_GRP_PRI_CTRL_123_Msk      (0x7)
 #define R_ADC_B_ADGSPCR_GRP_PRI_CTRL_4_Msk        (0x8)
 
-#define ADC_B_PCR_PRKEY                           (0xA500U)
 #define ADC_B_DATA_BITS_LENGTH                    (32U)
 #define ADC_B_PRV_BIT_MASK_VALUE                  (0x80000000U)
 
@@ -167,6 +166,7 @@ fsp_err_t R_ADC_B_Open (adc_ctrl_t * p_ctrl, adc_cfg_t const * const p_cfg)
 {
     adc_b_instance_ctrl_t * p_instance_ctrl = (adc_b_instance_ctrl_t *) p_ctrl;
     uint32_t                adgspcr_value   = 0;
+    uint32_t                admdr_value     = 0;
 #if ADC_B_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ASSERT(NULL != p_cfg);
@@ -185,48 +185,49 @@ fsp_err_t R_ADC_B_Open (adc_ctrl_t * p_ctrl, adc_cfg_t const * const p_cfg)
     /* Module Stop release: ADC */
     R_BSP_MODULE_START(FSP_IP_ADC, 0);
 
-    if (ADC_B_CLOCK_SOURCE_GPT == p_extend->clock_control_bits.source_selection)
+    if (ADC_B_CLOCK_SOURCE_GPT == p_extend->clock_control_u.clock_control_bits.source_selection)
     {
         R_BSP_MODULE_START(FSP_IP_GPT, 0);
     }
 
     /*  Set synchronous operation period and Enable/Disable for ADC 0/1 */
-    R_ADC_B->ADSYCR = p_extend->sync_operation_control;
+    R_ADC_B->ADSYCR = p_extend->sync_operation_control_u.sync_operation_control;
 
     /* Configure the ADC clock. See Table "Initial setup procedure"  in the "Procedure for Setting up and Changing" section of the relevant hardware manual */
     R_ADC_B->ADCLKENR = 0x00;
     FSP_HARDWARE_REGISTER_WAIT(R_ADC_B->ADCLKSR, 0x00);
-    R_ADC_B->ADCLKCR  = p_extend->clock_control_data;
+    R_ADC_B->ADCLKCR  = p_extend->clock_control_u.clock_control_data;
     R_ADC_B->ADCLKENR = 0x01;
     FSP_HARDWARE_REGISTER_WAIT(R_ADC_B->ADCLKSR, 0x01);
 
-    /* Set ADC unit scan modes
-     *  - ADC Converter Background Continuous Mode only valid for Hybrid mode */
-#if ADC_B_CFG_PARAM_CHECKING_ENABLE
-    FSP_ASSERT(p_extend->adc_b_converter_mode[0].mode != ADC_B_CONVERTER_MODE_BACKGROUND_SCAN ||
-               p_extend->adc_b_converter_mode[0].method == ADC_B_CONVERSION_METHOD_HYBRID);
-    FSP_ASSERT(p_extend->adc_b_converter_mode[1].mode != ADC_B_CONVERTER_MODE_BACKGROUND_SCAN ||
-               p_extend->adc_b_converter_mode[1].method == ADC_B_CONVERSION_METHOD_HYBRID);
-    FSP_ASSERT(p_extend->adc_b_converter_mode[2].mode != ADC_B_CONVERTER_MODE_BACKGROUND_SCAN ||
-               p_extend->adc_b_converter_mode[2].method == ADC_B_CONVERSION_METHOD_HYBRID);
-#endif
-    R_ADC_B->ADMDR = p_extend->adc_b_mode;
-
-    /* Configure Group Scan Priority for units 0,1 and 2 */
-    for (uint8_t i = 0; i < 3; i++)
+    /* Set ADC unit scan modes and configure Group Scan Priority for units 0, 1 and 2. */
+    for (uint8_t i = 0U; i < BSP_FEATURE_ADC_B_UNIT_COUNT; i++)
     {
+#if ADC_B_CFG_PARAM_CHECKING_ENABLE
+
+        /* ADC Converter Background Continuous Mode is only valid for Hybrid mode. */
+        FSP_ASSERT(p_extend->adc_b_converter_mode[i].mode != ADC_B_CONVERTER_MODE_BACKGROUND_SCAN ||
+                   p_extend->adc_b_converter_mode[i].method == ADC_B_CONVERSION_METHOD_HYBRID);
+#endif
+        admdr_value |= ((((uint32_t) p_extend->adc_b_converter_mode[i].method << 2U) |
+                         (uint32_t) p_extend->adc_b_converter_mode[i].mode) & R_ADC_B0_ADMDR_ADMD0_Msk) <<
+                       (i * R_ADC_B0_ADMDR_ADMD1_Pos);
+
         if (ADC_B_CONVERSION_METHOD_SAR == p_extend->adc_b_converter_mode[i].method)
         {
             /* PGS, RSCN and LGRRS bit are set 1 in SAR mode. */
-            adgspcr_value |= (uint32_t) R_ADC_B_ADGSPCR_GRP_PRI_CTRL_123_Msk << (i * 8);
+            adgspcr_value |= (uint32_t) R_ADC_B_ADGSPCR_GRP_PRI_CTRL_123_Msk <<
+                             (i * R_ADC_B0_ADGSPCR_PGS1_Pos);
             if (ADC_B_CONVERTER_MODE_CONTINUOUS_SCAN == p_extend->adc_b_converter_mode[i].mode)
             {
                 /* GRP bit is set 1 in Continuous Scan mode. */
-                adgspcr_value |= (uint32_t) R_ADC_B_ADGSPCR_GRP_PRI_CTRL_4_Msk << (i * 8);
+                adgspcr_value |= (uint32_t) R_ADC_B_ADGSPCR_GRP_PRI_CTRL_4_Msk <<
+                                 (i * R_ADC_B0_ADGSPCR_PGS1_Pos);
             }
         }
     }
 
+    R_ADC_B->ADMDR   = admdr_value;
     R_ADC_B->ADGSPCR = adgspcr_value;
 
     /* Configure A/D conversion state */
@@ -282,14 +283,20 @@ fsp_err_t R_ADC_B_Open (adc_ctrl_t * p_ctrl, adc_cfg_t const * const p_cfg)
     R_ADC_B->ADCCMPCR7 = 0;
 
     /* Set FIFO configuration */
-    R_ADC_B->ADFIFOCR     = p_extend->fifo_enable_mask;
-    R_ADC_B->ADFIFOINTCR  = p_extend->fifo_interrupt_enable_mask;
-    R_ADC_B->ADFIFOINTLR0 = p_extend->fifo_interrupt_level0;
-    R_ADC_B->ADFIFOINTLR1 = p_extend->fifo_interrupt_level1;
-    R_ADC_B->ADFIFOINTLR2 = p_extend->fifo_interrupt_level2;
-    R_ADC_B->ADFIFOINTLR3 = p_extend->fifo_interrupt_level3;
-    R_ADC_B->ADFIFOINTLR4 = p_extend->fifo_interrupt_level4;
-    R_ADC_B->ADFIFOINTLR5 = p_extend->fifo_interrupt_level5;
+    R_ADC_B->ADFIFOCR    = p_extend->fifo_enable_mask_u.fifo_enable_mask;
+    R_ADC_B->ADFIFOINTCR = p_extend->fifo_interrupt_enable_mask;
+    for (uint8_t i = 0U; i < BSP_FEATURE_ADC_B_GROUP_PAIR_REGISTER_COUNT; i++)
+    {
+        uint32_t group                = (uint32_t) i * 2U;
+        uint32_t fifo_interrupt_level =
+            ((uint32_t) p_extend->fifo_interrupt_level[group] & R_ADC_B0_ADFIFOINTLR0_FIFOILV0_Msk) <<
+                R_ADC_B0_ADFIFOINTLR0_FIFOILV0_Pos;
+        fifo_interrupt_level |=
+            ((uint32_t) p_extend->fifo_interrupt_level[group + 1U] & R_ADC_B0_ADFIFOINTLR0_FIFOILV0_Msk) <<
+                R_ADC_B0_ADFIFOINTLR0_FIFOILV1_Pos;
+
+        *ADC_B_REG_ADDRESS(R_ADC_B->ADFIFOINTLR0, i, sizeof(R_ADC_B->ADFIFOINTLR0)) = fifo_interrupt_level;
+    }
 
     /* Clear FIFO registers */
     R_ADC_B->ADFIFODCR = R_ADC_B0_ADFIFODCR_FIFODCn_Msk;
@@ -350,26 +357,55 @@ fsp_err_t R_ADC_B_ScanCfg (adc_ctrl_t * p_ctrl, void const * const p_scan_cfg)
     }
 
     /* Assign scan groups to selected converters */
-    R_ADC_B->ADSGCR0 = p_extend->converter_selection_0;
-    R_ADC_B->ADSGCR1 = p_extend->converter_selection_1;
-    R_ADC_B->ADSGCR2 = p_extend->converter_selection_2;
+    for (uint8_t i = 0U; i < BSP_FEATURE_ADC_B_START_GROUP_CONTROL_REGISTER_COUNT; i++)
+    {
+        uint32_t group               = (uint32_t) i * 4U;
+        uint32_t converter_selection =
+            ((uint32_t) p_extend->converter_selection[group] & R_ADC_B0_ADSGCR0_SGADS0_Msk) <<
+                R_ADC_B0_ADSGCR0_SGADS0_Pos;
+        converter_selection |=
+            ((uint32_t) p_extend->converter_selection[group + 1U] & R_ADC_B0_ADSGCR0_SGADS0_Msk) <<
+                R_ADC_B0_ADSGCR0_SGADS1_Pos;
+        converter_selection |=
+            ((uint32_t) p_extend->converter_selection[group + 2U] & R_ADC_B0_ADSGCR0_SGADS0_Msk) <<
+                R_ADC_B0_ADSGCR0_SGADS2_Pos;
+        converter_selection |=
+            ((uint32_t) p_extend->converter_selection[group + 3U] & R_ADC_B0_ADSGCR0_SGADS0_Msk) <<
+                R_ADC_B0_ADSGCR0_SGADS3_Pos;
+
+        *ADC_B_REG_ADDRESS(R_ADC_B->ADSGCR0, i, sizeof(R_ADC_B->ADSGCR0)) = converter_selection;
+    }
 
     /* Configure start trigger delay */
-    R_ADC_B->ADTRGDLR0 = p_extend->start_trigger_delay_0;
-    R_ADC_B->ADTRGDLR1 = p_extend->start_trigger_delay_1;
-    R_ADC_B->ADTRGDLR2 = p_extend->start_trigger_delay_2;
-    R_ADC_B->ADTRGDLR3 = p_extend->start_trigger_delay_3;
-    R_ADC_B->ADTRGDLR4 = p_extend->start_trigger_delay_4;
-    R_ADC_B->ADTRGDLR5 = p_extend->start_trigger_delay_5;
+    for (uint8_t i = 0U; i < BSP_FEATURE_ADC_B_GROUP_PAIR_REGISTER_COUNT; i++)
+    {
+        uint32_t group               = (uint32_t) i * 2U;
+        uint32_t start_trigger_delay =
+            ((uint32_t) p_extend->start_trigger_delay_table[group] & R_ADC_B0_ADTRGDLR0_TRGDLY0_Msk) <<
+                R_ADC_B0_ADTRGDLR0_TRGDLY0_Pos;
+        start_trigger_delay |=
+            ((uint32_t) p_extend->start_trigger_delay_table[group + 1U] & R_ADC_B0_ADTRGDLR0_TRGDLY0_Msk) <<
+                R_ADC_B0_ADTRGDLR0_TRGDLY1_Pos;
+
+        *ADC_B_REG_ADDRESS(R_ADC_B->ADTRGDLR0, i, sizeof(R_ADC_B->ADTRGDLR0)) = start_trigger_delay;
+    }
 
     /* Configure sampling state tables */
     for (uint8_t i = 0; i < 8; i++)
     {
-        *ADC_B_REG_ADDRESS(R_ADC_B->ADSSTR0, i, 0x4) = p_extend->sampling_state_tables[i];
+        uint32_t table_index    = (uint32_t) i * 2U;
+        uint32_t sampling_state =
+            ((uint32_t) p_extend->sampling_state_table[table_index] & R_ADC_B0_ADSSTR0_SST0_Msk) <<
+                R_ADC_B0_ADSSTR0_SST0_Pos;
+        sampling_state |=
+            ((uint32_t) p_extend->sampling_state_table[table_index + 1U] & R_ADC_B0_ADSSTR0_SST0_Msk) <<
+                R_ADC_B0_ADSSTR0_SST1_Pos;
+
+        *ADC_B_REG_ADDRESS(R_ADC_B->ADSSTR0, i, sizeof(R_ADC_B->ADSSTR0)) = sampling_state;
     }
 
 #if ADC_B_CFG_PARAM_CHECKING_ENABLE
-    uint32_t adsycyc = (p_extend->sync_operation_control & R_ADC_B0_ADSYCR_ADSYCYC_Msk) >>
+    uint32_t adsycyc = (p_extend->sync_operation_control_u.sync_operation_control & R_ADC_B0_ADSYCR_ADSYCYC_Msk) >>
                        R_ADC_B0_ADSYCR_ADSYCYC_Pos;
     uint32_t adcnvstr = p_extend->conversion_state;
     uint32_t cst0     = (adcnvstr & R_ADC_B0_ADCNVSTR_CST0_Msk) >> R_ADC_B0_ADCNVSTR_CST0_Pos;
@@ -380,9 +416,12 @@ fsp_err_t R_ADC_B_ScanCfg (adc_ctrl_t * p_ctrl, void const * const p_scan_cfg)
      *  Constraints to check while Synchronous Mode is enabled
      *   - See section Restrictions on Synchronous Operation, in the Synchronous Operation section of the relevant hardware manual.
      *================================================================================================================================*/
-    bool sync_operation_enabled = (bool) (!p_extend->sync_operation_control_bits.adc_0_disable_sync ||
-                                          !p_extend->sync_operation_control_bits.adc_1_disable_sync ||
-                                          !p_extend->sync_operation_control_bits.adc_2_disable_sync);
+    bool sync_operation_enabled =
+        (bool) (!p_extend->sync_operation_control_u.sync_operation_control_bits.adc_0_disable_sync ||
+                !p_extend->sync_operation_control_u.sync_operation_control_bits.
+                adc_1_disable_sync ||
+                !p_extend->sync_operation_control_u.sync_operation_control_bits.
+                adc_2_disable_sync);
 
     if (sync_operation_enabled)
     {
@@ -447,7 +486,8 @@ fsp_err_t R_ADC_B_ScanCfg (adc_ctrl_t * p_ctrl, void const * const p_scan_cfg)
 #if ADC_B_CFG_PARAM_CHECKING_ENABLE
 
             /* Check that channel is valid for configured unit */
-            adc_channel_t        channel_id    = (adc_channel_t) p_virtual_channel_cfg->channel_cfg_bits.channel;
+            adc_channel_t channel_id =
+                (adc_channel_t) p_virtual_channel_cfg->channel_cfg_u.channel_cfg_bits.channel;
             adc_b_channel_mask_t extended_mask = 1ULL <<
                                                  (channel_id - ADC_CHANNEL_FIRST_INTERNAL +
                                                   ADC_B_CHANNEL_MASK_EXT_OFFSET);
@@ -467,7 +507,8 @@ fsp_err_t R_ADC_B_ScanCfg (adc_ctrl_t * p_ctrl, void const * const p_scan_cfg)
                  * Constraints to check while Synchronous Mode is enabled and Sample and Hold is enabled
                  *   - See section Restrictions on Synchronous Operation, in the Synchronous Operation section of the relevant hardware manual.
                  *================================================================================================================================*/
-                adc_channel_t an_channel_id = (adc_channel_t) p_virtual_channel_cfg->channel_cfg_bits.channel;
+                adc_channel_t an_channel_id =
+                    (adc_channel_t) p_virtual_channel_cfg->channel_cfg_u.channel_cfg_bits.channel;
                 if (adc_channel_is_sample_hold_enabled(an_channel_id, p_extend->sample_and_hold_enable_mask))
                 {
                     uint32_t config_012 = p_extend->sample_and_hold_config_012;
@@ -515,14 +556,19 @@ fsp_err_t R_ADC_B_ScanCfg (adc_ctrl_t * p_ctrl, void const * const p_scan_cfg)
 #endif
 
             /* Configure Virtual Channels, Gain/Offset tables, Add/Avg and Compare, Limit Clip Tbl / Data format */
-            *ADC_B_REG_ADDRESS(R_ADC_B->ADCHCR0, virtual_channel_id, 0x10)   = p_virtual_channel_cfg->channel_cfg;
-            *ADC_B_REG_ADDRESS(R_ADC_B->ADDOPCRA0, virtual_channel_id, 0x10) = p_virtual_channel_cfg->channel_control_a;
-            *ADC_B_REG_ADDRESS(R_ADC_B->ADDOPCRB0, virtual_channel_id, 0x10) = p_virtual_channel_cfg->channel_control_b;
-            *ADC_B_REG_ADDRESS(R_ADC_B->ADDOPCRC0, virtual_channel_id, 0x10) = p_virtual_channel_cfg->channel_control_c;
+            *ADC_B_REG_ADDRESS(R_ADC_B->ADCHCR0, virtual_channel_id,
+                               0x10) = p_virtual_channel_cfg->channel_cfg_u.channel_cfg;
+            *ADC_B_REG_ADDRESS(R_ADC_B->ADDOPCRA0, virtual_channel_id,
+                               0x10) = p_virtual_channel_cfg->channel_control_a_u.channel_control_a;
+            *ADC_B_REG_ADDRESS(R_ADC_B->ADDOPCRB0, virtual_channel_id,
+                               0x10) = p_virtual_channel_cfg->channel_control_b_u.channel_control_b;
+            *ADC_B_REG_ADDRESS(R_ADC_B->ADDOPCRC0, virtual_channel_id,
+                               0x10) = p_virtual_channel_cfg->channel_control_c_u.channel_control_c;
 
             /* Enable temperature sensor if configured. */
-            uint32_t channel_selection = (p_virtual_channel_cfg->channel_cfg & R_ADC_B0_ADCHCR0_CNVCS_Msk) >>
-                                         R_ADC_B0_ADCHCR0_CNVCS_Pos;
+            uint32_t channel_selection =
+                (p_virtual_channel_cfg->channel_cfg_u.channel_cfg & R_ADC_B0_ADCHCR0_CNVCS_Msk) >>
+                R_ADC_B0_ADCHCR0_CNVCS_Pos;
             switch (channel_selection)
             {
                 case ADC_CHANNEL_TEMPERATURE:
@@ -536,15 +582,15 @@ fsp_err_t R_ADC_B_ScanCfg (adc_ctrl_t * p_ctrl, void const * const p_scan_cfg)
                          *  - TEMPRLR accepts only accepts write-access twice per reset. This is currently its only use. New use will require re-evaluation of design. */
                         if (!R_SYSTEM->TEMPRCR_b.TSNKEEP)
                         {
-                            R_SYSTEM->PRCR              = (ADC_B_PCR_PRKEY | R_SYSTEM_PRCR_PRC5_Msk); // Enable TEMPRLR and TEMPRCR
-                            R_SYSTEM->TEMPRLR_b.LOCK    = 0;                                          // Unlock TEMPRCR
-                            R_SYSTEM->TEMPRCR_b.TSNKEEP = 1;                                          // Enable TSN
-                            R_SYSTEM->TEMPRLR_b.LOCK    = 1;                                          // Lock TEMPRCR
-                            R_SYSTEM->PRCR              = (ADC_B_PCR_PRKEY);                          // Disable TEMPRLR and TEMPRCR
+                            R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_RST); // Enable TEMPRLR and TEMPRCR
+                            R_SYSTEM->TEMPRLR_b.LOCK    = 0;                   // Unlock TEMPRCR
+                            R_SYSTEM->TEMPRCR_b.TSNKEEP = 1;                   // Enable TSN
+                            R_SYSTEM->TEMPRLR_b.LOCK    = 1;                   // Lock TEMPRCR
+                            R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_RST);  // Disable TEMPRLR and TEMPRCR
                         }
 #endif
                         R_TSN_CTRL->TSCR_b.TSEN = 1;
-                        R_BSP_SoftwareDelay(30, BSP_DELAY_UNITS_MICROSECONDS);                        // Wait for stabilization. See Figure "Procedure example for using the TSN" in the TSN section of the relevant hardware manual.
+                        R_BSP_SoftwareDelay(30, BSP_DELAY_UNITS_MICROSECONDS); // Wait for stabilization. See Figure "Procedure example for using the TSN" in the TSN section of the relevant hardware manual.
                         R_TSN_CTRL->TSCR_b.TSOE = 1;
                     }
 
@@ -1070,11 +1116,11 @@ static void adc_b_calculate_wait_time (adc_b_instance_ctrl_t * p_instance_ctrl, 
     adc_b_extended_cfg_t * p_extend = (adc_b_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     bool sync_enabled_lut[]         =
     {
-        (bool) (!p_extend->sync_operation_control_bits.adc_0_disable_sync),
-        (bool) (!p_extend->sync_operation_control_bits.adc_1_disable_sync),
-        (bool) (!p_extend->sync_operation_control_bits.adc_2_disable_sync)
+        (bool) (!p_extend->sync_operation_control_u.sync_operation_control_bits.adc_0_disable_sync),
+        (bool) (!p_extend->sync_operation_control_u.sync_operation_control_bits.adc_1_disable_sync),
+        (bool) (!p_extend->sync_operation_control_u.sync_operation_control_bits.adc_2_disable_sync)
     };
-    uint16_t sync_cycles = (uint16_t) (p_extend->sync_operation_control_bits.period_cycle);
+    uint16_t sync_cycles = (uint16_t) (p_extend->sync_operation_control_u.sync_operation_control_bits.period_cycle);
 
     uint32_t wait_cycles = 0;
     for (uint8_t group = 0; (group < p_scan_data->group_count) && p_instance_ctrl->cached_adtrgenr; group++)
