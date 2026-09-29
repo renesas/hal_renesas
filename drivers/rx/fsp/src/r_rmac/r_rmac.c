@@ -54,9 +54,25 @@
 /* TX Timestamp feature. */
 #define RMAC_WRITE_CFG_TX_TIMESTAMP_ENABLE    (1)
 #define RMAC_GET_TX_TIMESTAMP_WAIT_TIME       (10000)
+#define RMAC_TX_TIMESTAMP_BIT_INDEX           (2)
 
 /* Timestamp sequence number mask. */
 #define RMAC_TS_SEQUENCE_NUMBER_MASK          (0x7F)
+
+/* Swap bytes of a 32-bit value */
+#if defined(__BIG)
+
+static uint32_t rmac_bytes_swap_32_func (uint32_t x)
+{
+    return ((x & 0x000000FFUL) << 24) |
+           ((x & 0x0000FF00UL) << 8) |
+           ((x & 0x00FF0000UL) >> 8) |
+           ((x & 0xFF000000UL) >> 24);
+}
+
+ #define RMAC_BYTES_SWAP_32(x)    rmac_bytes_swap_32_func(x)
+
+#endif
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -1315,8 +1331,17 @@ void rmac_init_descriptors (rmac_instance_ctrl_t * const p_instance_ctrl)
                     (uint8_t) ((RMAC_DESCRIPTOR_FIELD_PTR_UPPER_MASK &
                                 (uint64_t) (uintptr_t) p_instance_ctrl->p_cfg->pp_ether_buffers[buffers_index]) >>
                                RMAC_DESCRIPTOR_FIELD_PTR_UPPER_POSITION);
+
+#if defined(__BIG)
+
+                /* Endian conversion must be applied to ptr_l before writing. */
+                descriptor.basic.ptr_l = RMAC_BYTES_SWAP_32(RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK &
+                                                            (uintptr_t) p_instance_ctrl->p_cfg->pp_ether_buffers[
+                                                                buffers_index]);
+#else
                 descriptor.basic.ptr_l = RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK &
                                          (uintptr_t) p_instance_ctrl->p_cfg->pp_ether_buffers[buffers_index];
+#endif
 
                 /* Set data to descriptor. */
                 R_LAYER3_SWITCH_SetDescriptor(p_extend->p_ether_switch->p_ctrl,
@@ -1512,7 +1537,14 @@ static fsp_err_t r_rmac_set_rx_buffer (rmac_instance_ctrl_t * p_instance_ctrl, r
     descriptor.basic.ptr_h =
         (uint8_t) ((RMAC_DESCRIPTOR_FIELD_PTR_UPPER_MASK & (uint64_t) (uintptr_t) p_buffer_node->p_buffer) >>
                    RMAC_DESCRIPTOR_FIELD_PTR_UPPER_POSITION);
+#if defined(__BIG)
+
+    /* Endian conversion must be applied to ptr_l before writing. */
+    descriptor.basic.ptr_l = RMAC_BYTES_SWAP_32(
+        RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK & (uintptr_t) p_buffer_node->p_buffer);
+#else
     descriptor.basic.ptr_l = RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK & (uintptr_t) p_buffer_node->p_buffer;
+#endif
 
     /* Set new buffer to the descriptor. */
     if (RMAC_INVALID_QUEUE_INDEX != p_instance_ctrl->rx_running_queue_index)
@@ -1577,7 +1609,13 @@ static fsp_err_t r_rmac_set_tx_buffer (rmac_instance_ctrl_t * p_instance_ctrl,
     descriptor.basic.ptr_h =
         (uint8_t) ((RMAC_DESCRIPTOR_FIELD_PTR_UPPER_MASK & (uint64_t) (uintptr_t) p_write_buffer) >>
                    RMAC_DESCRIPTOR_FIELD_PTR_UPPER_POSITION);
+#if defined(__BIG)
+
+    /* Endian conversion must be applied to ptr_l before writing. */
+    descriptor.basic.ptr_l = RMAC_BYTES_SWAP_32(RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK & (uintptr_t) p_write_buffer);
+#else
     descriptor.basic.ptr_l = RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK & (uintptr_t) p_write_buffer;
+#endif
 
     /* Configure transmission descriptor. */
     descriptor.basic.ds_h = (uint8_t) ((RMAC_DESCRIPTOR_FIELD_DS_UPPER_MASK & frame_length) >>
@@ -1585,8 +1623,20 @@ static fsp_err_t r_rmac_set_tx_buffer (rmac_instance_ctrl_t * p_instance_ctrl,
     descriptor.basic.ds_l   = (uint8_t) (RMAC_DESCRIPTOR_FIELD_DS_LOWER_MASK & frame_length);
     descriptor.basic.dt     = LAYER3_SWITCH_DESCRIPTOR_TYPE_FSINGLE;
     descriptor.basic.die    = 1;
-    descriptor.info1_tx.dv  = (uint8_t) (RMAC_DESCRIPTOR_FIELD_DV_MASK & (1U << p_instance_ctrl->p_cfg->channel));
-    descriptor.info1_tx.fmt = 1;
+    descriptor.info1_tx.fmt = (uint8_t) (p_extend->transmission_descriptor_format & 0x1);
+
+    /*
+     * If the TX descriptor uses the direct descriptor format, set DV to select the destination ports.
+     * Otherwise, forwarding rules are used and DV is ignored.
+     */
+    if (RMAC_TRANSMISSION_DESCRIPTOR_FORMAT_DIRECT == descriptor.info1_tx.fmt)
+    {
+        descriptor.info1_tx.dv = (uint8_t) (RMAC_DESCRIPTOR_FIELD_DV_MASK & (1 << p_instance_ctrl->p_cfg->channel));
+    }
+    else
+    {
+        descriptor.info1_tx.dv = 0;
+    }
 
     if (RMAC_WRITE_CFG_TX_TIMESTAMP_ENABLE == p_instance_ctrl->write_cfg.tx_timestamp_enable)
     {
@@ -1760,8 +1810,11 @@ static fsp_err_t r_rmac_get_rx_queue (rmac_instance_ctrl_t * p_instance_ctrl, ui
 {
     rmac_extended_cfg_t      * p_extend = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     layer3_switch_descriptor_t descriptor;
-    rmac_buffer_node_t       * p_buffer_node = NULL;
-    fsp_err_t get_err;
+#if defined(__BIG) && LAYER3_SWITCH_CFG_GPTP_ENABLE
+    uint32_t * p_reception_ethernet_descriptor;
+#endif
+    rmac_buffer_node_t * p_buffer_node = NULL;
+    fsp_err_t            get_err;
 
     /* Read all descriptors in the queue. */
     get_err = R_LAYER3_SWITCH_GetDescriptor(p_extend->p_ether_switch->p_ctrl, queue_index, &descriptor);
@@ -1775,14 +1828,26 @@ static fsp_err_t r_rmac_get_rx_queue (rmac_instance_ctrl_t * p_instance_ctrl, ui
                 (queue_index != p_extend->p_rx_queue_list[p_instance_ctrl->rx_running_queue_index].index))
             {
                 /* When the queue raising this interrupt is not the same as the currently running queue, discard data. */
-                p_buffer_node->p_buffer = (void *) (uintptr_t) descriptor.basic.ptr_l;
+#if defined(__BIG)
+
+                /* Apply endian conversion before accessing descriptor pointer. */
+                p_buffer_node->p_buffer = (void *) (RMAC_BYTES_SWAP_32((uintptr_t) descriptor.basic.ptr_l));
+#else
+                p_buffer_node->p_buffer = (void *) ((uintptr_t) descriptor.basic.ptr_l);
+#endif
                 r_rmac_buffer_enqueue(&p_instance_ctrl->rx_empty_buffer_queue, p_buffer_node);
             }
             else
             {
                 /* Store the received buffer. */
-                p_buffer_node->p_buffer = (void *) (uintptr_t) descriptor.basic.ptr_l;
-                p_buffer_node->size     =
+#if defined(__BIG)
+
+                /* Apply endian conversion before accessing descriptor pointer. */
+                p_buffer_node->p_buffer = (void *) (RMAC_BYTES_SWAP_32((uintptr_t) descriptor.basic.ptr_l));
+#else
+                p_buffer_node->p_buffer = (void *) ((uintptr_t) descriptor.basic.ptr_l);
+#endif
+                p_buffer_node->size =
                     (uint32_t) ((descriptor.basic.ds_h << RMAC_DESCRIPTOR_FIELD_DS_UPPER_POSITION) +
                                 descriptor.basic.ds_l);
                 r_rmac_buffer_enqueue(&p_instance_ctrl->rx_completed_buffer_queue, p_buffer_node);
@@ -1790,11 +1855,26 @@ static fsp_err_t r_rmac_get_rx_queue (rmac_instance_ctrl_t * p_instance_ctrl, ui
 #if LAYER3_SWITCH_CFG_GPTP_ENABLE
 
                 /* Get timestamp. */
+ #if defined(__BIG)
+
+                /* Access descriptor as 32-bit words and apply endian conversion per word before reading tsv/tsns/tss bitfields.*/
+                p_reception_ethernet_descriptor    = (uint32_t *) (&descriptor.reception_ethernet_descriptor);
+                *(p_reception_ethernet_descriptor) = RMAC_BYTES_SWAP_32(*(p_reception_ethernet_descriptor));
+
+                if (1 == descriptor.reception_ethernet_descriptor.tsv)
+                {
+                    p_buffer_node->timestamp.ns        = descriptor.reception_ethernet_descriptor.tsns;
+                    p_buffer_node->timestamp.sec_lower =
+                        RMAC_BYTES_SWAP_32(descriptor.reception_ethernet_descriptor.tss);
+                }
+
+ #else
                 if (1 == descriptor.reception_ethernet_descriptor.tsv)
                 {
                     p_buffer_node->timestamp.ns        = descriptor.reception_ethernet_descriptor.tsns;
                     p_buffer_node->timestamp.sec_lower = descriptor.reception_ethernet_descriptor.tss;
                 }
+ #endif
                 else
                 {
                     p_buffer_node->timestamp.ns        = 0;
@@ -1839,8 +1919,15 @@ static fsp_err_t r_rmac_set_rx_queue (rmac_instance_ctrl_t * p_instance_ctrl, ui
                 (uint8_t) ((RMAC_DESCRIPTOR_FIELD_PTR_UPPER_MASK &
                             (uint64_t) (uintptr_t) p_new_buffer_node->p_buffer) >>
                            RMAC_DESCRIPTOR_FIELD_PTR_UPPER_POSITION);
+#if defined(__BIG)
+
+            /* Endian conversion must be applied to ptr_l before writing. */
+            descriptor.basic.ptr_l = RMAC_BYTES_SWAP_32(RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK &
+                                                        (uintptr_t) p_new_buffer_node->p_buffer);
+#else
             descriptor.basic.ptr_l = RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK &
                                      (uintptr_t) p_new_buffer_node->p_buffer;
+#endif
         }
         else
         {
@@ -1881,6 +1968,9 @@ static fsp_err_t r_rmac_get_tx_timestamp (rmac_instance_ctrl_t * p_instance_ctrl
     fsp_err_t                            err                 = FSP_ERR_NOT_FOUND;
     rmac_extended_cfg_t                * p_rmac_extended_cfg = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     layer3_switch_descriptor_queue_cfg_t queue_cfg           = p_rmac_extended_cfg->p_ts_queue->queue_cfg;
+#if defined(__BIG)
+    volatile uint32_t * p_ts_reception_descriptor_result;
+#endif
 
     /* Search tx timestamp from ts reception descriptor that has same timestamp id and not empty. */
     for (uint8_t i = 0; i < (queue_cfg.array_length - 1); i++)
@@ -1890,10 +1980,23 @@ static fsp_err_t r_rmac_get_tx_timestamp (rmac_instance_ctrl_t * p_instance_ctrl
             (((p_instance_ctrl->tx_timestamp_seq_num - 1) & RMAC_TS_SEQUENCE_NUMBER_MASK) ==
              queue_cfg.p_ts_descriptor_array[i].ts_reception_descriptor_result.tsun))
         {
+#if defined(__BIG)
+
+            /* Access descriptor as 32-bit words and apply endian conversion per word before reading tss/tsns bitfields.*/
+            p_ts_reception_descriptor_result =
+                (uint32_t *) (&queue_cfg.p_ts_descriptor_array[i].ts_reception_descriptor_result);
+            p_ts_reception_descriptor_result[RMAC_TX_TIMESTAMP_BIT_INDEX] = RMAC_BYTES_SWAP_32(
+                p_ts_reception_descriptor_result[RMAC_TX_TIMESTAMP_BIT_INDEX]);
+
+            p_instance_ctrl->tx_timestamp.sec_lower =
+                RMAC_BYTES_SWAP_32(queue_cfg.p_ts_descriptor_array[i].ts_reception_descriptor_result.tss);
+            p_instance_ctrl->tx_timestamp.ns = queue_cfg.p_ts_descriptor_array[i].ts_reception_descriptor_result.tsns;
+#else
             p_instance_ctrl->tx_timestamp.sec_lower =
                 queue_cfg.p_ts_descriptor_array[i].ts_reception_descriptor_result.tss;
             p_instance_ctrl->tx_timestamp.ns =
                 queue_cfg.p_ts_descriptor_array[i].ts_reception_descriptor_result.tsns;
+#endif
 
             queue_cfg.p_ts_descriptor_array[i].ts_reception_descriptor_result.dt =
                 LAYER3_SWITCH_DESCRIPTOR_TYPE_FEMPTY_ND;
@@ -1917,9 +2020,12 @@ static void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_a
     ether_callback_args_t      callback_args            = {0};
     uint32_t                   next_running_queue_index = RMAC_INVALID_QUEUE_INDEX;
     layer3_switch_descriptor_t descriptor;
-    rmac_buffer_node_t       * p_buffer_node = NULL;
-    fsp_err_t                  get_err       = FSP_SUCCESS;
-    fsp_err_t                  err           = FSP_SUCCESS;
+#if defined(__BIG) && LAYER3_SWITCH_CFG_GPTP_ENABLE
+    uint32_t * p_reception_ethernet_descriptor;
+#endif
+    rmac_buffer_node_t * p_buffer_node = NULL;
+    fsp_err_t            get_err       = FSP_SUCCESS;
+    fsp_err_t            err           = FSP_SUCCESS;
 
     switch (p_args->event)
     {
@@ -1936,7 +2042,14 @@ static void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_a
                 {
                     if (LAYER3_SWITCH_DESCRIPTOR_TYPE_FEMPTY == descriptor.basic.dt)
                     {
-                        p_instance_ctrl->p_last_sent_buffer = (void *) (uintptr_t) descriptor.basic.ptr_l;
+#if defined(__BIG)
+
+                        /* Apply endian conversion before accessing descriptor pointer. */
+                        p_instance_ctrl->p_last_sent_buffer =
+                            (void *) (RMAC_BYTES_SWAP_32((uintptr_t) descriptor.basic.ptr_l));
+#else
+                        p_instance_ctrl->p_last_sent_buffer = (void *) ((uintptr_t) descriptor.basic.ptr_l);
+#endif
                     }
                 }
                 else
@@ -1945,7 +2058,13 @@ static void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_a
                     p_buffer_node = r_rmac_buffer_dequeue(&p_instance_ctrl->buffer_node_pool);
                     if (NULL != p_buffer_node)
                     {
-                        p_buffer_node->p_buffer = (void *) (uintptr_t) descriptor.basic.ptr_l;
+#if defined(__BIG)
+
+                        /* Apply endian conversion before accessing descriptor pointer. */
+                        p_buffer_node->p_buffer = (void *) (RMAC_BYTES_SWAP_32((uintptr_t) descriptor.basic.ptr_l));
+#else
+                        p_buffer_node->p_buffer = (void *) ((uintptr_t) descriptor.basic.ptr_l);
+#endif
                         r_rmac_buffer_enqueue(&p_instance_ctrl->tx_empty_buffer_queue, p_buffer_node);
                     }
                 }
@@ -2071,8 +2190,14 @@ static void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_a
                     if (NULL != p_buffer_node)
                     {
                         /* Store the received buffer. */
-                        p_buffer_node->p_buffer = (void *) (uintptr_t) descriptor.basic.ptr_l;
-                        p_buffer_node->size     =
+#if defined(__BIG)
+
+                        /* Apply endian conversion before accessing descriptor pointer. */
+                        p_buffer_node->p_buffer = (void *) (RMAC_BYTES_SWAP_32((uintptr_t) descriptor.basic.ptr_l));
+#else
+                        p_buffer_node->p_buffer = (void *) ((uintptr_t) descriptor.basic.ptr_l);
+#endif
+                        p_buffer_node->size =
                             (uint32_t) ((descriptor.basic.ds_h << RMAC_DESCRIPTOR_FIELD_DS_UPPER_POSITION) +
                                         descriptor.basic.ds_l);
                         r_rmac_buffer_enqueue(&p_instance_ctrl->rx_completed_buffer_queue, p_buffer_node);
@@ -2080,11 +2205,25 @@ static void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_a
 #if LAYER3_SWITCH_CFG_GPTP_ENABLE
 
                         /* Get timestamp. */
+ #if defined(__BIG)
+
+                        /* Access descriptor as 32-bit words and apply endian conversion per word before reading tsv/tsns/tss bitfields.*/
+                        p_reception_ethernet_descriptor    = (uint32_t *) (&descriptor.reception_ethernet_descriptor);
+                        *(p_reception_ethernet_descriptor) = RMAC_BYTES_SWAP_32(*(p_reception_ethernet_descriptor));
+                        if (1 == descriptor.reception_ethernet_descriptor.tsv)
+                        {
+                            p_buffer_node->timestamp.ns        = descriptor.reception_ethernet_descriptor.tsns;
+                            p_buffer_node->timestamp.sec_lower = RMAC_BYTES_SWAP_32(
+                                descriptor.reception_ethernet_descriptor.tss);
+                        }
+
+ #else
                         if (1 == descriptor.reception_ethernet_descriptor.tsv)
                         {
                             p_buffer_node->timestamp.ns        = descriptor.reception_ethernet_descriptor.tsns;
                             p_buffer_node->timestamp.sec_lower = descriptor.reception_ethernet_descriptor.tss;
                         }
+ #endif
                         else
                         {
                             p_buffer_node->timestamp.ns        = 0;

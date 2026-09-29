@@ -118,6 +118,21 @@ static int clz (uint32_t val) {
 
 #endif
 
+/* Swap bytes of a 32-bit value */
+#if defined(__BIG)
+
+static uint32_t layer3_switch_bytes_swap_32_func (uint32_t x)
+{
+    return ((x & 0x000000FFUL) << 24) |
+           ((x & 0x0000FF00UL) << 8) |
+           ((x & 0x00FF0000UL) >> 8) |
+           ((x & 0xFF000000UL) >> 24);
+}
+
+ #define LAYER3_SWITCH_BYTES_SWAP_32(x)    layer3_switch_bytes_swap_32_func(x)
+
+#endif
+
 /***********************************************************************************************************************
  * Typedef definitions
  ***********************************************************************************************************************/
@@ -250,6 +265,10 @@ static fsp_err_t r_layer3_switch_psfp_msdu_filter_init(layer3_switch_instance_ct
 static fsp_err_t r_layer3_switch_psfp_meter_filter_init(layer3_switch_instance_ctrl_t               * p_instance_ctrl,
                                                         uint32_t                                      meter_filter_id,
                                                         layer3_switch_table_entry_cfg_t const * const p_table_entry_cfg);
+static bool r_layer3_switch_psfp_is_msdu_filter_hw_id_used(layer3_switch_instance_ctrl_t const * p_instance_ctrl,
+                                                           uint32_t                              msdu_filter_hw_id);
+static bool r_layer3_switch_psfp_is_meter_filter_hw_id_used(layer3_switch_instance_ctrl_t const * p_instance_ctrl,
+                                                            uint32_t                              meter_filter_hw_id);
 
 /* FRER feature. */
 static fsp_err_t r_layer3_switch_frer_init(layer3_switch_instance_ctrl_t  * p_instance_ctrl,
@@ -395,6 +414,17 @@ fsp_err_t R_LAYER3_SWITCH_Open (ether_switch_ctrl_t * const p_ctrl, ether_switch
     /* Reset COMA IP. */
     r_layer3_switch_reset_coma();
 
+    /* Set endian mode of ESWM bus */
+#if defined(__BIG)
+
+    /* Big endian */
+    R_ESWM->ETHBUSCR_b.ENDIAN = 1;
+#else
+
+    /* Little endian */
+    R_ESWM->ETHBUSCR_b.ENDIAN = 0;
+#endif
+
     /* When a r_gptp instance is set, initialize it. */
     if (NULL != p_extend->p_gptp_instance)
     {
@@ -402,7 +432,7 @@ fsp_err_t R_LAYER3_SWITCH_Open (ether_switch_ctrl_t * const p_ctrl, ether_switch
     }
 
     /* Configure destination ports of forwarding feature. */
-    for (uint32_t i = 0; i < BSP_FEATURE_ETHER_NUM_CHANNELS; i++)
+    for (uint32_t i = 0; i < BSP_FEATURE_ETHER_NUM_CHANNELS + 1; i++)
     {
         p_mfwd_fwpbfc_reg =
             (uint32_t *) ((uintptr_t) &(R_MFWD->FWPBFC0) + (i * LAYER3_SWITCH_FWPBFC_REGISTER_OFFSET));
@@ -673,7 +703,6 @@ fsp_err_t R_LAYER3_SWITCH_CreateDescriptorQueue (ether_switch_ctrl_t * const    
     else
     {
         queue_index = p_instance_ctrl->allocated_descriptor_queue_index;
-
         FSP_ERROR_RETURN(LAYER3_SWITCH_CFG_AVAILABLE_QUEUE_NUM > queue_index, FSP_ERR_OUT_OF_MEMORY);
 
         /* Set all descriptors of new queue as disable. */
@@ -688,9 +717,16 @@ fsp_err_t R_LAYER3_SWITCH_CreateDescriptorQueue (ether_switch_ctrl_t * const    
                                                                         (uint64_t) (uintptr_t) p_queue_cfg->
                                                                         p_descriptor_array) >>
                                                                        LAYER3_SWITCH_QUEUE_ADDRESS_UPPER_POSITION);
+#if defined(__BIG)
 
+        /* Endian conversion must be applied to ptr_l before writing. */
+        p_instance_ctrl->p_descriptor_queue_list[queue_index].ptr_l =
+            LAYER3_SWITCH_BYTES_SWAP_32(
+                LAYER3_SWITCH_QUEUE_ADDRESS_LOWER_MASK & (uintptr_t) p_queue_cfg->p_descriptor_array);
+#else
         p_instance_ctrl->p_descriptor_queue_list[queue_index].ptr_l =
             LAYER3_SWITCH_QUEUE_ADDRESS_LOWER_MASK & (uintptr_t) p_queue_cfg->p_descriptor_array;
+#endif
         p_instance_ctrl->p_descriptor_queue_list[queue_index].dt = LAYER3_SWITCH_DESCRIPTOR_TYPE_LINKFIX;
 
         /* Configure the new queue.*/
@@ -1257,8 +1293,9 @@ fsp_err_t R_LAYER3_SWITCH_ConfigureTable (ether_switch_ctrl_t * const           
                                    R_MFWD_FWMACHEC_MACHMUE_Pos);
     R_MFWD->FWVLANTEC = (p_table_cfg->unsecure_entry_maximum_num << R_MFWD_FWVLANTEC_VLANTMUE_Pos) &
                         (R_MFWD_FWVLANTEC_VLANTMUE_Msk);
-    R_MFWD->FWLTHHEC = (p_table_cfg->unsecure_entry_maximum_num << R_MFWD_FWLTHHEC_LTHHMUE_Pos) &
-                       (R_MFWD_FWLTHHEC_LTHHMUE_Msk);
+    R_MFWD->FWLTHHEC = (R_MFWD->FWLTHHEC & R_MFWD_FWLTHHEC_LTHHMC_Msk) |
+                       ((p_table_cfg->unsecure_entry_maximum_num << R_MFWD_FWLTHHEC_LTHHMUE_Pos) &
+                        (R_MFWD_FWLTHHEC_LTHHMUE_Msk));
 
     /* Initialize FRER parameters. */
     err = r_layer3_switch_frer_init(p_instance_ctrl, &p_table_cfg->frer_cfg);
@@ -1310,7 +1347,7 @@ fsp_err_t R_LAYER3_SWITCH_ConfigureTable (ether_switch_ctrl_t * const           
         for (uint32_t i = 0; (i < p_table_cfg->p_table->l3_list_length) & (FSP_SUCCESS == err); i++)
         {
             err = R_LAYER3_SWITCH_AddTableEntry(p_instance_ctrl,
-                                                &p_table_cfg->p_table->p_vlan_entry_list[i].target_frame,
+                                                &p_table_cfg->p_table->p_l3_entry_list[i].target_frame,
                                                 &p_table_cfg->p_table->p_l3_entry_list[i].entry_cfg);
         }
     }
@@ -1696,8 +1733,16 @@ static layer3_switch_descriptor_t * r_layer3_switch_get_descriptor (layer3_switc
     layer3_switch_basic_descriptor_t * p_linkfix_descriptor;
     layer3_switch_descriptor_t       * p_queue_head_descriptor;
 
-    p_linkfix_descriptor    = &p_instance_ctrl->p_descriptor_queue_list[queue_index];
+    p_linkfix_descriptor = &p_instance_ctrl->p_descriptor_queue_list[queue_index];
+
+#if defined(__BIG)
+
+    /* Apply endian conversion before accessing descriptor pointer. */
+    p_queue_head_descriptor =
+        (layer3_switch_descriptor_t *) (LAYER3_SWITCH_BYTES_SWAP_32((uintptr_t) p_linkfix_descriptor->ptr_l));
+#else
     p_queue_head_descriptor = (layer3_switch_descriptor_t *) ((uintptr_t) p_linkfix_descriptor->ptr_l);
+#endif
 
     return &p_queue_head_descriptor[descriptor_index];
 }                                      /* End of function r_layer3_switch_get_descriptor() */
@@ -1873,7 +1918,7 @@ static void r_layer3_switch_configure_port (layer3_switch_instance_ctrl_t * cons
         r_layer3_switch_configure_cbs(p_instance_ctrl, port, p_port_cfg->p_cbs_cfg);
     }
 #endif
-}
+}                                      /* End of function r_layer3_switch_configure_port() */
 
 #if BSP_FEATURE_ESWM_SUPPORT_L2_L3_FORWARDING
 
@@ -3478,8 +3523,16 @@ static fsp_err_t r_layer3_switch_create_tx_timestamp_queue (ether_switch_ctrl_t 
 
     p_ts_descriptor[(p_queue_cfg->array_length -
                      1)].ts_reception_descriptor_basic.dt = LAYER3_SWITCH_DESCRIPTOR_TYPE_LINKFIX;
+
+#if defined(__BIG)
+
+    /* Endian conversion must be applied to ptr_l before writing. */
+    p_ts_descriptor[(p_queue_cfg->array_length -
+                     1)].ts_reception_descriptor_basic.ptr_l = LAYER3_SWITCH_BYTES_SWAP_32((uintptr_t) p_ts_descriptor);
+#else
     p_ts_descriptor[(p_queue_cfg->array_length -
                      1)].ts_reception_descriptor_basic.ptr_l = (uintptr_t) p_ts_descriptor;
+#endif
 
     /* Set GWCA to CONFIG mode. */
     r_layer3_switch_update_gwca_operation_mode(p_instance_ctrl, LAYER3_SWITCH_AGENT_MODE_DISABLE);
@@ -3708,6 +3761,35 @@ static fsp_err_t r_layer3_switch_learn_frer_individual_recovery (layer3_switch_i
 }                                      /* End of function r_layer3_switch_learn_frer_individual_recovery() */
 
 /*******************************************************************************************************************//**
+ * Check whether a hardware MSDU filter is already assigned to one of the logical MSDU filter IDs.
+ *
+ * psfp_msdu_filter_info_list[] is indexed by the logical MSDU filter ID, so hardware occupancy
+ * lives in the msdu_filter_hw_id field and not in the subscript.
+ *
+ * @param[in] p_instance_ctrl          Pointer to the instance control structure
+ * @param[in] msdu_filter_hw_id        Hardware MSDU filter ID to check
+ *
+ * @return  true if the hardware MSDU filter ID is already assigned to a logical MSDU filter
+ **********************************************************************************************************************/
+static bool r_layer3_switch_psfp_is_msdu_filter_hw_id_used (layer3_switch_instance_ctrl_t const * p_instance_ctrl,
+                                                            uint32_t                              msdu_filter_hw_id)
+{
+    for (uint8_t logical_id = 0;
+         logical_id < BSP_FEATURE_ESWM_PSFP_MSDU_FILTER_MAX_NUM;
+         logical_id++)
+    {
+        if ((LAYER3_SWITCH_PSFP_FILTER_STATUS_USED ==
+             p_instance_ctrl->psfp_msdu_filter_info_list[logical_id].status) &&
+            (msdu_filter_hw_id == p_instance_ctrl->psfp_msdu_filter_info_list[logical_id].msdu_filter_hw_id))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}                                      /* End of function r_layer3_switch_psfp_is_msdu_filter_hw_id_used() */
+
+/*******************************************************************************************************************//**
  * Select MSDU filter ID to use.
  **********************************************************************************************************************/
 static fsp_err_t r_layer3_switch_psfp_select_msdu_filter_id (layer3_switch_instance_ctrl_t        * p_instance_ctrl,
@@ -3716,20 +3798,24 @@ static fsp_err_t r_layer3_switch_psfp_select_msdu_filter_id (layer3_switch_insta
 {
     fsp_err_t err = FSP_ERR_BUFFER_EMPTY;
 
+    /* The logical MSDU filter ID subscripts psfp_msdu_filter_info_list[], so it must be in range. */
+    FSP_ERROR_RETURN(BSP_FEATURE_ESWM_PSFP_MSDU_FILTER_MAX_NUM > p_psfp_msdu_filter_cfg->msdu_filter_id,
+                     FSP_ERR_INVALID_ARGUMENT);
+
     /* Set new PSFP MSDU filter. */
     if (LAYER3_SWITCH_PSFP_FILTER_STATUS_UNUSED ==
         p_instance_ctrl->psfp_msdu_filter_info_list[p_psfp_msdu_filter_cfg->msdu_filter_id].status)
     {
-        /* Decide which internal PSFP MSDU filter ID to use. */
-        for (uint8_t unused_id = 0;
-             unused_id < BSP_FEATURE_ESWM_PSFP_MSDU_FILTER_MAX_NUM;
-             unused_id++)
+        /* Decide which hardware MSDU filter to use. This loop walks hardware filter numbers, so it has to
+         * test hardware occupancy and not the status of the logical entry sharing the same subscript. */
+        for (uint32_t unused_hw_id = 0;
+             unused_hw_id < BSP_FEATURE_ESWM_PSFP_MSDU_FILTER_MAX_NUM;
+             unused_hw_id++)
         {
-            /* Use an unused PSFP MSDU filter ID. */
-            if (LAYER3_SWITCH_PSFP_FILTER_STATUS_UNUSED ==
-                p_instance_ctrl->psfp_msdu_filter_info_list[unused_id].status)
+            /* Use an unused hardware MSDU filter. */
+            if (!r_layer3_switch_psfp_is_msdu_filter_hw_id_used(p_instance_ctrl, unused_hw_id))
             {
-                *p_msdu_filter_id = unused_id;
+                *p_msdu_filter_id = unused_hw_id;
                 err               = FSP_SUCCESS;
                 break;
             }
@@ -3738,6 +3824,35 @@ static fsp_err_t r_layer3_switch_psfp_select_msdu_filter_id (layer3_switch_insta
 
     return err;
 }                                      /* End of function r_layer3_switch_psfp_select_msdu_filter_id() */
+
+/*******************************************************************************************************************//**
+ * Check whether a hardware Meter filter is already assigned to one of the logical Meter filter IDs.
+ *
+ * psfp_meter_filter_info_list[] is indexed by the logical Meter filter ID, so hardware occupancy
+ * lives in the meter_filter_hw_id field and not in the subscript.
+ *
+ * @param[in] p_instance_ctrl          Pointer to the instance control structure
+ * @param[in] meter_filter_hw_id       Hardware Meter filter ID to check
+ *
+ * @return  true if the hardware Meter filter ID is already assigned to a logical Meter filter
+ **********************************************************************************************************************/
+static bool r_layer3_switch_psfp_is_meter_filter_hw_id_used (layer3_switch_instance_ctrl_t const * p_instance_ctrl,
+                                                             uint32_t                              meter_filter_hw_id)
+{
+    for (uint8_t logical_id = 0;
+         logical_id < BSP_FEATURE_ESWM_PSFP_METER_FILTER_SINGLE_BUCKET_METERS_MAX_NUM;
+         logical_id++)
+    {
+        if ((LAYER3_SWITCH_PSFP_FILTER_STATUS_USED ==
+             p_instance_ctrl->psfp_meter_filter_info_list[logical_id].status) &&
+            (meter_filter_hw_id == p_instance_ctrl->psfp_meter_filter_info_list[logical_id].meter_filter_hw_id))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}                                      /* End of function r_layer3_switch_psfp_is_meter_filter_hw_id_used() */
 
 /*******************************************************************************************************************//**
  * Select Meter filter ID to use.
@@ -3750,6 +3865,11 @@ static fsp_err_t r_layer3_switch_psfp_select_meter_filter_id (layer3_switch_inst
 
     uint32_t minimum_id = 0;
     uint32_t maximum_id = 0;
+
+    /* The logical Meter filter ID subscripts psfp_meter_filter_info_list[], so it must be in range. */
+    FSP_ERROR_RETURN(BSP_FEATURE_ESWM_PSFP_METER_FILTER_SINGLE_BUCKET_METERS_MAX_NUM >
+                     p_psfp_meter_filter_cfg->meter_filter_id,
+                     FSP_ERR_INVALID_ARGUMENT);
 
     /* Set new PSFP Meter filter. */
     if (LAYER3_SWITCH_PSFP_FILTER_STATUS_UNUSED ==
@@ -3768,16 +3888,16 @@ static fsp_err_t r_layer3_switch_psfp_select_meter_filter_id (layer3_switch_inst
             maximum_id = BSP_FEATURE_ESWM_PSFP_METER_FILTER_DOUBLE_BUCKET_METERS_MAX_NUM;
         }
 
-        /* Decide which internal PSFP Meter filter ID to use. */
-        for (uint32_t unused_id = minimum_id;
-             unused_id < maximum_id;
-             unused_id++)
+        /* Decide which hardware Meter filter to use. This loop walks hardware meter numbers, so it has to
+         * test hardware occupancy and not the status of the logical entry sharing the same subscript. */
+        for (uint32_t unused_hw_id = minimum_id;
+             unused_hw_id < maximum_id;
+             unused_hw_id++)
         {
-            /* Use an unused PSFP Meter filter ID. */
-            if (LAYER3_SWITCH_PSFP_FILTER_STATUS_UNUSED ==
-                p_instance_ctrl->psfp_meter_filter_info_list[unused_id].status)
+            /* Use an unused hardware Meter filter. */
+            if (!r_layer3_switch_psfp_is_meter_filter_hw_id_used(p_instance_ctrl, unused_hw_id))
             {
-                *p_meter_filter_id = unused_id;
+                *p_meter_filter_id = unused_hw_id;
                 err                = FSP_SUCCESS;
                 break;
             }
