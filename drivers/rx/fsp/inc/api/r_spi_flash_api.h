@@ -164,7 +164,7 @@ typedef struct st_spi_flash_direct_transfer
     {
         uint64_t data_u64;             ///< Data (64-bit)
         uint32_t data;                 ///< Data
-    };
+    } data_u;
     uint32_t address;                  ///< Starting address
     uint16_t command;                  ///< Transfer command
     uint8_t  dummy_cycles;             ///< Number of dummy cycles

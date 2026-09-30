@@ -98,102 +98,109 @@ extern rsip_instance_t const * const gp_rsip_instance;
 #define XSPI_CONTROLLER_PRV_PROTOCOL_USES_DS_SIGNAL(protocol)    ((bool) (((uint32_t) (protocol)) & 0x200UL))
 
 /** Number of bytes combined into a single transaction for memory-mapped writes. */
-#define XSPI_CONTROLLER_PRV_COMBINATION_WRITE_LENGTH              (2U *                                                  \
-                                                                   ((uint8_t) XSPI_CONTROLLER_CFG_COMBINATION_FUNCTION + \
-                                                                    1U))
+#define XSPI_CONTROLLER_PRV_COMBINATION_WRITE_LENGTH                  (2U *                                        \
+                                                                       ((uint8_t)                                  \
+                                                                        XSPI_CONTROLLER_CFG_COMBINATION_FUNCTION + \
+                                                                        1U))
 
 /** Converts @ref spi_flash_address_bytes_t to a register compatible length value. */
 #define XSPI_CONTROLLER_PRV_ADDR_BYTES_TO_LENGTH(spi_flash_bytes)    ((uint8_t) ((spi_flash_bytes) + 1U))
 
-#define XSPI_CONTROLLER_PRV_BMCTL_DEFAULT_VALUE                   (0x0C)
+#define XSPI_CONTROLLER_PRV_BMCTL_DEFAULT_VALUE                       (0x0C)
 
-#define XSPI_CONTROLLER_PRV_CMCFG_1BYTE_VALUE_MASK                (0xFF00U)
-#define XSPI_CONTROLLER_PRV_CMCFG_2BYTE_VALUE_MASK                (0xFFFFU)
+#define XSPI_CONTROLLER_PRV_CMCFG_1BYTE_VALUE_MASK                    (0xFF00U)
+#define XSPI_CONTROLLER_PRV_CMCFG_2BYTE_VALUE_MASK                    (0xFFFFU)
 
-#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_DATA_SIZE             (0xFU)
-#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_LATENCY_CYCLES        (0U)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_DATA_SIZE                 (0xFU)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_LATENCY_CYCLES            (0U)
 
-#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_0    (0xFFFF0000U)
-#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_1    (0x000800FFU)
-#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_2    (0x00FFF700U)
-#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_3    (0xF700F708U)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_0        (0xFFFF0000U)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_1        (0x000800FFU)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_2        (0x00FFF700U)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_3        (0xF700F708U)
 
-#define XSPI_CONTROLLER_PRV_ADDRESS_REPLACE_VALUE                 (0xF0U)
-#define XSPI_CONTROLLER_PRV_ADDRESS_REPLACE_ENABLE_BITS           (XSPI_CONTROLLER_PRV_ADDRESS_REPLACE_VALUE << \
-                                                                   R_XSPI0_CMCFGCS_CMCFG0_ADDRPEN_Pos)
-#define XSPI_CONTROLLER_PRV_ADDRESS_REPLACE_MASK                  (~(XSPI_CONTROLLER_PRV_ADDRESS_REPLACE_VALUE << 24))
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_RAM_PREAMBLE_PATTERN_0    (0xFFFF0000U)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_RAM_PREAMBLE_PATTERN_1    (0x0800FF00U)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_RAM_PREAMBLE_PATTERN_2    (0xFF0000F7U)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_RAM_PREAMBLE_PATTERN_3    (0x00F708F7U)
 
-#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_FRAME_INTERVAL        (0x1FU)
-#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_NO_WRITE_CMD          (0x1U)
-#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_SHIFT_DS_END_VALUE    (0x1FU)
+#define XSPI_CONTROLLER_PRV_ADDRESS_REPLACE_VALUE                     (0xF0U)
+#define XSPI_CONTROLLER_PRV_ADDRESS_REPLACE_ENABLE_BITS               (XSPI_CONTROLLER_PRV_ADDRESS_REPLACE_VALUE << \
+                                                                       R_XSPI0_CMCFGCS_CMCFG0_ADDRPEN_Pos)
+#define XSPI_CONTROLLER_PRV_ADDRESS_REPLACE_MASK                      (~(XSPI_CONTROLLER_PRV_ADDRESS_REPLACE_VALUE << \
+                                                                         24))
 
-#define XSPI_CONTROLLER_PRV_WORD_ACCESS_SIZE                      (4U)
-#define XSPI_CONTROLLER_PRV_HALF_WORD_ACCESS_SIZE                 (2U)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_FRAME_INTERVAL            (0x1FU)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_NO_WRITE_CMD              (0x1U)
+#define XSPI_CONTROLLER_PRV_AUTOCALIBRATION_SHIFT_DS_END_VALUE        (0x1FU)
 
-#define XSPI_CONTROLLER_PRV_DIRECT_ADDR_AND_DATA_MASK             (7U)
-#define XSPI_CONTROLLER_PRV_PAGE_SIZE_BYTES                       (256U)
+#define XSPI_CONTROLLER_PRV_WORD_ACCESS_SIZE                          (4U)
+#define XSPI_CONTROLLER_PRV_HALF_WORD_ACCESS_SIZE                     (2U)
 
-#define XSPI_CONTROLLER_PRV_DIRECT_CMD_SIZE_MASK                  (0x3U)
+#define XSPI_CONTROLLER_PRV_DIRECT_ADDR_AND_DATA_MASK                 (7U)
+#define XSPI_CONTROLLER_PRV_PAGE_SIZE_BYTES                           (256U)
 
-#define XSPI_CONTROLLER_PRV_CDTBUF_CMD_OFFSET                     (16U)
-#define XSPI_CONTROLLER_PRV_CDTBUF_CMD_UPPER_OFFSET               (24U)
-#define XSPI_CONTROLLER_PRV_CDTBUF_CMD_1B_VALUE_MASK              (0xFFU)
-#define XSPI_CONTROLLER_PRV_CDTBUF_CMD_1B_VALUE_SHIFT             (8U)
-#define XSPI_CONTROLLER_PRV_CDTBUF_CMD_2B_VALUE_MASK              (0xFFFFU)
+#define XSPI_CONTROLLER_PRV_DIRECT_CMD_SIZE_MASK                      (0x3U)
+
+#define XSPI_CONTROLLER_PRV_CDTBUF_CMD_OFFSET                         (16U)
+#define XSPI_CONTROLLER_PRV_CDTBUF_CMD_UPPER_OFFSET                   (24U)
+#define XSPI_CONTROLLER_PRV_CDTBUF_CMD_1B_VALUE_MASK                  (0xFFU)
+#define XSPI_CONTROLLER_PRV_CDTBUF_CMD_1B_VALUE_SHIFT                 (8U)
+#define XSPI_CONTROLLER_PRV_CDTBUF_CMD_2B_VALUE_MASK                  (0xFFFFU)
 
 #if BSP_FEATURE_XSPI_CONTROLLER_HAS_CHANNEL_1
- #define XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK                 (0x00) // Reserved bit mask for BMCTL0 register
- #define XSPI_CONTROLLER_PRV_ACCESS_BITFIELD                      (0x03) // Access bitfield width for BMCTL1 and COMSTT register
+ #define XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK                     (0x00) // Reserved bit mask for BMCTL0 register
+ #define XSPI_CONTROLLER_PRV_ACCESS_BITFIELD                          (0x03) // Access bitfield width for BMCTL1 and COMSTT register
 
 #else
- #define XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK                 (0xF0) // Reserved bit mask for BMCTL0 register
- #define XSPI_CONTROLLER_PRV_ACCESS_BITFIELD                      (0x01) // Access bitfield width for BMCTL1 and COMSTT register
+ #define XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK                     (0xF0) // Reserved bit mask for BMCTL0 register
+ #define XSPI_CONTROLLER_PRV_ACCESS_BITFIELD                          (0x01) // Access bitfield width for BMCTL1 and COMSTT register
 
 #endif
 
 /* When XSPI supports only channel 0, BMCTL0 register bit [4..7] should set 0b1111 */
-#define XSPI_CONTROLLER_PRV_BMCTL0_DISABLED_VALUE                 (XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK | 0x00) // 0b0000'0000
-#define XSPI_CONTROLLER_PRV_BMCTL0_READ_ONLY_VALUE                (XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK | 0x55) // 0b0101'0101
-#define XSPI_CONTROLLER_PRV_BMCTL0_WRITE_ONLY_VALUE               (XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK | 0xAA) // 0b1010'1010
-#define XSPI_CONTROLLER_PRV_BMCTL0_READ_WRITE_VALUE               (XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK | 0xFF) // 0b1111'1111
+#define XSPI_CONTROLLER_PRV_BMCTL0_DISABLED_VALUE                     (XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK | 0x00) // 0b0000'0000
+#define XSPI_CONTROLLER_PRV_BMCTL0_READ_ONLY_VALUE                    (XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK | 0x55) // 0b0101'0101
+#define XSPI_CONTROLLER_PRV_BMCTL0_WRITE_ONLY_VALUE                   (XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK | 0xAA) // 0b1010'1010
+#define XSPI_CONTROLLER_PRV_BMCTL0_READ_WRITE_VALUE                   (XSPI_CONTROLLER_PRV_BMCTL0_RESERVED_MASK | 0xFF) // 0b1111'1111
 
 /* When XSPI supports only channel 0, BMCTL1 register should access bitfield with a width of 1 bit. */
-#define XSPI_CONTROLLER_PRV_BMCTL1_CLEAR_PREFETCH_MASK            (XSPI_CONTROLLER_PRV_ACCESS_BITFIELD << \
-                                                                   R_XSPI0_BMCTL1_PBUFCLRCH0_Pos)
-#define XSPI_CONTROLLER_PRV_BMCTL1_PUSH_COMBINATION_WRITE_MASK    (XSPI_CONTROLLER_PRV_ACCESS_BITFIELD << \
-                                                                   R_XSPI0_BMCTL1_MWRPUSHCH0_Pos)
+#define XSPI_CONTROLLER_PRV_BMCTL1_CLEAR_PREFETCH_MASK                (XSPI_CONTROLLER_PRV_ACCESS_BITFIELD << \
+                                                                       R_XSPI0_BMCTL1_PBUFCLRCH0_Pos)
+#define XSPI_CONTROLLER_PRV_BMCTL1_PUSH_COMBINATION_WRITE_MASK        (XSPI_CONTROLLER_PRV_ACCESS_BITFIELD << \
+                                                                       R_XSPI0_BMCTL1_MWRPUSHCH0_Pos)
 
 /* When XSPI supports only channel 0, COMSTT register should access a bitfield with a width of 1 bit. */
-#define XSPI_CONTROLLER_PRV_COMSTT_MEMACCCH_MASK                  (XSPI_CONTROLLER_PRV_ACCESS_BITFIELD << \
-                                                                   R_XSPI0_COMSTT_MEMACCCH0_Pos)
-#define XSPI_CONTROLLER_PRV_COMSTT_WRBUFNECH_MASK                 (XSPI_CONTROLLER_PRV_ACCESS_BITFIELD << \
-                                                                   R_XSPI0_COMSTT_WRBUFNECH0_Pos)
+#define XSPI_CONTROLLER_PRV_COMSTT_MEMACCCH_MASK                      (XSPI_CONTROLLER_PRV_ACCESS_BITFIELD << \
+                                                                       R_XSPI0_COMSTT_MEMACCCH0_Pos)
+#define XSPI_CONTROLLER_PRV_COMSTT_WRBUFNECH_MASK                     (XSPI_CONTROLLER_PRV_ACCESS_BITFIELD << \
+                                                                       R_XSPI0_COMSTT_WRBUFNECH0_Pos)
 
-#define XSPI_CONTROLLER_PRV_COMSTT_PENDING_ACTION_MASK            (XSPI_CONTROLLER_PRV_COMSTT_MEMACCCH_MASK | \
-                                                                   XSPI_CONTROLLER_PRV_COMSTT_WRBUFNECH_MASK)
+#define XSPI_CONTROLLER_PRV_COMSTT_PENDING_ACTION_MASK                (XSPI_CONTROLLER_PRV_COMSTT_MEMACCCH_MASK | \
+                                                                       XSPI_CONTROLLER_PRV_COMSTT_WRBUFNECH_MASK)
 
-#define XSPI_CONTROLLER_SOFTWARE_DELAY                            (50U)
+#define XSPI_CONTROLLER_SOFTWARE_DELAY                                (50U)
 
-#define XSPI_CONTROLLER_PRV_DOTF_REG00_RESET_VALUE                (0x22000000)
-#define XSPI_CONTROLLER_PRV_CONVAREAST_RESET_VALUE                (0x0)
-#define XSPI_CONTROLLER_PRV_CONVAREAD_RESET_VALUE                 (0x0)
-#define XSPI_CONTROLLER_PRV_DOTF_SEED_1_SEED_MASK                 (0x3)
-#define XSPI_CONTROLLER_PRV_DOTF_SEED_1_ENABLE_MASK               (0xC)
+#define XSPI_CONTROLLER_PRV_DOTF_REG00_RESET_VALUE                    (0x22000000)
+#define XSPI_CONTROLLER_PRV_CONVAREAST_RESET_VALUE                    (0x0)
+#define XSPI_CONTROLLER_PRV_CONVAREAD_RESET_VALUE                     (0x0)
+#define XSPI_CONTROLLER_PRV_DOTF_SEED_1_SEED_MASK                     (0x3)
+#define XSPI_CONTROLLER_PRV_DOTF_SEED_1_ENABLE_MASK                   (0xC)
 
 /* These are used as modulus checking, make sure they are powers of 2. */
-#define XSPI_CONTROLLER_PRV_CPU_ACCESS_LENGTH                     (8U)
-#define XSPI_CONTROLLER_PRV_CPU_ACCESS_ALIGNMENT                  (8U)
+#define XSPI_CONTROLLER_PRV_CPU_ACCESS_LENGTH                         (8U)
+#define XSPI_CONTROLLER_PRV_CPU_ACCESS_ALIGNMENT                      (8U)
 
-#define XSPI_CONTROLLER_PRV_PROTOCOL_USES_DS_MASK                 (0x200U)
+#define XSPI_CONTROLLER_PRV_PROTOCOL_USES_DS_MASK                     (0x200U)
 
-#define XSPI_CONTROLLER_PRV_UINT32_BITS                           (32)
+#define XSPI_CONTROLLER_PRV_UINT32_BITS                               (32)
 
 #ifndef XSPI_CONTROLLER_MAX_WRITE_ENABLE_LOOPS
- #define XSPI_CONTROLLER_MAX_WRITE_ENABLE_LOOPS                   (5)
+ #define XSPI_CONTROLLER_MAX_WRITE_ENABLE_LOOPS                       (5)
 #endif
 
 /* Number of address bytes in 4 byte address mode. */
-#define XSPI_CONTROLLER_4_BYTE_ADDRESS                            (4U)
+#define XSPI_CONTROLLER_4_BYTE_ADDRESS                                (4U)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -298,10 +305,10 @@ fsp_err_t R_XSPI_CONTROLLER_Open (spi_flash_ctrl_t * const p_ctrl, spi_flash_cfg
     FSP_ASSERT(NULL != p_cfg);
     FSP_ASSERT(NULL != p_cfg->p_extend);
     FSP_ERROR_RETURN(XSPI_CONTROLLER_PRV_OPEN != p_instance_ctrl->open, FSP_ERR_ALREADY_OPEN);
-    if (((xspi_controller_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend)->memory_type ==
+    if (((xspi_controller_extended_cfg_t *) p_cfg->p_extend)->memory_type ==
         XSPI_CONTROLLER_DEVICE_TYPE_RAM)
     {
-        FSP_ERROR_RETURN(SPI_FLASH_PROTOCOL_DOPI == p_cfg->spi_protocol, FSP_ERR_INVALID_ARGUMENT);
+        FSP_ERROR_RETURN(SPI_FLASH_PROTOCOL_8D_8D_8D == p_cfg->spi_protocol, FSP_ERR_INVALID_ARGUMENT);
     }
 #endif
 
@@ -675,8 +682,8 @@ fsp_err_t R_XSPI_CONTROLLER_Write (spi_flash_ctrl_t    * p_ctrl,
     /* Update the block-mode transfer settings */
     p_transfer->p_cfg->p_info->p_src  = p_src;
     p_transfer->p_cfg->p_info->p_dest = p_dest;
-    p_transfer->p_cfg->p_info->transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE;
-    p_transfer->p_cfg->p_info->transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL;
+    p_transfer->p_cfg->p_info->transfer_settings_u.transfer_settings_word_b.size = TRANSFER_SIZE_1_BYTE;
+    p_transfer->p_cfg->p_info->transfer_settings_u.transfer_settings_word_b.mode = TRANSFER_MODE_NORMAL;
     p_transfer->p_cfg->p_info->length = (uint16_t) byte_count;
     err = p_transfer->p_api->reconfigure(p_transfer->p_ctrl, p_transfer->p_cfg->p_info);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
@@ -907,7 +914,7 @@ fsp_err_t R_XSPI_CONTROLLER_SpiProtocolSet (spi_flash_ctrl_t * p_ctrl, spi_flash
     xspi_controller_extended_cfg_t * p_cfg_extend = (xspi_controller_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
     if (p_cfg_extend->memory_type == XSPI_CONTROLLER_DEVICE_TYPE_RAM)
     {
-        FSP_ERROR_RETURN(SPI_FLASH_PROTOCOL_DOPI == spi_protocol, FSP_ERR_INVALID_ARGUMENT);
+        FSP_ERROR_RETURN(SPI_FLASH_PROTOCOL_8D_8D_8D == spi_protocol, FSP_ERR_INVALID_ARGUMENT);
     }
 #endif
 
@@ -1257,7 +1264,7 @@ static bool r_xspi_controller_status_sub (xspi_controller_instance_ctrl_t * p_in
 
     r_xspi_controller_direct_transfer(p_instance_ctrl, &direct_command, SPI_FLASH_DIRECT_TRANSFER_DIR_READ);
 
-    return (bool) ((direct_command.data >> bit_pos) & 1U);
+    return (bool) ((direct_command.data_u.data >> bit_pos) & 1U);
 }
 
 /*******************************************************************************************************************//**
@@ -1367,10 +1374,21 @@ static fsp_err_t r_xspi_controller_automatic_calibration_seq (xspi_controller_in
 
     p_reg->CCCTLCS[channel].CCCTL3 = (uint32_t) p_cfg_extend->p_autocalibration_preamble_pattern_addr &
                                      XSPI_CONTROLLER_PRV_ADDRESS_REPLACE_MASK;
-    p_reg->CCCTLCS[channel].CCCTL4 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_0;
-    p_reg->CCCTLCS[channel].CCCTL5 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_1;
-    p_reg->CCCTLCS[channel].CCCTL6 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_2;
-    p_reg->CCCTLCS[channel].CCCTL7 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_3;
+
+    if (XSPI_CONTROLLER_DEVICE_TYPE_FLASH == p_cfg_extend->memory_type)
+    {
+        p_reg->CCCTLCS[channel].CCCTL4 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_0;
+        p_reg->CCCTLCS[channel].CCCTL5 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_1;
+        p_reg->CCCTLCS[channel].CCCTL6 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_2;
+        p_reg->CCCTLCS[channel].CCCTL7 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_PREAMBLE_PATTERN_3;
+    }
+    else
+    {
+        p_reg->CCCTLCS[channel].CCCTL4 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_RAM_PREAMBLE_PATTERN_0;
+        p_reg->CCCTLCS[channel].CCCTL5 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_RAM_PREAMBLE_PATTERN_1;
+        p_reg->CCCTLCS[channel].CCCTL6 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_RAM_PREAMBLE_PATTERN_2;
+        p_reg->CCCTLCS[channel].CCCTL7 = XSPI_CONTROLLER_PRV_AUTOCALIBRATION_RAM_PREAMBLE_PATTERN_3;
+    }
 
     p_reg->CCCTLCS[channel].CCCTL0 =
         (XSPI_CONTROLLER_PRV_AUTOCALIBRATION_NO_WRITE_CMD << R_XSPI0_CCCTLCS_CCCTL0_CANOWR_Pos) |
@@ -1453,10 +1471,18 @@ static void r_xspi_controller_direct_transfer (xspi_controller_instance_ctrl_t  
 
     if (SPI_FLASH_DIRECT_TRANSFER_DIR_WRITE == direction)
     {
-        p_reg->CDBUF[0].CDD0 = (uint32_t) (p_transfer->data_u64 & UINT32_MAX);
-        if (p_transfer->data_length > sizeof(uint32_t))
+        if (0U == p_transfer->data_length)
         {
-            p_reg->CDBUF[0].CDD1 = (uint32_t) (p_transfer->data_u64 >> XSPI_CONTROLLER_PRV_UINT32_BITS);
+            p_reg->CDBUF[0].CDD0 = 0U;
+        }
+        else if (p_transfer->data_length > sizeof(uint32_t))
+        {
+            p_reg->CDBUF[0].CDD0 = (uint32_t) (p_transfer->data_u.data_u64 & UINT32_MAX);
+            p_reg->CDBUF[0].CDD1 = (uint32_t) (p_transfer->data_u.data_u64 >> XSPI_CONTROLLER_PRV_UINT32_BITS);
+        }
+        else
+        {
+            p_reg->CDBUF[0].CDD0 = p_transfer->data_u.data;
         }
     }
 
@@ -1466,10 +1492,14 @@ static void r_xspi_controller_direct_transfer (xspi_controller_instance_ctrl_t  
 
     if (SPI_FLASH_DIRECT_TRANSFER_DIR_READ == direction)
     {
-        p_transfer->data_u64 = p_reg->CDBUF[0].CDD0;
         if (p_transfer->data_length > sizeof(uint32_t))
         {
-            p_transfer->data_u64 |= (((uint64_t) p_reg->CDBUF[0].CDD1) << XSPI_CONTROLLER_PRV_UINT32_BITS);
+            p_transfer->data_u.data_u64  = p_reg->CDBUF[0].CDD0;
+            p_transfer->data_u.data_u64 |= (((uint64_t) p_reg->CDBUF[0].CDD1) << XSPI_CONTROLLER_PRV_UINT32_BITS);
+        }
+        else
+        {
+            p_transfer->data_u.data = p_reg->CDBUF[0].CDD0;
         }
     }
 
@@ -1652,7 +1682,7 @@ static void r_xspi_controller_row_load_store (xspi_controller_instance_ctrl_t * 
         .command_length = (uint8_t) p_cmd_set->command_bytes,
         .address        = 0U,
         .address_length = 0U,
-        .data           = row_index,
+        .data_u.data    = row_index,
         .data_length    = XSPI_CONTROLLER_PRV_ADDR_BYTES_TO_LENGTH(p_extend_cfg->row_index_bytes)
     };
 
