@@ -316,7 +316,7 @@ fsp_err_t R_SDHI_Open (sdmmc_ctrl_t * const p_api_ctrl, sdmmc_cfg_t const * cons
 
     /* Open the transfer driver. Clear the transfer length in case the transfer_info_t structure is reused and the
      * length was copied to the upper 8 bits for block mode. Configurations are updated before it is used. */
-    p_cfg->p_lower_lvl_transfer->p_cfg->p_info->transfer_settings_word = 0U;
+    p_cfg->p_lower_lvl_transfer->p_cfg->p_info->transfer_settings_u.transfer_settings_word = 0U;
     err = p_cfg->p_lower_lvl_transfer->p_api->open(p_cfg->p_lower_lvl_transfer->p_ctrl,
                                                    p_cfg->p_lower_lvl_transfer->p_cfg);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
@@ -334,20 +334,20 @@ fsp_err_t R_SDHI_Open (sdmmc_ctrl_t * const p_api_ctrl, sdmmc_cfg_t const * cons
     R_BSP_MODULE_START(FSP_IP_SDHI, p_cfg->channel);
 
     /* Reset stale interrupt flags */
-    p_ctrl->p_reg->SD_INFO1 = 0U;
+    p_ctrl->p_reg->SDSTS1 = 0U;
 
     /* Reset SDHI. */
-    p_ctrl->p_reg->SOFT_RST = 0x0U;
-    p_ctrl->p_reg->SOFT_RST = 0x1U;
+    p_ctrl->p_reg->SDRST = 0x0U;
+    p_ctrl->p_reg->SDRST = 0x1U;
 
     /* Configure card detection. */
     if (SDMMC_CARD_DETECT_CD == p_ctrl->p_cfg->card_detect)
     {
-        p_ctrl->p_reg->SD_INFO1_MASK = SDHI_PRV_SD_INFO1_MASK_CD_ENABLE;
+        p_ctrl->p_reg->SDIMSK1 = SDHI_PRV_SD_INFO1_MASK_CD_ENABLE;
     }
     else
     {
-        p_ctrl->p_reg->SD_INFO1_MASK = SDHI_PRV_SD_INFO1_MASK_MASK_ALL;
+        p_ctrl->p_reg->SDIMSK1 = SDHI_PRV_SD_INFO1_MASK_MASK_ALL;
     }
 
     /* Set callback and context pointers, if configured */
@@ -680,7 +680,7 @@ fsp_err_t R_SDHI_StatusGet (sdmmc_ctrl_t * const p_api_ctrl, sdmmc_status_t * co
     /* Check CD pin. */
     if (SDMMC_CARD_DETECT_CD == p_ctrl->p_cfg->card_detect)
     {
-        p_status->card_inserted = (bool) p_ctrl->p_reg->SD_INFO1_b.SDCDMON;
+        p_status->card_inserted = (bool) p_ctrl->p_reg->SDSTS1_b.SDCDMON;
     }
     else
     {
@@ -693,7 +693,7 @@ fsp_err_t R_SDHI_StatusGet (sdmmc_ctrl_t * const p_api_ctrl, sdmmc_status_t * co
     /* Check if the card is busy. */
     p_status->transfer_in_progress =
         (bool) (SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_VAL !=
-                (p_ctrl->p_reg->SD_INFO2 & SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_MASK));
+                (p_ctrl->p_reg->SDSTS2 & SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_MASK));
 
     return FSP_SUCCESS;
 }
@@ -949,7 +949,7 @@ static fsp_err_t r_sdhi_common_error_check (sdhi_instance_ctrl_t * const p_ctrl)
     /* To verify no command sequence is in progress in SDHI, verify SD_INFO2.CBSY is not set.  To verify the card has
      * completed the requested operation, verify SD_INFO2.SDD0MON is set. */
     FSP_ERROR_RETURN(SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_VAL ==
-                     (p_ctrl->p_reg->SD_INFO2 & SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_MASK),
+                     (p_ctrl->p_reg->SDSTS2 & SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_MASK),
                      FSP_ERR_DEVICE_BUSY);
 
 #if SDHI_CFG_SD_SUPPORT_ENABLE
@@ -1006,17 +1006,17 @@ static void r_sdhi_access_irq_process (sdhi_instance_ctrl_t * p_ctrl, sdmmc_call
     sdhi_event_t flags;
 
     /* Clear stop register after access end. */
-    p_ctrl->p_reg->SD_STOP_b.STP = 0U;
+    p_ctrl->p_reg->SDSTOP_b.STP = 0U;
 
     /* Read interrupt flag registers. */
-    info1 = p_ctrl->p_reg->SD_INFO1;
-    info2 = p_ctrl->p_reg->SD_INFO2;
+    info1 = p_ctrl->p_reg->SDSTS1;
+    info2 = p_ctrl->p_reg->SDSTS2;
 
     /* Clear interrupt flags processed in this ISR. */
-    info1 &= SDHI_PRV_SDHI_INFO1_ACCESS_MASK;
-    info2 &= SDHI_PRV_SDHI_INFO2_MASK;
-    p_ctrl->p_reg->SD_INFO1 = (~info1);
-    p_ctrl->p_reg->SD_INFO2 = (~info2);
+    info1                &= SDHI_PRV_SDHI_INFO1_ACCESS_MASK;
+    info2                &= SDHI_PRV_SDHI_INFO2_MASK;
+    p_ctrl->p_reg->SDSTS1 = (~info1);
+    p_ctrl->p_reg->SDSTS2 = (~info2);
 
     /* Combine all flags in one 32 bit word. */
     flags.word = (info1 | (info2 << 16));
@@ -1026,22 +1026,22 @@ static void r_sdhi_access_irq_process (sdhi_instance_ctrl_t * p_ctrl, sdmmc_call
         p_args->event |= SDMMC_EVENT_RESPONSE;
 
         /* Check the R1 response. */
-        if (1U == p_ctrl->p_reg->SD_STOP_b.SEC)
+        if (1U == p_ctrl->p_reg->SDSTOP_b.SDBLKCNTEN)
         {
             /* Get the R1 response for multiple block read and write from SD_RSP54 since the response in SD_RSP10 may
              * have been overwritten by the response to CMD12. */
-            p_args->response.status = p_ctrl->p_reg->SD_RSP54;
+            p_args->response.status = p_ctrl->p_reg->SDRSP54;
         }
         else
         {
-            p_args->response.status = p_ctrl->p_reg->SD_RSP10;
+            p_args->response.status = p_ctrl->p_reg->SDRSP10;
         }
 
-        if (SDHI_PRV_CMD_ERASE == p_ctrl->p_reg->SD_CMD)
+        if (SDHI_PRV_CMD_ERASE == p_ctrl->p_reg->SDCMD)
         {
             /* Determine if erase is complete or not based on DAT0. Access interrupt is not required for erase. */
             if (SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_VAL ==
-                (p_ctrl->p_reg->SD_INFO2 & SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_MASK))
+                (p_ctrl->p_reg->SDSTS2 & SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_MASK))
             {
                 p_args->event |= SDMMC_EVENT_ERASE_COMPLETE;
             }
@@ -1054,19 +1054,19 @@ static void r_sdhi_access_irq_process (sdhi_instance_ctrl_t * p_ctrl, sdmmc_call
         {
             /* Enable the access interrupt. */
             /* Disable response end interrupt (set the bit) and enable access end interrupt (clear the bit). */
-            uint32_t mask = p_ctrl->p_reg->SD_INFO1_MASK;
+            uint32_t mask = p_ctrl->p_reg->SDIMSK1;
             mask &= (~SDHI_PRV_SDHI_INFO1_ACCESS_END);
             mask |= SDHI_PRV_SDHI_INFO1_RESPONSE_END;
-            p_ctrl->p_reg->SD_INFO1_MASK = mask;
+            p_ctrl->p_reg->SDIMSK1 = mask;
         }
     }
 
     /* Check for errors */
     if (flags.word & SDHI_PRV_ACCESS_ERROR_MASK)
     {
-        flags.bit.event_error  = 1U;
-        p_args->event         |= SDMMC_EVENT_TRANSFER_ERROR;
-        p_ctrl->p_reg->SD_STOP = 1U;
+        flags.bit.event_error = 1U;
+        p_args->event        |= SDMMC_EVENT_TRANSFER_ERROR;
+        p_ctrl->p_reg->SDSTOP = 1U;
 
         /* Disable the transfer and clear related variables since an error occurred. */
         r_sdhi_transfer_end(p_ctrl);
@@ -1101,25 +1101,24 @@ static void r_sdhi_access_irq_process (sdhi_instance_ctrl_t * p_ctrl, sdmmc_call
 void r_sdhi_command_send_no_wait (sdhi_instance_ctrl_t * p_ctrl, uint32_t command, uint32_t argument)
 {
     /* Clear Status */
-    p_ctrl->p_reg->SD_INFO1 = 0U;
-    p_ctrl->p_reg->SD_INFO2 = 0U;
+    p_ctrl->p_reg->SDSTS1   = 0U;
+    p_ctrl->p_reg->SDSTS2   = 0U;
     p_ctrl->sdhi_event.word = 0U;
 
     /* Enable response end interrupt. */
     /* Disable access end interrupt and enable response end interrupt. */
-    uint32_t mask = p_ctrl->p_reg->SD_INFO1_MASK;
+    uint32_t mask = p_ctrl->p_reg->SDIMSK1;
     mask &= (~SDHI_PRV_SDHI_INFO1_RESPONSE_END);
     mask |= SDHI_PRV_SDHI_INFO1_ACCESS_END;
-    p_ctrl->p_reg->SD_INFO1_MASK = mask;
-    p_ctrl->p_reg->SD_INFO2_MASK = SDHI_PRV_SDHI_INFO2_MASK_CMD_SEND;
+    p_ctrl->p_reg->SDIMSK1 = mask;
+    p_ctrl->p_reg->SDIMSK2 = SDHI_PRV_SDHI_INFO2_MASK_CMD_SEND;
 
     /* Enable Clock */
-    p_ctrl->p_reg->SD_CLK_CTRL |= SDHI_PRV_SDHI_PRV_SD_CLK_AUTO_CLOCK_ENABLE_MASK;
+    p_ctrl->p_reg->SDCLKCR |= SDHI_PRV_SDHI_PRV_SD_CLK_AUTO_CLOCK_ENABLE_MASK;
 
     /* Write argument, then command to the SDHI peripheral. */
-    p_ctrl->p_reg->SD_ARG  = argument & UINT16_MAX;
-    p_ctrl->p_reg->SD_ARG1 = argument >> 16;
-    p_ctrl->p_reg->SD_CMD  = command;
+    p_ctrl->p_reg->SDARG = argument;
+    p_ctrl->p_reg->SDCMD = command;
 }
 
 /*******************************************************************************************************************//**
@@ -1184,13 +1183,13 @@ fsp_err_t r_sdhi_max_clock_rate_set (sdhi_instance_ctrl_t * p_ctrl, uint32_t max
             while (timeout > 0U)
             {
                 /* Do not write to clock control register until this bit is set. */
-                if (p_ctrl->p_reg->SD_INFO2_b.SD_CLK_CTRLEN)
+                if (p_ctrl->p_reg->SDSTS2_b.SDCLKCREN)
                 {
                     /* Set the calculated divider and enable clock output to start the 74 clocks required before
                      * initialization. Do not change the automatic clock control setting. */
-                    uint32_t clkctrlen = p_ctrl->p_reg->SD_CLK_CTRL & SDHI_PRV_SDHI_PRV_SD_CLK_CTRL_CLKCTRLEN_MASK;
-                    p_ctrl->p_reg->SD_CLK_CTRL = setting | clkctrlen | SDHI_PRV_SDHI_PRV_SD_CLK_CTRL_CLKEN_MASK;
-                    p_ctrl->device.clock_rate  = frequency >> divisor_shift;
+                    uint32_t clkctrlen = p_ctrl->p_reg->SDCLKCR & SDHI_PRV_SDHI_PRV_SD_CLK_CTRL_CLKCTRLEN_MASK;
+                    p_ctrl->p_reg->SDCLKCR    = setting | clkctrlen | SDHI_PRV_SDHI_PRV_SD_CLK_CTRL_CLKEN_MASK;
+                    p_ctrl->device.clock_rate = frequency >> divisor_shift;
 
                     return FSP_SUCCESS;
                 }
@@ -1218,23 +1217,27 @@ fsp_err_t r_sdhi_max_clock_rate_set (sdhi_instance_ctrl_t * p_ctrl, uint32_t max
 fsp_err_t r_sdhi_hw_cfg (sdhi_instance_ctrl_t * const p_ctrl)
 {
     /* Reset SDHI. */
-    p_ctrl->p_reg->SOFT_RST = 0x0U;
-    p_ctrl->p_reg->SOFT_RST = 0x1U;
+    p_ctrl->p_reg->SDRST = 0x0U;
+    p_ctrl->p_reg->SDRST = 0x1U;
 
     /* Execute software reset or check SD_INFO2.SD_CLK_CTRLEN prior to calling this function. */
-    p_ctrl->p_reg->SD_CLK_CTRL = SDHI_PRV_SD_CLK_CTRL_DEFAULT; // Automatic clock control disabled.
-    p_ctrl->p_reg->SDIO_MODE   = 0x00U;                        // SDIO not supported.
-    p_ctrl->p_reg->SD_DMAEN    = 0x00U;                        // Not in DMA mode initially.
-    p_ctrl->p_reg->SDIF_MODE   = 0x00U;                        // CRC check is valid.
-    p_ctrl->p_reg->EXT_SWAP    = 0x00U;                        // Don't swap endianness
+    p_ctrl->p_reg->SDCLKCR = SDHI_PRV_SD_CLK_CTRL_DEFAULT; // Automatic clock control disabled.
+    p_ctrl->p_reg->SDIOMD  = 0x00U;                        // SDIO not supported.
+    p_ctrl->p_reg->SDDMAEN = 0x00U;                        // Not in DMA mode initially.
+    p_ctrl->p_reg->SDIFMD  = 0x00U;                        // CRC check is valid.
+#if SDHI_PRV_EXT_SWAP_ENABLE
+    p_ctrl->p_reg->SDSWAP = R_SDHI_SDSWAP_BRSWP_Msk | R_SDHI_SDSWAP_BWSWP_Msk;
+#else
+    p_ctrl->p_reg->SDSWAP = 0x00U;
+#endif
 
     /* Set the clock frequency to 400 kHz or less for identification. */
     fsp_err_t err = r_sdhi_max_clock_rate_set(p_ctrl, SDHI_PRV_INIT_MAX_CLOCK_RATE_HZ);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
     /* Set initial bus width to one bit wide. */
-    p_ctrl->p_reg->SD_OPTION = SDHI_PRV_SD_OPTION_DEFAULT |
-                               (SDHI_PRV_BUS_WIDTH_1_BIT << SDHI_PRV_SD_OPTION_WIDTH8_BIT);
+    p_ctrl->p_reg->SDOPT = SDHI_PRV_SD_OPTION_DEFAULT |
+                           (SDHI_PRV_BUS_WIDTH_1_BIT << SDHI_PRV_SD_OPTION_WIDTH8_BIT);
 
     /* The host shall supply at least 74 SD clocks to the SD card while keeping CMD line high.  Reference section
      * 6.4.1.1 "Power Up Time of Card" in the SD Physical Layer Specification Version 6.00. */
@@ -1362,16 +1365,16 @@ void r_sdhi_read_write_common (sdhi_instance_ctrl_t * const p_ctrl,
     /* Set the sector count. */
     if (sector_count > 1U)
     {
-        p_ctrl->p_reg->SD_STOP   = SDHI_PRV_SD_STOP_SD_SECCNT_ENABLE;
-        p_ctrl->p_reg->SD_SECCNT = sector_count;
+        p_ctrl->p_reg->SDSTOP   = SDHI_PRV_SD_STOP_SD_SECCNT_ENABLE;
+        p_ctrl->p_reg->SDBLKCNT = sector_count;
     }
     else
     {
-        p_ctrl->p_reg->SD_STOP = 0U;
+        p_ctrl->p_reg->SDSTOP = 0U;
     }
 
     /* Set sector size */
-    p_ctrl->p_reg->SD_SIZE = sector_size;
+    p_ctrl->p_reg->SDSIZE = sector_size;
 
     /* Send command. */
     r_sdhi_command_send_no_wait(p_ctrl, command, argument);
@@ -1403,7 +1406,7 @@ static fsp_err_t r_sdhi_sd_card_check (sdhi_instance_ctrl_t * const p_ctrl)
     /* An SD card responds to CMD8 by echoing the argument in the R7 response. An eMMC device responds to CMD8 with the
      * extended CSD. If the response does not match the argument, return to check if this is an eMMC device. */
     sdmmc_response_t response;
-    response.status = p_ctrl->p_reg->SD_RSP10;
+    response.status = p_ctrl->p_reg->SDRSP10;
 
     /* CMD8 is not supported by spec V1.X so we have to try CMD41. */
     if ((FSP_ERR_RESPONSE == err) || (response.status == argument))
@@ -1428,14 +1431,14 @@ static fsp_err_t r_sdhi_sd_card_check (sdhi_instance_ctrl_t * const p_ctrl)
             FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
             /* get response of ACMD41 (R3) */
-            response.status = p_ctrl->p_reg->SD_RSP10;
+            response.status = p_ctrl->p_reg->SDRSP10;
 
             /*  Initialization complete? */
-            if (response.r3.power_up_status)
+            if (response.status & SDHI_PRV_RESPONSE_R3_POWER_UP_STATUS)
             {
                 /* High capacity card ? */
                 /*  0 = SDSC, 1 = SDHC or SDXC */
-                p_ctrl->sector_addressing = (bool) (response.r3.card_capacity_status > 0U);
+                p_ctrl->sector_addressing = (bool) (response.status & SDHI_PRV_RESPONSE_R3_CARD_CAPACITY_STATUS);
                 p_ctrl->device.card_type  = SDMMC_CARD_TYPE_SD;
 
                 break;
@@ -1484,12 +1487,12 @@ static fsp_err_t r_sdhi_emmc_check (sdhi_instance_ctrl_t * const p_ctrl)
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
         /* get response of CMD1  */
-        response.status = p_ctrl->p_reg->SD_RSP10;
+        response.status = p_ctrl->p_reg->SDRSP10;
 
         /* Initialization complete? */
-        if (response.r3.power_up_status)
+        if (response.status & SDHI_PRV_RESPONSE_R3_POWER_UP_STATUS)
         {
-            p_ctrl->sector_addressing = (bool) (response.r3.card_capacity_status > 0U);
+            p_ctrl->sector_addressing = (bool) (response.status & SDHI_PRV_RESPONSE_R3_CARD_CAPACITY_STATUS);
             p_ctrl->device.card_type  = SDMMC_CARD_TYPE_MMC;
 
             return FSP_SUCCESS;
@@ -1513,7 +1516,7 @@ static void r_sdhi_write_protect_get (sdhi_instance_ctrl_t * const p_ctrl)
     /* Update write protection status in the control block if the device is a card. */
     if (p_ctrl->p_cfg->write_protect)
     {
-        p_ctrl->device.write_protected = (bool) (p_ctrl->p_reg->SD_INFO1_b.SDWPMON == 0U);
+        p_ctrl->device.write_protected = (bool) (p_ctrl->p_reg->SDSTS1_b.SDWPMON == 0U);
     }
 }
 
@@ -1532,7 +1535,7 @@ fsp_err_t r_sdhi_wait_for_device (sdhi_instance_ctrl_t * const p_ctrl)
     /* Wait for the device to stop holding DAT0 low. */
     uint32_t timeout = SDHI_PRV_BUSY_TIMEOUT_US;
     while (SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_VAL !=
-           (p_ctrl->p_reg->SD_INFO2 & SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_MASK))
+           (p_ctrl->p_reg->SDSTS2 & SDHI_PRV_SD_INFO2_CBSY_SDD0MON_IDLE_MASK))
     {
         FSP_ERROR_RETURN(timeout > 0, FSP_ERR_DEVICE_BUSY);
 
@@ -1595,7 +1598,8 @@ static fsp_err_t r_sdhi_clock_optimize (sdhi_instance_ctrl_t * const p_ctrl,
 
         /* Ask SD card to switch to high speed if CMD6 is supported.  CMD6 is supported if bit 10 of the CCC field
          * in the CSD is set.*/
-        if (SDHI_PRV_CSD_REG_CCC_CLASS_10_BIT == (SDHI_PRV_CSD_REG_CCC_CLASS_10_BIT & p_csd_reg->csd_v1_b.ccc))
+        uint32_t ccc = r_sdhi_csd_bitfield_get(p_csd_reg, SDHI_PRV_CSD_CCC_HIGH_BIT, SDHI_PRV_CSD_CCC_LOW_BIT);
+        if (SDHI_PRV_CSD_REG_CCC_CLASS_10_BIT == (SDHI_PRV_CSD_REG_CCC_CLASS_10_BIT & ccc))
         {
             if (FSP_SUCCESS == r_sdhi_sd_high_speed(p_ctrl))
             {
@@ -1730,25 +1734,35 @@ static fsp_err_t r_sdhi_csd_save (sdhi_instance_ctrl_t * const p_ctrl,
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
     /* SDResponseR2 are bits from 8-127, first 8 MSBs are reserved */
-    p_csd_reg->reg.sdrsp10 = p_ctrl->p_reg->SD_RSP10;
-    p_csd_reg->reg.sdrsp32 = p_ctrl->p_reg->SD_RSP32;
-    p_csd_reg->reg.sdrsp54 = p_ctrl->p_reg->SD_RSP54;
-    p_csd_reg->reg.sdrsp76 = p_ctrl->p_reg->SD_RSP76;
+    p_csd_reg->csd_u.reg.sdrsp10 = p_ctrl->p_reg->SDRSP10;
+    p_csd_reg->csd_u.reg.sdrsp32 = p_ctrl->p_reg->SDRSP32;
+    p_csd_reg->csd_u.reg.sdrsp54 = p_ctrl->p_reg->SDRSP54;
+    p_csd_reg->csd_u.reg.sdrsp76 = p_ctrl->p_reg->SDRSP76;
 
     /* Get the CSD version. */
-    uint32_t csd_version = (uint32_t) (p_csd_reg->csd_v1_b.csd_structure);
+    uint32_t csd_version = r_sdhi_csd_bitfield_get(p_csd_reg,
+                                                   SDHI_PRV_CSD_STRUCTURE_HIGH_BIT,
+                                                   SDHI_PRV_CSD_STRUCTURE_LOW_BIT);
 
     /* Save sector count (total number of sectors on device) and erase sector count (minimum erasable unit in
      * sectors). */
     uint32_t mult;
     if ((SDHI_PRV_CSD_VERSION_1_0 == csd_version) || (SDMMC_CARD_TYPE_MMC == p_ctrl->device.card_type))
     {
-        mult = (1U << (p_csd_reg->csd_v1_b.c_size_mult + 2));
-        uint32_t c_size = (uint32_t) ((p_csd_reg->csd_v1_b.c_size_u << 2) | p_csd_reg->csd_v1_b.c_size_l);
+        uint32_t c_size_mult = r_sdhi_csd_bitfield_get(p_csd_reg,
+                                                       SDHI_PRV_CSD_V1_C_SIZE_MULT_HIGH_BIT,
+                                                       SDHI_PRV_CSD_V1_C_SIZE_MULT_LOW_BIT);
+        mult = (1U << (c_size_mult + 2U));
+        uint32_t c_size = r_sdhi_csd_bitfield_get(p_csd_reg,
+                                                  SDHI_PRV_CSD_V1_C_SIZE_HIGH_BIT,
+                                                  SDHI_PRV_CSD_V1_C_SIZE_LOW_BIT);
         p_ctrl->device.sector_count = (uint32_t) ((c_size + 1U) * mult);
 
         /* Scale the sector count by the actual block size. */
-        uint32_t read_sector_size = 1U << p_csd_reg->csd_v1_b.read_bl_len;
+        uint32_t read_bl_len = r_sdhi_csd_bitfield_get(p_csd_reg,
+                                                       SDHI_PRV_CSD_READ_BL_LEN_HIGH_BIT,
+                                                       SDHI_PRV_CSD_READ_BL_LEN_LOW_BIT);
+        uint32_t read_sector_size = 1U << read_bl_len;
         p_ctrl->device.sector_count = p_ctrl->device.sector_count * (read_sector_size / SDHI_MAX_BLOCK_SIZE);
 
         if (SDMMC_CARD_TYPE_MMC == p_ctrl->device.card_type)
@@ -1765,7 +1779,10 @@ static fsp_err_t r_sdhi_csd_save (sdhi_instance_ctrl_t * const p_ctrl,
  #if SDHI_CFG_SD_SUPPORT_ENABLE
     else if (SDHI_PRV_CSD_VERSION_2_0 == csd_version)
     {
-        p_ctrl->device.sector_count = (uint32_t) ((p_csd_reg->csd_v2_b.c_size + 1U) * SDHI_PRV_BYTES_PER_KILOBYTE);
+        uint32_t c_size = r_sdhi_csd_bitfield_get(p_csd_reg,
+                                                  SDHI_PRV_CSD_V2_C_SIZE_HIGH_BIT,
+                                                  SDHI_PRV_CSD_V2_C_SIZE_LOW_BIT);
+        p_ctrl->device.sector_count = (uint32_t) ((c_size + 1U) * SDHI_PRV_BYTES_PER_KILOBYTE);
     }
     else
     {
@@ -1775,7 +1792,10 @@ static fsp_err_t r_sdhi_csd_save (sdhi_instance_ctrl_t * const p_ctrl,
     if (SDHI_PRV_CSD_VERSION_1_0 == csd_version)
     {
         /* Get the minimum erasable unit (in 512 byte sectors). */
-        p_ctrl->device.erase_sector_count = (uint32_t) (p_csd_reg->csd_v1_b.sector_size + 1U);
+        uint32_t sector_size = r_sdhi_csd_bitfield_get(p_csd_reg,
+                                                       SDHI_PRV_CSD_V1_SECTOR_SIZE_HIGH_BIT,
+                                                       SDHI_PRV_CSD_V1_SECTOR_SIZE_LOW_BIT);
+        p_ctrl->device.erase_sector_count = (uint32_t) (sector_size + 1U);
     }
     else
  #endif
@@ -1879,11 +1899,11 @@ static fsp_err_t r_sdhi_rca_get (sdhi_instance_ctrl_t * const p_ctrl, uint32_t *
 
 #if SDHI_CFG_SD_SUPPORT_ENABLE
     sdmmc_response_t response = {0U};
-    response.status = p_ctrl->p_reg->SD_RSP10;
+    response.status = p_ctrl->p_reg->SDRSP10;
     if (SDMMC_CARD_TYPE_MMC != p_ctrl->device.card_type)
     {
         /* Get relative card address from the response if the device is an SD card. */
-        rca = (response.r6.rca);
+        rca = response.status >> SDHI_PRV_RESPONSE_R6_RCA_SHIFT;
     }
 #endif
 
@@ -1958,7 +1978,7 @@ static fsp_err_t r_sdhi_bus_width_set (sdhi_instance_ctrl_t * const p_ctrl, uint
         bus_width_reg = SDHI_PRV_BUS_WIDTH_1_BIT;
     }
 
-    p_ctrl->p_reg->SD_OPTION = SDHI_PRV_SD_OPTION_DEFAULT | (bus_width_reg << SDHI_PRV_SD_OPTION_WIDTH8_BIT);
+    p_ctrl->p_reg->SDOPT = SDHI_PRV_SD_OPTION_DEFAULT | (bus_width_reg << SDHI_PRV_SD_OPTION_WIDTH8_BIT);
 
     return FSP_SUCCESS;
 }
@@ -1991,6 +2011,17 @@ void r_sdhi_transfer_callback (sdhi_instance_ctrl_t * p_ctrl)
 
         p_ctrl->transfer_block_current++;
         p_ctrl->p_transfer_data += p_ctrl->transfer_block_size;
+ #if SDMMC_CFG_DTC_SUPPORT_ENABLE
+
+        /* Re-enable the transfer by resetting the transfer count. This only supports for DTC */
+        p_ctrl->p_cfg->p_lower_lvl_transfer->p_api->reset(p_ctrl->p_cfg->p_lower_lvl_transfer->p_ctrl, NULL, NULL, 1);
+
+        if (p_ctrl->p_reg->SDSTS2_b.BWE || p_ctrl->p_reg->SDSTS2_b.BRE)
+        {
+            p_ctrl->p_reg->SDDMAEN = 0;
+            p_ctrl->p_reg->SDDMAEN = SDHI_PRV_SD_DMAEN_DMAEN_SET;
+        }
+ #endif
     }
 
     if (p_ctrl->transfer_blocks_total == p_ctrl->transfer_block_current)
@@ -2036,8 +2067,8 @@ fsp_err_t r_sdhi_transfer_read (sdhi_instance_ctrl_t * const p_ctrl,
     transfer_info_t * p_info = p_ctrl->p_cfg->p_lower_lvl_transfer->p_cfg->p_info;
 
     /* When the SD_DMAEN.DMAEN bit is 1, set the SD_INFO2_MASK.BWEM bit to 1 and the SD_INFO2_MASK.BREM bit to 1. */
-    p_ctrl->p_reg->SD_INFO2_MASK |= SDHI_PRV_SD_INFO2_MASK_BREM_BWEM_MASK;
-    p_ctrl->p_reg->SD_DMAEN       = SDHI_PRV_SD_DMAEN_DMAEN_SET;
+    p_ctrl->p_reg->SDIMSK2 |= SDHI_PRV_SD_INFO2_MASK_BREM_BWEM_MASK;
+    p_ctrl->p_reg->SDDMAEN  = SDHI_PRV_SD_DMAEN_DMAEN_SET;
 
     uint32_t transfer_settings = (uint32_t) TRANSFER_MODE_BLOCK << TRANSFER_SETTINGS_MODE_BITS;
     transfer_settings |= TRANSFER_ADDR_MODE_INCREMENTED << TRANSFER_SETTINGS_DEST_ADDR_BITS;
@@ -2065,9 +2096,18 @@ fsp_err_t r_sdhi_transfer_read (sdhi_instance_ctrl_t * const p_ctrl,
         p_info->p_dest     = p_data;
     }
 
-    p_info->transfer_settings_word = transfer_settings;
-    p_info->p_src      = (uint32_t *) (&p_ctrl->p_reg->SD_BUF0);
-    p_info->num_blocks = (uint16_t) block_count;
+    p_info->transfer_settings_u.transfer_settings_word = transfer_settings;
+    p_info->p_src = (uint32_t *) (&p_ctrl->p_reg->SDBUFR);
+#if SDMMC_CFG_UNALIGNED_ACCESS_ENABLE && SDMMC_CFG_DTC_SUPPORT_ENABLE
+    if ((0U != ((uint32_t) p_data & 0x3U)) || (0U != (bytes & 3U)))
+    {
+        p_info->num_blocks = 1;
+    }
+    else
+#endif
+    {
+        p_info->num_blocks = (uint16_t) block_count;
+    }
 
     /* Round up to the nearest multiple of 4 bytes for the transfer. */
     uint32_t words = (bytes + (sizeof(uint32_t) - 1U)) / sizeof(uint32_t);
@@ -2102,8 +2142,8 @@ fsp_err_t r_sdhi_transfer_write (sdhi_instance_ctrl_t * const p_ctrl,
     transfer_info_t * p_info = p_ctrl->p_cfg->p_lower_lvl_transfer->p_cfg->p_info;
 
     /* When the SD_DMAEN.DMAEN bit is 1, set the SD_INFO2_MASK.BWEM bit to 1 and the SD_INFO2_MASK.BREM bit to 1. */
-    p_ctrl->p_reg->SD_INFO2_MASK |= SDHI_PRV_SD_INFO2_MASK_BREM_BWEM_MASK;
-    p_ctrl->p_reg->SD_DMAEN       = SDHI_PRV_SD_DMAEN_DMAEN_SET;
+    p_ctrl->p_reg->SDIMSK2 |= SDHI_PRV_SD_INFO2_MASK_BREM_BWEM_MASK;
+    p_ctrl->p_reg->SDDMAEN  = SDHI_PRV_SD_DMAEN_DMAEN_SET;
 
     uint32_t transfer_settings = (uint32_t) TRANSFER_MODE_BLOCK << TRANSFER_SETTINGS_MODE_BITS;
     transfer_settings |= TRANSFER_ADDR_MODE_INCREMENTED << TRANSFER_SETTINGS_SRC_ADDR_BITS;
@@ -2133,9 +2173,18 @@ fsp_err_t r_sdhi_transfer_write (sdhi_instance_ctrl_t * const p_ctrl,
         p_info->p_src = p_data;
     }
 
-    p_info->transfer_settings_word = transfer_settings;
-    p_info->p_dest                 = (uint32_t *) (&p_ctrl->p_reg->SD_BUF0);
-    p_info->num_blocks             = (uint16_t) block_count;
+    p_info->transfer_settings_u.transfer_settings_word = transfer_settings;
+    p_info->p_dest = (uint32_t *) (&p_ctrl->p_reg->SDBUFR);
+#if SDMMC_CFG_UNALIGNED_ACCESS_ENABLE && SDMMC_CFG_DTC_SUPPORT_ENABLE
+    if ((0U != ((uint32_t) p_data & 0x3U)) || (0U != (bytes & 3U)))
+    {
+        p_info->num_blocks = 1;
+    }
+    else
+#endif
+    {
+        p_info->num_blocks = (uint16_t) block_count;
+    }
 
     /* Round up to the nearest multiple of 4 bytes for the transfer. */
     uint32_t words = (bytes + (sizeof(uint32_t) - 1U)) / sizeof(uint32_t);
@@ -2163,7 +2212,7 @@ static void r_sdhi_transfer_end (sdhi_instance_ctrl_t * const p_ctrl)
     p_ctrl->transfer_block_size    = 0U;
 
     p_ctrl->p_cfg->p_lower_lvl_transfer->p_api->disable(p_ctrl->p_cfg->p_lower_lvl_transfer->p_ctrl);
-    p_ctrl->p_reg->SD_DMAEN = 0U;
+    p_ctrl->p_reg->SDDMAEN = 0U;
 }
 
 /*******************************************************************************************************************//**
@@ -2249,7 +2298,7 @@ void sdhimmc_card_isr (void)
     sdhi_instance_ctrl_t * p_ctrl = (sdhi_instance_ctrl_t *) R_FSP_IsrContextGet(irq);
 
     sdhi_event_t info1 = {0U};
-    info1.word = p_ctrl->p_reg->SD_INFO1;
+    info1.word = p_ctrl->p_reg->SDSTS1;
 
     if (0U != (info1.word & SDHI_PRV_SDHI_INFO1_CARD_REMOVED_MASK))
     {
@@ -2263,8 +2312,8 @@ void sdhimmc_card_isr (void)
     }
 
     /* Clear interrupt flags processed in this ISR. */
-    info1.word             &= SDHI_PRV_SDHI_INFO1_CARD_MASK;
-    p_ctrl->p_reg->SD_INFO1 = (~info1.word);
+    info1.word           &= SDHI_PRV_SDHI_INFO1_CARD_MASK;
+    p_ctrl->p_reg->SDSTS1 = (~info1.word);
 
     /* Call user callback if provided */
     args.p_context = p_ctrl->p_context;

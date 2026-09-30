@@ -46,6 +46,29 @@ typedef union
 
     struct s_sdhi_event_type
     {
+#if defined(__BIG) && defined(__GNUC__)
+        uint32_t ila_err            : 1; // < illegal access
+        uint32_t reserved_26        : 5;
+        uint32_t bwe                : 1; // < buffer write enable
+        uint32_t bre                : 1; // < buffer read enable
+        uint32_t event_error        : 1; // < all error flags combined
+        uint32_t rspt               : 1; // < response timeout
+        uint32_t ilr                : 1; // < illegal read address
+        uint32_t ilw                : 1; // < illegal write address
+        uint32_t dto                : 1; // < data timeout
+        uint32_t end_err            : 1; // < end bit error
+        uint32_t crc_err            : 1; // < crc error
+        uint32_t cmd_err            : 1; // < command error
+        uint32_t reserved_10        : 6;
+        uint32_t card_dat3_inserted : 1; // < card inserion detected by dat3 pin
+        uint32_t card_dat3_removed  : 1; // < card removal detected by dat3 pin
+        uint32_t reserved_5         : 3;
+        uint32_t card_inserted      : 1; // < card insertion detected by cd pin
+        uint32_t card_removed       : 1; // < card removal detected by cd pin
+        uint32_t access_end         : 1; // < access end detected
+        uint32_t reserved_1         : 1;
+        uint32_t response_end       : 1; // < response end detected
+#else
         uint32_t response_end       : 1; // < response end detected
         uint32_t reserved_1         : 1;
         uint32_t access_end         : 1; // < access end detected
@@ -67,6 +90,7 @@ typedef union
         uint32_t bwe                : 1; // < buffer write enable
         uint32_t reserved_26        : 5;
         uint32_t ila_err            : 1; // < illegal access
+#endif
     } bit;
 } sdhi_event_t;
 

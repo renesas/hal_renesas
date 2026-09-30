@@ -53,6 +53,9 @@ FSP_HEADER
 #define SDHI_PRV_IF_COND_CHECK_PATTERN                  (0xAAU)
 
 #define SDHI_PRV_OCR_CAPACITY_HC                        (1U << 30)
+#define SDHI_PRV_RESPONSE_R3_CARD_CAPACITY_STATUS       (1U << 30)
+#define SDHI_PRV_RESPONSE_R3_POWER_UP_STATUS            (1U << 31)
+#define SDHI_PRV_RESPONSE_R6_RCA_SHIFT                  (16U)
 
 #define SDHI_PRV_OCR_VDD_2_7_V                          (1U << 15)
 #define SDHI_PRV_OCR_VDD_2_8_V                          (1U << 16)
@@ -106,6 +109,29 @@ FSP_HEADER
 
 #define SDHI_PRV_CSD_CID_SERIAL_NUMBER_BITS             (32)
 #define SDHI_PRV_CSD_CID_PRODUCT_NAME_BITS              (40)
+#define SDHI_PRV_CSD_RESPONSE_BIT_OFFSET                (8U)
+
+/* CSD field bit positions */
+#define SDHI_PRV_CSD_STRUCTURE_HIGH_BIT                 (127U)
+#define SDHI_PRV_CSD_STRUCTURE_LOW_BIT                  (126U)
+#define SDHI_PRV_CSD_CCC_HIGH_BIT                       (95U)
+#define SDHI_PRV_CSD_CCC_LOW_BIT                        (84U)
+#define SDHI_PRV_CSD_READ_BL_LEN_HIGH_BIT               (83U)
+#define SDHI_PRV_CSD_READ_BL_LEN_LOW_BIT                (80U)
+#define SDHI_PRV_CSD_V1_C_SIZE_HIGH_BIT                 (73U)
+#define SDHI_PRV_CSD_V1_C_SIZE_LOW_BIT                  (62U)
+#define SDHI_PRV_CSD_V1_C_SIZE_MULT_HIGH_BIT            (49U)
+#define SDHI_PRV_CSD_V1_C_SIZE_MULT_LOW_BIT             (47U)
+#define SDHI_PRV_CSD_V1_SECTOR_SIZE_HIGH_BIT            (45U)
+#define SDHI_PRV_CSD_V1_SECTOR_SIZE_LOW_BIT             (39U)
+#define SDHI_PRV_CSD_V2_C_SIZE_HIGH_BIT                 (69U)
+#define SDHI_PRV_CSD_V2_C_SIZE_LOW_BIT                  (48U)
+
+#if defined(__BIG) && defined(__GNUC__)
+ #define SDHI_PRV_EXT_SWAP_ENABLE                       (1)
+#else
+ #define SDHI_PRV_EXT_SWAP_ENABLE                       (0)
+#endif
 
 /**********************************************************************************************************************
  * Typedef definitions
@@ -146,10 +172,17 @@ typedef struct st_sdmmc_priv_csd_reg
         struct
 #endif
         {
+#if defined(__BIG) && defined(__GNUC__)
+            volatile uint32_t sdrsp76;
+            volatile uint32_t sdrsp54;
+            volatile uint32_t sdrsp32;
+            volatile uint32_t sdrsp10;
+#else
             volatile uint32_t sdrsp10;
             volatile uint32_t sdrsp32;
             volatile uint32_t sdrsp54;
             volatile uint32_t sdrsp76;
+#endif
         } reg;
 
         /* All structures in this union must be packed since some bitfields span more than one 32-bit word. */
@@ -161,6 +194,43 @@ typedef struct st_sdmmc_priv_csd_reg
         struct
 #endif
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint64_t reserved_128       : 8;  ///< [135:128]
+            uint64_t csd_structure      : 2;  ///< [127:126] csd structure
+            uint64_t reserved_120       : 6;  ///< [125:120]
+            uint64_t taac               : 8;  ///< [119:112] data read access-time-1
+            uint64_t nsac               : 8;  ///< [111:104] data read access-time-2 clk cycles
+            uint64_t tran_speed         : 8;  ///< [103:96] max. data transfer rate
+            uint64_t ccc                : 12; ///< [95:84] card command classes
+            uint64_t read_bl_len        : 4;  ///< [83:80] max read data block length
+            uint64_t read_bl_partial    : 1;  ///< [79]    partial blocks for read allowed
+            uint64_t write_blk_misalign : 1;  ///< [78]    write block misalignment
+            uint64_t read_blk_misalign  : 1;  ///< [77]    read block misalignment
+            uint64_t dsr_imp            : 1;  ///< [76]    dsr implemented
+            uint64_t reserved_74        : 2;  ///< [75:74]
+            uint64_t c_size_l           : 2;  ///< [73:72] 2-bit lower of device size
+            uint64_t c_size_u           : 10; ///< [71:62] 10-bit upper of device size
+            uint64_t vdd_r_curr_min     : 3;  ///< [61:59] max. read current for vdd min
+            uint64_t vdd_r_curr_max     : 3;  ///< [58:56] max. read current for vdd max
+            uint64_t vdd_w_curr_min     : 3;  ///< [55:53] max. write current for vdd min
+            uint64_t vdd_w_curr_max     : 3;  ///< [52:50] max. write current for vdd max
+            uint64_t c_size_mult        : 3;  ///< [49:47] device size multiplier*/
+            uint64_t erase_blk_en       : 1;  ///< [46]    erase single block enable
+            uint64_t sector_size        : 7;  ///< [45:39] erase sector size
+            uint64_t wp_grp_size        : 7;  ///< [38:32] write protect group size
+            uint64_t wp_grp_enable      : 1;  ///< [31]    write protect group enable
+            uint64_t reserved_29        : 2;  ///< [30:29]
+            uint64_t r2w_factor         : 3;  ///< [28:26] write speed factor
+            uint64_t write_bl_len       : 4;  ///< [25:22] max. write data block length
+            uint64_t write_bl_partial   : 1;  ///< [21]    partial blocks for write allowed
+            uint64_t reserved_20        : 5;  ///< [16-20]
+            uint64_t file_format_grp    : 1;  ///< [15]    file format group
+            uint64_t copy               : 1;  ///< [14]    copy flag
+            uint64_t perm_write_protect : 1;  ///< [13]    permanent write protection
+            uint64_t tmp_write_protect  : 1;  ///< [12]    temporary write protection
+            uint64_t file_format        : 2;  ///< [11:10] file format
+            uint64_t reserved_8         : 2;  ///< [9:8]
+#else
             uint64_t reserved_8         : 2;  ///< [9:8]
             uint64_t file_format        : 2;  ///< [11:10] file format
             uint64_t tmp_write_protect  : 1;  ///< [12]    temporary write protection
@@ -196,6 +266,7 @@ typedef struct st_sdmmc_priv_csd_reg
             uint64_t reserved_120       : 6;  ///< [125:120]
             uint64_t csd_structure      : 2;  ///< [127:126] csd structure
             uint64_t reserved_128       : 8;  ///< [135:128]
+#endif
         } csd_v1_b;
 
         /* All structures in this union must be packed since some bitfields span more than one 32-bit word. */
@@ -207,6 +278,39 @@ typedef struct st_sdmmc_priv_csd_reg
         struct
 #endif
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint64_t reserved_128       : 8;  ///< [135:128]
+            uint64_t csd_structure      : 2;  ///< [127:126] csd structure
+            uint64_t reserved_120       : 6;  ///< [125:120]
+            uint64_t taac               : 8;  ///< [119:112] data read access-time-1
+            uint64_t nsac               : 8;  ///< [111:104] data read access-time-2 clk cycles
+            uint64_t tran_speed         : 8;  ///< [103:96] max. data transfer rate
+            uint64_t ccc                : 12; ///< [95:84] card command classes
+            uint64_t read_bl_len        : 4;  ///< [83:80] max read data block length
+            uint64_t read_bl_partial    : 1;  ///< [79]    partial blocks for read allowed
+            uint64_t write_blk_misalign : 1;  ///< [78]    write block misalignment
+            uint64_t read_blk_misalign  : 1;  ///< [77]    read block misalignment
+            uint64_t dsr_imp            : 1;  ///< [76]    dsr implemented
+            uint64_t reserved_72        : 4;  ///< [75:72]
+            uint64_t reserved_70        : 2;  ///< [71:70]
+            uint64_t c_size             : 22; ///< [69:48] device size
+            uint64_t reserved_47        : 1;  ///< [47]
+            uint64_t erase_blk_en       : 1;  ///< [46]    erase single block enable
+            uint64_t sector_size        : 7;  ///< [45:39] erase sector size
+            uint64_t wp_grp_size        : 7;  ///< [38:32] write protect group size
+            uint64_t wp_grp_enable      : 1;  ///< [31]    write protect group enable
+            uint64_t reserved_29        : 2;  ///< [30:29]
+            uint64_t r2w_factor         : 3;  ///< [28:26] write speed factor
+            uint64_t write_bl_len       : 4;  ///< [25:22] max. write data block length
+            uint64_t write_bl_partial   : 1;  ///< [21]    partial blocks for write allowed
+            uint64_t reserved_20        : 5;  ///< [20:16]
+            uint64_t file_format_grp    : 1;  ///< [15]    file format group
+            uint64_t copy               : 1;  ///< [14]    copy flag
+            uint64_t perm_write_protect : 1;  ///< [13]    permanent write protection
+            uint64_t tmp_write_protect  : 1;  ///< [12]    temporary write protection
+            uint64_t file_format        : 2;  ///< [11:10] file format
+            uint64_t reserved_8         : 2;  ///< [9:8]
+#else
             uint64_t reserved_8         : 2;  ///< [9:8]
             uint64_t file_format        : 2;  ///< [11:10] file format
             uint64_t tmp_write_protect  : 1;  ///< [12]    temporary write protection
@@ -238,6 +342,7 @@ typedef struct st_sdmmc_priv_csd_reg
             uint64_t reserved_120       : 6;  ///< [125:120]
             uint64_t csd_structure      : 2;  ///< [127:126] csd structure
             uint64_t reserved_128       : 8;  ///< [135:128]
+#endif
         } csd_v2_b;
 
         /* All structures in this union must be packed since some bitfields span more than one 32-bit word. */
@@ -249,6 +354,17 @@ typedef struct st_sdmmc_priv_csd_reg
         struct
 #endif
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint64_t mfg_id           : 8;
+            uint64_t oem_id           : 16;
+            uint64_t product_name     : SDHI_PRV_CSD_CID_PRODUCT_NAME_BITS;
+            uint64_t product_revision : 8;
+            uint64_t serial_number    : SDHI_PRV_CSD_CID_SERIAL_NUMBER_BITS;
+            uint64_t reserved_23      : 4;
+            uint64_t mfg_date         : 12;
+            uint64_t crc              : 7;
+            uint64_t reserved_0       : 1;
+#else
             uint64_t reserved_0       : 1;
             uint64_t crc              : 7;
             uint64_t mfg_date         : 12;
@@ -258,9 +374,54 @@ typedef struct st_sdmmc_priv_csd_reg
             uint64_t product_name     : SDHI_PRV_CSD_CID_PRODUCT_NAME_BITS;
             uint64_t oem_id           : 16;
             uint64_t mfg_id           : 8;
+#endif
         } cid;
-    };
+    } csd_u;
 } sdmmc_priv_csd_reg_t;
+
+/*******************************************************************************************************************//**
+ * Extracts a CSD field from the SD R2 response registers.
+ *
+ * @param[in]  p_csd_reg    Pointer to card specific data.
+ * @param[in]  high_bit     CSD field high bit.
+ * @param[in]  low_bit      CSD field low bit.
+ *
+ * @return     Extracted CSD field value.
+ **********************************************************************************************************************/
+__STATIC_INLINE uint32_t r_sdhi_csd_bitfield_get (sdmmc_priv_csd_reg_t const * const p_csd_reg,
+                                                  uint32_t                           high_bit,
+                                                  uint32_t                           low_bit)
+{
+    uint32_t const response_word[] =
+    {
+        p_csd_reg->csd_u.reg.sdrsp10,
+        p_csd_reg->csd_u.reg.sdrsp32,
+        p_csd_reg->csd_u.reg.sdrsp54,
+        p_csd_reg->csd_u.reg.sdrsp76,
+    };
+
+    uint32_t bit_count = (high_bit - low_bit) + 1U;
+    uint32_t bit_index = low_bit - SDHI_PRV_CSD_RESPONSE_BIT_OFFSET;
+    uint32_t value     = 0U;
+    uint32_t shift     = 0U;
+
+    while (bit_count > 0U)
+    {
+        uint32_t word_index      = bit_index / 32U;
+        uint32_t word_bit_offset = bit_index % 32U;
+        uint32_t bits_available  = 32U - word_bit_offset;
+        uint32_t bits_to_copy    = (bit_count < bits_available) ? bit_count : bits_available;
+        uint32_t mask            = (32U == bits_to_copy) ? UINT32_MAX : ((1U << bits_to_copy) - 1U);
+
+        value |= ((response_word[word_index] >> word_bit_offset) & mask) << shift;
+
+        bit_count -= bits_to_copy;
+        bit_index += bits_to_copy;
+        shift     += bits_to_copy;
+    }
+
+    return value;
+}
 
 /** Common macro for FSP header files. There is also a corresponding FSP_HEADER macro at the top of this file. */
 FSP_FOOTER

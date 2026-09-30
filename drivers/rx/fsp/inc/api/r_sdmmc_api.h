@@ -103,6 +103,8 @@ typedef enum e_sdmmc_write_protect
     SDMMC_WRITE_PROTECT_WP,            ///< Write protection using WP pin
 } sdmmc_write_protect_t;
 
+#ifndef BSP_OVERRIDE_SDMMC_R1_STATE_T
+
 /** Card state when receiving the prior command. */
 typedef enum e_sdmmc_r1_state
 {
@@ -117,6 +119,10 @@ typedef enum e_sdmmc_r1_state
     SDMMC_R1_STATE_DIS   = 0,          ///< Disconnect State (between programming and stand-by)
     SDMMC_R1_STATE_IO    = 15,         ///< This is an I/O card and memory states do not apply
 } sdmmc_r1_state_t;
+
+#endif
+
+#ifndef BSP_OVERRIDE_SDMMC_RESPONSE_T
 
 /* Structure for decoding the response of a command.  For advanced use only. */
 typedef union u_sdmmc_response
@@ -226,6 +232,8 @@ typedef union u_sdmmc_response
         uint32_t reserved_11      : 20;
     } r7;
 } sdmmc_response_t;
+
+#endif
 
 /** Current status. */
 typedef struct s_sdmmc_status
