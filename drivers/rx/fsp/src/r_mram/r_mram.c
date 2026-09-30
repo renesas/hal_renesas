@@ -29,7 +29,23 @@
 #define MRAM_PRV_MACI_CMD_FORCED_STOP                (0xB3U)
 #define MRAM_PRV_MACI_CMD_CONFIG_SET_1               (0x40U)
 #define MRAM_PRV_MACI_CMD_CONFIG_SET_2               (0x08U)
+#define MRAM_PRV_MACI_CMD_INCREMENT_COUNTER          (0x35U)
+#define MRAM_PRV_MACI_CMD_READ_COUNTER               (0x39U)
 #define MRAM_PRV_MACI_CMD_FINAL                      (0xD0U)
+
+#ifndef MRAM_PRV_OFS_ARCCS_ADDR
+ #define MRAM_PRV_OFS_ARCCS_ADDR                     (0x86E30E30U)
+#endif
+#ifndef MRAM_PRV_OFS_ARC_SEC_ADDR
+ #define MRAM_PRV_OFS_ARC_SEC_ADDR                   (0x86F41D00U)
+#endif
+#ifndef MRAM_PRV_OFS_ARC_NSEC_ADDR
+ #define MRAM_PRV_OFS_ARC_NSEC_ADDR                  (0x86F41E00U)
+#endif
+#define MRAM_PRV_OFS_ARCCS_ARCS_Msk                  (0x3U)
+#define MRAM_PRV_OFS_ARCCS_ARCS_OFFSET               (24U)
+#define MRAM_PRV_OFS_ARCCS_ARCNS_Msk                 (0x3U)
+#define MRAM_PRV_OFS_ARCCS_ARCNS_OFFSET              (16U)
 
 /* 8 words need to be written for code MRAM */
 #define MRAM_PRV_CONFIG_SET_ACCESS_WORD_CNT          (8U)
@@ -42,20 +58,31 @@
 
 #define MRAM_PRV_FREQUENCY_IN_HZ                     (1000000U)
 
-#define MRAM_PRV_MAX_MRAM_WRITE_US                   (100)
-#define MRAM_PRV_MAX_CONFIGURATION_SET_US            (10000)
-#define MRAM_PRV_MAX_MACI_COMMAND_US                 (4)
+#define MRAM_PRV_MAX_MRAM_WRITE_US                   (100U)
+#define MRAM_PRV_MAX_ARC_INCREMENT_US                (2000U)
+#define MRAM_PRV_MAX_ARC_READ_US                     (1U)
+#define MRAM_PRV_MAX_CONFIGURATION_SET_US            (10000U)
+#define MRAM_PRV_MAX_MACI_COMMAND_US                 (4U)
 
-#define MRAM_PRV_MRCPC0_KEY                          (0x8600)
-#define MRAM_PRV_MRCPC1_KEY                          (0x6800)
+#define MRAM_PRV_ARCS_MODE2                          (0U) // ARCMD setting for Mode2
+#define MRAM_PRV_ARCS_MODE1                          (1U) // ARCMD setting for Mode1
+#define MRAM_PRV_ARCNS_SINGLE                        (1U) // ARCNS setting for single ARC_NSEC counter
+#define MRAM_PRV_ARCNS_MULTIPLE                      (0U) // ARCNS setting for multiple ARC_NSEC counters
+#define MRAM_PRV_ARC_MCNTSELR_OEMBL                  (2U)
+#define MRAM_PRV_ARC_MCNTSELR_SEC                    (1U)
+#define MRAM_PRV_ARC_MCNTSELR_NSEC_0                 (4U)
+#define MRAM_PRV_64_BITS                             (64U)
 
-#define MRAM_PRV_MRCFLR_FLUSH                        (0xC301)
-#define MRAM_PRV_MRCBFLR_FLUSH                       (0xC302)
+#define MRAM_PRV_MRCPCNS_KEY                         (0x8600U)
+#define MRAM_PRV_MRCPCS_KEY                          (0x6800U)
 
-#define MRAM_PRV_MRC_AREA_A                          (0)
-#define MRAM_PRV_MRC_AREA_B                          (1)
+#define MRAM_PRV_MRCFLR_FLUSH                        (0xC301U)
+#define MRAM_PRV_MRCBFLR_FLUSH                       (0xC302U)
 
-#define MRAM_PRV_MRDFLR_FLUSH                        (0xC401)
+#define MRAM_PRV_MRC_AREA_A                          (0U)
+#define MRAM_PRV_MRC_AREA_B                          (1U)
+
+#define MRAM_PRV_MRDFLR_FLUSH                        (0xC401U)
 
 /* The number of CPU cycles per each timeout loop. */
 #ifndef MRAM_PRV_MINIMUM_CYCLES_PER_TIMEOUT_LOOP
@@ -88,16 +115,16 @@ typedef struct                         /*!< (@ 0x87080000) MRAM_PRV_CMD Structur
 static const flash_block_info_t g_code_mram_macro_info[] =
 {
     {
-        .block_section_st_addr  = BSP_FEATURE_MRAM_REGION_CODE_A_START_ADDRESS,
+        .block_section_st_addr  = BSP_MRAM_REGION_CODE_A_START_ADDRESS,
         .block_section_end_addr =
-            (uint32_t) (BSP_FEATURE_MRAM_REGION_CODE_A_START_ADDRESS + (BSP_ROM_SIZE_BYTES / 2) - 1),
+            (uint32_t) (BSP_MRAM_REGION_CODE_A_START_ADDRESS + (BSP_ROM_SIZE_BYTES / 2) - 1),
         .block_size       = BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES,
         .block_size_write = 1
     },
     {
-        .block_section_st_addr  = BSP_FEATURE_MRAM_REGION_CODE_B_START_ADDRESS,
+        .block_section_st_addr  = BSP_MRAM_REGION_CODE_B_START_ADDRESS,
         .block_section_end_addr =
-            (uint32_t) (BSP_FEATURE_MRAM_REGION_CODE_B_START_ADDRESS + (BSP_ROM_SIZE_BYTES / 2) - 1),
+            (uint32_t) (BSP_MRAM_REGION_CODE_B_START_ADDRESS + (BSP_ROM_SIZE_BYTES / 2) - 1),
         .block_size       = BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES,
         .block_size_write = 1
     }
@@ -144,12 +171,31 @@ static const mram_program_info_t g_mram_program_info[] =
 #endif
 };
 
+static int clz (uint32_t val) {
+    int i;
+    for (i = 0; i < 32; i++)           // NOLINT(readability-magic-numbers)
+    {
+        if (val & (1U << (31 - i)))    // NOLINT(readability-magic-numbers)
+        {
+            break;
+        }
+    }
+
+    return i;
+}
+
+#define __CLZ(x)    clz(x)
+
 /***********************************************************************************************************************
  * Private function prototypes
  **********************************************************************************************************************/
 
 /* Internal functions. */
 static void mram_init(mram_instance_ctrl_t * p_ctrl);
+
+static fsp_err_t mram_transition_to_read_mode(mram_instance_ctrl_t * p_ctrl);
+
+static fsp_err_t mram_stop(mram_instance_ctrl_t * p_ctrl);
 
 static fsp_err_t mram_erase_blocks(uint32_t                          address,
                                    uint32_t                          num_blocks,
@@ -162,6 +208,10 @@ static fsp_err_t mram_write_data(uint32_t                          src_address,
 
 static void mram_program_control(uint32_t address, bool enable);
 
+static fsp_err_t mram_check_errors(mram_instance_ctrl_t * const p_ctrl, fsp_err_t previous_error);
+
+static void mram_enter_pe_mode(void);
+
 #if (MRAM_CFG_PARAM_CHECKING_ENABLE == 1)
 
 static fsp_err_t r_mram_common_parameter_checking(mram_instance_ctrl_t * const p_ctrl);
@@ -170,6 +220,20 @@ static fsp_err_t r_mram_write_erase_parameter_checking(mram_instance_ctrl_t * co
                                                        uint32_t                     mram_address,
                                                        uint32_t const               num_bytes,
                                                        fsp_err_t                    size_err);
+
+#endif
+
+static uint8_t   mram_counter_to_mcntselr_convert(flash_arc_t counter);
+static fsp_err_t mram_arc_read(mram_instance_ctrl_t * const p_ctrl, uint8_t mcntselr, uint32_t * const p_count);
+static fsp_err_t mram_arc_cmd_execute(mram_instance_ctrl_t * const p_ctrl,
+                                      uint8_t                      mcntselr,
+                                      uint8_t                      cmd,
+                                      volatile uint32_t            wait_count);
+
+#if (MRAM_CFG_PARAM_CHECKING_ENABLE == 1)
+static fsp_err_t r_mram_arc_common_parameter_checking(mram_instance_ctrl_t * const p_ctrl,
+                                                      flash_arc_t                  counter,
+                                                      uint8_t                      mcntselr);
 
 #endif
 
@@ -294,7 +358,7 @@ fsp_err_t R_MRAM_Write (flash_ctrl_t * const p_api_ctrl,
 #endif
     FSP_ERROR_RETURN(0 == (R_MRAM->MRCPS & (R_MRAM_MRCPS_ABUFFULL_Msk | R_MRAM_MRCPS_PRGBSYC_Msk)), FSP_ERR_IN_USE);
 
-    if (mram_address >= BSP_FEATURE_FLASH_CODE_FLASH_START)
+    if (mram_address >= BSP_FLASH_CODE_FLASH_START_ADDRESS)
     {
         for (uint8_t area = 0; area < BSP_FEATURE_MRAM_REGION_CODE_AREA_NUM; area++)
         {
@@ -336,7 +400,7 @@ fsp_err_t R_MRAM_Erase (flash_ctrl_t * const p_api_ctrl, uint32_t const address,
     fsp_err_t err = FSP_SUCCESS;
     uint8_t   mram_program_size;
 
-    if ((address & BSP_FEATURE_FLASH_CODE_FLASH_START) == BSP_FEATURE_FLASH_CODE_FLASH_START)
+    if ((address & BSP_FLASH_CODE_FLASH_START_ADDRESS) == BSP_FLASH_CODE_FLASH_START_ADDRESS)
     {
         mram_program_size = BSP_FEATURE_MRAM_PROGRAMMING_SIZE_BYTES;
     }
@@ -355,7 +419,7 @@ fsp_err_t R_MRAM_Erase (flash_ctrl_t * const p_api_ctrl, uint32_t const address,
     FSP_ERROR_RETURN(0 == address % mram_program_size, FSP_ERR_INVALID_ADDRESS);
 #endif
 
-    if (address >= BSP_FEATURE_FLASH_CODE_FLASH_START)
+    if (address >= BSP_FLASH_CODE_FLASH_START_ADDRESS)
     {
         for (uint8_t area = 0; area < BSP_FEATURE_MRAM_REGION_CODE_AREA_NUM; area++)
         {
@@ -636,15 +700,59 @@ fsp_err_t R_MRAM_CallbackSet (flash_ctrl_t * const          p_api_ctrl,
  * @note The counter is read internally before increment.
  *
  * Implements @ref flash_api_t::antiRollbackCounterIncrement
- * @retval     FSP_ERR_UNSUPPORTED  anti-rollback counter increment is not supported on this MCU
+ *
+ * @retval     FSP_SUCCESS              Counter incremented successfully
+ * @retval     FSP_ERR_ASSERTION        NULL provided for p_api_ctrl
+ * @retval     FSP_ERR_NOT_OPEN         The MRAM module is not open.
+ * @retval     FSP_ERR_IN_USE           The MRAM peripheral is busy with a prior on-going transaction.
+ * @retval     FSP_ERR_NOT_ENABLED      The specified counter has not been configured (configuration is only required for ARC_NSEC)
+ * @retval     FSP_ERR_OVERFLOW         The counter cannot be incremented because it is already at its max value
+ * @retval     FSP_ERR_TIMEOUT          Timed out waiting for the MACI to become ready.
+ * @retval     FSP_ERR_CMD_LOCKED       MRAM Application Command Interface is in locked state
+ * @retval     FSP_ERR_HUK_ZEROIZATION  HUK ZEROIZATION command is executing
+ * @retval     FSP_ERR_UNSUPPORTED      Selected anti-rollback counter is not supported on this MCU
  **********************************************************************************************************************/
 fsp_err_t R_MRAM_AntiRollbackCounterIncrement (flash_ctrl_t * const p_api_ctrl, flash_arc_t counter)
 {
-    /* Eliminate warning. */
-    FSP_PARAMETER_NOT_USED(p_api_ctrl);
-    FSP_PARAMETER_NOT_USED(counter);
+    fsp_err_t err;
 
-    return FSP_ERR_UNSUPPORTED;
+    mram_instance_ctrl_t * p_ctrl   = (mram_instance_ctrl_t *) p_api_ctrl;
+    uint8_t                mcntselr = mram_counter_to_mcntselr_convert(counter);
+
+#if MRAM_CFG_PARAM_CHECKING_ENABLE
+    err = r_mram_arc_common_parameter_checking(p_ctrl, counter, mcntselr);
+    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+#endif
+
+    /* Read the current counter value*/
+    uint32_t count;
+    err = mram_arc_read(p_ctrl, mcntselr, &count);
+    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+    /* Check for overflow. */
+    uint32_t max_count;
+    if (counter >= FLASH_ARC_NSEC_0)
+    {
+        uint8_t arcns = (uint8_t) (*((uint32_t *) MRAM_PRV_OFS_ARCCS_ADDR) & MRAM_PRV_OFS_ARCCS_ARCNS_Msk);
+        max_count = (arcns == MRAM_PRV_ARCNS_MULTIPLE) ?
+                    BSP_FEATURE_FLASH_ARC_NSEC_MULTIPLE_MAX_COUNT : BSP_FEATURE_FLASH_ARC_NSEC_SINGLE_MAX_COUNT;
+    }
+    else if (counter == FLASH_ARC_OEMBL)
+    {
+        max_count = BSP_FEATURE_FLASH_ARC_OEMBL_MAX_COUNT;
+    }
+    else
+    {
+        max_count = BSP_FEATURE_FLASH_ARC_SEC_MAX_COUNT;
+    }
+
+    FSP_ERROR_RETURN((count + 1) <= max_count, FSP_ERR_OVERFLOW);
+
+    /* Increment the counter */
+    err =
+        mram_arc_cmd_execute(p_ctrl, mcntselr, MRAM_PRV_MACI_CMD_INCREMENT_COUNTER, p_ctrl->timeout_arc_increment);
+
+    return err;
 }
 
 /*******************************************************************************************************************//**
@@ -655,7 +763,6 @@ fsp_err_t R_MRAM_AntiRollbackCounterIncrement (flash_ctrl_t * const p_api_ctrl, 
  **********************************************************************************************************************/
 fsp_err_t R_MRAM_AntiRollbackCounterRefresh (flash_ctrl_t * const p_api_ctrl, flash_arc_t counter)
 {
-    /* Eliminate warning. */
     FSP_PARAMETER_NOT_USED(p_api_ctrl);
     FSP_PARAMETER_NOT_USED(counter);
 
@@ -667,17 +774,34 @@ fsp_err_t R_MRAM_AntiRollbackCounterRefresh (flash_ctrl_t * const p_api_ctrl, fl
  *
  * Implements @ref flash_api_t::antiRollbackCounterRead
  *
- * @retval     FSP_ERR_UNSUPPORTED  Anti-Rollback counter read is not supported on this MCU
+ * @retval     FSP_SUCCESS          Counter read successfully into p_count
+ * @retval     FSP_ERR_NOT_OPEN     The control block is not open.
+ * @retval     FSP_ERR_ASSERTION    NULL provided for p_api_ctrl or p_count
+ * @retval     FSP_ERR_NOT_ENABLED  The specified counter has not been configured (configuration is only required for ARC_NSEC)
+ * @retval     FSP_ERR_TIMEOUT      Timed out waiting for the MACI to become ready.
+ * @retval     FSP_ERR_CMD_LOCKED   MRAM Application Command Interface is in locked state
+ * @retval     FSP_ERR_IN_USE       The MRAM peripheral is busy with a prior on-going transaction.
+ * @retval     FSP_ERR_UNSUPPORTED  The Anti Rollback Counter requested is unsupported on this MCU.
  **********************************************************************************************************************/
 fsp_err_t R_MRAM_AntiRollbackCounterRead (flash_ctrl_t * const p_api_ctrl, flash_arc_t counter,
                                           uint32_t * const p_count)
 {
-    /* Eliminate warning. */
-    FSP_PARAMETER_NOT_USED(p_api_ctrl);
-    FSP_PARAMETER_NOT_USED(counter);
-    FSP_PARAMETER_NOT_USED(p_count);
+    fsp_err_t err;
 
-    return FSP_ERR_UNSUPPORTED;
+    mram_instance_ctrl_t * p_ctrl   = (mram_instance_ctrl_t *) p_api_ctrl;
+    uint8_t                mcntselr = mram_counter_to_mcntselr_convert(counter);
+
+#if MRAM_CFG_PARAM_CHECKING_ENABLE
+    err = r_mram_arc_common_parameter_checking(p_ctrl, counter, mcntselr);
+    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+    FSP_ASSERT(p_count);
+#endif
+
+    /* Read the counter */
+    err = mram_arc_read(p_ctrl, mcntselr, p_count);
+    FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+    return err;
 }
 
 /*******************************************************************************************************************//**
@@ -845,7 +969,48 @@ static void mram_program_control (uint32_t address, bool enable)
     }
 
     /* Enable or Disable writing to Secure MRAM */
-    R_MRAM->MRCPC1 = (uint16_t) (MRAM_PRV_MRCPC1_KEY | enable);
+    R_MRAM->MRCPCS = (uint16_t) (MRAM_PRV_MRCPCS_KEY | enable);
+}
+
+/*******************************************************************************************************************//**
+ * Check for errors after a MRAM operation
+ *
+ * @param[in]  p_ctrl              MRAM control block
+ * @param[in]  previous_error      The previous error
+ *
+ * @retval     FSP_SUCCESS         Command completed successfully
+ * @retval     FSP_ERR_CMD_LOCKED  MRAM entered command locked state
+ * @retval     FSP_ERR_HUK_ZEROIZATION HUK ZEROIZATION command is executing.
+ * @retval     FSP_ERR_TIMEOUT     Timeout executing the Forced Stop Command.
+ **********************************************************************************************************************/
+static fsp_err_t mram_check_errors (mram_instance_ctrl_t * const p_ctrl, fsp_err_t previous_error)
+{
+    /* See "Recovery from the Command-Locked State" in the MRAM section of the relevant hardware manual. */
+    fsp_err_t err = FSP_SUCCESS;
+
+    if (1U == R_MRAM->MASTAT_b.CMDLK)
+    {
+        err = FSP_ERR_CMD_LOCKED;
+    }
+
+    if (1U == R_MRAM->MREZS_b.WHUKEXE)
+    {
+        err = FSP_ERR_HUK_ZEROIZATION;
+    }
+
+    /* Return the first error code that was encountered. */
+    if (FSP_SUCCESS != previous_error)
+    {
+        err = previous_error;
+    }
+
+    if (FSP_SUCCESS != err)
+    {
+        /* Stop the MRAM and return the previous error. */
+        (void) mram_stop(p_ctrl);
+    }
+
+    return err;
 }
 
 #if (MRAM_CFG_PARAM_CHECKING_ENABLE == 1)
@@ -873,12 +1038,12 @@ static fsp_err_t r_mram_write_erase_parameter_checking (mram_instance_ctrl_t * c
     fsp_err_t err = r_mram_common_parameter_checking(p_ctrl);
     FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
 
-    if (mram_address >= BSP_FEATURE_FLASH_CODE_FLASH_START)
+    if (mram_address >= BSP_FLASH_CODE_FLASH_START_ADDRESS)
     {
-        FSP_ERROR_RETURN(BSP_FEATURE_FLASH_CODE_FLASH_START <= mram_address, FSP_ERR_INVALID_ADDRESS);
-        FSP_ERROR_RETURN(mram_address < (BSP_FEATURE_FLASH_CODE_FLASH_START - 1) + BSP_ROM_SIZE_BYTES,
+        FSP_ERROR_RETURN(BSP_FLASH_CODE_FLASH_START_ADDRESS <= mram_address, FSP_ERR_INVALID_ADDRESS);
+        FSP_ERROR_RETURN(mram_address < (BSP_FLASH_CODE_FLASH_START_ADDRESS - 1) + BSP_ROM_SIZE_BYTES,
                          FSP_ERR_INVALID_ADDRESS);
-        FSP_ERROR_RETURN(mram_address <= (((BSP_FEATURE_FLASH_CODE_FLASH_START - 1) + BSP_ROM_SIZE_BYTES) - num_bytes),
+        FSP_ERROR_RETURN(mram_address <= (((BSP_FLASH_CODE_FLASH_START_ADDRESS - 1) + BSP_ROM_SIZE_BYTES) - num_bytes),
                          size_err);
     }
     else
@@ -924,7 +1089,233 @@ static fsp_err_t r_mram_common_parameter_checking (mram_instance_ctrl_t * const 
     return FSP_SUCCESS;
 }
 
+/*******************************************************************************************************************//**
+ * This function performs the common parameter checking required by top level Anti Rollback Counter API functions.
+ *
+ * @param      p_ctrl                Pointer to the control block
+ * @param      counter               The counter to be incremented or read
+ * @param      mcntselr              The current setting of the MCNTSELR : MRAM Counter Select Register
+ *
+ * @retval     FSP_SUCCESS           Parameter checking completed without error.
+ * @retval     FSP_ERR_ASSERTION     Null pointer
+ * @retval     FSP_ERR_IN_USE        The MRAM peripheral is busy with a prior on-going transaction.
+ * @retval     FSP_ERR_NOT_OPEN      The MRAM module is not open.
+ * @retval     FSP_ERR_UNSUPPORTED   The Anti Rollback Counter requested is unsupported on this MCU.
+ * @retval     FSP_ERR_NOT_ENABLED   The specified counter has not been configured.
+ **********************************************************************************************************************/
+static fsp_err_t r_mram_arc_common_parameter_checking (mram_instance_ctrl_t * const p_ctrl,
+                                                       flash_arc_t                  counter,
+                                                       uint8_t                      mcntselr)
+{
+    fsp_err_t err = r_mram_common_parameter_checking(p_ctrl);
+    FSP_ERROR_RETURN(err == FSP_SUCCESS, err);
+
+    uint8_t arcns =
+        (uint8_t) ((*((uint32_t *) MRAM_PRV_OFS_ARCCS_ADDR) &
+                    (MRAM_PRV_OFS_ARCCS_ARCNS_Msk << MRAM_PRV_OFS_ARCCS_ARCNS_OFFSET)) >>
+                   MRAM_PRV_OFS_ARCCS_ARCNS_OFFSET);
+    uint8_t target_counter_is_arc_ns  = (uint8_t) (mcntselr & 0x4);
+    uint8_t target_counter_is_enabled = (uint8_t) ((MRAM_PRV_ARCNS_MULTIPLE == arcns) ||
+                                                   ((MRAM_PRV_ARCNS_SINGLE == arcns) && (counter == FLASH_ARC_NSEC_0)));
+
+    uint8_t arcs =
+        (uint8_t) ((*((uint32_t *) MRAM_PRV_OFS_ARCCS_ADDR) &
+                    (MRAM_PRV_OFS_ARCCS_ARCS_Msk << MRAM_PRV_OFS_ARCCS_ARCS_OFFSET)) >>
+                   MRAM_PRV_OFS_ARCCS_ARCS_OFFSET);
+    uint8_t target_counter_is_arc_s     = (uint8_t) (((mcntselr & 0x1U) != 0U) && ((mcntselr & 0x4U) == 0U));
+    uint8_t target_counter_is_enabled_s = (uint8_t) ((MRAM_PRV_ARCS_MODE1 == arcs) || (MRAM_PRV_ARCS_MODE2 == arcs));
+
+    /* Ensure that requested counter is supported by hardware. Some MCUs may not support all counter types. */
+ #if (0 == BSP_FEATURE_FLASH_ARC_OEMBL_MAX_COUNT)
+    FSP_ERROR_RETURN(counter != FLASH_ARC_OEMBL, FSP_ERR_UNSUPPORTED);
+ #endif
+
+ #if (0 == BSP_FEATURE_FLASH_ARC_SEC_MAX_COUNT)
+    FSP_ERROR_RETURN(counter != FLASH_ARC_SEC, FSP_ERR_UNSUPPORTED);
+    FSP_ERROR_RETURN(0 == target_counter_s_is_arc, FSP_ERR_UNSUPPORTED);
+ #endif
+
+ #if (0 == BSP_FEATURE_FLASH_ARC_NSEC_NUM_COUNTERS)
+    FSP_ERROR_RETURN(0 == target_counter_is_arc_ns, FSP_ERR_UNSUPPORTED);
+ #endif
+
+    /* Ensure that requested NSEC counter has been configured when NSEC is the target counter */
+    FSP_ERROR_RETURN(!target_counter_is_arc_ns || target_counter_is_enabled, FSP_ERR_NOT_ENABLED);
+
+    /* Ensure that requested SEC counter has been configured when SEC is the target counter */
+    FSP_ERROR_RETURN(!target_counter_is_arc_s || target_counter_is_enabled_s, FSP_ERR_NOT_ENABLED);
+
+    return FSP_SUCCESS;
+}
+
 #endif
+
+/*******************************************************************************************************************//**
+ * This function converts the MRAM API counter enumeration to the register value for MCNTSELR
+ *
+ * @param counter The API counter value
+ *
+ * @returns MCNTSELR value
+ **********************************************************************************************************************/
+static uint8_t mram_counter_to_mcntselr_convert (flash_arc_t counter)
+{
+    return (uint8_t) ((counter < FLASH_ARC_NSEC_0 ? counter + 1 : counter + 2) & R_MRAM_MCNTSELR_CNTSEL_Msk);
+}
+
+/*******************************************************************************************************************//**
+ * This function reads the anti-rollback counter value
+ *
+ * ARC_OEMBL is read by MACI command because it is required to be read before increment to support RSIP-E50D comparison
+ * by the MACI controller. The other counters are read by memory-mapped read.
+ *
+ * @param p_ctrl     MRAM control block
+ * @param mcntselr   MCNTSELR register value
+ * @param p_count    The counter value
+ *
+ * @returns mCNTSELR value
+ **********************************************************************************************************************/
+static fsp_err_t mram_arc_read (mram_instance_ctrl_t * const p_ctrl, uint8_t mcntselr, uint32_t * const p_count)
+{
+    fsp_err_t           err;
+    volatile uint32_t * p_src;
+    uint32_t            counter_num_words;
+    uint32_t            arc_oembl[2];
+
+    switch (mcntselr)
+    {
+        case MRAM_PRV_ARC_MCNTSELR_OEMBL:
+        {
+            err = mram_arc_cmd_execute(p_ctrl, mcntselr, MRAM_PRV_MACI_CMD_READ_COUNTER, p_ctrl->timeout_arc_read);
+            FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
+
+            /* Read the counter values after successful MACI read command */
+            arc_oembl[0] = R_MRAM->MCNTDTR0;
+            arc_oembl[1] = R_MRAM->MCNTDTR1;
+
+            p_src             = arc_oembl;
+            counter_num_words = BSP_FEATURE_FLASH_ARC_OEMBL_MAX_COUNT >> 5;
+            break;
+        }
+
+        case MRAM_PRV_ARC_MCNTSELR_SEC:
+        {
+            p_src             = (uint32_t *) MRAM_PRV_OFS_ARC_SEC_ADDR;
+            counter_num_words = BSP_FEATURE_FLASH_ARC_SEC_MAX_COUNT >> 5;
+            break;
+        }
+
+        default:                       // ARC_NSEC
+        {
+            uint8_t arcns =
+                (uint8_t) ((*((uint32_t *) MRAM_PRV_OFS_ARCCS_ADDR) & MRAM_PRV_OFS_ARCCS_ARCNS_Msk) >>
+                           MRAM_PRV_OFS_ARCCS_ARCNS_OFFSET);
+            p_src = (uint32_t *) MRAM_PRV_OFS_ARC_NSEC_ADDR;
+
+            if (MRAM_PRV_ARCNS_MULTIPLE == arcns)
+            {
+                counter_num_words = BSP_FEATURE_FLASH_ARC_NSEC_MULTIPLE_MAX_COUNT >> 5; // bits to words
+                uint32_t counter_index = ((uint32_t) mcntselr - MRAM_PRV_ARC_MCNTSELR_NSEC_0) * counter_num_words;
+                p_src = &p_src[counter_index];
+            }
+            else if (MRAM_PRV_ARCNS_SINGLE == arcns)
+            {
+                counter_num_words = BSP_FEATURE_FLASH_ARC_NSEC_SINGLE_MAX_COUNT >> 5;
+            }
+            else
+            {
+                return FSP_ERR_NOT_ENABLED;
+            }
+
+            break;
+        }
+    }
+
+    /* Determine the number of bits set in the counter data. This is the actual count value. */
+    uint32_t count = 0;
+
+    for (uint8_t word = 0; word < counter_num_words; word += 2)
+    {
+        uint32_t lo = p_src[word];
+        uint32_t hi = p_src[1 + word];
+        count += MRAM_PRV_64_BITS - ((uint32_t) __CLZ(hi) + (uint32_t) __CLZ(lo));
+    }
+
+    *p_count = count;
+
+    return FSP_SUCCESS;
+}
+
+/*******************************************************************************************************************//**
+ * This function executes an anti-rollback counter MACI operation (read and increment)
+ *
+ * @param[in]  p_ctrl                      MRAM control block
+ * @param[in]  mcntselr                    Register value to write to mCNTSELR to select the target counter
+ * @param[in]  cmd                         The MACI command to use
+ * @param[in]  wait_count                  The command timeout
+ *
+ * @returns mCNTSELR value
+ **********************************************************************************************************************/
+static fsp_err_t mram_arc_cmd_execute (mram_instance_ctrl_t * const p_ctrl,
+                                       uint8_t                      mcntselr,
+                                       uint8_t                      cmd,
+                                       volatile uint32_t            wait_count)
+{
+    fsp_err_t err = FSP_SUCCESS;
+
+    /* Enter MRAM P/E mode. */
+    mram_enter_pe_mode();
+
+    /* Select target counter */
+    R_MRAM->MCNTSELR = mcntselr;
+
+    /* Issue 2-part command to the MACI command-issuing area */
+    MRAM_PRV_CMD->MACI_CMD8 = cmd;
+    MRAM_PRV_CMD->MACI_CMD8 = MRAM_PRV_MACI_CMD_FINAL;
+
+    /* Wait for MRDY flag or timeout */
+    while (1U != R_MRAM->MSTATR_b.MRDY)
+    {
+        if (wait_count == 0U)
+        {
+            err = FSP_ERR_TIMEOUT;
+            break;
+        }
+
+        wait_count--;
+    }
+
+    /* Check for errors and issue forced stop if error occurred */
+    err = mram_check_errors(p_ctrl, err);
+
+    /* Return to read mode*/
+    fsp_err_t pe_exit_err = mram_transition_to_read_mode(p_ctrl);
+
+    if (FSP_SUCCESS == err)
+    {
+        err = pe_exit_err;
+    }
+
+    return err;
+}
+
+/*******************************************************************************************************************//**
+ * This function switches the peripheral to P/E mode for Extra MRAM.
+ * See "Transition to Extra MRAM Program Mode" in the MRAM section of the relevant hardware manual.
+ **********************************************************************************************************************/
+static void mram_enter_pe_mode (void)
+{
+#if BSP_CFG_PREFETCH_BUFFER_ENABLE
+
+    /* While the MRAM API is in use we will disable the MRAM PFB. */
+    bsp_prv_clear_pfb();
+#endif
+
+    /* Enter Extra MRAM PE mode */
+    R_MRAM->MENTRYR = MRAM_PRV_MENTRYR_TRANSITION_TO_PE;
+
+    /* Wait until MENTRYR has entered P/E mode. */
+    FSP_HARDWARE_REGISTER_WAIT(R_MRAM->MENTRYR, MRAM_PRV_MENTRYR_PE_MODE);
+}
 
 /*******************************************************************************************************************//**
  * This function will initialize the internal timeout values based on the system clock frequency.
@@ -954,6 +1345,98 @@ static void mram_init (mram_instance_ctrl_t * p_ctrl)
     /* According to RX74M manual R01UH1055EJ0051 the max time for a configuration set command is 9.42ms. */
     p_ctrl->timeout_configuration_set = (uint32_t) (MRAM_PRV_MAX_CONFIGURATION_SET_US * system_clock_freq_mhz) /
                                         MRAM_PRV_MINIMUM_CYCLES_PER_TIMEOUT_LOOP;
+
+    /* According to table "MACI command Characteristics" in the Electrical Characteristics section of the relevant hardware manual the max time for ARC increment command is 1.61ms. */
+    p_ctrl->timeout_arc_increment =
+        (uint32_t) (MRAM_PRV_MAX_ARC_INCREMENT_US * system_clock_freq_mhz) /
+        MRAM_PRV_MINIMUM_CYCLES_PER_TIMEOUT_LOOP;
+
+    /* According to table "MACI command Characteristics" in the Electrical Characteristics section of the relevant hardware manual the max time for ARC read command is 0.27us. */
+    p_ctrl->timeout_arc_read =
+        (uint32_t) (MRAM_PRV_MAX_ARC_READ_US * system_clock_freq_mhz) /
+        MRAM_PRV_MINIMUM_CYCLES_PER_TIMEOUT_LOOP;
+}
+
+/*******************************************************************************************************************//**
+ * This function switches the peripheral from P/E mode for Extra MRAM to Read mode.
+ * @param[in]  p_ctrl              Pointer to the MRAM instance control block.
+ *
+ * @retval     FSP_SUCCESS         Command completed successfully
+ * @retval     FSP_ERR_TIMEOUT     Timeout executing the Forced Stop Command.
+ * @retval     FSP_ERR_CMD_LOCKED  MRAM entered command locked state
+ * @retval     FSP_ERR_HUK_ZEROIZATION HUK ZEROIZATION command executing
+ **********************************************************************************************************************/
+static fsp_err_t mram_transition_to_read_mode (mram_instance_ctrl_t * p_ctrl)
+{
+    /* See "Transition to Read Mode" in the MRAM section of the relevant hardware manual. */
+    /* MRDY and CMDLK are checked after the previous commands complete and do not need to be checked again. */
+    fsp_err_t err = FSP_SUCCESS;
+
+    uint32_t wait_count = p_ctrl->timeout_maci_command;
+
+    /* Wait for MRDY flag or timeout */
+    while (1U != R_MRAM->MSTATR_b.MRDY)
+    {
+        if (wait_count == 0U)
+        {
+            err = FSP_ERR_TIMEOUT;
+            break;
+        }
+
+        wait_count--;
+    }
+
+    err = mram_check_errors(p_ctrl, err);
+
+    /* Transition to Read mode */
+    R_MRAM->MENTRYR = MRAM_PRV_MENTRYR_READ_MODE;
+    FSP_HARDWARE_REGISTER_WAIT(R_MRAM->MENTRYR, 0);
+
+#if BSP_CFG_PREFETCH_BUFFER_ENABLE
+    bsp_prv_set_pfb();
+#endif
+
+    return err;
+}
+
+/*******************************************************************************************************************//**
+ * This function is used to force stop the MRAM during an ongoing operation.
+ * @param[in]  p_ctrl              Pointer to the MRAM instance control block.
+ *
+ * @retval     FSP_SUCCESS         Successful stop.
+ * @retval     FSP_ERR_TIMEOUT     Timeout executing the Forced Stop Command.
+ * @retval     FSP_ERR_CMD_LOCKED  Peripheral in command locked state.
+ * @retval     FSP_ERR_HUK_ZEROIZATION HUK ZEROIZATION command is executing
+ **********************************************************************************************************************/
+static fsp_err_t mram_stop (mram_instance_ctrl_t * p_ctrl)
+{
+    /* See "Forced Stop Command" in the MRAM section of the relevant hardware manual. If the CMDLK bit
+     * is still set after issuing the force stop command return an error. */
+    volatile uint32_t wait_count = p_ctrl->timeout_maci_command;
+
+    MRAM_PRV_CMD->MACI_CMD8 = (uint8_t) MRAM_PRV_MACI_CMD_FORCED_STOP;
+
+    while (1U != R_MRAM->MSTATR_b.MRDY)
+    {
+        if (wait_count == 0U)
+        {
+            return FSP_ERR_TIMEOUT;
+        }
+
+        wait_count--;
+    }
+
+    if (0U != R_MRAM->MASTAT_b.CMDLK)
+    {
+        return FSP_ERR_CMD_LOCKED;
+    }
+
+    if (1U == R_MRAM->MREZS_b.WHUKEXE)
+    {
+        return FSP_ERR_HUK_ZEROIZATION;
+    }
+
+    return FSP_SUCCESS;
 }
 
 /*******************************************************************************************************************//**
@@ -1058,7 +1541,8 @@ static fsp_err_t mram_df_erase_blocks (uint32_t address, uint32_t num_blocks)
  * @param[in]  area               write MRAM area number (0 = MRCA, 1 = MRCB)
  * @param[in]  mram_address       Operation start address
  * @param[in]  num_bytes          Operation size
- * @param[in]  write_mram_address
+ * @param[in]  write_mram_address Pointer to store the calculated operation start address within the target MRAM area.
+ *
  * @retval     Operation data size in bytes.
  *             Returns 0 if there is no data to operate.
  **********************************************************************************************************************/
