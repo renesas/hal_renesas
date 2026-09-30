@@ -1089,14 +1089,14 @@ static void r_canfdg_global_error_handler (uint32_t instance)
     if (args.error & CANFDG_ERROR_GLOBAL_MESSAGE_LOST)
     {
         /* Get lowest RX FIFO with Message Lost condition and clear the flag */
-        args.buffer = r_canfdg_count_leading_zeros(r_canfdg_reverse_bit_order(p_ctrl->p_reg->FMLSR));
-        if (args.buffer < CANFDG_PRV_RX_FIFO_MAX)
+        args.mb_u.buffer = r_canfdg_count_leading_zeros(r_canfdg_reverse_bit_order(p_ctrl->p_reg->FMLSR));
+        if (args.mb_u.buffer < CANFDG_PRV_RX_FIFO_MAX)
         {
-            p_ctrl->p_reg->RFSR[args.buffer] &= ~R_CANFDG_RFSR_LOST_Msk;
+            p_ctrl->p_reg->RFSR[args.mb_u.buffer] &= ~R_CANFDG_RFSR_LOST_Msk;
         }
         else
         {
-            p_ctrl->p_reg->CFSR[args.buffer - R_CANFDG_FMLSR_CFML0_Pos] &= ~R_CANFDG_CFSR_LOST_Msk;
+            p_ctrl->p_reg->CFSR[args.mb_u.buffer - R_CANFDG_FMLSR_CFML0_Pos] &= ~R_CANFDG_CFSR_LOST_Msk;
         }
     }
 
@@ -1156,9 +1156,9 @@ void canfdg_error_isr (void)
         /* Choose the channel provided by the interrupt context. */
         p_callback_ctrl = p_ctrl;
 
-        args.channel   = interlaced_channel;
-        args.p_context = p_ctrl->p_context;
-        args.buffer    = 0U;
+        args.channel     = interlaced_channel;
+        args.p_context   = p_ctrl->p_context;
+        args.mb_u.buffer = 0U;
 
         /* Set remaining arguments and call callback */
         r_canfdg_call_callback(p_callback_ctrl, &args);
@@ -1194,8 +1194,8 @@ static void r_canfdg_rx_fifo_handler (uint32_t instance)
     if (fifo < CANFDG_PRV_RX_FIFO_MAX)
     {
         /* Set static arguments */
-        args.event  = CAN_EVENT_RX_COMPLETE;
-        args.buffer = fifo + CANFDG_PRV_RXMB_MAX;
+        args.event       = CAN_EVENT_RX_COMPLETE;
+        args.mb_u.buffer = fifo + CANFDG_PRV_RXMB_MAX;
 
         /* Read from the FIFO until it is empty */
         while (!(p_reg->FESR & (1U << fifo)))
@@ -1340,7 +1340,7 @@ void canfdg_channel_tx_isr (void)
         }
 
         /* Set the callback arguments */
-        args.buffer = txmb;
+        args.mb_u.buffer = txmb;
         r_canfdg_call_callback(p_ctrl, &args);
     }
 
@@ -1384,19 +1384,19 @@ void canfdg_common_fifo_rx_isr (void)
     /* Get the channel based fifo index to get the currect buffer value. */
     if (fifo > CANFDG_PRV_CFIFO_CHANNEL_OFFSET)
     {
-        args.buffer = fifo % (CANFDG_PRV_CFIFO_CHANNEL_OFFSET + 1);
+        args.mb_u.buffer = fifo % (CANFDG_PRV_CFIFO_CHANNEL_OFFSET + 1);
     }
     else
     {
-        args.buffer = fifo;
+        args.mb_u.buffer = fifo;
     }
 
 #else
-    args.buffer = fifo;
+    args.mb_u.buffer = fifo;
 #endif
 
     /* Move buffer up to the correct range. */
-    args.buffer += (uint32_t) CANFDG_RX_BUFFER_FIFO_COMMON_0;
+    args.mb_u.buffer += (uint32_t) CANFDG_RX_BUFFER_FIFO_COMMON_0;
 
     /* Read from the FIFO until it is empty */
     while (!(p_ctrl->p_reg->FESR & (1U << (R_CANFDG_FESR_CFEMP0_Pos + fifo))))

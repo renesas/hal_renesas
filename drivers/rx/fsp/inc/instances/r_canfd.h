@@ -228,12 +228,19 @@ typedef struct st_canfd_afl_entry_t
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            can_id_mode_t    id_mode    : 1;  ///< ID mode (Standard or Extended)
+            can_frame_type_t frame_type : 1;  ///< Frame type (Data or Remote)
+            uint32_t                    : 1;
+            uint32_t id                 : 29; ///< ID to match against
+#else
             uint32_t id                 : 29; ///< ID to match against
             uint32_t                    : 1;
             can_frame_type_t frame_type : 1;  ///< Frame type (Data or Remote)
             can_id_mode_t    id_mode    : 1;  ///< ID mode (Standard or Extended)
+#endif
         } id;
-    };
+    } id_u;
 
     union
     {
@@ -241,12 +248,19 @@ typedef struct st_canfd_afl_entry_t
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t mask_id_mode    : 1;  ///< Only accept frames with the configured ID mode
+            uint32_t mask_frame_type : 1;  ///< Only accept frames with the configured frame type
+            uint32_t                 : 1;
+            uint32_t mask_id         : 29; ///< ID Mask
+#else
             uint32_t mask_id         : 29; ///< ID Mask
             uint32_t                 : 1;
             uint32_t mask_frame_type : 1;  ///< Only accept frames with the configured frame type
             uint32_t mask_id_mode    : 1;  ///< Only accept frames with the configured ID mode
+#endif
         } mask;
-    };
+    } mask_u;
 
     union
     {
@@ -254,13 +268,20 @@ typedef struct st_canfd_afl_entry_t
 
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+            uint32_t                        : 16;
+            canfd_rx_mb_t rx_buffer         : 8; ///< RX Message Buffer to receive messages accepted by this rule
+            uint32_t                        : 4;
+            canfd_minimum_dlc_t minimum_dlc : 4; ///< Minimum DLC value to accept (valid when DLC Check is enabled)
+#else
             canfd_minimum_dlc_t minimum_dlc : 4; ///< Minimum DLC value to accept (valid when DLC Check is enabled)
             uint32_t                        : 4;
             canfd_rx_mb_t rx_buffer         : 8; ///< RX Message Buffer to receive messages accepted by this rule
             uint32_t                        : 16;
+#endif
             canfd_rx_fifo_t fifo_select_flags;   ///< RX FIFO(s) to receive messages accepted by this rule
         } destination;
-    };
+    } destination_u;
 } canfd_afl_entry_t;
 
 /** CANFD Global Configuration */

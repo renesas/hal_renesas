@@ -291,7 +291,7 @@ typedef struct st_canfdg_afl_entry_t
             can_id_mode_t    id_mode    : 1;  ///< ID mode (Standard or Extended)
 #endif
         } id;
-    };
+    } id_u;
 
     union
     {
@@ -311,7 +311,7 @@ typedef struct st_canfdg_afl_entry_t
             uint32_t mask_id_mode    : 1;  ///< Only accept frames with the configured ID mode
 #endif
         } mask;
-    };
+    } mask_u;
 
     union
     {
@@ -332,7 +332,7 @@ typedef struct st_canfdg_afl_entry_t
 #endif
             canfdg_rx_fifo_t fifo_select_flags;   ///< RX FIFO(s) to receive messages accepted by this rule
         } destination;
-    };
+    } destination_u;
 } canfdg_afl_entry_t;
 
 /** CANFDG Global Configuration */
