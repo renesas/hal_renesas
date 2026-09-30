@@ -741,7 +741,7 @@ static fsp_err_t r_sci_b_spi_transfer_config (sci_b_spi_instance_ctrl_t * const 
     {
         /* Set the initial configuration for the rx transfer instance. */
         transfer_instance_t const * p_transfer = p_cfg->p_transfer_rx;
-        p_transfer->p_cfg->p_info->transfer_settings_word = SCI_B_SPI_PRV_DMA_RX_TRANSFER_SETTINGS;
+        p_transfer->p_cfg->p_info->transfer_settings_u.transfer_settings_word = SCI_B_SPI_PRV_DMA_RX_TRANSFER_SETTINGS;
         p_transfer->p_cfg->p_info->p_src = (void *) &p_ctrl->p_reg->RDR;
 
         /* Open the transfer instance. */
@@ -753,8 +753,8 @@ static fsp_err_t r_sci_b_spi_transfer_config (sci_b_spi_instance_ctrl_t * const 
     {
         /* Set the initial configuration for the tx transfer instance. */
         transfer_instance_t const * p_transfer = p_cfg->p_transfer_tx;
-        p_transfer->p_cfg->p_info->transfer_settings_word = SCI_B_SPI_PRV_DMA_TX_TRANSFER_SETTINGS;
-        p_transfer->p_cfg->p_info->p_dest                 = (void *) &p_ctrl->p_reg->TDR;
+        p_transfer->p_cfg->p_info->transfer_settings_u.transfer_settings_word = SCI_B_SPI_PRV_DMA_TX_TRANSFER_SETTINGS;
+        p_transfer->p_cfg->p_info->p_dest = (void *) &p_ctrl->p_reg->TDR;
 
         /* Open the transfer instance. */
         err = p_transfer->p_api->open(p_transfer->p_ctrl, p_transfer->p_cfg);
@@ -850,12 +850,14 @@ static fsp_err_t r_sci_b_spi_write_read_common (sci_b_spi_instance_ctrl_t * cons
         {
             /* If the source is NULL transmit using a dummy value using FIXED mode. */
             static uint8_t tx_dummy = 0;
-            p_transfer->p_cfg->p_info->transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_FIXED;
+            p_transfer->p_cfg->p_info->transfer_settings_u.transfer_settings_word_b.src_addr_mode =
+                TRANSFER_ADDR_MODE_FIXED;
             p_transfer->p_cfg->p_info->p_src = &tx_dummy;
         }
         else
         {
-            p_transfer->p_cfg->p_info->transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED;
+            p_transfer->p_cfg->p_info->transfer_settings_u.transfer_settings_word_b.src_addr_mode =
+                TRANSFER_ADDR_MODE_INCREMENTED;
             p_transfer->p_cfg->p_info->p_src = p_src;
         }
 
