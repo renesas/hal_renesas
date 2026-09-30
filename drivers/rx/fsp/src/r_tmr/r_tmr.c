@@ -113,7 +113,7 @@ const timer_api_t g_timer_on_tmr =
  * Example:
  * @snippet r_tmr_example.c R_TMR_Open
  *
- * @retval FSP_SUCCESS                    Initialization was successful and timer has started.
+ * @retval FSP_SUCCESS                    Initialization was successful.
  * @retval FSP_ERR_ASSERTION              A required input pointer is NULL or the source divider is invalid or
  *                                        channel does not support a 16bit counter size or the period was not in the valid range of
  *                                        1 to 0xFF in 8bit counter or 1 to 0xFFFF in 16bit counter or an input parameter is invalid.
