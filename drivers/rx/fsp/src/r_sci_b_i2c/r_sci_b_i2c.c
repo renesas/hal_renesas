@@ -1119,16 +1119,17 @@ static fsp_err_t sci_b_i2c_transfer_configure (sci_b_i2c_instance_ctrl_t       *
     transfer_info_t * p_cfg = p_transfer->p_cfg->p_info;
     if (SCI_B_I2C_DTC_INTERRUPT_TRIGGER_RXI == trigger)
     {
-        p_cfg->transfer_settings_word = SCI_B_I2C_PRV_DTC_RX_FOR_READ_TRANSFER_SETTINGS;
+        p_cfg->transfer_settings_u.transfer_settings_word = SCI_B_I2C_PRV_DTC_RX_FOR_READ_TRANSFER_SETTINGS;
         p_cfg->p_src = (void *) (&(p_ctrl->p_reg->RDR));
     }
     else
     {
-        /* In case of read operation using DTC, the TXI interrupt will trigger the DTC to write 0xFF into TDR 
-        (see Figure "Example of the Procedure for Master Reception Operations in Simple I2C Mode" in the relevant hardware manual.)*/
+        /* In case of read operation using DTC, the TXI interrupt will trigger the DTC to write 0xFF into TDR
+         * (see Figure "Example of the Procedure for Master Reception Operations in Simple I2C Mode" in the relevant hardware manual.)*/
+
         /* In case of Write operation this will be reconfigured */
-        p_cfg->transfer_settings_word = SCI_B_I2C_PRV_DTC_TX_FOR_READ_TRANSFER_SETTINGS;
-        p_cfg->p_dest                 = (void *) (&(p_ctrl->p_reg->TDR));
+        p_cfg->transfer_settings_u.transfer_settings_word = SCI_B_I2C_PRV_DTC_TX_FOR_READ_TRANSFER_SETTINGS;
+        p_cfg->p_dest = (void *) (&(p_ctrl->p_reg->TDR));
     }
 
     err = p_transfer->p_api->open(p_transfer->p_ctrl, p_transfer->p_cfg);
@@ -1165,13 +1166,13 @@ static void sci_b_i2c_reconfigure_interrupts_for_transfer (sci_b_i2c_instance_ct
         if (p_ctrl->read)
         {
             /* Re-adjust address modes */
-            p_info->transfer_settings_word = SCI_B_I2C_PRV_DTC_TX_FOR_READ_TRANSFER_SETTINGS;
+            p_info->transfer_settings_u.transfer_settings_word = SCI_B_I2C_PRV_DTC_TX_FOR_READ_TRANSFER_SETTINGS;
             p_info->p_src = (void *) &g_dummy_write_data_for_read_op;
         }
         else                           /* This is a write operation */
         {
             /* Re-adjust address modes */
-            p_info->transfer_settings_word = SCI_B_I2C_PRV_DTC_TX_FOR_WRITE_TRANSFER_SETTINGS;
+            p_info->transfer_settings_u.transfer_settings_word = SCI_B_I2C_PRV_DTC_TX_FOR_WRITE_TRANSFER_SETTINGS;
         }
 
         /* Set the interrupt source to RXI/TXI */
@@ -1299,7 +1300,7 @@ static void sci_b_i2c_txi_send_data (sci_b_i2c_instance_ctrl_t * const p_ctrl)
         }
     }
 
-    /* Write 1 byte data to data register 
+    /* Write 1 byte data to data register
      *( See Figure "Example of the Procedure for Master Transmission Operations in Simple I2C Mode" and
      * Example of the Procedure for Master Reception Operations in Simple I2C Mode" in the relevant hardware manual).
      * - In case of write operation this will be data from user buffer.
