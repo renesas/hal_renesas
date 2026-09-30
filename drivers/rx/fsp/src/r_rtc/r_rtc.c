@@ -879,16 +879,16 @@ fsp_err_t R_RTC_TimeCaptureSet (rtc_ctrl_t * const p_ctrl, rtc_time_capture_t * 
     FSP_PARAMETER_NOT_USED(p_ctrl);
  #endif
 
- #if BSP_FEATURE_SYSC_HAS_VBTICTLR
+ #if BSP_FEATURE_SYSC_HAS_TAMPICR1
 
     /* When the time capture event input pin functions (RTCIC0, RTCIC1, and RTCIC2) are allocated to the same pins as
      * other multiplexed functions, make the general input port pin settings for the corresponding pins, set the corresponding
-     * VBTICTLR.VCHnINEN bit (n = 0 to 2) to 1, and then set TCEN bit to 1 (see section "RTCCRn : Time Capture Control Register n
+     * TAMPICR1.CHnEN bit (n = 0 to 2) to 1, and then set TCEN bit to 1 (see section "RTCCRn : Time Capture Control Register n
      * (n = 0 to 2)" of the relevant hardware manual) */
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_OM_LPC_BATT_SWR);
     if (p_time_capture->channel <= 2)
     {
-        R_SYSTEM->VBTICTLR |= (uint8_t) (1U << p_time_capture->channel);
+        R_SYSTEM->TAMPICR1 |= (uint8_t) (1U << p_time_capture->channel);
     }
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_OM_LPC_BATT_SWR);
  #endif
