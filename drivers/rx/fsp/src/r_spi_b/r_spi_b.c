@@ -463,8 +463,8 @@ static fsp_err_t r_spi_b_transfer_config (spi_cfg_t const * const p_cfg)
     void * p_spdr = (void *) &(SPI_B_REG(p_cfg->channel)->SPDR);
     if (p_transfer_tx)
     {
-        p_transfer_tx->p_cfg->p_info->transfer_settings_word = SPI_B_DTC_TX_TRANSFER_SETTINGS;
-        p_transfer_tx->p_cfg->p_info->p_dest                 = p_spdr;
+        p_transfer_tx->p_cfg->p_info->transfer_settings_u.transfer_settings_word = SPI_B_DTC_TX_TRANSFER_SETTINGS;
+        p_transfer_tx->p_cfg->p_info->p_dest = p_spdr;
 
         err = p_transfer_tx->p_api->open(p_transfer_tx->p_ctrl, p_transfer_tx->p_cfg);
         FSP_ERROR_RETURN(FSP_SUCCESS == err, err);
@@ -473,7 +473,7 @@ static fsp_err_t r_spi_b_transfer_config (spi_cfg_t const * const p_cfg)
     const transfer_instance_t * p_transfer_rx = p_cfg->p_transfer_rx;
     if (p_transfer_rx)
     {
-        p_transfer_rx->p_cfg->p_info->transfer_settings_word = SPI_B_DTC_RX_TRANSFER_SETTINGS;
+        p_transfer_rx->p_cfg->p_info->transfer_settings_u.transfer_settings_word = SPI_B_DTC_RX_TRANSFER_SETTINGS;
         p_transfer_rx->p_cfg->p_info->p_src = p_spdr;
 
         err = p_transfer_rx->p_api->open(p_transfer_rx->p_ctrl, p_transfer_rx->p_cfg);
@@ -821,15 +821,15 @@ static fsp_err_t r_spi_b_write_read_common (spi_ctrl_t * const    p_api_ctrl,
         transfer_info_t     * p_info        = p_transfer_rx->p_cfg->p_info;
 
         /* Configure the receive DMA instance. */
-        p_info->transfer_settings_word_b.size = size;
+        p_info->transfer_settings_u.transfer_settings_word_b.size = size;
         p_info->length = (uint16_t) length;
-        p_info->transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED;
+        p_info->transfer_settings_u.transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED;
         p_info->p_dest = p_dest;
 
         if (NULL == p_dest)
         {
             static uint32_t dummy_rx;
-            p_info->transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED;
+            p_info->transfer_settings_u.transfer_settings_word_b.dest_addr_mode = TRANSFER_ADDR_MODE_FIXED;
             p_info->p_dest = &dummy_rx;
         }
 
@@ -846,15 +846,15 @@ static fsp_err_t r_spi_b_write_read_common (spi_ctrl_t * const    p_api_ctrl,
         transfer_info_t     * p_info        = p_transfer_tx->p_cfg->p_info;
 
         /* Configure the transmit DMA instance. */
-        p_info->transfer_settings_word_b.size = size;
+        p_info->transfer_settings_u.transfer_settings_word_b.size = size;
         p_info->length = (uint16_t) length;
-        p_info->transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED;
+        p_info->transfer_settings_u.transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_INCREMENTED;
         p_info->p_src = p_src;
 
         if (NULL == p_src)
         {
             static uint32_t dummy_tx = 0;
-            p_info->transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_FIXED;
+            p_info->transfer_settings_u.transfer_settings_word_b.src_addr_mode = TRANSFER_ADDR_MODE_FIXED;
             p_info->p_src = &dummy_tx;
         }
 
