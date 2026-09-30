@@ -15,55 +15,73 @@
  **********************************************************************************************************************/
 
 /* "GPT" in ASCII, used to determine if channel is open. */
-#define GPT_OPEN                                         (0x00475054ULL)
+#define GPT_OPEN                                             (0x00475054ULL)
 
-#define GPT_PRV_GPTE_OR_GPTEH_SUPPORTED                  (BSP_FEATURE_GPT_GPTEH_SUPPORTED | \
-                                                          BSP_FEATURE_GPT_GPTE_SUPPORTED)
-#define GPT_PRV_GPTE_OR_GPTEH_CHANNEL_MASK               (BSP_FEATURE_GPT_GPTEH_CHANNEL_MASK | \
-                                                          BSP_FEATURE_GPT_GPTE_CHANNEL_MASK)
-#define GPT_PRV_ADC_DIRECT_START_SUPPORTED               (BSP_FEATURE_GPT_AD_DIRECT_START_SUPPORTED)
-#define GPT_PRV_ADC_DIRECT_START_CHANNEL_MASK            (BSP_FEATURE_GPT_AD_DIRECT_START_CHANNEL_MASK)
-#define GPT_PRV_ADC_ELC_START_SUPPORTED                  (GPT_PRV_GPTE_OR_GPTEH_SUPPORTED && \
-                                                          !GPT_PRV_ADC_DIRECT_START_SUPPORTED)      // ELC-start is 'default' and exists if direct-start is not present
-#define GPT_PRV_ADC_ELC_START_CHANNEL_MASK               (GPT_PRV_ADC_DIRECT_START_SUPPORTED ? \
-                                                          0x0 : GPT_PRV_GPTE_OR_GPTEH_CHANNEL_MASK) // No ELC-start present if direct start is supported.
+#define GPT_PRV_GPTE_OR_GPTEH_SUPPORTED                      (BSP_FEATURE_GPT_GPTEH_SUPPORTED | \
+                                                              BSP_FEATURE_GPT_GPTE_SUPPORTED)
+#define GPT_PRV_GPTE_OR_GPTEH_CHANNEL_MASK                   (BSP_FEATURE_GPT_GPTEH_CHANNEL_MASK | \
+                                                              BSP_FEATURE_GPT_GPTE_CHANNEL_MASK)
+#define GPT_PRV_ADC_DIRECT_START_SUPPORTED                   (BSP_FEATURE_GPT_AD_DIRECT_START_SUPPORTED)
+#define GPT_PRV_ADC_DIRECT_START_CHANNEL_MASK                (BSP_FEATURE_GPT_AD_DIRECT_START_CHANNEL_MASK)
+#define GPT_PRV_ADC_ELC_START_SUPPORTED                      (GPT_PRV_GPTE_OR_GPTEH_SUPPORTED && \
+                                                              !GPT_PRV_ADC_DIRECT_START_SUPPORTED)      // ELC-start is 'default' and exists if direct-start is not present
+#define GPT_PRV_ADC_ELC_START_CHANNEL_MASK                   (GPT_PRV_ADC_DIRECT_START_SUPPORTED ? \
+                                                              0x0 : GPT_PRV_GPTE_OR_GPTEH_CHANNEL_MASK) // No ELC-start present if direct start is supported.
 
-#define GPT_PRV_HRPWM_SUPPORTED                          (BSP_FEATURE_GPT_GPTEH_SUPPORTED)
-#define GPT_PRV_HRPWM_CHANNEL_MASK                       (BSP_FEATURE_GPT_GPTEH_CHANNEL_MASK)
-#define GPT_PRV_GTWP_RESET_VALUE                         (0xA500U)
-#define GPT_PRV_GTWP_WRITE_PROTECT                       (0xA501U)
+#define GPT_PRV_HRPWM_SUPPORTED                              (BSP_FEATURE_GPT_GPTEH_SUPPORTED)
+#ifndef BSP_FEATURE_GPT_HRPWM_UNIT_CHANNELS
+ #define BSP_FEATURE_GPT_HRPWM_UNIT_CHANNELS                 (4U)
+#endif
+#ifndef BSP_FEATURE_GPT_HRPWM_UNIT_COUNT
+ #define BSP_FEATURE_GPT_HRPWM_UNIT_COUNT                    (1U)
+#endif
+#ifndef BSP_FEATURE_GPT_HRPWM_DELAY_CHANNEL_GROUP_SIZE
+ #define BSP_FEATURE_GPT_HRPWM_DELAY_CHANNEL_GROUP_SIZE      (BSP_FEATURE_GPT_HRPWM_UNIT_CHANNELS)
+#endif
+#ifndef BSP_FEATURE_GPT_HRPWM_DELAY_CHANNEL_GROUP_OFFSET
+ #define BSP_FEATURE_GPT_HRPWM_DELAY_CHANNEL_GROUP_OFFSET    (0U)
+#endif
+#ifndef BSP_FEATURE_GPT_GTDREQ_SUPPORTED
+ #define BSP_FEATURE_GPT_GTDREQ_SUPPORTED                    (0U)
+#endif
+#define GPT_PRV_GTWP_RESET_VALUE                             (0xA500U)
+#define GPT_PRV_GTWP_WRITE_PROTECT                           (0xA501U)
 
-#define GPT_PRV_GTIOR_STOP_LEVEL_BIT                     (6)
-#define GPT_PRV_GTIOR_INITIAL_LEVEL_BIT                  (4)
+#define GPT_PRV_GTIOR_STOP_LEVEL_BIT                         (6)
+#define GPT_PRV_GTIOR_INITIAL_LEVEL_BIT                      (4)
 
-#define GPT_PRV_GTIO_HIGH_COMPARE_MATCH_LOW_CYCLE_END    (0x6U)
-#define GPT_PRV_GTIO_LOW_COMPARE_MATCH_HIGH_CYCLE_END    (0x9U)
+#define GPT_PRV_GTIO_HIGH_COMPARE_MATCH_LOW_CYCLE_END        (0x6U)
+#define GPT_PRV_GTIO_LOW_COMPARE_MATCH_HIGH_CYCLE_END        (0x9U)
 
-#define GPT_PRV_GTIO_TOGGLE_COMPARE_MATCH                (0x3U)
+#define GPT_PRV_GTIO_TOGGLE_COMPARE_MATCH                    (0x3U)
 
-#define GPT_PRV_GTBER_BUFFER_ENABLE_FORCE_TRANSFER       (0x550000U)
-#define GPT_PRV_GTBER_DISABLE_BUFFER_OP_GTCCRA_GTCCRB    (0x500000U)
+#define GPT_PRV_GTBER_BUFFER_ENABLE_FORCE_TRANSFER           (0x550000U)
+#define GPT_PRV_GTBER_DISABLE_BUFFER_OP_GTCCRA_GTCCRB        (0x500000U)
 
-#define GPT_PRV_ENABLE_GROUP_SOFTWARE_UPDATE             (0x80000000U)
+#define GPT_PRV_ENABLE_GROUP_SOFTWARE_UPDATE                 (0x80000000U)
 
-#define GPT_PRV_GTCCRA                                   (0U)
-#define GPT_PRV_GTCCRB                                   (1U)
-#define GPT_PRV_GTCCRC                                   (2U)
-#define GPT_PRV_GTCCRE                                   (3U)
-#define GPT_PRV_GTCCRD                                   (4U)
-#define GPT_PRV_GTCCRF                                   (5U)
+#define GPT_PRV_GTCCRA                                       (0U)
+#define GPT_PRV_GTCCRB                                       (1U)
+#define GPT_PRV_GTCCRC                                       (2U)
+#define GPT_PRV_GTCCRE                                       (3U)
+#define GPT_PRV_GTCCRD                                       (4U)
+#define GPT_PRV_GTCCRF                                       (5U)
 
-#define GPT_PRV_INTERRUPT_DISABLE                        (0x0U)
-#define GPT_PRV_GTINTAD_GTINTA_MASK                      (0x1U << R_GPT0_GTINTAD_GTINTA_Pos)
-#define GPT_PRV_GTINTAD_GTINTB_MASK                      (0x1U << R_GPT0_GTINTAD_GTINTB_Pos)
-#define GPT_PRV_GTINTAD_GTINTPR_OVERFLOW_MASK            (0x1U << R_GPT0_GTINTAD_GTINTPR_Pos)
-#define GPT_PRV_GTINTAD_GTINTPR_UNDERFLOW_MASK           (0x2U << R_GPT0_GTINTAD_GTINTPR_Pos)
+#define GPT_PRV_INTERRUPT_DISABLE                            (0x0U)
+#define GPT_PRV_GTINTAD_GTINTA_MASK                          (0x1U << R_GPT0_GTINTAD_GTINTA_Pos)
+#define GPT_PRV_GTINTAD_GTINTB_MASK                          (0x1U << R_GPT0_GTINTAD_GTINTB_Pos)
+#define GPT_PRV_GTINTAD_GTINTPR_OVERFLOW_MASK                (0x1U << R_GPT0_GTINTAD_GTINTPR_Pos)
+#define GPT_PRV_GTINTAD_GTINTPR_UNDERFLOW_MASK               (0x2U << R_GPT0_GTINTAD_GTINTPR_Pos)
+#if BSP_FEATURE_GPT_GTDREQ_SUPPORTED
+ #define GPT_PRV_GTDREQ_GTIOA_GROUP_A_MASK                   (0x1U << R_GPT0_GTDREQ_GTIOAGRPA_Pos)
+ #define GPT_PRV_GTDREQ_GTIOB_GROUP_A_MASK                   (0x1U << R_GPT0_GTDREQ_GTIOBGRPA_Pos)
+#endif
 
 /* GPT_CFG_OUTPUT_SUPPORT_ENABLE is set to 2 to enable extra features. */
-#define GPT_PRV_EXTRA_FEATURES_ENABLED                   (2U)
+#define GPT_PRV_EXTRA_FEATURES_ENABLED                       (2U)
 
-#define GPT_PRV_COMPARE_MATCH_A_MASK                     (0x01)
-#define GPT_PRV_COMPARE_MATCH_B_MASK                     (0x02)
+#define GPT_PRV_COMPARE_MATCH_A_MASK                         (0x01)
+#define GPT_PRV_COMPARE_MATCH_B_MASK                         (0x02)
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -185,7 +203,7 @@ const timer_api_t g_timer_on_gpt =
  * Example:
  * @snippet r_gpt_example.c R_GPT_Open
  *
- * @retval FSP_SUCCESS                    Initialization was successful and timer has started.
+ * @retval FSP_SUCCESS                    Initialization was successful.
  * @retval FSP_ERR_ASSERTION              A required input pointer is NULL or the source divider is invalid.
  * @retval FSP_ERR_ALREADY_OPEN           Module is already open.
  * @retval FSP_ERR_IRQ_BSP_DISABLED       timer_cfg_t::mode is ::TIMER_MODE_ONE_SHOT or timer_cfg_t::p_callback is not
@@ -866,8 +884,23 @@ fsp_err_t R_GPT_PwmOutputDelaySet (timer_ctrl_t * const           p_ctrl,
  #if GPT_CFG_PARAM_CHECKING_ENABLE
     FSP_ASSERT(NULL != p_instance_ctrl);
     FSP_ERROR_RETURN(GPT_OPEN == p_instance_ctrl->open, FSP_ERR_NOT_OPEN);
-    FSP_ERROR_RETURN(0U != (GPT_PRV_HRPWM_CHANNEL_MASK & p_instance_ctrl->channel_mask), FSP_ERR_INVALID_CHANNEL);
-    FSP_ERROR_RETURN(0U != (R_GPT_HRPWM->HROCR1 & R_GPT_HRPWM_HROCR1_DLLEN_Msk), FSP_ERR_NOT_INITIALIZED);
+    FSP_ERROR_RETURN(0U != (BSP_FEATURE_GPT_GPTEH_CHANNEL_MASK & p_instance_ctrl->channel_mask),
+                     FSP_ERR_INVALID_CHANNEL);
+ #endif
+
+    /* Select the HRPWM unit after the basic checks. The selected unit is required for the DLLEN check below. */
+    uint32_t           channel       = p_instance_ctrl->p_cfg->channel;
+    uint32_t           local_channel = channel % BSP_FEATURE_GPT_HRPWM_UNIT_CHANNELS;
+    R_GPT_HRPWM_Type * p_hrpwm       = R_GPT_HRPWM;
+ #if BSP_FEATURE_GPT_HRPWM_UNIT_COUNT > 1U
+    uint32_t hrpwm_unit  = channel / BSP_FEATURE_GPT_HRPWM_UNIT_CHANNELS;
+    uint32_t address_gap = (uint32_t) R_GPT_HRPWM1_BASE - (uint32_t) R_GPT_HRPWM_BASE;
+    p_hrpwm = (R_GPT_HRPWM_Type *) (R_GPT_HRPWM_BASE + (address_gap * hrpwm_unit));
+ #endif
+    uint16_t channel_mask = (uint16_t) (1U << local_channel);
+
+ #if GPT_CFG_PARAM_CHECKING_ENABLE
+    FSP_ERROR_RETURN(0U != (p_hrpwm->HROCR1 & R_GPT_HRPWM_HROCR1_DLLEN_Msk), FSP_ERR_NOT_INITIALIZED);
 
     if (TIMER_MODE_PWM == p_instance_ctrl->p_cfg->mode)
     {
@@ -919,7 +952,7 @@ fsp_err_t R_GPT_PwmOutputDelaySet (timer_ctrl_t * const           p_ctrl,
  #endif
 
         /* Enable the Delay Generation Circuit bypass. */
-        R_GPT_HRPWM->HROCR2 &= (uint16_t) (~p_instance_ctrl->channel_mask & UINT16_MAX);
+        p_hrpwm->HROCR2 &= (uint16_t) (~channel_mask & UINT16_MAX);
 
  #if GPT_CFG_WRITE_PROTECT_ENABLE
 
@@ -931,30 +964,53 @@ fsp_err_t R_GPT_PwmOutputDelaySet (timer_ctrl_t * const           p_ctrl,
     }
     else
     {
-        /* Calculate the offset for the register than needs to be set. */
-        uint32_t channel_offset = sizeof(uint32_t) * p_instance_ctrl->p_cfg->channel;
-        uint32_t pin_offset     =
-            (uint32_t) ((uint32_t) &R_GPT_HRPWM->HRREAR[0].B - (uint32_t) &R_GPT_HRPWM->HRREAR[0].A) * pin;
-        uint32_t edge_offset =
-            (uint32_t) ((uint32_t) &R_GPT_HRPWM->HRFEAR[0].A - (uint32_t) &R_GPT_HRPWM->HRREAR[0].A) * edge;
-        uint16_t * p_hrfearnx =
-            (uint16_t *) ((uintptr_t) &R_GPT_HRPWM->HRREAR[0].A + channel_offset + pin_offset + edge_offset);
+        uint32_t channel_group    = local_channel / BSP_FEATURE_GPT_HRPWM_DELAY_CHANNEL_GROUP_SIZE;
+        uint32_t channel_in_group = local_channel % BSP_FEATURE_GPT_HRPWM_DELAY_CHANNEL_GROUP_SIZE;
+        volatile R_GPT_HRPWM_HRREAR_Type * p_hrfearnx =
+            (GPT_PWM_OUTPUT_DELAY_EDGE_RISING == edge) ? p_hrpwm->HRREAR : p_hrpwm->HRFEAR;
+        p_hrfearnx = (volatile R_GPT_HRPWM_HRREAR_Type *) ((uintptr_t) p_hrfearnx +
+                                                           (channel_group *
+                                                            BSP_FEATURE_GPT_HRPWM_DELAY_CHANNEL_GROUP_OFFSET));
 
  #if BSP_FEATURE_GPT_HRPWM_128_RESOLUTION_SUPPORTED
         delay_setting *= 4;            // Delay count is out of 32, per the API. Convert provided 32-count resolution into 128-count register setting.
  #endif
 
+ #if GPT_CFG_WRITE_PROTECT_ENABLE && BSP_FEATURE_GPT_HRPWM_COMMON_WRITE_PROTECT_REQUIRED
+        uint32_t common_wp = R_GPT0->GTWP;
+        R_GPT0->GTWP = GPT_PRV_GTWP_RESET_VALUE;
+        R_GPT0->GTWP;
+ #endif
+
         /* Unprotect the delay setting register. */
         uint32_t wp = r_gpt_write_protect_disable(p_instance_ctrl);
 
-        /* Write the delay setting to the register. */
-        *p_hrfearnx = (uint16_t) delay_setting;
+        /* Multi-unit HRPWM delay registers are indexed inside each HRPWM register group. */
+        volatile uint16_t * p_delay_setting_reg;
+        if (GPT_IO_PIN_GTIOCA == pin)
+        {
+            p_delay_setting_reg = &p_hrfearnx[channel_in_group].A;
+        }
+        else
+        {
+            p_delay_setting_reg = &p_hrfearnx[channel_in_group].B;
+        }
+
+        /* Confirm the HRPWM delay register accepted the setting before restoring write protection. */
+        do
+        {
+            *p_delay_setting_reg = (uint16_t) delay_setting;
+        } while (*p_delay_setting_reg != (uint16_t) delay_setting);
 
         /* Restore the previous value of GTWP. */
         r_gpt_write_protect_enable(p_instance_ctrl, wp | GPT_PRV_GTWP_RESET_VALUE);
 
+ #if GPT_CFG_WRITE_PROTECT_ENABLE && BSP_FEATURE_GPT_HRPWM_COMMON_WRITE_PROTECT_REQUIRED
+        R_GPT0->GTWP = common_wp | GPT_PRV_GTWP_RESET_VALUE;
+ #endif
+
         /* Check if the channel has already been enabled. */
-        if (0U == (R_GPT_HRPWM->HROCR2 & p_instance_ctrl->channel_mask))
+        if (0U == (p_hrpwm->HROCR2 & channel_mask))
         {
             /* Enter a critical section in order to ensure that multiple GPT channels don't access the common
              * register simultaneously. */
@@ -969,7 +1025,7 @@ fsp_err_t R_GPT_PwmOutputDelaySet (timer_ctrl_t * const           p_ctrl,
  #endif
 
             /* Disable the Delay Generation Circuit bypass. */
-            R_GPT_HRPWM->HROCR2 |= (uint16_t) p_instance_ctrl->channel_mask;
+            p_hrpwm->HROCR2 |= channel_mask;
 
  #if GPT_CFG_WRITE_PROTECT_ENABLE
 
@@ -1121,6 +1177,10 @@ fsp_err_t R_GPT_PwmOutputDelayInitialize (void)
     /* Cancel the module-stop state for the HRPWM. */
     R_BSP_MODULE_START(FSP_IP_HRPWM, 0);
 
+ #if BSP_FEATURE_GPT_HRPWM_UNIT_COUNT > 1U
+    uint32_t address_gap = (uint32_t) R_GPT_HRPWM1_BASE - (uint32_t) R_GPT_HRPWM_BASE;
+ #endif
+
  #if GPT_CFG_WRITE_PROTECT_ENABLE
 
     /* Disable write protection for GPT registers if they are protected. */
@@ -1128,18 +1188,34 @@ fsp_err_t R_GPT_PwmOutputDelayInitialize (void)
     R_GPT0->GTWP;
  #endif
 
-    /* Reset the PWM Delay Generation Circuit. */
-    R_GPT_HRPWM->HROCR1 = (uint16_t) hrocr1;
-    R_GPT_HRPWM->HROCR2 = 0;
+    for (uint32_t i = 0U; i < BSP_FEATURE_GPT_HRPWM_UNIT_COUNT; i++)
+    {
+        R_GPT_HRPWM_Type * p_hrpwm = R_GPT_HRPWM;
+ #if BSP_FEATURE_GPT_HRPWM_UNIT_COUNT > 1U
+        p_hrpwm = (R_GPT_HRPWM_Type *) (R_GPT_HRPWM_BASE + (address_gap * i));
+ #endif
 
-    /* Enable the DLL. */
-    R_GPT_HRPWM->HROCR1 = (uint16_t) (hrocr1 | R_GPT_HRPWM_HROCR1_DLLEN_Msk);
+        /* Reset the PWM Delay Generation Circuit. */
+        p_hrpwm->HROCR1 = (uint16_t) hrocr1;
+        p_hrpwm->HROCR2 = 0U;
+
+        /* Enable the DLL. */
+        p_hrpwm->HROCR1 = (uint16_t) (hrocr1 | R_GPT_HRPWM_HROCR1_DLLEN_Msk);
+    }
 
     /* Wait for the DLL to be enabled. */
     R_BSP_SoftwareDelay(20, BSP_DELAY_UNITS_MICROSECONDS);
 
-    /* Release the PWM Delay Generation Circuit from reset. */
-    R_GPT_HRPWM->HROCR1 &= (uint16_t) ~R_GPT_HRPWM_HROCR1_HRRST_Msk;
+    for (uint32_t i = 0U; i < BSP_FEATURE_GPT_HRPWM_UNIT_COUNT; i++)
+    {
+        R_GPT_HRPWM_Type * p_hrpwm = R_GPT_HRPWM;
+ #if BSP_FEATURE_GPT_HRPWM_UNIT_COUNT > 1U
+        p_hrpwm = (R_GPT_HRPWM_Type *) (R_GPT_HRPWM_BASE + (address_gap * i));
+ #endif
+
+        /* Release the PWM Delay Generation Circuit from reset. */
+        p_hrpwm->HROCR1 &= (uint16_t) ~R_GPT_HRPWM_HROCR1_HRRST_Msk;
+    }
 
  #if GPT_CFG_WRITE_PROTECT_ENABLE
 
@@ -1250,6 +1326,15 @@ static void gpt_hardware_initialize (gpt_instance_ctrl_t * const p_instance_ctrl
 #if (GPT_CFG_OUTPUT_SUPPORT_ENABLE && BSP_FEATURE_GPT_GPTEH_SUPPORTED)
     if (0U != (BSP_FEATURE_GPT_GPTEH_CHANNEL_MASK & p_instance_ctrl->channel_mask))
     {
+        uint32_t           local_channel = (uint32_t) p_cfg->channel % BSP_FEATURE_GPT_HRPWM_UNIT_CHANNELS;
+        R_GPT_HRPWM_Type * p_hrpwm       = R_GPT_HRPWM;
+ #if BSP_FEATURE_GPT_HRPWM_UNIT_COUNT > 1U
+        uint32_t hrpwm_unit  = (uint32_t) p_cfg->channel / BSP_FEATURE_GPT_HRPWM_UNIT_CHANNELS;
+        uint32_t address_gap = (uint32_t) R_GPT_HRPWM1_BASE - (uint32_t) R_GPT_HRPWM_BASE;
+        p_hrpwm = (R_GPT_HRPWM_Type *) (R_GPT_HRPWM_BASE + (address_gap * hrpwm_unit));
+ #endif
+        uint16_t channel_mask = (uint16_t) (1U << local_channel);
+
         /* Enter a critical section in order to ensure that multiple GPT channels don't access the common
          * register simultaneously. */
         FSP_CRITICAL_SECTION_DEFINE;
@@ -1264,7 +1349,7 @@ static void gpt_hardware_initialize (gpt_instance_ctrl_t * const p_instance_ctrl
  #endif
 
         /* Enable the Delay Generation Circuit bypass. */
-        R_GPT_HRPWM->HROCR2 &= (uint16_t) (~p_instance_ctrl->channel_mask & UINT16_MAX);
+        p_hrpwm->HROCR2 &= (uint16_t) (~channel_mask & UINT16_MAX);
 
  #if GPT_CFG_WRITE_PROTECT_ENABLE
         R_GPT0->GTWP = wp | GPT_PRV_GTWP_RESET_VALUE;
@@ -1331,7 +1416,7 @@ static void gpt_hardware_initialize (gpt_instance_ctrl_t * const p_instance_ctrl
     p_instance_ctrl->p_reg->GTPR  = gtpr;
 
     uint32_t gtuddtyc = 0U;
-    uint32_t gtior    = p_extend->gtior_setting.gtior;
+    uint32_t gtior    = p_extend->gtior_setting.gpt_gtior_setting_u.gtior;
 
 #if GPT_CFG_OUTPUT_SUPPORT_ENABLE
 
@@ -1370,7 +1455,7 @@ static void gpt_hardware_initialize (gpt_instance_ctrl_t * const p_instance_ctrl
     gtuddtyc |= duty_regs.omdty << R_GPT0_GTUDDTYC_OBDTY_Pos;
 
     /* Check if custom GTIOR settings are provided. */
-    if (0 == p_extend->gtior_setting.gtior)
+    if (0 == p_extend->gtior_setting.gpt_gtior_setting_u.gtior)
     {
         /* If custom GTIOR settings are not provided, calculate GTIOR. */
         if (p_extend->gtioca.output_enabled)
@@ -1420,10 +1505,19 @@ static void gpt_hardware_initialize (gpt_instance_ctrl_t * const p_instance_ctrl
 
 #if GPT_PRV_EXTRA_FEATURES_ENABLED == GPT_CFG_OUTPUT_SUPPORT_ENABLE
     gpt_extended_pwm_cfg_t const * p_pwm_cfg = p_extend->p_pwm_cfg;
+ #if BSP_FEATURE_GPT_GTDREQ_SUPPORTED
+    p_instance_ctrl->p_reg->GTDREQ = 0U;
+ #endif
     if (NULL != p_pwm_cfg)
     {
-        gtintad |= ((uint32_t) p_pwm_cfg->output_disable << R_GPT0_GTINTAD_GRPDTE_Pos) |
-                   ((uint32_t) p_pwm_cfg->poeg_link << R_GPT0_GTINTAD_GRP_Pos);
+        gtintad |= (uint32_t) p_pwm_cfg->output_disable << R_GPT0_GTINTAD_GRPDTE_Pos;
+ #if BSP_FEATURE_GPT_GTDREQ_SUPPORTED
+        p_instance_ctrl->p_reg->GTDREQ =
+            (GPT_PRV_GTDREQ_GTIOA_GROUP_A_MASK | GPT_PRV_GTDREQ_GTIOB_GROUP_A_MASK) <<
+            (uint32_t) p_pwm_cfg->poeg_link;
+ #else
+        gtintad |= (uint32_t) p_pwm_cfg->poeg_link << R_GPT0_GTINTAD_GRP_Pos;
+ #endif
 
         if (GPT_PRV_INTERRUPT_DISABLE != p_pwm_cfg->trough_ipl)
         {
@@ -1468,7 +1562,7 @@ static void gpt_hardware_initialize (gpt_instance_ctrl_t * const p_instance_ctrl
  #endif
 
         /* Check if custom GTIOR (Input/Output) settings are provided. */
-        if (0 == p_extend->gtior_setting.gtior)
+        if (0 == p_extend->gtior_setting.gpt_gtior_setting_u.gtior)
         {
             /* If custom GTIOR settings are not provided, set gtioca_disable_settings and gtiocb_disable_settings. */
             gtior |= (uint32_t) (p_pwm_cfg->gtioca_disable_setting << R_GPT0_GTIOR_OADF_Pos);
@@ -1486,7 +1580,7 @@ static void gpt_hardware_initialize (gpt_instance_ctrl_t * const p_instance_ctrl
     p_instance_ctrl->p_reg->GTINTAD = gtintad;
 
     /* Check if custom GTIOR settings are provided. */
-    if (0 == p_extend->gtior_setting.gtior)
+    if (0 == p_extend->gtior_setting.gpt_gtior_setting_u.gtior)
     {
         /*
          * If custom GTIOR settings are not provided, configure the noise filter for

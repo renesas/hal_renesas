@@ -149,6 +149,31 @@ typedef struct s_gpt_gtior_setting
         uint32_t gtior;
         struct
         {
+#if defined(__BIG) && defined(__GNUC__)
+
+            /* Settings for GTIOCxB pin. */
+            uint32_t nfcsb  : 2;       /// Noise Filter B Sampling Clock Select.
+            uint32_t nfben  : 1;       /// Noise Filter B Enable.
+            uint32_t        : 2;       /// Reserved
+            uint32_t obdf   : 2;       ///< GTIOCB Pin Disable Value Setting.
+            uint32_t obe    : 1;       ///< GTIOCB Pin Output Enable
+            uint32_t obhld  : 1;       ///< GTIOCB Pin Output Setting at the Start/Stop Count.
+            uint32_t obdflt : 1;       ///< GTIOCB Pin Output Value Setting at the Count Stop.
+            uint32_t        : 1;       // Reserved
+            uint32_t gtiob  : 5;       ///< GTIOCB Pin Function Select.
+
+            /* Settings for GTIOCxA pin. */
+            uint32_t nfcsa  : 2;       /// Noise Filter A Sampling Clock Select.
+            uint32_t nfaen  : 1;       /// Noise Filter A Enable.
+            uint32_t        : 2;       /// Reserved
+            uint32_t oadf   : 2;       ///< GTIOCA Pin Disable Value Setting.
+            uint32_t oae    : 1;       ///< GTIOCA Pin Output Enable
+            uint32_t oahld  : 1;       ///< GTIOCA Pin Output Setting at the Start/Stop Count.
+            uint32_t oadflt : 1;       ///< GTIOCA Pin Output Value Setting at the Count Stop.
+            uint32_t        : 1;       // Reserved
+            uint32_t gtioa  : 5;       ///< GTIOCA Pin Function Select.
+#else
+
             /* Settings for GTIOCxA pin. */
             uint32_t gtioa  : 5;       ///< GTIOCA Pin Function Select.
             uint32_t        : 1;       // Reserved
@@ -170,8 +195,9 @@ typedef struct s_gpt_gtior_setting
             uint32_t        : 2;       /// Reserved
             uint32_t nfben  : 1;       /// Noise Filter B Enable.
             uint32_t nfcsb  : 2;       /// Noise Filter B Sampling Clock Select.
+#endif
         } gtior_b;
-    };
+    } gpt_gtior_setting_u;
 } gpt_gtior_setting_t;
 
 /** Input capture signal noise filter (debounce) setting. Only available for input signals GTIOCxA and GTIOCxB.
