@@ -64,7 +64,11 @@ extern "C" {
 #endif /* DT_NUM_INST_STATUS_OKAY */
 
 #define SAU_I2C_CFG_RESTART_ENABLE (1)
+#if defined(CONFIG_I2C_RENESAS_RA_SAU_DTC)
+#define SAU_I2C_CFG_DTC_SUPPORT_ENABLE      (1)
+#else
 #define SAU_I2C_CFG_DTC_SUPPORT_ENABLE      (0)
+#endif
 
 #ifdef __cplusplus
 }
