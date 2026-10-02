@@ -60,7 +60,7 @@
 
 /* Used to create IELS values for the interrupt initialization table
  * g_interrupt_event_link_select. */
-#define BSP_PRV_IELS_ENUM(vector) (ICU_##vector)
+#define BSP_PRV_IELS_ENUM(vector) CONCAT(ICU_, vector)
 
 #define BSP_MAX_CLOCK_CHANGE_THRESHOLD (300000000U)
 
@@ -190,9 +190,8 @@
    (((FSP_NOT_DEFINED > 0) ? 0U : 1U) << 23) /* RSPIA2, MSTPCRC.MSTPC23 bit */ \
    |                                                                           \
    (((FSP_NOT_DEFINED > 0) ? 0U : 1U) << 24) /* PDMIF, MSTPCRC.MSTPC24 bit */  \
-   |                                                                           \
-   (((FSP_NOT_DEFINED > 0) ? 0U : 1U)                                          \
-    << 25) /* CANFDG0, MSTPCRC.MSTPC25 bit */                                  \
+   | (((FSP_NOT_DEFINED > 0) ? 0U : 1U)                                        \
+      << 25) /* CANFDG0, MSTPCRC.MSTPC25 bit */                                \
    |                                                                           \
    (((FSP_NOT_DEFINED > 0) ? 0U : 1U) << 27) /* CANFD, MSTPCRC.MSTPC27 bit */  \
    |                                                                           \
@@ -216,18 +215,14 @@
          ? 0U                                                                  \
          : 1U)                                                                 \
     << 6) /* HRPWM, MSTPCRD.MSTPD6 bit */                                      \
-   |                                                                           \
-   (((FSP_NOT_DEFINED > 0) ? 0U : 1U)                                          \
-    << 11) /* POEG GroupD, MSTPCRD.MSTPD11 bit */                              \
-   |                                                                           \
-   (((FSP_NOT_DEFINED > 0) ? 0U : 1U)                                          \
-    << 12) /* POEG GroupC, MSTPCRD.MSTPD12 bit */                              \
-   |                                                                           \
-   (((FSP_NOT_DEFINED > 0) ? 0U : 1U)                                          \
-    << 13) /* POEG GroupB, MSTPCRD.MSTPD13 bit */                              \
-   |                                                                           \
-   (((FSP_NOT_DEFINED > 0) ? 0U : 1U)                                          \
-    << 14) /* POEG GroupA, MSTPCRD.MSTPD14 bit */                              \
+   | (((FSP_NOT_DEFINED > 0) ? 0U : 1U)                                        \
+      << 11) /* POEG GroupD, MSTPCRD.MSTPD11 bit */                            \
+   | (((FSP_NOT_DEFINED > 0) ? 0U : 1U)                                        \
+      << 12) /* POEG GroupC, MSTPCRD.MSTPD12 bit */                            \
+   | (((FSP_NOT_DEFINED > 0) ? 0U : 1U)                                        \
+      << 13) /* POEG GroupB, MSTPCRD.MSTPD13 bit */                            \
+   | (((FSP_NOT_DEFINED > 0) ? 0U : 1U)                                        \
+      << 14) /* POEG GroupA, MSTPCRD.MSTPD14 bit */                            \
    |                                                                           \
    (((FSP_NOT_DEFINED > 0) ? 0U : 1U) << 19) /* DAC1, MSTPCRD.MSTPD19 bit */ | \
    (((FSP_NOT_DEFINED > 0) ? 0U : 1U) << 20) /* DAC0, MSTPCRD.MSTPD20 bit */ | \
@@ -252,37 +247,33 @@
          ? 0U                                                                  \
          : 1U)                                                                 \
     << 15) /* GPTW.GTCLKCR register */                                         \
-   |                                                                           \
-   ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                        \
-      (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                        \
-      (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                        \
-      (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                        \
-      (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                        \
-      (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                        \
-      (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                        \
-      (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0))                          \
-         ? 0U                                                                  \
-         : 1U)                                                                 \
-    << 31) /* GPTW15-0, GPT_OPS, MSTPCRE.MSTPE31 bit */)
+   | ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                      \
+        (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                      \
+        (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                      \
+        (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                      \
+        (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                      \
+        (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                      \
+        (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0) ||                      \
+        (FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0))                        \
+           ? 0U                                                                \
+           : 1U)                                                               \
+      << 31) /* GPTW15-0, GPT_OPS, MSTPCRE.MSTPE31 bit */)
 #endif
 
 #ifndef BSP_PZ_CFG_PSARF
 #define BSP_PZ_CFG_PSARF                                                       \
   (((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)               \
     << 6) /* TMR3, TMR2, MSTPCRF.MSTPF6 bit */                                 \
-   |                                                                           \
-   ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)               \
-    << 7) /* TMR1, TMR0, MSTPCRF.MSTPF7 bit */                                 \
+   | ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)             \
+      << 7) /* TMR1, TMR0, MSTPCRF.MSTPF7 bit */                               \
    |                                                                           \
    (((FSP_NOT_DEFINED > 0) ? 0U : 1U) << 12) /* CMTW1, MSTPCRF.MSTPF12 bit */  \
    |                                                                           \
    (((FSP_NOT_DEFINED > 0) ? 0U : 1U) << 13) /* CMTW0, MSTPCRF.MSTPF13 bit */  \
-   |                                                                           \
-   ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)               \
-    << 14) /* CMT3, CMT2, MSTPCRF.MSTPF14 bit */                               \
-   |                                                                           \
-   ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)               \
-    << 15) /* CMT1, CMT0, MSTPCRF.MSTPF15 bit */                               \
+   | ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)             \
+      << 14) /* CMT3, CMT2, MSTPCRF.MSTPF14 bit */                             \
+   | ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)             \
+      << 15) /* CMT1, CMT0, MSTPCRF.MSTPF15 bit */                             \
    | (1U << 16) /* PIO, MSTPCRF.MSTPF16 bit */ |                               \
    (((FSP_NOT_DEFINED > 0) ? 0U : 1U) << 30) /* PCIF1, MSTPCRF.MSTPF30 bit */  \
    |                                                                           \
@@ -293,9 +284,8 @@
 #define BSP_PZ_CFG_MSSAR                                                       \
   ((((FSP_NOT_DEFINED > 0) ? 0U : 1U)                                          \
     << 22) /* DMAC, DTC, MSTPCRA.MSTPA22 bit */                                \
-   |                                                                           \
-   ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)               \
-    << 29) /* EXDMAC, MSTPCRA.MSTPA29 bit */                                   \
+   | ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)             \
+      << 29) /* EXDMAC, MSTPCRA.MSTPA29 bit */                                 \
    | (((FSP_NOT_DEFINED > 0) ? 0U : 1U) << 31) /* ELC, MSTPCRC.MSTPC14 bit */)
 #endif
 
@@ -691,12 +681,10 @@
    (((FSP_NOT_DEFINED > 0) ? 0U : 1U) << 16) /* ELOPA Security Attribution */  \
    |                                                                           \
    (((FSP_NOT_DEFINED > 0) ? 0U : 1U) << 17) /* ELOPB Security Attribution */  \
-   |                                                                           \
-   ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)               \
-    << 18) /* ELOPC Security Attribution */                                    \
-   |                                                                           \
-   ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)               \
-    << 19) /* ELOPD Security Attribution */)
+   | ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)             \
+      << 18) /* ELOPC Security Attribution */                                  \
+   | ((((FSP_NOT_DEFINED > 0) || (FSP_NOT_DEFINED > 0)) ? 0U : 1U)             \
+      << 19) /* ELOPD Security Attribution */)
 #endif
 
 /* Security attribute settings for MRAM registers. */
