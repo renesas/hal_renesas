@@ -5,6 +5,9 @@
 */
 #ifndef BSP_CLOCK_CFG_U2A16_H_
 #define BSP_CLOCK_CFG_U2A16_H_
+
+#include "bsp_clock_cfg.h"
+
 #ifndef BSP_CFG_CLOCKS_SECURE
  #define BSP_CFG_CLOCKS_SECURE                    (0)
 #endif
@@ -14,7 +17,8 @@
 #endif
 
 #ifndef BSP_CFG_CLK_MOSC_VALUE
- #define BSP_CFG_CLK_MOSC_VALUE                   (BSP_CLKCTL_CLK_MOSC_20MHZ) /* MainOSC: 20MHz */
+#define BSP_CFG_CLK_MOSC_VALUE \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(mosc))
 #endif
 
 #ifndef BSP_CFG_CLK_MOSC_SELECT_STANDBY_MODE
@@ -26,15 +30,21 @@
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_PLL_HZ
- #define BSP_CFG_CLOCK_CLK_PLL_HZ                 (800000000)                 /* PLL: 800000000Hz */
+#define BSP_CFG_CLOCK_CLK_PLL_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(pll))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_PLL0_DIV
- #define BSP_CFG_CLOCK_CLK_PLL0_DIV               (0)                         /* PLL0: No division */
+#define BSP_CFG_CLOCK_CLK_PLL0_DIV \
+	DT_PROP_OR(DT_NODELABEL(pllo), renesas_pll0_divider, 0)
+#if (BSP_CFG_CLOCK_CLK_PLL0_DIV) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLK_PLL0_DIV"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_PLLO_HZ
- #define BSP_CFG_CLOCK_CLK_PLLO_HZ                (800000000)                 /* PLL0: 800000000Hz */
+#define BSP_CFG_CLOCK_CLK_PLLO_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(pllo))
 #endif
 
 #ifndef BSP_CFG_CLK_PLL_SELECT_STANDBY_MODE
@@ -54,319 +64,488 @@
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_CPU_VALUE
- #define BSP_CFG_CLOCK_CLK_CPU_VALUE              (400000000)                 /* CPU: 400000000Hz */
+#define BSP_CFG_CLOCK_CLK_CPU_VALUE \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_cpu))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_HVIOSC_HZ
- #define BSP_CFG_CLOCK_CLK_HVIOSC_HZ              (16000000)                  /* CLK_HVIOSC: 16000000Hz */
+#define BSP_CFG_CLOCK_CLK_HVIOSC_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(hviosc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_LSIOSC_HZ
- #define BSP_CFG_CLOCK_CLK_LSIOSC_HZ              (240000)                    /* CLK_LSIOSC: 240000Hz */
+#define BSP_CFG_CLOCK_CLK_LSIOSC_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(lsiosc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_HSIOSC_HZ
- #define BSP_CFG_CLOCK_CLK_HSIOSC_HZ              (200000000)                 /* CLK_HSIOSC: 200000000Hz */
+#define BSP_CFG_CLOCK_CLK_HSIOSC_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(hsiosc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKA_LPS_HZ
- #define BSP_CFG_CLOCK_CLKA_LPS_HZ                (10000000)                  /* CLKA_LPS: 10000000Hz */
+#define BSP_CFG_CLOCK_CLKA_LPS_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clka_lps))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_ECMCNT_HZ
- #define BSP_CFG_CLOCK_CLK_ECMCNT_HZ              (10000000)                  /* CLK_ECMCNT: 10000000Hz */
+#define BSP_CFG_CLOCK_CLK_ECMCNT_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_ecmcnt))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_MOSC_HZ
- #define BSP_CFG_CLOCK_CLK_MOSC_HZ                (20000000)                  /* CLK_MOSC: 20000000Hz */
+#define BSP_CFG_CLOCK_CLK_MOSC_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(mosc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_IOSC_SRC
- #define BSP_CFG_CLOCK_CLK_IOSC_SRC               (1)                         /* CLK_IOSC: CLK_HSIOSC */
+#define BSP_CFG_CLOCK_CLK_IOSC_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(iosc), clock_source, IOSC)
+#if (BSP_CFG_CLOCK_CLK_IOSC_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLK_IOSC_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_IOSC_HZ
- #define BSP_CFG_CLOCK_CLK_IOSC_HZ                (200000000)                 /* CLK_IOSC: 200000000Hz */
+#define BSP_CFG_CLOCK_CLK_IOSC_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(iosc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_MSPI_SRC
- #define BSP_CFG_CLOCK_CLK_MSPI_SRC               (1)                         /* CLK_MSPI: CLK_HSB */
+#define BSP_CFG_CLOCK_CLK_MSPI_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clk_mspi), clock_source, MSPI)
+#if (BSP_CFG_CLOCK_CLK_MSPI_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLK_MSPI_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_MSPI_HZ
- #define BSP_CFG_CLOCK_CLK_MSPI_HZ                (80000000)                  /* CLK_MSPI: 80000000Hz */
+#define BSP_CFG_CLOCK_CLK_MSPI_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_mspi))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_RLIN3_SRC
- #define BSP_CFG_CLOCK_CLK_RLIN3_SRC              (1)                         /* CLK_RLIN3: CLK_HSB */
+#define BSP_CFG_CLOCK_CLK_RLIN3_SRC \
+	BSP_CLOCK_DT_RLIN(DT_NODELABEL(clk_rlin3), 0)
+#if (BSP_CFG_CLOCK_CLK_RLIN3_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLK_RLIN3_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_RLIN3_HZ
- #define BSP_CFG_CLOCK_CLK_RLIN3_HZ               (80000000)                  /* CLK_RLIN3: 80000000Hz */
+#define BSP_CFG_CLOCK_CLK_RLIN3_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_rlin3))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_WDT_SRC
- #define BSP_CFG_CLOCK_CLK_WDT_SRC                (1)                         /* CLK_WDT: CLK_HSIOSC_DIV_640 */
+#define BSP_CFG_CLOCK_CLK_WDT_SRC \
+	BSP_CLOCK_DT_WDT(DT_NODELABEL(clk_wdt), 0)
+#if (BSP_CFG_CLOCK_CLK_WDT_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLK_WDT_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_WDT_HZ
- #define BSP_CFG_CLOCK_CLK_WDT_HZ                 (312500)                    /* CLK_WDT: 312500Hz */
+#define BSP_CFG_CLOCK_CLK_WDT_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_wdt))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_RCANOSC_SRC
- #define BSP_CFG_CLOCK_CLK_RCANOSC_SRC            (1)                         /* CLK_RCANOSC: CLK_MOSC */
+#define BSP_CFG_CLOCK_CLK_RCANOSC_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clk_rcanosc), clock_source, CAN_XIN)
+#if (BSP_CFG_CLOCK_CLK_RCANOSC_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLK_RCANOSC_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_RCANOSC_HZ
- #define BSP_CFG_CLOCK_CLK_RCANOSC_HZ             (20000000)                  /* CLK_RCANOSC: 20000000Hz */
+#define BSP_CFG_CLOCK_CLK_RCANOSC_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_rcanosc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CKSC_CPUC_SRC
- #define BSP_CFG_CLOCK_CKSC_CPUC_SRC              (0)                         /* CLK_SYS: CLK_PLLO */
+#define BSP_CFG_CLOCK_CKSC_CPUC_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clk_sys), clock_source, SYS)
+#if (BSP_CFG_CLOCK_CKSC_CPUC_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CKSC_CPUC_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_SYS_HZ
- #define BSP_CFG_CLOCK_CLK_SYS_HZ                 (800000000)                 /* CLK_SYS: 800000000Hz */
+#define BSP_CFG_CLOCK_CLK_SYS_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_sys))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_CPU_HZ
- #define BSP_CFG_CLOCK_CLK_CPU_HZ                 (400000000)                 /* CLK_CPU: 400000000Hz */
+#define BSP_CFG_CLOCK_CLK_CPU_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_cpu))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_SBUS_HZ
- #define BSP_CFG_CLOCK_CLK_SBUS_HZ                (200000000)                 /* CLK_SBUS: 200000000Hz */
+#define BSP_CFG_CLOCK_CLK_SBUS_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_sbus))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_HBUS_HZ
- #define BSP_CFG_CLOCK_CLK_HBUS_HZ                (100000000)                 /* CLK_HBUS: 100000000Hz */
+#define BSP_CFG_CLOCK_CLK_HBUS_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_hbus))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_UHSB_HZ
- #define BSP_CFG_CLOCK_CLK_UHSB_HZ                (160000000)                 /* CLK_UHSB: 160000000Hz */
+#define BSP_CFG_CLOCK_CLK_UHSB_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_uhsb))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_HSB_HZ
- #define BSP_CFG_CLOCK_CLK_HSB_HZ                 (80000000)                  /* CLK_HSB: 80000000Hz */
+#define BSP_CFG_CLOCK_CLK_HSB_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_hsb))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_LSB_HZ
- #define BSP_CFG_CLOCK_CLK_LSB_HZ                 (40000000)                  /* CLK_LSB: 40000000Hz */
+#define BSP_CFG_CLOCK_CLK_LSB_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_lsb))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKA_WDT_SRC
- #define BSP_CFG_CLOCK_CLKA_WDT_SRC               (1)                         /* CLKA_WDT: CLK_LSIOSC/128 */
+#define BSP_CFG_CLOCK_CLKA_WDT_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clka_wdt), clock_source, AWDT)
+#if (BSP_CFG_CLOCK_CLKA_WDT_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLKA_WDT_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKA_WDT_HZ
- #define BSP_CFG_CLOCK_CLKA_WDT_HZ                (1875)                      /* CLKA_WDT: 1875Hz */
+#define BSP_CFG_CLOCK_CLKA_WDT_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clka_wdt))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKA_TAUJ_SRC
- #define BSP_CFG_CLOCK_CLKA_TAUJ_SRC              (1)                         /* CLKA_TAUJ: CLK_HSIOSC / 20 */
+#define BSP_CFG_CLOCK_CLKA_TAUJ_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clka_tauj), clock_source, TAUJ)
+#if (BSP_CFG_CLOCK_CLKA_TAUJ_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLKA_TAUJ_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKA_TAUJ_HZ
- #define BSP_CFG_CLOCK_CLKA_TAUJ_HZ               (10000000)                  /* CLKA_TAUJ: 10000000Hz */
+#define BSP_CFG_CLOCK_CLKA_TAUJ_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clka_tauj))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKA_RTCA_SRC
- #define BSP_CFG_CLOCK_CLKA_RTCA_SRC              (1)                         /* CLKA_RTCA: CLK_LSIOSC */
+#define BSP_CFG_CLOCK_CLKA_RTCA_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clka_rtca), clock_source, RTCA)
+#if (BSP_CFG_CLOCK_CLKA_RTCA_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLKA_RTCA_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKA_RTCA_HZ
- #define BSP_CFG_CLOCK_CLKA_RTCA_HZ               (240000)                    /* CLKA_RTCA: 240000Hz */
+#define BSP_CFG_CLOCK_CLKA_RTCA_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clka_rtca))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKA_ADC_SRC
- #define BSP_CFG_CLOCK_CLKA_ADC_SRC               (1)                         /* CLKA_ADC: CLK_HSIOSC/20 */
+#define BSP_CFG_CLOCK_CLKA_ADC_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clka_adc), clock_source, AADC)
+#if (BSP_CFG_CLOCK_CLKA_ADC_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLKA_ADC_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKA_ADC_DIV
- #define BSP_CFG_CLOCK_CLKA_ADC_DIV               (1)                         /* CKSC_AADCC selection/1 */
+#define BSP_CFG_CLOCK_CLKA_ADC_DIV \
+	BSP_CLOCK_DT_DIV(DT_NODELABEL(clka_adc))
+#if (BSP_CFG_CLOCK_CLKA_ADC_DIV) < 0 || (BSP_CFG_CLOCK_CLKA_ADC_DIV) > 1
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLKA_ADC_DIV"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLKA_ADC_HZ
- #define BSP_CFG_CLOCK_CLKA_ADC_HZ                (10000000)                  /* CLKA_ADC: 10000000Hz */
+#define BSP_CFG_CLOCK_CLKA_ADC_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clka_adc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_ADC_SRC
- #define BSP_CFG_CLOCK_CLK_ADC_SRC                (1)                         /* CLK_ADC: CLK_LSB/2 */
+#define BSP_CFG_CLOCK_CLK_ADC_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clk_adc), clock_source, ADC)
+#if (BSP_CFG_CLOCK_CLK_ADC_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CLK_ADC_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CLK_ADC_HZ
- #define BSP_CFG_CLOCK_CLK_ADC_HZ                 (20000000)                  /* CLK_ADC: 20000000Hz */
+#define BSP_CFG_CLOCK_CLK_ADC_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(clk_adc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_EXTCLK0O_SRC
- #define BSP_CFG_CLOCK_EXTCLK0O_SRC               (1)                         /* EXTCLK0O: CLK_HSB */
+#define BSP_CFG_CLOCK_EXTCLK0O_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(extclk0), clock_source, EXTCLK)
+#if (BSP_CFG_CLOCK_EXTCLK0O_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_EXTCLK0O_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_EXTCLK0O_DIV
- #define BSP_CFG_CLOCK_EXTCLK0O_DIV               0                           /* EXTCLK0 Div: Disabled */
+#define BSP_CFG_CLOCK_EXTCLK0O_DIV \
+	BSP_CLOCK_DT_DIV(DT_NODELABEL(extclk0))
+#if (BSP_CFG_CLOCK_EXTCLK0O_DIV) < 0 || (BSP_CFG_CLOCK_EXTCLK0O_DIV) > 0x3ff
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_EXTCLK0O_DIV"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_EXTCLK0O_HZ
- #define BSP_CFG_CLOCK_EXTCLK0O_HZ                (0)                         /* EXTCLK0O: 0Hz */
+#define BSP_CFG_CLOCK_EXTCLK0O_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(extclk0))
 #endif
 
 #ifndef BSP_CFG_CLOCK_EXTCLK1O_SRC
- #define BSP_CFG_CLOCK_EXTCLK1O_SRC               (1)                         /* EXTCLK1O: CLK_HSB */
+#define BSP_CFG_CLOCK_EXTCLK1O_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(extclk1), clock_source, EXTCLK)
+#if (BSP_CFG_CLOCK_EXTCLK1O_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_EXTCLK1O_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_EXTCLK1O_DIV
- #define BSP_CFG_CLOCK_EXTCLK1O_DIV               0                           /* EXTCLK1 Div: Disabled */
+#define BSP_CFG_CLOCK_EXTCLK1O_DIV \
+	BSP_CLOCK_DT_DIV(DT_NODELABEL(extclk1))
+#if (BSP_CFG_CLOCK_EXTCLK1O_DIV) < 0 || (BSP_CFG_CLOCK_EXTCLK1O_DIV) > 0x3ff
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_EXTCLK1O_DIV"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_EXTCLK1O_HZ
- #define BSP_CFG_CLOCK_EXTCLK1O_HZ                (0)                         /* EXTCLK1O: 0Hz */
+#define BSP_CFG_CLOCK_EXTCLK1O_HZ \
+	BSP_CLOCK_DT_HZ(DT_NODELABEL(extclk1))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_HVIOSC_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_HVIOSC_HZ    (16000000)                  /* CYCLIC_CLK_HVIOSC: 16000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_HVIOSC_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(hviosc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_LSIOSC_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_LSIOSC_HZ    (240000)                    /* CYCLIC_CLK_LSIOSC: 240000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_LSIOSC_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(lsiosc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_HSIOSC_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_HSIOSC_HZ    (200000000)                 /* CYCLIC_CLK_HSIOSC: 200000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_HSIOSC_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(hsiosc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_LPS_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_LPS_HZ      (10000000)                  /* CYCLIC_CLKA_LPS: 10000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLKA_LPS_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clka_lps))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_ECMCNT_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_ECMCNT_HZ    (10000000)                  /* CYCLIC_CLK_ECMCNT: 10000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_ECMCNT_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clk_ecmcnt))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_MOSC_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_MOSC_HZ      (20000000)                  /* CYCLIC_CLK_MOSC: 20000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_MOSC_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(mosc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_IOSC_SRC
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_IOSC_SRC     (1)                         /* CYCLIC_CLK_IOSC: CLK_HSIOSC */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_IOSC_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(iosc), renesas_cyclicrun_clock_source, IOSC)
+#if (BSP_CFG_CLOCK_CYCLICRUN_CLK_IOSC_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_CLK_IOSC_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_IOSC_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_IOSC_HZ      (200000000)                 /* CYCLIC_CLK_IOSC: 200000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_IOSC_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(iosc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_MSPI_SRC
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_MSPI_SRC     (1)                         /* CYCLIC_CLK_MSPI: CLK_HSB */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_MSPI_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clk_mspi), renesas_cyclicrun_clock_source, MSPI)
+#if (BSP_CFG_CLOCK_CYCLICRUN_CLK_MSPI_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_CLK_MSPI_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_MSPI_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_MSPI_HZ      (20000000)                  /* CYCLIC_CLK_MSPI: 20000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_MSPI_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clk_mspi))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_RLIN3_SRC
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_RLIN3_SRC    (1)                         /* CYCLIC_CLK_RLIN3: CLK_HSB */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_RLIN3_SRC \
+	BSP_CLOCK_DT_RLIN(DT_NODELABEL(clk_rlin3), 1)
+#if (BSP_CFG_CLOCK_CYCLICRUN_CLK_RLIN3_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_CLK_RLIN3_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_RLIN3_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_RLIN3_HZ     (20000000)                  /* CYCLIC_CLK_RLIN3: 20000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_RLIN3_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clk_rlin3))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CKSC_CPUC_SRC
- #define BSP_CFG_CLOCK_CYCLICRUN_CKSC_CPUC_SRC    (1)                         /* CYCLIC_CLK_SYS: CLK_IOSC */
+#define BSP_CFG_CLOCK_CYCLICRUN_CKSC_CPUC_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clk_sys), renesas_cyclicrun_clock_source, SYS)
+#if (BSP_CFG_CLOCK_CYCLICRUN_CKSC_CPUC_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_CKSC_CPUC_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_SYS_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_SYS_HZ       (200000000)                 /* CYCLIC_CLK_SYS: 200000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_SYS_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clk_sys))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_CPU_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_CPU_HZ       (100000000)                 /* CYCLIC_CLK_CPU: 100000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_CPU_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clk_cpu))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_SBUS_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_SBUS_HZ      (50000000)                  /* CYCLIC_CLK_SBUS: 50000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_SBUS_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clk_sbus))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_HBUS_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_HBUS_HZ      (25000000)                  /* CYCLIC_CLK_HBUS: 25000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_HBUS_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clk_hbus))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_UHSB_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_UHSB_HZ      (40000000)                  /* CYCLIC_CLK_UHSB: 40000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_UHSB_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clk_uhsb))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_HSB_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_HSB_HZ       (20000000)                  /* CYCLIC_CLK_HSB: 20000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_HSB_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clk_hsb))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_LSB_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_LSB_HZ       (10000000)                  /* CYCLIC_CLK_LSB: 10000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_LSB_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clk_lsb))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_WDT_SRC
- #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_WDT_SRC     (1)                         /* CYCLIC_CLKA_WDT: CLK_LSIOSC/128 */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLKA_WDT_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clka_wdt), renesas_cyclicrun_clock_source, AWDT)
+#if (BSP_CFG_CLOCK_CYCLICRUN_CLKA_WDT_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_CLKA_WDT_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_WDT_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_WDT_HZ      (1875)                      /* CYCLIC_CLKA_WDT: 1875Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLKA_WDT_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clka_wdt))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_TAUJ_SRC
- #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_TAUJ_SRC    (1)                         /* CYCLIC_CLKA_TAUJ: CLK_HSIOSC / 20 */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLKA_TAUJ_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clka_tauj), renesas_cyclicrun_clock_source, TAUJ)
+#if (BSP_CFG_CLOCK_CYCLICRUN_CLKA_TAUJ_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_CLKA_TAUJ_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_TAUJ_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_TAUJ_HZ     (10000000)                  /* CYCLIC_CLKA_TAUJ: 10000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLKA_TAUJ_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clka_tauj))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_RTCA_SRC
- #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_RTCA_SRC    (1)                         /* CYCLIC_CLKA_RTCA: CLK_LSIOSC */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLKA_RTCA_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clka_rtca), renesas_cyclicrun_clock_source, RTCA)
+#if (BSP_CFG_CLOCK_CYCLICRUN_CLKA_RTCA_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_CLKA_RTCA_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_RTCA_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_RTCA_HZ     (240000)                    /* CYCLIC_CLKA_RTCA: 240000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLKA_RTCA_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clka_rtca))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_SRC
- #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_SRC     (1)                         /* CYCLIC_CLKA_ADC: CLK_HSIOSC/20 */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(clka_adc), renesas_cyclicrun_clock_source, AADC)
+#if (BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_DIV
- #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_DIV     (1)                         /* CYCLIC_CKSC_AADCC selection/1 */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_DIV \
+	BSP_CLOCK_DT_CYCLIC_DIV(DT_NODELABEL(clka_adc))
+#if (BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_DIV) < 0 || (BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_DIV) > 1
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_DIV"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_HZ      (10000000)                  /* CYCLIC_CLKA_ADC: 10000000Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLKA_ADC_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clka_adc))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_WDT_SRC
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_WDT_SRC      (1)                         /* CYCLIC_CLK_WDT: CLK_HSIOSC_DIV_640 */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_WDT_SRC \
+	BSP_CLOCK_DT_WDT(DT_NODELABEL(clk_wdt), 1)
+#if (BSP_CFG_CLOCK_CYCLICRUN_CLK_WDT_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_CLK_WDT_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_CLK_WDT_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_CLK_WDT_HZ       (312500)                    /* CYCLIC_CLK_WDT: 312500Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_CLK_WDT_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(clk_wdt))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_SRC
- #define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_SRC     (1)                         /* CYCLIC_EXTCLK0O: CLK_HSB */
+#define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(extclk0), renesas_cyclicrun_clock_source, EXTCLK)
+#if (BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_DIV
- #define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_DIV     0                           /* CYCLIC_EXTCLK0 Div: Disabled */
+#define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_DIV \
+	BSP_CLOCK_DT_CYCLIC_DIV(DT_NODELABEL(extclk0))
+#if (BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_DIV) < 0 || (BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_DIV) > 0x3ff
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_DIV"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_HZ      (0)                         /* CYCLIC_EXTCLK0O: 0Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK0O_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(extclk0))
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_SRC
- #define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_SRC     (1)                         /* CYCLIC_EXTCLK1O: CLK_HSB */
+#define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_SRC \
+	BSP_CLOCK_DT_SOURCE(DT_NODELABEL(extclk1), renesas_cyclicrun_clock_source, EXTCLK)
+#if (BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_SRC) < 0
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_SRC"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_DIV
- #define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_DIV     0                           /* CYCLIC_EXTCLK1 Div: Disabled */
+#define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_DIV \
+	BSP_CLOCK_DT_CYCLIC_DIV(DT_NODELABEL(extclk1))
+#if (BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_DIV) < 0 || (BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_DIV) > 0x3ff
+#error "Invalid Devicetree clock configuration: BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_DIV"
+#endif
 #endif
 
 #ifndef BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_HZ
- #define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_HZ      (0)                         /* CYCLIC_EXTCLK1O: 0Hz */
+#define BSP_CFG_CLOCK_CYCLICRUN_EXTCLK1O_HZ \
+	BSP_CLOCK_DT_CYCLIC_HZ(DT_NODELABEL(extclk1))
 #endif
 
 #endif /* BSP_CLOCK_CFG_U2A16_H_ */
