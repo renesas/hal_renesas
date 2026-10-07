@@ -1375,7 +1375,11 @@ static inline fsp_err_t process_pipe0_xfer (usbd_instance_ctrl_t * const p_ctrl,
         /* ZLP */
         pipe->buf = NULL;
 
-        if (USB_CONTROL_STAGE_STATUS == dcp_get_current_stage(p_ctrl))
+        /*
+         * A 0-byte OUT transfer is only started to arm the Status stage ZLP, so it does not
+         * depend on CTSQ, which may not have reached the status stage yet.
+         */
+        if ((USB_EP_CONTROL_OUT == ep_addr) || (USB_CONTROL_STAGE_STATUS == dcp_get_current_stage(p_ctrl)))
         {
             /* status stage: hardware will exchange the ZLP handshake automatically */
             *dcpctr = R_USB_DCPCTR_CCPL_Msk | R_USB_PIPE_CTR_PID_BUF;
@@ -2530,6 +2534,20 @@ void usb_device_isr (void)
             {
                 /* A ZLP has been sent/received — status stage complete. */
                 process_status_completion(p_ctrl);
+                break;
+            }
+
+            case R_USB_INTSTS0_CTSQ_CTRL_RSTATUS:
+            case R_USB_INTSTS0_CTSQ_CTRL_WSTATUS:
+            {
+                /* Complete the status stage here so it cannot race with the software ZLP arm. */
+#ifdef USB_HIGH_SPEED_MODULE
+                volatile uint16_t * dcpctr =
+                    USB_IS_USBHS(p_ctrl->p_cfg->module_number) ? &R_USB_HS0->DCPCTR : &R_USB_FS0->DCPCTR;
+#else
+                volatile uint16_t * dcpctr = &R_USB_FS0->DCPCTR;
+#endif
+                *dcpctr = R_USB_DCPCTR_CCPL_Msk | R_USB_PIPE_CTR_PID_BUF;
                 break;
             }
 
