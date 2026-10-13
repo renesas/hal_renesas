@@ -14,3 +14,7 @@ zephyr_library_sources_ifdef(
 
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_CRC
 	portable/src/rp_crc/rp_crc.c)
+
+zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_ETHER_ETNF
+	portable/src/rp_ether_t1s/rp_ether_t1s.c
+)

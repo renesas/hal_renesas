@@ -137,7 +137,6 @@ zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_DTSC
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_ETHER_ETNF
 	fsp/src/r_ether_phy/targets/CT25205_RTL/r_ether_phy_target_ct25205_rtl.c
 	fsp/src/r_ether_phy/r_ether_phy.c
-	fsp/src/r_ether_t1s/r_ether_t1s.c
 )
 
 # ETHER_TSN
