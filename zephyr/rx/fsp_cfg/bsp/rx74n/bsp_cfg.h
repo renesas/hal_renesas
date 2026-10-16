@@ -13,6 +13,7 @@ extern "C" {
 #include "../../../rx/fsp/src/bsp/mcu/all/bsp_compiler_support.h"
 #include "bsp_clock_cfg.h"
 #include "bsp_mcu_family_cfg.h"
+#include "bsp_mcu_ofs_cfg.h"
 #include <zephyr/devicetree.h>
 
 #define SUBCLOCK_STABILIZATION_MAX(x) ((x < 10000) ? x : 10000)
