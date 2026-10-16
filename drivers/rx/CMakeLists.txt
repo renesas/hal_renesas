@@ -290,4 +290,10 @@ if(CONFIG_HAS_RENESAS_RX_FSP)
 			fsp/src/bsp/mcu/all/bsp_sdram.c
 		)
 	endif()
+
+	if(CONFIG_USE_RX_FSP_IWDT)
+		zephyr_library_sources(
+			fsp/src/r_iwdt/r_iwdt.c
+		)
+	endif()
 endif()
