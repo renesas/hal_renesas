@@ -54,9 +54,6 @@
 #define RSENT_CHANNEL_OFFSET_BITS                          (4U)   /* PRQA S 1534 # Advisory R-2.5 */
 #define RSENT_CHANNEL_BIT_MASK                             (0x3U) /* PRQA S 1534 # Advisory R-2.5 */
 
-#define RSENT_SENT_SRC_RESET                               (0U)
-#define RSENT_SENT_DEST_RESET                              (0U)
-#define RSENT_SENT_NUM_TRANSFER_RESET                      (0U)
 #define RSENT_PAIR_STRIDE                                  (R_RSENT2_BASE - R_RSENT0_BASE)
 #define RSENT_GROUP_GAP                                    (R_RSENT1_BASE - R_RSENT0_BASE)
 
@@ -82,6 +79,10 @@
 
 /* Max number of messages supported by a transfer backed FastMsgRead or SlowMsgRead call */
  #define RSENT_SENT_TRANSFER_MSG_STAGING_MAX_COUNT         (64U)
+
+/* Number of SENT frames carrying one slow channel message */
+ #define RSENT_SENT_SHORT_SERIAL_MSG_FRAMES                (CONFIG_SENT_RENESAS_RH850_SERIAL_SHORT_FRAME)
+ #define RSENT_SENT_ENHANCED_SERIAL_MSG_FRAMES             (CONFIG_SENT_RENESAS_RH850_SERIAL_ENHANCED_FRAME)
 #endif
 
 /***********************************************************************************************************************
@@ -352,14 +353,19 @@ fsp_err_t R_RSENT_SENT_Close (sent_ctrl_t * const p_ctrl)                       
 #if (RSENT_SENT_TRANSFER_SUPPORT_ENABLE)
     if (NULL != p_instance_ctrl->p_cfg->p_transfer_rx)
     {
-        p_instance_ctrl->p_cfg->p_transfer_rx->p_api->reset(p_instance_ctrl->p_cfg->p_transfer_rx->p_ctrl,
-                                                            RSENT_SENT_SRC_RESET,  /* PRQA S 3004 # DP_MSR_R-11.9_UC1 */
-                                                            RSENT_SENT_DEST_RESET, /* PRQA S 3004 # DP_MSR_R-11.9_UC1 */
-                                                            RSENT_SENT_NUM_TRANSFER_RESET);
+        /* Reset is skipped because it enables the transfer channel again with zero transfers and raises an extra interrupt */
         p_instance_ctrl->p_cfg->p_transfer_rx->p_api->disable(p_instance_ctrl->p_cfg->p_transfer_rx->p_ctrl);
         p_instance_ctrl->p_cfg->p_transfer_rx->p_api->close(p_instance_ctrl->p_cfg->p_transfer_rx->p_ctrl);
     }
 #endif
+
+    /* Drop any pending request so it cannot block the next open */
+    p_instance_ctrl->fast_msg_rx_number = 0U;
+    p_instance_ctrl->fast_msg_rx_count  = 0U;
+    p_instance_ctrl->p_fast_msg_buffer  = NULL;
+    p_instance_ctrl->slow_msg_rx_number = 0U;
+    p_instance_ctrl->slow_msg_rx_count  = 0U;
+    p_instance_ctrl->p_slow_msg_buffer  = NULL;
 
     /* Mark the channel not open so other APIs cannot use it. */
     p_instance_ctrl->open = 0U;
@@ -499,7 +505,8 @@ fsp_err_t R_RSENT_SENT_Stop (sent_ctrl_t * const p_ctrl)                        
  * @retval      FSP_SUCCESS               Read request is issued successfully.
  * @retval      FSP_ERR_ASSERTION         p_ctrl, p_dest is NULL or message_count is 0.
  * @retval      FSP_ERR_NOT_OPEN          The RSENT channel specified in p_ctrl is not opened.
- * @retval      FSP_ERR_IN_USE            The fast channel message receive is on-going, wait for it to complete
+ * @retval      FSP_ERR_IN_USE            The fast channel message receive is on-going, or (transfer instance is used)
+ *                                        the slow channel message receive is on-going. Wait for it to complete
  *                                        or abort it before create a new read request.
  **********************************************************************************************************************/
 fsp_err_t R_RSENT_SENT_FastMsgRead (sent_ctrl_t * const p_ctrl, void * p_dest, uint32_t const message_count) /* PRQA S 1505 # Advisory R-8.7 */
@@ -524,6 +531,9 @@ fsp_err_t R_RSENT_SENT_FastMsgRead (sent_ctrl_t * const p_ctrl, void * p_dest, u
 
         if (NULL != p_transfer_rx)
         {
+            /* One transfer channel serves one request at a time */
+            FSP_ERROR_RETURN(0U == p_instance_ctrl->slow_msg_rx_number, FSP_ERR_IN_USE); /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+
             /* Pointer to the transfer information structure */
             transfer_info_t * p_info = p_transfer_rx->p_cfg->p_info;
 
@@ -592,8 +602,15 @@ fsp_err_t R_RSENT_SENT_FastMsgRead (sent_ctrl_t * const p_ctrl, void * p_dest, u
  * @retval      FSP_SUCCESS               Read request is issued successfully.
  * @retval      FSP_ERR_ASSERTION         p_ctrl, p_dest is NULL or message_count is 0.
  * @retval      FSP_ERR_NOT_OPEN          The RSENT channel specified in p_ctrl is not opened.
- * @retval      FSP_ERR_IN_USE            The slow channel message receive is on-going, wait for it to complete
+ * @retval      FSP_ERR_IN_USE            The slow channel message receive is on-going, or (transfer instance is used)
+ *                                        the fast channel message receive is on-going. Wait for it to complete
  *                                        or abort it before create a new read request.
+ * @retval      FSP_ERR_INVALID_SIZE      A transfer instance is used and message_count is not 1.
+ * @retval      FSP_ERR_INVALID_MODE      A transfer instance is used and no serial message format is configured.
+ * @return      See @ref RENESAS_ERROR_CODES or functions called by this function for other possible return codes.
+ *              This function calls:
+ *                  * @ref transfer_api_t::reconfigure
+ *                  * @ref transfer_api_t::enable
  **********************************************************************************************************************/
 fsp_err_t R_RSENT_SENT_SlowMsgRead (sent_ctrl_t * const p_ctrl, void * p_dest, uint32_t const message_count) /* PRQA S 1505 # Advisory R-8.7 */
 {
@@ -617,11 +634,31 @@ fsp_err_t R_RSENT_SENT_SlowMsgRead (sent_ctrl_t * const p_ctrl, void * p_dest, u
 
         if (NULL != p_transfer_rx)
         {
+            /* DMA/DTSC only counts the frames of one slow message */
+            FSP_ERROR_RETURN(1U == message_count, FSP_ERR_INVALID_SIZE);                 /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+
+            /* One transfer channel serves one request at a time */
+            FSP_ERROR_RETURN(0U == p_instance_ctrl->fast_msg_rx_number, FSP_ERR_IN_USE); /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+
+            /* Slow channel messages are not extracted when no serial message format is configured */
+            FSP_ERROR_RETURN(
+                (uint32_t) SENT_SERIAL_MESSAGE_FORMAT_NO_SERIAL_MESSAGE != p_instance_ctrl->p_reg->CC_b.SMF,
+                FSP_ERR_INVALID_MODE); /* PRQA S 3432, 1881, 0662 # DP_MSR_R-20.7_UC1, DP_MSR_R-10.4_UC1, Required R-1.1 */
+
             /* Pointer to the transfer information structure */
             transfer_info_t * p_info = p_transfer_rx->p_cfg->p_info;
 
-            /* Reject reads larger than the slow message staging buffer */
-            FSP_ERROR_RETURN(RSENT_SENT_TRANSFER_MSG_STAGING_MAX_COUNT >= message_count, FSP_ERR_INVALID_SIZE); /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+            /* The transfer only counts frames. The message is read in the transfer callback when the hardware reports
+             * new slow channel data. */
+            uint32_t frames_per_msg;
+            if ((uint32_t) SENT_SERIAL_MESSAGE_FORMAT_SHORT_SERIAL_MESSAGE == p_instance_ctrl->p_reg->CC_b.SMF) /* PRQA S 1881, 0662 # DP_MSR_R-10.4_UC1, Required R-1.1 */
+            {
+                frames_per_msg = RSENT_SENT_SHORT_SERIAL_MSG_FRAMES;
+            }
+            else
+            {
+                frames_per_msg = RSENT_SENT_ENHANCED_SERIAL_MSG_FRAMES;
+            }
 
             /* Set the destination address for the transfer to the flat staging buffer */
             p_transfer_rx->p_cfg->p_info->p_dest = (uint32_t *) &g_rsent_sent_slow_msg_transfer_staging[0];
@@ -639,8 +676,13 @@ fsp_err_t R_RSENT_SENT_SlowMsgRead (sent_ctrl_t * const p_ctrl, void * p_dest, u
                 p_info->transfer_control_cfg.transfer_control_b.transfer_data_size = TRANSFER_SIZE_4_BYTE;            /* PRQA S 4423 # DP_MSR_R-10.3_UC1 */
             }
 
-            /* Set the number of messages to transfer */
-            p_info->number_transfer = (uint16_t) message_count;
+            /* Set the number of transfers to one per frame */
+            p_info->number_transfer = (uint16_t) frames_per_msg;
+
+            /* Set the request state before enabling the transfer */
+            p_instance_ctrl->p_slow_msg_buffer  = p_dest;
+            p_instance_ctrl->slow_msg_rx_count  = 0U;
+            p_instance_ctrl->slow_msg_rx_number = 1U;
 
             /* Reconfigure the transfer with updated settings */
             fsp_err_t err = p_transfer_rx->p_api->reconfigure(p_transfer_rx->p_ctrl, p_info);
@@ -653,6 +695,8 @@ fsp_err_t R_RSENT_SENT_SlowMsgRead (sent_ctrl_t * const p_ctrl, void * p_dest, u
 
             /* Return error code if reconfiguration fails */
             FSP_ERROR_RETURN(FSP_SUCCESS == err, err); /* PRQA S 3432 # DP_MSR_R-20.7_UC1 */
+
+            return FSP_SUCCESS;
         }
 #endif
 
@@ -1482,7 +1526,8 @@ static void r_rsent_sent_spc_timer_callback (timer_callback_args_t * p_callback_
 
 /*******************************************************************************************************************//**
  * Callback function for RSENT transfer completion.
- * When a transfer completes, it invokes the user callback function with the event code SENT_EVENT_FAST_CHANNEL_RX_COMPLETE.
+ * When a transfer completes, it invokes the user callback function
+ * with the event code SENT_EVENT_FAST_CHANNEL_RX_COMPLETE or SENT_EVENT_SLOW_CHANNEL_RX_COMPLETE.
  **********************************************************************************************************************/
 static void r_rsent_sent_transfer_callback (transfer_callback_args_t * p_args) /* PRQA S 3673 # Advisory R-8.13 */
 {
@@ -1511,21 +1556,13 @@ static void r_rsent_sent_transfer_callback (transfer_callback_args_t * p_args) /
         }
         else
         {
-            /* Copy each staged value into message data, other fields keep their reset value */
-            rsent_sent_slow_msg_t * p_slow_msg_buff = (rsent_sent_slow_msg_t *) p_instance_ctrl->p_slow_msg_buffer; /* PRQA S 0316 # Advisory R-11.5 */
+            /* Read the slow message the same way as interrupt mode after DMA counted all frames */
+            r_rsent_sent_msg_read(p_instance_ctrl);
 
-            for (uint32_t i = 0U; i < p_instance_ctrl->slow_msg_rx_number; i++)
-            {
-                p_slow_msg_buff[i].data = g_rsent_sent_slow_msg_transfer_staging[i];
-            }
-
-            /* Receive finished so clear the slow channel message buffer state */
+            /* The transfer is not re-armed, so release the request whether or not a message was read */
             p_instance_ctrl->slow_msg_rx_number = RSENT_SENT_MSG_RX_STATE_RESET;
             p_instance_ctrl->slow_msg_rx_count  = RSENT_SENT_MSG_RX_STATE_RESET;
             p_instance_ctrl->p_slow_msg_buffer  = NULL;
-
-            /* Call the user callback with the slow channel receive complete event */
-            r_rsent_sent_call_callback(p_instance_ctrl, SENT_EVENT_SLOW_CHANNEL_RX_COMPLETE);
         }
     }
 }
