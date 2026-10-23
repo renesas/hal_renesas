@@ -1891,6 +1891,73 @@ static fsp_err_t r_rmac_get_rx_queue (rmac_instance_ctrl_t * p_instance_ctrl, ui
 }
 
 /*******************************************************************************************************************//**
+ * Prepare a stopped RX queue for refilling: armed (FEMPTY) descriptors from the tail to the end of the queue are not
+ * reachable by the hardware any more (they come after the position where the refill starts). Take their buffers back
+ * into the RX empty buffer queue and mark them LEMPTY. Overwriting them instead (as the LEMPTY padding did) loses
+ * the buffers for good, and the RX path ends up with only a few buffers.
+ **********************************************************************************************************************/
+static void r_rmac_reclaim_rx_queue (rmac_instance_ctrl_t * p_instance_ctrl, uint32_t queue_index)
+{
+    rmac_extended_cfg_t           * p_extend      = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    layer3_switch_instance_ctrl_t * p_switch_ctrl = (layer3_switch_instance_ctrl_t *) p_extend->p_ether_switch->p_ctrl;
+    layer3_switch_descriptor_queue_status_t * p_status = &p_switch_ctrl->p_queues_status[queue_index];
+    uint32_t last_index = (uint32_t) (p_status->p_queue_cfg->array_length - 1);
+
+    for (uint32_t i = p_status->tail; i < last_index; i++)
+    {
+        layer3_switch_descriptor_t * p_descriptor = &p_status->p_queue_cfg->p_descriptor_array[i];
+
+        if (LAYER3_SWITCH_DESCRIPTOR_TYPE_FEMPTY == p_descriptor->basic.dt)
+        {
+            rmac_buffer_node_t * p_buffer_node = r_rmac_buffer_dequeue(&p_instance_ctrl->buffer_node_pool);
+
+            if (NULL == p_buffer_node)
+            {
+                break;
+            }
+
+#if defined(__BIG)
+
+            /* Apply endian conversion before accessing descriptor pointer. */
+            p_buffer_node->p_buffer = (void *) (RMAC_BYTES_SWAP_32((uintptr_t) p_descriptor->basic.ptr_l));
+#else
+            p_buffer_node->p_buffer = (void *) (uintptr_t) p_descriptor->basic.ptr_l;
+#endif
+            p_descriptor->basic.dt = LAYER3_SWITCH_DESCRIPTOR_TYPE_LEMPTY;
+            r_rmac_buffer_enqueue(&p_instance_ctrl->rx_empty_buffer_queue, p_buffer_node);
+        }
+    }
+}
+
+/*******************************************************************************************************************//**
+ * Terminate a stopped RX queue at its current tail: all descriptors from the tail to the end of the queue become LEMPTY,
+ * but the tail is not moved. The hardware stops at the first LEMPTY descriptor, and buffers released later with
+ * R_RMAC_RxBufferUpdate() can still be added at the tail (R_LAYER3_SWITCH_SetDescriptor() may overwrite LEMPTY).
+ * Armed (FEMPTY) descriptors are never overwritten, their buffers would be lost.
+ **********************************************************************************************************************/
+static void r_rmac_terminate_rx_queue (rmac_instance_ctrl_t * p_instance_ctrl, uint32_t queue_index)
+{
+    rmac_extended_cfg_t           * p_extend      = (rmac_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend;
+    layer3_switch_instance_ctrl_t * p_switch_ctrl = (layer3_switch_instance_ctrl_t *) p_extend->p_ether_switch->p_ctrl;
+    layer3_switch_descriptor_queue_status_t * p_status = &p_switch_ctrl->p_queues_status[queue_index];
+    uint32_t last_index = (uint32_t) (p_status->p_queue_cfg->array_length - 1);
+
+    if (p_status->tail < last_index)
+    {
+        for (uint32_t i = p_status->tail; i < last_index; i++)
+        {
+            if (LAYER3_SWITCH_DESCRIPTOR_TYPE_FEMPTY != p_status->p_queue_cfg->p_descriptor_array[i].basic.dt)
+            {
+                p_status->p_queue_cfg->p_descriptor_array[i].basic.dt = LAYER3_SWITCH_DESCRIPTOR_TYPE_LEMPTY;
+            }
+        }
+
+        /* Same as a successful R_LAYER3_SWITCH_SetDescriptor(): the queue can be started. */
+        p_status->rx_available = true;
+    }
+}
+
+/*******************************************************************************************************************//**
  * Function Name: r_rmac_set_rx_queue
  * Description  : Refill the specified RX queue by writing new descriptors (or LEMPTY if no buffer available).
  *
@@ -1903,52 +1970,54 @@ static fsp_err_t r_rmac_set_rx_queue (rmac_instance_ctrl_t * p_instance_ctrl, ui
     rmac_buffer_node_t       * p_new_buffer_node = NULL;
     fsp_err_t set_err = FSP_SUCCESS;
 
+    /* Take back the buffers of armed descriptors the hardware can no longer reach. */
+    r_rmac_reclaim_rx_queue(p_instance_ctrl, queue_index);
+
     /* When get the all descriptors in the queue, set new descriptors. */
     while (FSP_SUCCESS == set_err)
     {
         p_new_buffer_node = r_rmac_buffer_dequeue(&p_instance_ctrl->rx_empty_buffer_queue);
-        if (NULL != p_new_buffer_node)
+        if (NULL == p_new_buffer_node)
         {
-            descriptor.basic.err  = 0;
-            descriptor.basic.ds_h = (RMAC_DESCRIPTOR_FIELD_DS_UPPER_MASK & RMAC_MAXIMUM_FRAME_SIZE) >>
-                                    RMAC_DESCRIPTOR_FIELD_DS_UPPER_POSITION;
-            descriptor.basic.ds_l  = RMAC_DESCRIPTOR_FIELD_DS_LOWER_MASK & RMAC_MAXIMUM_FRAME_SIZE;
-            descriptor.basic.dt    = LAYER3_SWITCH_DESCRIPTOR_TYPE_FEMPTY;
-            descriptor.basic.die   = 1;
-            descriptor.basic.ptr_h =
-                (uint8_t) ((RMAC_DESCRIPTOR_FIELD_PTR_UPPER_MASK &
-                            (uint64_t) (uintptr_t) p_new_buffer_node->p_buffer) >>
-                           RMAC_DESCRIPTOR_FIELD_PTR_UPPER_POSITION);
+            /* No buffer available: terminate the queue here. Do not fill the rest of the queue with LEMPTY
+             * descriptors through R_LAYER3_SWITCH_SetDescriptor(), that moves the tail to the end of the queue
+             * and then every buffer released later fails to be re-armed in it. Return FSP_ERR_OVERFLOW as the
+             * original padding loop did. */
+            r_rmac_terminate_rx_queue(p_instance_ctrl, queue_index);
+            set_err = FSP_ERR_OVERFLOW;
+            break;
+        }
+
+        descriptor.basic.err  = 0;
+        descriptor.basic.ds_h = (RMAC_DESCRIPTOR_FIELD_DS_UPPER_MASK & RMAC_MAXIMUM_FRAME_SIZE) >>
+                                RMAC_DESCRIPTOR_FIELD_DS_UPPER_POSITION;
+        descriptor.basic.ds_l  = RMAC_DESCRIPTOR_FIELD_DS_LOWER_MASK & RMAC_MAXIMUM_FRAME_SIZE;
+        descriptor.basic.dt    = LAYER3_SWITCH_DESCRIPTOR_TYPE_FEMPTY;
+        descriptor.basic.die   = 1;
+        descriptor.basic.ptr_h =
+            (uint8_t) ((RMAC_DESCRIPTOR_FIELD_PTR_UPPER_MASK &
+                        (uint64_t) (uintptr_t) p_new_buffer_node->p_buffer) >>
+                       RMAC_DESCRIPTOR_FIELD_PTR_UPPER_POSITION);
 #if defined(__BIG)
 
-            /* Endian conversion must be applied to ptr_l before writing. */
-            descriptor.basic.ptr_l = RMAC_BYTES_SWAP_32(RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK &
-                                                        (uintptr_t) p_new_buffer_node->p_buffer);
+        /* Endian conversion must be applied to ptr_l before writing. */
+        descriptor.basic.ptr_l = RMAC_BYTES_SWAP_32(RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK &
+                                                    (uintptr_t) p_new_buffer_node->p_buffer);
 #else
-            descriptor.basic.ptr_l = RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK &
-                                     (uintptr_t) p_new_buffer_node->p_buffer;
+        descriptor.basic.ptr_l = RMAC_DESCRIPTOR_FIELD_PTR_LOWER_MASK &
+                                 (uintptr_t) p_new_buffer_node->p_buffer;
 #endif
+
+        set_err = R_LAYER3_SWITCH_SetDescriptor(p_extend->p_ether_switch->p_ctrl, queue_index, &descriptor);
+        if (FSP_SUCCESS == set_err)
+        {
+            /* Store the buffer node. */
+            r_rmac_buffer_enqueue(&p_instance_ctrl->buffer_node_pool, p_new_buffer_node);
         }
         else
         {
-            /* If no buffer is available, set LEMPTY. */
-            descriptor.basic.dt    = LAYER3_SWITCH_DESCRIPTOR_TYPE_LEMPTY;
-            descriptor.basic.ptr_l = 0;
-        }
-
-        set_err = R_LAYER3_SWITCH_SetDescriptor(p_extend->p_ether_switch->p_ctrl, queue_index, &descriptor);
-        if (NULL != p_new_buffer_node)
-        {
-            if (FSP_SUCCESS == set_err)
-            {
-                /* Store the buffer node. */
-                r_rmac_buffer_enqueue(&p_instance_ctrl->buffer_node_pool, p_new_buffer_node);
-            }
-            else
-            {
-                /* Back the buffer node to the pool. */
-                r_rmac_buffer_enqueue(&p_instance_ctrl->rx_empty_buffer_queue, p_new_buffer_node);
-            }
+            /* Back the buffer node to the pool. */
+            r_rmac_buffer_enqueue(&p_instance_ctrl->rx_empty_buffer_queue, p_new_buffer_node);
         }
     }
 
@@ -2173,10 +2242,12 @@ static void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_a
             if ((RMAC_INVALID_QUEUE_INDEX != p_instance_ctrl->rx_running_queue_index) &&
                 (p_args->queue_index == p_extend->p_rx_queue_list[p_instance_ctrl->rx_running_queue_index].index))
             {
-                get_err = R_LAYER3_SWITCH_GetDescriptor(p_extend->p_ether_switch->p_ctrl,
-                                                        p_args->queue_index,
-                                                        &descriptor);
-                if (FSP_SUCCESS == get_err)
+                /* The switch reports "queue full" when the descriptor the hardware points to is not FEMPTY. Right
+                 * after a frame is written this can still be the just completed (FSINGLE) descriptor while the next
+                 * descriptors are armed. Switching then strands the armed descriptors of this queue. So first read
+                 * the completed frames; only switch when the queue really reached its end (LEMPTY). */
+                get_err = r_rmac_get_rx_queue(p_instance_ctrl, p_args->queue_index);
+                if (FSP_ERR_IN_USE != get_err)
                 {
                     /* Start reception on next queue. */
                     next_running_queue_index = p_instance_ctrl->rx_running_queue_index;
@@ -2184,53 +2255,6 @@ static void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_a
                     err =
                         R_LAYER3_SWITCH_StartDescriptorQueue(p_extend->p_ether_switch->p_ctrl,
                                                              p_extend->p_rx_queue_list[next_running_queue_index].index);
-
-                    /* Store the read buffer as the RX completed buffer. */
-                    p_buffer_node = r_rmac_buffer_dequeue(&p_instance_ctrl->buffer_node_pool);
-                    if (NULL != p_buffer_node)
-                    {
-                        /* Store the received buffer. */
-#if defined(__BIG)
-
-                        /* Apply endian conversion before accessing descriptor pointer. */
-                        p_buffer_node->p_buffer = (void *) (RMAC_BYTES_SWAP_32((uintptr_t) descriptor.basic.ptr_l));
-#else
-                        p_buffer_node->p_buffer = (void *) ((uintptr_t) descriptor.basic.ptr_l);
-#endif
-                        p_buffer_node->size =
-                            (uint32_t) ((descriptor.basic.ds_h << RMAC_DESCRIPTOR_FIELD_DS_UPPER_POSITION) +
-                                        descriptor.basic.ds_l);
-                        r_rmac_buffer_enqueue(&p_instance_ctrl->rx_completed_buffer_queue, p_buffer_node);
-
-#if LAYER3_SWITCH_CFG_GPTP_ENABLE
-
-                        /* Get timestamp. */
- #if defined(__BIG)
-
-                        /* Access descriptor as 32-bit words and apply endian conversion per word before reading tsv/tsns/tss bitfields.*/
-                        p_reception_ethernet_descriptor    = (uint32_t *) (&descriptor.reception_ethernet_descriptor);
-                        *(p_reception_ethernet_descriptor) = RMAC_BYTES_SWAP_32(*(p_reception_ethernet_descriptor));
-                        if (1 == descriptor.reception_ethernet_descriptor.tsv)
-                        {
-                            p_buffer_node->timestamp.ns        = descriptor.reception_ethernet_descriptor.tsns;
-                            p_buffer_node->timestamp.sec_lower = RMAC_BYTES_SWAP_32(
-                                descriptor.reception_ethernet_descriptor.tss);
-                        }
-
- #else
-                        if (1 == descriptor.reception_ethernet_descriptor.tsv)
-                        {
-                            p_buffer_node->timestamp.ns        = descriptor.reception_ethernet_descriptor.tsns;
-                            p_buffer_node->timestamp.sec_lower = descriptor.reception_ethernet_descriptor.tss;
-                        }
- #endif
-                        else
-                        {
-                            p_buffer_node->timestamp.ns        = 0;
-                            p_buffer_node->timestamp.sec_lower = 0;
-                        }
-#endif
-                    }
 
                     if (FSP_SUCCESS == err)
                     {
@@ -2241,7 +2265,6 @@ static void r_rmac_switch_interrupt_callback (ether_switch_callback_args_t * p_a
                         p_instance_ctrl->rx_running_queue_index = RMAC_INVALID_QUEUE_INDEX;
                     }
 
-                    r_rmac_get_rx_queue(p_instance_ctrl, p_args->queue_index);
                     r_rmac_set_rx_queue(p_instance_ctrl, p_args->queue_index);
                 }
             }
