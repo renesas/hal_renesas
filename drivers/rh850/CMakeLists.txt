@@ -133,17 +133,14 @@ zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_DMAC
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_DTSC
 	fsp/src/r_dtsc/r_dtsc.c)
 
-# ETHER_T1S
+# ETHER_PHY: r_ether_phy.c is shared by ETNF/T1S and ETND/TSN
+if(CONFIG_USE_RH850_FSP_ETHER_ETNF OR CONFIG_USE_RH850_FSP_ETHER_ETND)
+	zephyr_library_sources(fsp/src/r_ether_phy/r_ether_phy.c)
+endif()
+
+# CT25205 target: T1S PLCA PHY for ETNF
 zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_ETHER_ETNF
 	fsp/src/r_ether_phy/targets/CT25205_RTL/r_ether_phy_target_ct25205_rtl.c
-	fsp/src/r_ether_phy/r_ether_phy.c
-)
-
-# ETHER_TSN
-zephyr_library_sources_ifdef(CONFIG_USE_RH850_FSP_ETHER_ETND
-	fsp/src/r_ether_phy/targets/CT25205_RTL/r_ether_phy_target_ct25205_rtl.c
-	fsp/src/r_ether_phy/r_ether_phy.c
-	fsp/src/r_ether_tsn/r_ether_tsn.c
 )
 
 # I3C
