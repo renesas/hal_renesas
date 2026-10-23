@@ -201,6 +201,9 @@ uint32_t g_ether_tsn_tx_ram_init_state[ETHER_TSN_TOTAL_CTRL_CONFIG];            
 uint32_t g_ether_tsn_rx_full = ETHER_TSN_FALSE;                                        /* PRQA S 3408,1504 # DP_MSR_R-8.4_UC1,Advisory R-8.7 */
 ether_tsn_controller_status_type_t g_ether_tsn_ctrl_stat[ETHER_TSN_TOTAL_CTRL_CONFIG]; /* PRQA S 3408,1504 # DP_MSR_R-8.4_UC1,Advisory R-8.7 */
 
+/* LINK descriptor closing each RX descriptor ring */
+static ether_tsn_ext_desc_with_ts_type_t * gp_ether_tsn_rx_link_desc[ETHER_TSN_TOTAL_CTRL_CONFIG][ETHER_TSN_MAX_RX_QUEUE];
+
 void * gp_ether_tsn_heap[ETHER_TSN_TOTAL_CTRL_CONFIG];                                 /* PRQA S 3408,1504 # DP_MSR_R-8.4_UC1,Advisory R-8.7 */
 ether_tsn_rx_frame_type_t  g_ether_tsn_rx_frame[ETHER_TSN_TOTAL_CTRL_CONFIG];          /* PRQA S 3408,1504 # DP_MSR_R-8.4_UC1,Advisory R-8.7 */
 ether_tsn_tx_buffer_type_t g_ether_tsn_tx_buffer_mgr_0[ETHER_TSN_TX_BUF_TOTAL];        /* PRQA S 3408,1504 # DP_MSR_R-8.4_UC1,Advisory R-8.7 */
@@ -290,6 +293,7 @@ static ether_tsn_type r_ether_tsn_tx_desc_learning(ether_tsn_instance_ctrl_t * p
 static ether_tsn_type r_ether_tsn_rx_desc_learning(ether_tsn_instance_ctrl_t * p_ctrl,
                                                    uint32_t                    entry_number,
                                                    uint32_t                    chain_addr);
+static void           r_ether_tsn_rx_desc_relearn_if_full(ether_tsn_instance_ctrl_t * p_ctrl, uint32_t queue_idx);
 static void           r_ether_tsn_util_ram_free(void ** pp_heap, void * p_mem_addr);
 static ether_tsn_type r_ether_tsn_axbmi_init(ether_tsn_instance_ctrl_t * p_ctrl, uint32_t ctrl_idx);
 static ether_tsn_type r_ether_tsn_tx_rx_desc_config(ether_tsn_instance_ctrl_t * p_ctrl, uint32_t ctrl_idx);
@@ -721,18 +725,19 @@ fsp_err_t R_ETHER_TSN_GetTxBuffer (ether_ctrl_t * const p_ctrl,                 
     ether_tsn_type * p_buf      = ETHER_TSN_NULL_PTR;                                /* PRQA S 0317 # Advisory R-11.5 */
     uint32_t         lus_length = 0;
     uint8_t          ctrl_idx   = p_instance_ctrl->p_ether_cfg->channel;
-    lus_length       = *frame_length;
+    lus_length = *frame_length;
+
+    if (ETHER_ZEROCOPY_ENABLE == p_instance_ctrl->p_ether_cfg->zerocopy)
+    {
+        g_ether_tsn_tx_buffer_addr[ctrl_idx] = (uint32_t) p_buffer; /* PRQA S 0326 # DP_MSR_R-11.6_UC1 */
+    }
+
     buf_return_value = r_ether_tsn_provide_tx_buffer(p_ctrl,                         /* PRQA S 0317 # Advisory R-11.5 */
                                                      ctrl_idx,
                                                      priority,
                                                      p_buf_id,
                                                      (uint8_t **) &p_buf,
                                                      &lus_length);
-
-    if (ETHER_ZEROCOPY_ENABLE == p_instance_ctrl->p_ether_cfg->zerocopy)
-    {
-        g_ether_tsn_tx_buffer_addr[ctrl_idx] = (uint32_t) p_buffer; /* PRQA S 0326 # DP_MSR_R-11.6_UC1 */
-    }
 
     /* Send data via ethernet*/
     if ((buf_return_value == ETHER_TSN_BUFREQ_OK) && (p_buf != ETHER_TSN_NULL_PTR))
@@ -1022,10 +1027,17 @@ fsp_err_t R_ETHER_TSN_Read (ether_ctrl_t * const p_ctrl, void * const p_buffer, 
     /* Initialize controller index */
     uint32_t ctrl_idx  = p_instance_ctrl->p_ether_cfg->channel;
     uint8_t  queue_idx = 0U;
+    ether_tsn_ext_desc_with_ts_type_t * p_link_desc;
 
     /* Get/save the current state of interrupts */
     FSP_CRITICAL_SECTION_DEFINE;
     FSP_CRITICAL_SECTION_ENTER;
+
+    p_link_desc = gp_ether_tsn_rx_link_desc[ctrl_idx][queue_idx];
+    if ((ETHER_TSN_NULL_PTR != p_link_desc) && (ETHER_TSN_DESC_LEMPTY == p_link_desc->st_header.dt))
+    {
+        p_link_desc->st_header.dt = (uint32_t) ETHER_TSN_DESC_LINK;
+    }
 
     /* Get user input buffer and length */
     gp_ether_tsn_user_rx_buf[ctrl_idx]    = (uint8_t *) p_buffer; /* PRQA S 0316 # Advisory R-11.5 */
@@ -1121,12 +1133,7 @@ fsp_err_t R_ETHER_TSN_BufferRelease (ether_ctrl_t * const p_ctrl)               
 
     /* Pointer to the currently referenced transmit descriptor*/
     ether_tsn_ext_desc_with_ts_type_t * p_rx_desc_chain;
-    ether_tsn_tick_type                 tick_start = 0U;
-    ether_tsn_tick_type                 tick_elap  = 0U;
-    uint32_t int_stat        = 0U;
-    uint32_t int_stat_hw     = 0U;
-    uint32_t rx_queue_offset = 0U;
-    uint32_t queue_idx       = 0U;
+    uint32_t queue_idx = 0U;
 
 #if (ETHER_TSN_CFG_PARAM_CHECKING_ENABLE)
     FSP_ASSERT(NULL != p_instance_ctrl);
@@ -1157,40 +1164,8 @@ fsp_err_t R_ETHER_TSN_BufferRelease (ether_ctrl_t * const p_ctrl)               
             p_rx_desc_chain->st_header.dt = (uint32_t) ETHER_TSN_DESC_FEMPTY;
         }
 
-        /* Get rx descriptor full interrupt status */
-        int_stat    = (uint32_t) g_ether_tsn_rx_full;
-        int_stat_hw =
-            ETHER_TSN_GET_RX_FULL_INT_STAT(queue_idx, p_instance_ctrl->p_reg_axibmi->RFEIS0, rx_queue_offset); /* PRQA S 0662,3469 # DP_MSR_D-1.1_UC1,DP_MSR_R-1.2_UC1,Advisory D-4.9 */
-
-        if ((ETHER_TSN_TRUE == int_stat) || (0UL != int_stat_hw))
-        {
-            /* Searching rx descriptor chain table */
-            p_instance_ctrl->p_reg_axibmi->RATS   = (uint8_t) (queue_idx + rx_queue_offset); /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-            p_instance_ctrl->p_reg_axibmi->RATSR2 = ETHER_TSN_RATSR2_SEARCHING;              /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-
-            /* Rx Descriptor Address Table searching waiting */
-            tick_start = 0U;
-            (void) r_ether_tsn_get_counter_value(&tick_start);
-            do
-            {
-                tick_elap = r_ether_tsn_get_time_out_value(tick_start);
-            } while ((0UL != p_instance_ctrl->p_reg_axibmi->RATSR2) && (tick_elap <= ETHER_TSN_TIMEOUT_COUNT)); /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-
-            if (ETHER_TSN_TIMEOUT_COUNT >= tick_elap)
-            {
-                if (0U == (p_instance_ctrl->p_reg_axibmi->RATSR0 & ETHER_TSN_RATSR0_CHAIN_ENTRY_VALID))         /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-                {
-                    /* Clear rx descriptor full interrupt status */
-                    g_ether_tsn_rx_full = ETHER_TSN_FALSE;
-                    p_instance_ctrl->p_reg_axibmi->RFEIS0 = int_stat_hw;                                        /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-
-                    /* Re-learning rx descriptor chain table */
-                    (void) r_ether_tsn_rx_desc_learning(p_instance_ctrl,
-                                                        p_instance_ctrl->p_reg_axibmi->RATS,                    /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-                                                        (uint32_t) p_rx_desc_chain);                            /* PRQA S 0329 # Advisory R-11.4 */
-                }
-            }
-        }
+        /* Re-learn the RX descriptor chain (using the HW-tracked current address) if the ring is/was full */
+        r_ether_tsn_rx_desc_relearn_if_full(p_instance_ctrl, queue_idx);
     }
     else
     {
@@ -2306,6 +2281,9 @@ static ether_tsn_type r_ether_tsn_tx_rx_desc_config (ether_tsn_instance_ctrl_t *
         p_desc_ts_chain->tsns            = 0U;
         p_desc_ts_chain->tss             = 0U;
         p_desc_ts_chain->st_header.dt    = (uint32_t) ETHER_TSN_DESC_LINK;
+
+        /* Store the LINK descriptor, R_ETHER_TSN_Read() restores it after the controller used it */
+        gp_ether_tsn_rx_link_desc[ctrl_idx][cnt_i] = p_desc_ts_chain;
     }
 
     if (ETHER_TSN_OK == result)
@@ -3391,6 +3369,57 @@ static ether_tsn_type r_ether_tsn_rx_desc_learning (ether_tsn_instance_ctrl_t * 
     return result;
 }
 
+/*******************************************************************************************************************//**
+ * Function Name             r_ether_tsn_rx_desc_relearn_if_full
+ * Description               Re-learning rx descriptor chain table when rx descriptor full, using RATSR1
+ *                           (HW-tracked current address) instead of a software-guessed descriptor address.
+ * @param[in] p_ctrl         Pointer to the control block for the channel
+ * @param[in] queue_idx      Index of a Queue
+ ***********************************************************************************************************************/
+static void r_ether_tsn_rx_desc_relearn_if_full (ether_tsn_instance_ctrl_t * p_ctrl, uint32_t queue_idx)
+{
+    ether_tsn_tick_type tick_start      = 0U;
+    ether_tsn_tick_type tick_elap       = 0U;
+    uint32_t            rx_queue_offset = 0U;
+    uint32_t            int_stat_hw;
+    uint32_t            rats;
+    uint32_t            relearn_addr;
+
+    int_stat_hw = ETHER_TSN_GET_RX_FULL_INT_STAT(queue_idx, p_ctrl->p_reg_axibmi->RFEIS0, rx_queue_offset);
+
+    if ((ETHER_TSN_TRUE == g_ether_tsn_rx_full) || (0UL != int_stat_hw))
+    {
+        /* Searching rx descriptor chain table */
+        p_ctrl->p_reg_axibmi->RATS   = queue_idx + rx_queue_offset;
+        p_ctrl->p_reg_axibmi->RATSR2 = ETHER_TSN_RATSR2_SEARCHING;
+
+        /* Rx Descriptor Address Table searching waiting */
+        (void) r_ether_tsn_get_counter_value(&tick_start);
+        do
+        {
+            tick_elap = r_ether_tsn_get_time_out_value(tick_start);
+        } while ((0UL != p_ctrl->p_reg_axibmi->RATSR2) && (tick_elap <= ETHER_TSN_TIMEOUT_COUNT));
+
+        if (ETHER_TSN_TIMEOUT_COUNT >= tick_elap)
+        {
+            if (0UL == (p_ctrl->p_reg_axibmi->RATSR0 & ETHER_TSN_RATSR0_CHAIN_ENTRY_VALID))
+            {
+                /* Snapshot RATS and RATSR1 together, before any other register access can let a
+                 * concurrent search for another queue overwrite the shared RATS register. */
+                rats         = (uint32_t) p_ctrl->p_reg_axibmi->RATS;
+                relearn_addr = p_ctrl->p_reg_axibmi->RATSR1;
+
+                /* Clear rx descriptor full interrupt status */
+                g_ether_tsn_rx_full          = ETHER_TSN_FALSE;
+                p_ctrl->p_reg_axibmi->RFEIS0 = int_stat_hw;
+
+                /* Re-learning rx descriptor chain table */
+                (void) r_ether_tsn_rx_desc_learning(p_ctrl, rats, relearn_addr);
+            }
+        }
+    }
+}
+
 #if (ETHER_TSN_CFG_UPDATE_PHYS_ADDR_FILTER)
 
 /*******************************************************************************************************************//**
@@ -3547,12 +3576,7 @@ static ether_tsn_etag_rx_ext_status_type_t r_ether_tsn_rx_queue_process (ether_t
     ether_tsn_etag_rx_ext_status_type_t result = ETHER_TSN_EXT_NOT_RECEIVED;
     ether_tsn_ext_desc_with_ts_type_t * p_data_desc;
     ether_tsn_ext_desc_with_ts_type_t * p_temp_desc;
-    ether_tsn_tick_type                 tick_start = 0U;
-    ether_tsn_tick_type                 tick_elap  = 0U;
-    bool     rx_frame_valid  = ETHER_TSN_TRUE; /* PRQA S 1295 # DP_MSR_R-10.3_UC1 */
-    uint32_t rx_queue_offset = 0U;
-    uint32_t int_stat        = 0U;
-    uint32_t int_stat_hw     = 0U;
+    bool rx_frame_valid = ETHER_TSN_TRUE; /* PRQA S 1295 # DP_MSR_R-10.3_UC1 */
 
 #if (ETHER_TSN_CFG_GET_RX_STATS_API)   /* PRQA S 3332 # Rule-20.9 */
     uint32_t length_with_fcs;
@@ -3667,40 +3691,9 @@ static ether_tsn_etag_rx_ext_status_type_t r_ether_tsn_rx_queue_process (ether_t
 
                 /* Do not move this process due to descriptor exclusive control */
                 p_temp_desc->st_header.dt = (uint32_t) ETHER_TSN_DESC_FEMPTY;
-                int_stat = (uint32_t) g_ether_tsn_rx_full;
 
-                /* Get Rx descriptor full interrupt status */
-                int_stat_hw = ETHER_TSN_GET_RX_FULL_INT_STAT(queue_idx, p_ctrl->p_reg_axibmi->RFEIS0, rx_queue_offset); /* PRQA S 0662,3469 # DP_MSR_D-1.1_UC1,DP_MSR_R-1.2_UC1,Advisory D-4.9 */
-
-                if ((ETHER_TSN_TRUE == int_stat) || (0U != int_stat_hw))
-                {
-                    /* Searching Rx descriptor chain table */
-                    p_ctrl->p_reg_axibmi->RATS   = (uint8_t) (queue_idx + rx_queue_offset); /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-                    p_ctrl->p_reg_axibmi->RATSR2 = ETHER_TSN_RATSR2_SEARCHING;              /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-
-                    /* Rx Descriptor Address Table searching waiting */
-                    tick_start = 0U;
-                    (void) r_ether_tsn_get_counter_value(&tick_start);
-                    do
-                    {
-                        tick_elap = r_ether_tsn_get_time_out_value(tick_start);
-                    } while ((0U != p_ctrl->p_reg_axibmi->RATSR2) && (tick_elap <= ETHER_TSN_TIMEOUT_COUNT)); /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-
-                    if (ETHER_TSN_TIMEOUT_COUNT >= tick_elap)
-                    {
-                        if (0U == (p_ctrl->p_reg_axibmi->RATSR0 & ETHER_TSN_RATSR0_CHAIN_ENTRY_VALID))        /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-                        {
-                            /* Clear Rx descriptor full interrupt status */
-                            g_ether_tsn_rx_full          = ETHER_TSN_FALSE;
-                            p_ctrl->p_reg_axibmi->RFEIS0 = int_stat_hw;                                       /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-
-                            /* Re-learning Rx descriptor chain table */
-                            (void) r_ether_tsn_rx_desc_learning(p_ctrl,
-                                                                p_ctrl->p_reg_axibmi->RATS,                   /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-                                                                (uint32_t) p_temp_desc);                      /* PRQA S 0329 # Advisory R-11.4 */
-                        }
-                    }
-                }
+                /* Re-learn the RX descriptor chain (using the HW-tracked current address) if the ring is/was full */
+                r_ether_tsn_rx_desc_relearn_if_full(p_ctrl, queue_idx);
             }
         }
 
@@ -3720,38 +3713,8 @@ static ether_tsn_etag_rx_ext_status_type_t r_ether_tsn_rx_queue_process (ether_t
             /* Do not move this process due to descriptor exclusive control */
             p_temp_desc->st_header.dt = (uint32_t) ETHER_TSN_DESC_FEMPTY;
 
-            /* Get rx descriptor full interrupt status */
-            int_stat = (uint32_t) g_ether_tsn_rx_full;
-
-            int_stat_hw = ETHER_TSN_GET_RX_FULL_INT_STAT(queue_idx, p_ctrl->p_reg_axibmi->RFEIS0, rx_queue_offset); /* PRQA S 0662,3469 # DP_MSR_D-1.1_UC1,DP_MSR_R-1.2_UC1,Advisory D-4.9 */
-
-            if ((ETHER_TSN_TRUE == int_stat) || (0U != int_stat_hw))
-            {
-                /* Searching rx descriptor chain table */
-                p_ctrl->p_reg_axibmi->RATS   = (uint8_t) (queue_idx + rx_queue_offset); /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-                p_ctrl->p_reg_axibmi->RATSR2 = ETHER_TSN_RATSR2_SEARCHING;              /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-
-                /* Rx Descriptor Address Table searching waiting */
-                tick_start = 0U;
-                (void) r_ether_tsn_get_counter_value(&tick_start);
-                do
-                {
-                    tick_elap = r_ether_tsn_get_time_out_value(tick_start);
-                } while ((0U != p_ctrl->p_reg_axibmi->RATSR2) && (tick_elap <= ETHER_TSN_TIMEOUT_COUNT));                /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-
-                if (ETHER_TSN_TIMEOUT_COUNT >= tick_elap)
-                {
-                    if (0U == (p_ctrl->p_reg_axibmi->RATSR0 & ETHER_TSN_RATSR0_CHAIN_ENTRY_VALID))                       /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-                    {
-                        /* Clear rx descriptor full interrupt status */
-                        g_ether_tsn_rx_full          = ETHER_TSN_FALSE;
-                        p_ctrl->p_reg_axibmi->RFEIS0 = int_stat_hw;                                                      /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
-
-                        /* Re-learning rx descriptor chain table */
-                        (void) r_ether_tsn_rx_desc_learning(p_ctrl, p_ctrl->p_reg_axibmi->RATS, (uint32_t) p_temp_desc); /* PRQA S 0329,0662 # Advisory R-11.4,DP_MSR_D-1.1_UC1,DP_MSR_R-1.2_UC1 */
-                    }
-                }
-            }
+            /* Re-learn the RX descriptor chain (using the HW-tracked current address) if the ring is/was full */
+            r_ether_tsn_rx_desc_relearn_if_full(p_ctrl, queue_idx);
         }
     }
 
