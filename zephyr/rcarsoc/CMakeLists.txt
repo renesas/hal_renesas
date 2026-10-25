@@ -22,6 +22,10 @@ zephyr_library_sources_ifdef(CONFIG_USE_RCARSOC_DRV_MFIS
     portable/src/rp_mfis_mbox/rp_mfis_mbox.c
     portable/src/rp_mfis_mbox/rp_mfis_scp_mbox.c)
 
+# Replaces the C library memcpy() on the Armv8-R AArch32 cores
+zephyr_library_sources_ifdef(CONFIG_RCAR_GEN5_R52_FAST_MEMCPY
+    portable/src/libc/memcpy_armv8r.S)
+
 # ---------------------------------------------------------------------------
 # RP PHY Q32XX private library
 # ---------------------------------------------------------------------------
