@@ -61,6 +61,7 @@ static void                  r_psi5_status_handler(psi5_instance_ctrl_t * p_ctrl
 static void                  r_psi5_read_data_frame(psi5_instance_ctrl_t * p_ctrl);
 static void                  r_psi5_read_msg_frame(psi5_instance_ctrl_t * p_ctrl);
 static void                  r_psi5_transmit_data(psi5_instance_ctrl_t * p_ctrl);
+static fsp_err_t             r_psi5_tx_buffer_empty_check(psi5_instance_ctrl_t * p_ctrl);
 BSP_INTERRUPT_ATTRIBUTE void r_psi5_rx_isr(void);     /* PRQA S 3449, 3451 # Required R-8.5, Required R-8.5 */
 BSP_INTERRUPT_ATTRIBUTE void r_psi5_tx_isr(void);     /* PRQA S 3449, 3451 # Required R-8.5, Required R-8.5 */
 BSP_INTERRUPT_ATTRIBUTE void r_psi5_status_isr(void); /* PRQA S 3449, 3451 # Required R-8.5, Required R-8.5 */
@@ -260,9 +261,11 @@ fsp_err_t R_PSI5_Open (psi5_ctrl_t * const p_api_ctrl, psi5_cfg_t const * const 
 /*******************************************************************************************************************//**
  * Closes the driver.  Implements @ref psi5_api_t::close().
  *
+ * @param[in]  p_api_ctrl         Pointer to control block
  * @retval     FSP_SUCCESS        Successful close.
  * @retval     FSP_ERR_ASSERTION  The parameter p_ctrl is NULL.
  * @retval     FSP_ERR_NOT_OPEN   Driver has not been initialized.
+ * @retval     FSP_ERR_IN_USE     A frame is still being transmitted; retry the call.
  **********************************************************************************************************************/
 fsp_err_t R_PSI5_Close (psi5_ctrl_t * const p_api_ctrl)                  /* PRQA S 1505 # Advisory R-8.7 */
 {
@@ -308,13 +311,17 @@ fsp_err_t R_PSI5_Close (psi5_ctrl_t * const p_api_ctrl)                  /* PRQA
     /* Clear receive message interrupt */
     p_ctrl->p_reg->PSI5nRXMMSTINTEN = PSI5_PRV_CLEARED;                                                                /* PRQA S 0662 # Required R-1.1 */
 
+    /* Return FSP_ERR_IN_USE if a frame is still being transmitted, otherwise the TX buffer is stuck after the channel
+     * is disabled. The caller must retry. */
+    FSP_ERROR_RETURN(FSP_SUCCESS == r_psi5_tx_buffer_empty_check(p_ctrl), FSP_ERR_IN_USE);
+
     /* Disable PSI5 channel*/
-    p_ctrl->p_reg->PSI5nCHCTRL_b.CHEN = PSI5_PRV_CHANNEL_DISABLED;                                                     /* PRQA S 0662 # Required R-1.1 */
+    p_ctrl->p_reg->PSI5nCHCTRL_b.CHEN = PSI5_PRV_CHANNEL_DISABLED;     /* PRQA S 0662 # Required R-1.1 */
 
     /* Reset timestamp value */
-    p_ctrl->p_reg->PSI5nIPTIMER = PSI5_PRV_CLEARED;                                                                    /* PRQA S 0662 # Required R-1.1 */
+    p_ctrl->p_reg->PSI5nIPTIMER = PSI5_PRV_CLEARED;                    /* PRQA S 0662 # Required R-1.1 */
 
-    FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->PSI5nCHCTRL_b.CHEN, 0U);                                                 /* PRQA S 0662 # Required R-1.1 */
+    FSP_HARDWARE_REGISTER_WAIT(p_ctrl->p_reg->PSI5nCHCTRL_b.CHEN, 0U); /* PRQA S 0662 # Required R-1.1 */
 
     /* Clear the open mark of PSI5 channel*/
     p_ctrl->open = PSI5_PRV_CLEARED;
@@ -450,10 +457,15 @@ fsp_err_t R_PSI5_Start (psi5_ctrl_t * const p_api_ctrl)                  /* PRQA
 
 /*******************************************************************************************************************//**
  * Stop the driver.  Implements @ref psi5_api_t::stop().
+ *
+ * @note If a frame is being transmitted (TXDEMPTY = 0), this function returns FSP_ERR_IN_USE without disabling the
+ *       channel. The caller must retry until FSP_SUCCESS is returned so the frame can finish transmitting first.
+ *
  * @param[in]  p_api_ctrl         Pointer to control block
  * @retval     FSP_SUCCESS        Successful stop.
  * @retval     FSP_ERR_ASSERTION  The parameter p_ctrl is NULL.
  * @retval     FSP_ERR_NOT_OPEN   Driver has not been initialized.
+ * @retval     FSP_ERR_IN_USE     A frame is still being transmitted; retry the call.
  **********************************************************************************************************************/
 fsp_err_t R_PSI5_Stop (psi5_ctrl_t * const p_api_ctrl)                   /* PRQA S 3673, 1505 # Advisory R-8.13, Advisory R-8.7 */
 {
@@ -464,6 +476,10 @@ fsp_err_t R_PSI5_Stop (psi5_ctrl_t * const p_api_ctrl)                   /* PRQA
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ERROR_RETURN(PSI5_PRV_OPEN == p_ctrl->open, FSP_ERR_NOT_OPEN);
 #endif
+
+    /* Return FSP_ERR_IN_USE if a frame is still being transmitted, otherwise the TX buffer is stuck after the channel
+     * is disabled. The caller must retry. */
+    FSP_ERROR_RETURN(FSP_SUCCESS == r_psi5_tx_buffer_empty_check(p_ctrl), FSP_ERR_IN_USE);
 
     /* Disable PSI5 channel*/
     p_ctrl->p_reg->PSI5nCHCTRL_b.CHEN = PSI5_PRV_CHANNEL_DISABLED;                   /* PRQA S 0662 # Required R-1.1 */
@@ -606,11 +622,16 @@ fsp_err_t R_PSI5_CallbackSet (psi5_ctrl_t * const          p_api_ctrl,          
 /*******************************************************************************************************************//**
  * Load application configuration of timestamp to PSI5 peripheral
  * Implements @ref psi5_api_t::timestampSet.
+ *
+ * @note This function disables the channel temporarily. If a frame is being transmitted (TXDEMPTY = 0), it returns
+ *       FSP_ERR_IN_USE without changing any setting. The caller must retry until FSP_SUCCESS is returned.
+ *
  * @param[in]   p_api_ctrl               Pointer to control block
  * @param[in]   p_timestamp_cfg          Pointer to configuration timestamp
  * @retval  FSP_SUCCESS                  Callback updated successfully.
  * @retval  FSP_ERR_ASSERTION            A required pointer is NULL.
  * @retval  FSP_ERR_NOT_OPEN             The control block has not been opened.
+ * @retval  FSP_ERR_IN_USE               A frame is still being transmitted; retry the call.
  **********************************************************************************************************************/
 fsp_err_t R_PSI5_TimestampSet (psi5_ctrl_t * const p_api_ctrl, psi5_timestamp_setting_t const * const p_timestamp_cfg) /* PRQA S 1505 # Advisory R-8.7 */
 {
@@ -622,6 +643,9 @@ fsp_err_t R_PSI5_TimestampSet (psi5_ctrl_t * const p_api_ctrl, psi5_timestamp_se
     FSP_ASSERT(NULL != p_ctrl);
     FSP_ERROR_RETURN(PSI5_PRV_OPEN == p_ctrl->open, FSP_ERR_NOT_OPEN);
 #endif
+
+    /* Channel is toggled below, return FSP_ERR_IN_USE if a frame is still being transmitted so the caller can retry */
+    FSP_ERROR_RETURN(FSP_SUCCESS == r_psi5_tx_buffer_empty_check(p_ctrl), FSP_ERR_IN_USE);
 
     /* Save current channel enable state to restore it after reconfiguration */
     chen_state = p_ctrl->p_reg->PSI5nCHCTRL_b.CHEN;                /* PRQA S 0662 # Required R-1.1 */
@@ -641,6 +665,10 @@ fsp_err_t R_PSI5_TimestampSet (psi5_ctrl_t * const p_api_ctrl, psi5_timestamp_se
 /*******************************************************************************************************************//**
  * Transfer data from ECU to sensor
  * Implements @ref psi5_api_t::write.
+ *
+ * @note PSI5_EVENT_TRANSMIT_DATA_EMPTY is notified when the data is loaded into the TX buffer, not when the frame
+ *       transmission is complete.
+ *
  * @param[in]   p_api_ctrl               Pointer to control block
  * @param[in]   p_src                    Pointer to source buffer
  * @retval  FSP_SUCCESS                  Callback updated successfully.
@@ -1303,6 +1331,32 @@ static void r_psi5_status_handler (psi5_instance_ctrl_t * p_ctrl)
         /* Call user callback */
         r_psi5_call_callback(p_ctrl, PSI5_EVENT_SYNC_PULSE_AND_RX_DATA_CONFLICT);
     }
+}
+
+/*******************************************************************************************************************//**
+ * Check that the TX buffer is empty before the channel is disabled.
+ * Disabling the channel (CHEN = 0) while TXDEMPTY = 0 leaves the frame stuck in the TX buffer, then TXDEMPTY stays 0
+ * and no further transmission is possible after the channel is enabled again.
+ *
+ * Instead of busy-waiting (which can hang indefinitely while waiting for a sync pulse), this returns
+ * FSP_ERR_IN_USE when a frame is still being transmitted. The caller is expected to retry.
+ *
+ * @param[in]  p_ctrl                    Pointer to the instance control block.
+ * @retval     FSP_SUCCESS               TX buffer is empty (or no TX is in progress), safe to disable the channel.
+ * @retval     FSP_ERR_IN_USE            A frame is still being transmitted (TXDEMPTY = 0).
+ **********************************************************************************************************************/
+static fsp_err_t r_psi5_tx_buffer_empty_check (psi5_instance_ctrl_t * p_ctrl)                  /* PRQA S 3673 # Advisory R-8.13 */
+{
+    /* TX progresses only on sync pulses: check only when the channel is enabled in synchronous mode.
+     * Otherwise TXDEMPTY may never be set and the check would always report busy. */
+    if ((PSI5_PRV_CHANNEL_ENABLED == p_ctrl->p_reg->PSI5nCHCTRL_b.CHEN) &&                     /* PRQA S 0662 # Required R-1.1 */
+        (PSI5_COMM_MODE_ASYNCHRONOUS != p_ctrl->p_reg->PSI5nOPMCOMM_b.COMMODE))                /* PRQA S 0662, 1881 # Required R-1.1, Required R-10.4 */
+    {
+        /* Frame is still being shifted out, caller must retry */
+        FSP_ERROR_RETURN(PSI5_PRV_SET == p_ctrl->p_reg->PSI5nTXST_b.TXDEMPTY, FSP_ERR_IN_USE); /* PRQA S 0662 # Required R-1.1 */
+    }
+
+    return FSP_SUCCESS;
 }
 
 /*******************************************************************************************************************//**

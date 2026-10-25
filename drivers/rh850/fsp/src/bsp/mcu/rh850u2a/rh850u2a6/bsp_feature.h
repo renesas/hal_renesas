@@ -622,7 +622,7 @@
 
 /** PSI5 */
 #if (BSP_PACKAGE_PINS_QFP144 == BSP_PACKAGE_PINS)
- #define BSP_FEATURE_PSI5_MAX_CHANNEL                             (3U)                                                                          ///< Maximum PSI5 unit supported
+ #define BSP_FEATURE_PSI5_MAX_CHANNEL                             (4U)                                                                          ///< Maximum PSI5 unit supported
 #else
  #define BSP_FEATURE_PSI5_MAX_CHANNEL                             (4U) /* PRQA S 1534 # Advisory R-2.5 */                                       ///< Maximum PSI5 unit supported
 #endif
