@@ -1008,6 +1008,7 @@ fsp_err_t R_TAUD_DutyCycleSet (timer_ctrl_t * const p_ctrl, uint32_t const duty_
  *         Input Signal Width Judgment Function,
  *         Delay Pulse Output Function,
  *         Triangle PWM Output Function (Master Channel),
+ *         Triangle PWM Output Function with Dead Time (Master Channel),
  *         Complementary Modulation Output Function (Master Channel, Slave Channel 1),
  *         A/D Conversion Trigger Output Function Type 2 (Master Channel),
  *         Offset Trigger Output Function (Master Channel),
@@ -1091,6 +1092,7 @@ fsp_err_t R_TAUD_InfoGet (timer_ctrl_t * const p_ctrl, timer_info_t * const p_in
         count_direction = TIMER_DIRECTION_DOWN;
     }
     else if (((TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT == p_extend->taud_function) ||
+              (TAUD_FUNCTION_TRIANGLE_PWM_OUTPUT_DEADTIME == p_extend->taud_function) ||
               (TAUD_FUNCTION_COMPLEMENTARY_MODULATION_OUTPUT == p_extend->taud_function) ||
               (TAUD_FUNCTION_AD_CONVERSION_TRIGGER_TYPE_2 == p_extend->taud_function) ||
               (TAUD_FUNCTION_NON_COMPLEMENTARY_MODULATION_OUTPUT_FUNCTION_TYPE_2 == p_extend->taud_function)) &&
