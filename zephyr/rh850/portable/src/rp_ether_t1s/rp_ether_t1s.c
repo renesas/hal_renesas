@@ -5693,8 +5693,12 @@ static void r_ether_t1s_enable_icu (ether_t1s_instance_ctrl_t * p_instance_ctrl)
                        (uint16_t) p_instance_ctrl->p_ether_cfg->interrupt_priority,
                        p_instance_ctrl);
 
-    /* Configure manage related interrupt */
-    R_BSP_IrqCfgEnable(p_extend->other_irq, (uint16_t) p_extend->interrupt_priority, p_instance_ctrl);
+    /* Configure the management interrupt (optional). The Zephyr driver does not use it and sets other_irq to
+     * FSP_INVALID_VECTOR, which is not a valid interrupt number, so skip it. */
+    if (FSP_INVALID_VECTOR != p_extend->other_irq)
+    {
+        R_BSP_IrqCfgEnable(p_extend->other_irq, (uint16_t) p_extend->interrupt_priority, p_instance_ctrl);
+    }
 }
 
 /*******************************************************************************************************************//**
@@ -5708,11 +5712,17 @@ static void r_ether_t1s_disable_icu (ether_t1s_instance_ctrl_t * p_instance_ctrl
 
     /* Disables interrupts in the NVIC. */
     R_BSP_IrqDisable(p_instance_ctrl->p_ether_cfg->irq);
-    R_BSP_IrqDisable(p_extend->other_irq);
 
     /* Clears the control block from the vector information array. */
     R_FSP_IsrContextSet(p_instance_ctrl->p_ether_cfg->irq, NULL);
-    R_FSP_IsrContextSet(p_extend->other_irq, NULL);
+
+    /* The management interrupt is optional. When unused, other_irq is FSP_INVALID_VECTOR, which is not a valid
+     * interrupt number, so skip it. */
+    if (FSP_INVALID_VECTOR != p_extend->other_irq)
+    {
+        R_BSP_IrqDisable(p_extend->other_irq);
+        R_FSP_IsrContextSet(p_extend->other_irq, NULL);
+    }
 }
 
 /*******************************************************************************************************************//**
