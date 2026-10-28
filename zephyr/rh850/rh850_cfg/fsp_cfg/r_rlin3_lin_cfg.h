@@ -6,8 +6,15 @@
 #ifndef R_RLIN3_LIN_CFG_H_
 #define R_RLIN3_LIN_CFG_H_
 
-#define RLIN3_LIN_CFG_CLOCK                     (20000000U)
-#define RLIN3_LIN_CFG_CLOCK_CH23                (20000000U)
+#define RLIN3_LIN_CFG_CLOCK                        (BSP_CFG_CLOCK_CLK_RLIN3_HZ)
+#if defined(CONFIG_SOC_SERIES_RH850U2B)
+ #define RLIN3_LIN_CFG_CLOCK_CH23                  (BSP_CFG_CLOCK_CLK_CH23_RLIN3_HZ)
+#elif defined(CONFIG_SOC_SERIES_RH850U2C)
+ #define RLIN3_LIN_CFG_CLOCK_CH23                  (BSP_CFG_CLOCK_CLK_RLIN323_HZ)
+#else
+/* U2A has no RLIN323; value unused */
+ #define RLIN3_LIN_CFG_CLOCK_CH23                  (BSP_CFG_CLOCK_CLK_RLIN3_HZ)
+#endif
 #ifndef RLIN3_LIN_CFG_PARAM_CHECKING_ENABLE
  #define RLIN3_LIN_CFG_PARAM_CHECKING_ENABLE    (1)
 #endif

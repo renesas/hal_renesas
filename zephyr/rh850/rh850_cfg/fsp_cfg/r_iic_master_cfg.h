@@ -6,6 +6,10 @@
 #ifndef R_IIC_MASTER_CFG_H_
 #define R_IIC_MASTER_CFG_H_
 
-#define IIC_MASTER_CFG_CLOCK (40000000U)
+#if defined(CONFIG_SOC_SERIES_RH850U2A)
+ #define IIC_MASTER_CFG_CLOCK    (BSP_CFG_CLOCK_CLK_LSB_HZ)
+#else
+ #define IIC_MASTER_CFG_CLOCK    (BSP_CFG_CLOCK_CLKC_LSB_HZ)
+#endif
 
 #endif                                 /* R_IIC_MASTER_CFG_H_ */
