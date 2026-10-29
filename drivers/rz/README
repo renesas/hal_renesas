@@ -107,3 +107,9 @@ Patch List:
    Impacted files:
       drivers/rz/fsp/src/rzn/r_ioport/r_ioport.c
       drivers/rz/fsp/src/rzt/r_ioport/r_ioport.c
+
+   * Use a for loop over every channel in R_CANFD_Close() of RZ/V, instead of gp_ctrl[!channel]
+     which only covers channels 0 and 1, to check if any other channel is still open before
+     stopping the CAN-FD module
+   Impacted files:
+      drivers/rz/fsp/src/rzv/r_canfd/r_canfd.c
