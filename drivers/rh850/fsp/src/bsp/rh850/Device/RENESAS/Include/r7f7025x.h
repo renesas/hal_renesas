@@ -156291,6 +156291,8 @@ typedef struct                          /*!< (@ 0xFF899000) R_WDTB1 Structure   
  #define R_SYS0_CLOCK_CKS_MSPIC_MSPISCSID_Pos       (0UL)          /*!< MSPISCSID (Bit 0)                                     */
  #define R_SYS0_CLOCK_CKS_MSPIC_MSPISCSID_Msk       (0x3UL)        /*!< MSPISCSID (Bitfield-Mask: 0x03)                       */
 /* =======================================================  CKS_MSPIS  ======================================================= */
+ #define R_SYS0_CLOCK_CKS_MSPIS_MSPISACT_Pos        (0UL)          /*!< MSPISACT (Bit 0)                                      */
+ #define R_SYS0_CLOCK_CKS_MSPIS_MSPISACT_Msk        (0x3UL)        /*!< MSPISACT (Bitfield-Mask: 0x03)                        */
 /* =======================================================  CKS_SWDTC  ======================================================= */
  #define R_SYS0_CLOCK_CKS_SWDTC_SWDTSCSID_Pos       (0UL)          /*!< SWDTSCSID (Bit 0)                                     */
  #define R_SYS0_CLOCK_CKS_SWDTC_SWDTSCSID_Msk       (0x3UL)        /*!< SWDTSCSID (Bitfield-Mask: 0x03)                       */
