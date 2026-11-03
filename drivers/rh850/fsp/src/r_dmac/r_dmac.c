@@ -1213,11 +1213,11 @@ BSP_INTERRUPT_ATTRIBUTE void dmac_int_isr (void) /* PRQA S 1503 # DP_MSR_R-2.1_U
         /* Disable DMA transfer */
         p_ctrl->p_reg->sDMAC_CH[channel].CHCR_b.DE = DMAC_PRV_DISABLE_BIT; /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
 
-        /* Call user callback */
-        r_dmac_call_callback(p_ctrl, event);
-
         /* Clear transfer end flag */
         p_ctrl->p_reg->sDMAC_CH[channel].CHFCR_b.TEC = DMAC_PRV_CLEAR_BIT; /* PRQA S 0662 # DP_MSR_D-1.1_UC1 & DP_MSR_R-1.2_UC1 */
+
+        /* Call user callback */
+        r_dmac_call_callback(p_ctrl, event);
     }
 
     /* Restore context if RTOS is used */
