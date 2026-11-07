@@ -2962,8 +2962,12 @@ static void r_layer3_switch_configure_cbs (layer3_switch_instance_ctrl_t const *
         ((layer3_switch_extended_cfg_t *) p_instance_ctrl->p_cfg->p_extend)->p_ether_phy_instances[port];
 
     /*Get frequency of ESWCLK. */
+#if BSP_PRV_CLOCKS_FROM_CFG
+    eswclk_frequency = BSP_CFG_ESWCLK_SRC_FREQ / R_FSP_ClockDividerGet(BSP_CFG_ESWCLK_DIV);
+#else
     eswclk_frequency = R_BSP_SourceClockHzGet((fsp_priv_source_clock_t) (R_SYSTEM->ESWCKCR_b.CKSEL)) /
                        R_FSP_ClockDividerGet(R_SYSTEM->ESWCKDIVCR_b.CKDIV);
+#endif
 
     /* Get link speed. */
     switch (p_phy_instance->p_cfg->mii_type)

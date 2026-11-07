@@ -196,6 +196,14 @@ FSP_HEADER
  #define FSP_PRIV_TZ_USE_SECURE_REGS            (0)
 #endif
 
+/* In remote non-secure builds the secure CGC registers cannot be accessed, so the clock frequencies are derived from
+ * the build-time clock configuration. */
+#if BSP_REMOTE_NONSECURE_BUILD && BSP_CFG_CLOCKS_SECURE
+ #define BSP_PRV_CLOCKS_FROM_CFG                (1)
+#else
+ #define BSP_PRV_CLOCKS_FROM_CFG                (0)
+#endif
+
 /* Put certain BSP variables in uninitialized RAM when initializing BSP early. */
 #if BSP_CFG_EARLY_INIT
  #define BSP_SECTION_EARLY_INIT                 BSP_PLACE_IN_SECTION(BSP_SECTION_NOINIT)
@@ -377,6 +385,10 @@ __STATIC_INLINE IRQn_Type R_FSP_CurrentIrqGet (void)
  *
  * @return     Frequency of requested clock in Hertz.
  **********************************************************************************************************************/
+#if BSP_PRV_CLOCKS_FROM_CFG
+uint32_t R_FSP_SystemClockHzGet(fsp_priv_clock_t clock);
+
+#else
 __STATIC_INLINE uint32_t R_FSP_SystemClockHzGet (fsp_priv_clock_t clock)
 {
     /* Check if the provided clock is an unused clock. */
@@ -434,6 +446,8 @@ __STATIC_INLINE uint32_t R_FSP_SystemClockHzGet (fsp_priv_clock_t clock)
     return SystemCoreClock;
 #endif
 }
+
+#endif
 
 /*******************************************************************************************************************//**
  * Converts a clock's CKDIVCR register value to a clock divider (Eg: SPICKDIVCR).
@@ -500,6 +514,10 @@ __STATIC_INLINE uint32_t R_FSP_ClockDividerGet (uint32_t ckdivcr)
  *
  * @return     Frequency of requested clock in Hertz.
  **********************************************************************************************************************/
+ #if BSP_PRV_CLOCKS_FROM_CFG
+uint32_t R_FSP_SciSpiClockHzGet(void);
+
+ #else
 __STATIC_INLINE uint32_t R_FSP_SciSpiClockHzGet (void)
 {
     uint32_t                scispidivcr = R_SYSTEM->SCISPICKDIVCR;
@@ -509,6 +527,8 @@ __STATIC_INLINE uint32_t R_FSP_SciSpiClockHzGet (void)
     return R_BSP_SourceClockHzGet(scispicksel) / clock_div;
 }
 
+ #endif
+
 #endif
 #if BSP_FEATURE_SPI_HAS_CLOCK
 
@@ -517,6 +537,10 @@ __STATIC_INLINE uint32_t R_FSP_SciSpiClockHzGet (void)
  *
  * @return     Frequency of requested clock in Hertz.
  **********************************************************************************************************************/
+ #if BSP_PRV_CLOCKS_FROM_CFG
+uint32_t R_FSP_SpiClockHzGet(void);
+
+ #else
 __STATIC_INLINE uint32_t R_FSP_SpiClockHzGet (void)
 {
     uint32_t                spidivcr  = FSP_STYPE3_REG8_READ(R_SYSTEM->SPICKDIVCR, BSP_CFG_CLOCKS_SECURE);
@@ -529,6 +553,8 @@ __STATIC_INLINE uint32_t R_FSP_SpiClockHzGet (void)
     return R_BSP_SourceClockHzGet(spicksel) / clock_div;
 }
 
+ #endif
+
 #endif
 #if BSP_FEATURE_SCI_HAS_CLOCK
 
@@ -537,6 +563,9 @@ __STATIC_INLINE uint32_t R_FSP_SpiClockHzGet (void)
  *
  * @return     Frequency of requested clock in Hertz.
  **********************************************************************************************************************/
+ #if BSP_PRV_CLOCKS_FROM_CFG
+uint32_t R_FSP_SciClockHzGet (void);
+ #else
 __STATIC_INLINE uint32_t R_FSP_SciClockHzGet (void)
 {
     uint32_t                scidivcr  = FSP_STYPE3_REG8_READ(R_SYSTEM->SCICKDIVCR, BSP_CFG_CLOCKS_SECURE);
@@ -548,7 +577,7 @@ __STATIC_INLINE uint32_t R_FSP_SciClockHzGet (void)
 
     return R_BSP_SourceClockHzGet(scicksel) / clock_div;
 }
-
+ #endif
 #endif
 
 /*******************************************************************************************************************//**

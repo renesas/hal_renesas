@@ -1116,12 +1116,18 @@ fsp_err_t R_GPT_PwmOutputDelayInitialize ()
 #if (BSP_FEATURE_GPT_GPTEH_SUPPORTED && GPT_CFG_OUTPUT_SUPPORT_ENABLE)
  #if ((BSP_FEATURE_GPT_ODC_FRANGE_FREQ_MIN > 0) || GPT_CFG_PARAM_CHECKING_ENABLE)
   #if (BSP_PERIPHERAL_GPT_GTCLK_PRESENT && (GPT_CFG_GPTCLK_BYPASS == 0))
+   #if BSP_PRV_CLOCKS_FROM_CFG
+
+    /* The CGC registers are owned by the secure side, use the build-time GPTCK configuration. */
+    uint32_t gpt_frequency = BSP_CFG_GPTCLK_SRC_FREQ / R_FSP_ClockDividerGet(BSP_CFG_GPTCLK_DIV);
+   #else
 
     /* Get the GPTCK Divider. */
     const uint8_t divider = (uint8_t) R_FSP_ClockDividerGet(R_SYSTEM->GPTCKDIVCR_b.GPTCKDIV);
 
     /* Calculate the GPTCK Frequency. */
     uint32_t gpt_frequency = R_BSP_SourceClockHzGet((fsp_priv_source_clock_t) R_SYSTEM->GPTCKCR_b.GPTCKSEL) / divider;
+   #endif
   #else
 
     /* Calculate the PCLKD Frequency. */
@@ -1706,12 +1712,18 @@ static uint32_t gpt_clock_frequency_get (gpt_instance_ctrl_t * const p_instance_
         (timer_source_div_t) (p_instance_ctrl->p_reg->GTCR_b.TPCS << BSP_FEATURE_GPT_TPCS_SHIFT);
 
 #if BSP_PERIPHERAL_GPT_GTCLK_PRESENT && !GPT_CFG_GPTCLK_BYPASS
+ #if BSP_PRV_CLOCKS_FROM_CFG
+
+    /* The CGC registers are owned by the secure side, use the build-time GPTCK configuration. */
+    uint32_t source_freq_hz = BSP_CFG_GPTCLK_SRC_FREQ / R_FSP_ClockDividerGet(BSP_CFG_GPTCLK_DIV);
+ #else
 
     /* Calculate the GPTCK Divider. */
     const uint8_t divisor = (uint8_t) R_FSP_ClockDividerGet(R_SYSTEM->GPTCKDIVCR_b.GPTCKDIV);
 
     /* Calculate the GPTCK Frequency. */
     uint32_t source_freq_hz = R_BSP_SourceClockHzGet((fsp_priv_source_clock_t) R_SYSTEM->GPTCKCR_b.GPTCKSEL) / divisor;
+ #endif
 #else
 
     /* Look up PCLKD frequency. */

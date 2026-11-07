@@ -983,7 +983,10 @@ void bsp_prv_prepare_pll (uint32_t clock, uint32_t const * const p_pll_hz)
  **********************************************************************************************************************/
 void SystemCoreClockUpdate (void)
 {
-#if !BSP_FEATURE_CGC_REGISTER_SET_B
+#if BSP_PRV_CLOCKS_FROM_CFG
+    /* TODO: Support reading the clock at runtime so the secure clock can be changed dynamically. */
+    SystemCoreClock = BSP_CFG_CLOCK_CPUCLK_SRC_FREQ / BSP_PRV_SCKDIVCR_DIV_VALUE(BSP_CFG_CPUCLK1_DIV);
+#elif !BSP_FEATURE_CGC_REGISTER_SET_B
  #if BSP_FEATURE_TZ_HAS_TRUSTZONE && (BSP_TZ_SECURE_BUILD || BSP_TZ_NONSECURE_BUILD) && BSP_FEATURE_TZ_VERSION == 2
     bool secure = !R_SYSTEM->CGFSAR_b.NONSEC00;
  #endif
@@ -3529,4 +3532,84 @@ fsp_err_t R_BSP_SubclockInitialize ()
 
 #endif
 
+#if BSP_PRV_CLOCKS_FROM_CFG
+
+/* In remote non-secure builds the CGC registers are owned by the secure side, so the clock frequencies are derived
+ * from the build-time clock configuration.
+ * TODO: Support reading the clocks at runtime so the secure clocks can be changed dynamically. */
+
+ #if BSP_CFG_CLOCK_CPUCLK_SRC_FREQ == 0
+  #error "System clock source frequency is unknown, enable the system clock source in the devicetree."
+ #endif
+
+/*******************************************************************************************************************//**
+ * Gets the frequency of a system clock.
+ *
+ * @return     Frequency of requested clock in Hertz.
+ **********************************************************************************************************************/
+uint32_t R_FSP_SystemClockHzGet (fsp_priv_clock_t clock)
+{
+    /* Check if the provided clock is an unused clock. */
+    if (FSP_PRIV_CLOCK_UNUSED == clock)
+    {
+        return 0U;
+    }
+
+    if (FSP_PRIV_CLOCK_CPUCLK == clock)
+    {
+        return SystemCoreClock;
+    }
+
+ #if !BSP_FEATURE_CGC_REGISTER_SET_B
+    uint32_t clock_div = (BSP_PRV_STARTUP_SCKDIVCR >> clock) & FSP_PRV_SCKDIVCR_DIV_MASK;
+
+    return BSP_CFG_CLOCK_CPUCLK_SRC_FREQ / BSP_PRV_SCKDIVCR_DIV_VALUE(clock_div);
+ #else
+
+    return SystemCoreClock;
+ #endif
+}
+
+ #if BSP_FEATURE_SCI_HAS_SCISPI_CLOCK
+
+/*******************************************************************************************************************//**
+ * Gets the frequency of a SCI/SPI clock.
+ *
+ * @return     Frequency of requested clock in Hertz.
+ **********************************************************************************************************************/
+uint32_t R_FSP_SciSpiClockHzGet (void)
+{
+    return BSP_CFG_SCISPICLK_SRC_FREQ / R_FSP_ClockDividerGet(BSP_CFG_SCISPICLK_DIV);
+}
+
+ #endif
+
+ #if BSP_FEATURE_SPI_HAS_CLOCK
+
+/*******************************************************************************************************************//**
+ * Gets the frequency of a SPI clock.
+ *
+ * @return     Frequency of requested clock in Hertz.
+ **********************************************************************************************************************/
+uint32_t R_FSP_SpiClockHzGet (void)
+{
+    return BSP_CFG_SPICLK_SRC_FREQ / R_FSP_ClockDividerGet(BSP_CFG_SPICLK_DIV);
+}
+
+ #endif
+
+ #if BSP_FEATURE_SCI_HAS_CLOCK
+
+/*******************************************************************************************************************//**
+ * Gets the frequency of a SCI clock.
+ *
+ * @return     Frequency of requested clock in Hertz.
+ **********************************************************************************************************************/
+uint32_t R_FSP_SciClockHzGet (void)
+{
+    return BSP_CFG_SCICLK_SRC_FREQ / R_FSP_ClockDividerGet(BSP_CFG_SCICLK_DIV);
+}
+
+ #endif
+#endif
 /** @} (end addtogroup BSP_MCU_PRV) */

@@ -9,7 +9,7 @@
 
 #ifndef BSP_CLOCK_CFG_H_
 #define BSP_CLOCK_CFG_H_
-#define BSP_CFG_CLOCKS_SECURE (0)
+#define BSP_CFG_CLOCKS_SECURE DT_PROP(DT_NODELABEL(pclkblock), secure_clocks)
 #define BSP_CFG_CLOCKS_OVERRIDE (0)
 #define BSP_CFG_XTAL_HZ (RA_CGC_PROP_HAS_STATUS_OKAY_OR(DT_NODELABEL(xtal), clock_frequency, 0))
 
@@ -105,4 +105,39 @@
 #define BSP_CFG_ESWPHYCLK_DIV RA_CGC_CLK_DIV(DT_NODELABEL(eswphyclk), div, 2)
 #define BSP_CFG_ETHPHYCLK_SOURCE RA_CGC_CLK_SRC(DT_CLOCKS_CTLR(DT_NODELABEL(ethphyclk)))
 #define BSP_CFG_ETHPHYCLK_DIV RA_CGC_CLK_DIV(DT_NODELABEL(ethphyclk), div, 32)
+
+/*******************************************************************************************************************//**
+ * TF-M BSP Clock Configuration
+ **********************************************************************************************************************/
+/*
+ * Frequency of a clock source node: PLL outputs use "freq",
+ * fixed clocks (xtal/hoco/moco/loco...) use "clock-frequency". Returns 0 if disabled.
+ */
+#define RA_BSP_CLK_SRC_NODE_FREQ(node_id)                                                          \
+	COND_CODE_1(DT_NODE_HAS_PROP(node_id, freq),                                               \
+		    (RA_CGC_PROP_HAS_STATUS_OKAY_OR(node_id, freq, 0)),                            \
+		    (RA_CGC_PROP_HAS_STATUS_OKAY_OR(node_id, clock_frequency, 0)))
+
+/* Frequency of the source selected by the "clocks" property of a node, 0 if not set. */
+#define RA_BSP_CLK_CTLR_FREQ(node_id)                                                              \
+	COND_CODE_1(DT_NODE_HAS_PROP(node_id, clocks),                                             \
+		    (RA_BSP_CLK_SRC_NODE_FREQ(DT_CLOCKS_CTLR(node_id))), (0))
+
+#define BSP_CFG_CLOCK_CPUCLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(pclkblock)))
+#define BSP_CFG_SCICLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(sciclk)))
+#define BSP_CFG_SPICLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(spiclk)))
+#define BSP_CFG_CANFDCLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(canfdclk)))
+#define BSP_CFG_GPTCLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(gptclk)))
+#define BSP_CFG_LCDCLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(lcdclk)))
+#define BSP_CFG_I3CCLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(i3cclk)))
+#define BSP_CFG_UCLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(uclk)))
+#define BSP_CFG_USB60CLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(usb60clk)))
+#define BSP_CFG_OCTACLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(octaspiclk)))
+#define BSP_CFG_ADCCLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(adcclk)))
+#define BSP_CFG_BCLKA_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(bclka)))
+#define BSP_CFG_CLKOUT_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(clkout)))
+#define BSP_CFG_ESWCLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(eswclk)))
+#define BSP_CFG_ESWPHYCLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(eswphyclk)))
+#define BSP_CFG_ETHPHYCLK_SRC_FREQ (RA_BSP_CLK_CTLR_FREQ(DT_NODELABEL(ethphyclk)))
+
 #endif /* BSP_CLOCK_CFG_H_ */
