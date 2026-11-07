@@ -808,11 +808,9 @@ static fsp_err_t iic_master_run_hw_master (iic_master_instance_ctrl_t * const p_
      * making the final timeout count as:
      * Timeout = ((ICLK/PCLKB)*ICBRL)/4.
      */
-    volatile uint32_t sysdiccr = FSP_STYPE3_REG8_READ(R_SYSTEM->SCKDIVCR, BSP_CFG_CLOCKS_SECURE);
-    sysdiccr &= (IIC_MASTER_SYSDIVCK_ICLK_MASK | IIC_MASTER_SYSDIVCK_PCLKB_MASK);
-    uint32_t pclkb         = (IIC_MASTER_SYSDIVCK_PCLKB_MASK & sysdiccr) >> 8U;
-    uint32_t iclk          = sysdiccr >> 24U;
-    uint32_t timeout_count = ((1U << (pclkb - iclk)) * p_ctrl->p_reg->ICBRL) >> 2U;
+    uint32_t timeout_count =
+        ((R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_ICLK) / R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_PCLKB)) *
+         p_ctrl->p_reg->ICBRL) >> 2U;
 
     /* Check if this is a new transaction or a continuation */
     if (!p_ctrl->restarted)

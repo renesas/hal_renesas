@@ -2385,8 +2385,7 @@ void i3c_master_error_recovery (i3c_instance_ctrl_t * p_ctrl, bool error_recover
         if (0U == p_ctrl->p_reg->PRSTDBG_b.SDILV)
         {
             /* Calculate the frequency of PCLKD. */
-            uint32_t pclkd_frequency = (SystemCoreClock << R_SYSTEM->SCKDIVCR_b.ICK);
-            pclkd_frequency >>= R_SYSTEM->SCKDIVCR_b.PCKD;
+            uint32_t pclkd_frequency = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_PCLKD);
 
             i3c_extended_cfg_t * p_extend = (i3c_extended_cfg_t *) p_ctrl->p_cfg->p_extend;
 
@@ -2543,8 +2542,7 @@ void i3c_slave_error_recovery (i3c_instance_ctrl_t * p_ctrl, i3c_slave_error_rec
         p_ctrl->p_reg->RSTCTL = 0;
 
         /* Calculate the frequency of PCLKD. */
-        uint32_t pclkd_frequency = (SystemCoreClock << R_SYSTEM->SCKDIVCR_b.ICK);
-        pclkd_frequency >>= R_SYSTEM->SCKDIVCR_b.PCKD;
+        uint32_t pclkd_frequency = R_FSP_SystemClockHzGet(FSP_PRIV_CLOCK_PCLKD);
 
         /* Wait for the expected amount of time for the Bus Available Condition. */
         uint32_t expected_bus_available_time =
