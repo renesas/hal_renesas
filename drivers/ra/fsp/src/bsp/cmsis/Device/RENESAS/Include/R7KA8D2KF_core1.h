@@ -63654,7 +63654,7 @@ typedef struct                         /*!< (@ 0x4001C800) R_TCM Structure      
  * @{
  */
 
- #if defined(_RA_TZ_NONSECURE)
+ #if defined(_RA_TZ_NONSECURE) || defined(_RA_REMOTE_NONSECURE)
   #define BASE_NS_OFFSET     (BSP_FEATURE_TZ_NS_OFFSET)
  #else
   #define BASE_NS_OFFSET     0U

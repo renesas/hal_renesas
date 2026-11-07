@@ -190,7 +190,7 @@ FSP_HEADER
 #endif
 
 /* Use the secure registers for secure projects and flat projects. */
-#if !BSP_TZ_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
+#if !BSP_TZ_NONSECURE_BUILD && !BSP_REMOTE_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
  #define FSP_PRIV_TZ_USE_SECURE_REGS            (1)
 #else
  #define FSP_PRIV_TZ_USE_SECURE_REGS            (0)

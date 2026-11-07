@@ -64,14 +64,21 @@
 #define BSP_CFG_INLINE_IRQ_FUNCTIONS (1)
 
 #if defined(_RA_TZ_SECURE)
-#define BSP_TZ_SECURE_BUILD (1)
+#define BSP_TZ_SECURE_BUILD    (1)
 #define BSP_TZ_NONSECURE_BUILD (0)
+#define BSP_REMOTE_NONSECURE_BUILD (0)
 #elif defined(_RA_TZ_NONSECURE)
-#define BSP_TZ_SECURE_BUILD (0)
+#define BSP_TZ_SECURE_BUILD    (0)
 #define BSP_TZ_NONSECURE_BUILD (1)
-#else
+#define BSP_REMOTE_NONSECURE_BUILD (0)
+#elif defined(_RA_REMOTE_NONSECURE)
 #define BSP_TZ_SECURE_BUILD (0)
 #define BSP_TZ_NONSECURE_BUILD (0)
+#define BSP_REMOTE_NONSECURE_BUILD (1)
+#else
+#define BSP_TZ_SECURE_BUILD    (0)
+#define BSP_TZ_NONSECURE_BUILD (0)
+#define BSP_REMOTE_NONSECURE_BUILD (0)
 #endif
 
 /* TrustZone Settings */

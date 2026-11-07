@@ -245,3 +245,11 @@ zephyr_library_sources_ifdef(CONFIG_USE_RA_FSP_CEU
 	fsp/src/r_ceu/r_ceu.c)
 
 zephyr_compile_definitions_ifdef(CONFIG_INPUT_RENESAS_RA_QE_TOUCH_CFG QE_TOUCH_CONFIGURATION)
+
+if(CONFIG_TRUSTED_EXECUTION_NONSECURE)
+	if(CONFIG_SOC_RA_SECOND_CORE_BUILD)
+		zephyr_compile_definitions(_RA_REMOTE_NONSECURE)
+	else()
+		zephyr_compile_definitions(_RA_TZ_NONSECURE)
+	endif()
+endif()
