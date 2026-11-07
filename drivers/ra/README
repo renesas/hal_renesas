@@ -237,3 +237,49 @@ Patch List:
    * Update to disable write transaction for memory-map in OSPI_B when enter 1S-4S-4S mode
       Impacted files:
          drivers/ra/fsp/src/r_ospi_b/r_ospi_b.c
+
+   * Add remote non-secure build support (BSP_REMOTE_NONSECURE_BUILD) for RA8 dual-core devices.
+     _RA_REMOTE_NONSECURE is defined for the second core non-secure build, and the
+     non-secure peripheral base offset is used instead of the secure register aliases.
+      Impacted files:
+         drivers/ra/CMakeLists.txt
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7KA8D2KF_core0.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7KA8D2KF_core1.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7KA8M2JF_core0.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7KA8M2JF_core1.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7KA8P1KF_core0.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7KA8P1KF_core1.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7KA8T2LF_core0.h
+         drivers/ra/fsp/src/bsp/cmsis/Device/RENESAS/Include/R7KA8T2LF_core1.h
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_common.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra8m2/bsp_mcu_family_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra8p1/bsp_mcu_family_cfg.h
+
+   * Use non-secure DTC registers in remote non-secure build
+      Impacted files:
+         drivers/ra/fsp/src/r_dtc/r_dtc.c
+
+   * Skip IELSR/INTSELR setup in TrustZone and remote non-secure builds since these registers
+     are owned by the secure image (TF-M). On CPU0 non-secure build, route ICU events to CPU0
+     through tfm_platform_irq_cpu_sel().
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_irq.c
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_irq.h
+
+   * Derive clock frequencies from the build-time clock configuration (BSP_PRV_CLOCKS_FROM_CFG)
+     in remote non-secure build when the CGC registers are owned by the secure side
+     (secure-clocks property of the pclkblock node). Add *_SRC_FREQ clock source frequency
+     macros derived from the devicetree.
+      Impacted files:
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_clocks.c
+         drivers/ra/fsp/src/bsp/mcu/all/bsp_common.h
+         drivers/ra/fsp/src/r_gpt/r_gpt.c
+         drivers/ra/fsp/src/r_layer3_switch/r_layer3_switch.c
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra8m2/bsp_clock_cfg.h
+         zephyr/ra/ra_cfg/fsp_cfg/bsp/ra8p1/bsp_clock_cfg.h
+
+   * Use R_FSP_SystemClockHzGet() to get PCLKD, ICLK and PCLKB in I3C and IIC master instead of
+     reading SCKDIVCR directly
+      Impacted files:
+         drivers/ra/fsp/src/r_i3c/r_i3c.c
+         drivers/ra/fsp/src/r_iic_master/r_iic_master.c
