@@ -209,7 +209,9 @@ void R_BSP_IrqCfgEnable (IRQn_Type const irq, uint32_t priority, void * p_contex
 
 /** @} (end addtogroup BSP_MCU) */
 
-#if (BSP_CFG_CPU_CORE == 1) && !BSP_TZ_NONSECURE_BUILD
+/* TODO: INTSELR must be set from the Secure state. Need to confirm and, if necessary, add support for
+ * setting it from the CPU0 Secure side when CPU1 runs with Security Extension disabled. */
+#if (BSP_CFG_CPU_CORE == 1) && !BSP_TZ_NONSECURE_BUILD && !BSP_REMOTE_NONSECURE_BUILD
 
 /*******************************************************************************************************************//**
  * INTSELR is a S-TYPE-6 register but it needs to be set based on interrupts that are used in each project.
@@ -294,7 +296,8 @@ BSP_WEAK_REFERENCE void bsp_irq_cfg (void)
  #endif
 #endif
 #if BSP_FEATURE_ICU_HAS_IELSR
-
+/* The TF-M implementation will set the IELSR and INTSELR registers. */
+ #if !BSP_TZ_NONSECURE_BUILD && !BSP_REMOTE_NONSECURE_BUILD
     /* Calculate the number of IELSR registers that need to be initialized. */
     uint32_t ielsr_count = BSP_ICU_VECTOR_MAX_ENTRIES - BSP_FEATURE_ICU_FIXED_IELSR_COUNT;
     if (ielsr_count > BSP_ICU_VECTOR_NUM_ENTRIES)
@@ -307,11 +310,11 @@ BSP_WEAK_REFERENCE void bsp_irq_cfg (void)
         if (0U != g_interrupt_event_link_select[i])
         {
             R_ICU->IELSR[i] = (uint32_t) g_interrupt_event_link_select[i];
-
  #if (BSP_CFG_CPU_CORE == 1)
             bsp_prv_intselr_set(g_interrupt_event_link_select[i]);
  #endif
         }
     }
+ #endif
 #endif
 }

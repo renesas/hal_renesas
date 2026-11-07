@@ -18,10 +18,28 @@ FSP_HEADER
 #define BSP_ICU_VECTOR_MAX_ENTRIES    (BSP_VECTOR_TABLE_MAX_ENTRIES - BSP_CORTEX_VECTOR_TABLE_ENTRIES)
 
 #if (BSP_CFG_CPU_CORE == 1)
- #define BSP_EVENT_NUM_TO_INTSELR(x)         (x >> 5)        // Convert event number to INTSELR register number
- #define BSP_EVENT_NUM_TO_INTSELR_MASK(x)    (1 << (x % 32)) // Convert event number to INTSELR bit mask
- #define BSP_ASSIGN_EVENT_TO_CURRENT_CORE(event) \
+ #if (BSP_REMOTE_NONSECURE_BUILD == 1)
+  #define BSP_EVENT_NUM_TO_INTSELR(x)
+  #define BSP_EVENT_NUM_TO_INTSELR_MASK(x)
+  #define BSP_ASSIGN_EVENT_TO_CURRENT_CORE(event)
+ #else
+  #define BSP_EVENT_NUM_TO_INTSELR(x)         (x >> 5)        // Convert event number to INTSELR register number
+  #define BSP_EVENT_NUM_TO_INTSELR_MASK(x)    (1 << (x % 32)) // Convert event number to INTSELR bit mask
+  #define BSP_ASSIGN_EVENT_TO_CURRENT_CORE(event) \
     R_ICU->INTSELR[BSP_EVENT_NUM_TO_INTSELR(event)] |= BSP_EVENT_NUM_TO_INTSELR_MASK(event);
+ #endif
+#elif (BSP_CFG_CPU_CORE == 0) && (BSP_TZ_NONSECURE_BUILD == 1)
+ #include "tfm_ioctl_api.h"
+
+ __STATIC_INLINE void bsp_ns_assign_event(enum tfm_irq_cpu_sel_cpu_t cpu, uint32_t event)
+ {
+    uint32_t result = 0U;
+
+    (void) tfm_platform_irq_cpu_sel(cpu, event, &result);
+ }
+
+ /* CPU0 non-secure image: INTSELR is owned by the Secure image, so ask it to route the event to CPU0. */
+ #define BSP_ASSIGN_EVENT_TO_CURRENT_CORE(event) bsp_ns_assign_event(TFM_IRQ_CPU_SEL_CPU0, event);
 #else
  #define BSP_EVENT_NUM_TO_INTSELR(x)
  #define BSP_EVENT_NUM_TO_INTSELR_MASK(x)
@@ -132,7 +150,7 @@ __STATIC_INLINE void R_BSP_IrqCfg (IRQn_Type const irq, uint32_t priority, void 
 {
  #if BSP_CFG_RTOS == 3
     FSP_PARAMETER_NOT_USED(priority);
- #else    
+ #else
     /* The following statement is used in place of NVIC_SetPriority to avoid including a branch for system exceptions
      * every time a priority is configured in the NVIC. */
   #if (4U == __CORTEX_M)
