@@ -251,7 +251,7 @@ fsp_err_t R_DTC_Reset (transfer_ctrl_t * const p_api_ctrl,
 
     /* Disable read skip prior to modifying settings. It will be enabled later
      * (See "Transfer Information Read Skip Function" in the DTC section of the relevant hardware manual). */
-#if !BSP_TZ_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
+#if !BSP_TZ_NONSECURE_BUILD && !BSP_REMOTE_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
     R_DTC->DTCCR_SEC = DTC_PRV_RRS_DISABLE;
 #else
     R_DTC->DTCCR = DTC_PRV_RRS_DISABLE;
@@ -282,7 +282,7 @@ fsp_err_t R_DTC_Reset (transfer_ctrl_t * const p_api_ctrl,
     }
 
     /* Enable read skip after all settings are written. */
-#if !BSP_TZ_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
+#if !BSP_TZ_NONSECURE_BUILD && !BSP_REMOTE_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
     R_DTC->DTCCR_SEC = DTC_PRV_RRS_ENABLE;
 #else
     R_DTC->DTCCR = DTC_PRV_RRS_ENABLE;
@@ -538,13 +538,13 @@ static void r_dtc_state_initialize (void)
         memset(&gp_dtc_vector_table, 0U, DTC_VECTOR_TABLE_ENTRIES * sizeof(transfer_info_t *));
 
         /* Set DTC vector table. */
-#if !BSP_TZ_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
+#if !BSP_TZ_NONSECURE_BUILD && !BSP_REMOTE_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
         R_DTC->DTCVBR_SEC = (uint32_t) gp_dtc_vector_table;
 #else
         R_DTC->DTCVBR = (uint32_t) gp_dtc_vector_table;
 #endif
 
-#if BSP_FEATURE_TZ_HAS_TRUSTZONE && BSP_TZ_NONSECURE_BUILD
+#if BSP_FEATURE_TZ_HAS_TRUSTZONE && (BSP_TZ_NONSECURE_BUILD || BSP_REMOTE_NONSECURE_BUILD)
         if (1 == DTC_PRV_DTCSAR_DTCSTSA)
         {
             /* Enable the DTC Peripheral */
@@ -569,7 +569,7 @@ static void r_dtc_set_info (dtc_instance_ctrl_t * p_ctrl, transfer_info_t * p_in
 
     /* Disable read skip prior to modifying settings. It will be enabled later
      * (See "Transfer Information Read Skip Function" in the DTC section of the relevant hardware manual). */
-#if !BSP_TZ_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
+#if !BSP_TZ_NONSECURE_BUILD && !BSP_REMOTE_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
     R_DTC->DTCCR_SEC = DTC_PRV_RRS_DISABLE;
 #else
     R_DTC->DTCCR = DTC_PRV_RRS_DISABLE;
@@ -579,7 +579,7 @@ static void r_dtc_set_info (dtc_instance_ctrl_t * p_ctrl, transfer_info_t * p_in
     gp_dtc_vector_table[p_ctrl->irq] = p_info;
 
     /* Enable read skip after all settings are written. */
-#if !BSP_TZ_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
+#if !BSP_TZ_NONSECURE_BUILD && !BSP_REMOTE_NONSECURE_BUILD && BSP_FEATURE_TZ_HAS_TRUSTZONE
     R_DTC->DTCCR_SEC = DTC_PRV_RRS_ENABLE;
 #else
     R_DTC->DTCCR = DTC_PRV_RRS_ENABLE;
