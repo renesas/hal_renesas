@@ -1104,7 +1104,7 @@ typedef struct
         __IOM uint32_t MACMAR;
         struct
         {
-            __IOM uint32_t GB    : 1;
+            __IOM uint32_t GMII_BUSY : 1;
             __IOM uint32_t C45E  : 1;
             __IOM uint32_t GOC_0 : 1;
             __IOM uint32_t GOC_1 : 1;
